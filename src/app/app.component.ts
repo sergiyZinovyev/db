@@ -31,15 +31,16 @@ export class AppComponent {
 
   login() {
     if(this.loginForm.valid){ 
-      console.log('this.loginForm.value:', this.loginForm.value)
-      this.http.post(`${apiUrl}`, this.loginForm.value)
+      console.log('this.loginForm.value:', this.loginForm.value);
+      let post = this.http.post(`${apiUrl}`, this.loginForm.value).subscribe();
+      //post.unsubscribe();
     }
   }
   get(){
     let get = this.http.get(`${apiUrl}`).subscribe( body => {
       console.log('server get: ', body);
     });
-    get.unsubscribe;
+    //get.unsubscribe();
   }
 
   private handleError(err) {
