@@ -1,0 +1,39 @@
+<div class="d-flex align-items-center justify-content-center">
+    <div class="max-width">
+        <form class="example-form back2" [formGroup]="loginForm" (ngSubmit)="login()">
+
+            <mat-form-field class="form-group example-full-width">
+                <input type="email" matInput placeholder="{{'Email'}}" formControlName="email">
+                <mat-error *ngIf="!loginForm.get('email').valid">
+                    {{'Please enter a valid email address'}}
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="form-group example-full-width">
+                <input type="text" matInput placeholder="{{'Last name'}}" formControlName="prizv">
+                <mat-error *ngIf="!loginForm.get('prizv').valid">
+                    {{'Please enter a last name'}}
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="form-group example-full-width">
+                <input type="text" matInput placeholder="{{'City'}}" formControlName="city">
+                <mat-error *ngIf="!loginForm.get('city').valid">
+                    {{'Please enter a city'}}
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="form-group example-full-width">
+                <input type="text" matInput placeholder="{{'Cellphone'}}" formControlName="cellphone">
+                <mat-error *ngIf="!loginForm.get('cellphone').valid">
+                    {{'Please enter a cellphone'}}
+                </mat-error>
+            </mat-form-field>
+            
+            <button mat-stroked-button class="btn-lg btn-block py-2">{{'Login/POST'}}</button>
+
+        </form>
+        <br>
+        <button mat-stroked-button (click)='get()' class="btn-lg btn-block py-2">{{'GET'}}</button>
+    </div>  
+</div>

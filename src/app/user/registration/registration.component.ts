@@ -11,18 +11,19 @@ const apiUrl = 'http://localhost:7000';
 })
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  selector: 'app-registration',
+  templateUrl: './registration.component.html',
+  styleUrls: ['./registration.component.css']
 })
-export class AppComponent {
-  title = 'db';
-  
+export class RegistrationComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
     private http: HttpClient
   ) { }
+
+  ngOnInit() {
+  }
 
   loginForm = this.fb.group({
     email: ['', [Validators.email, Validators.required]],
