@@ -1,15 +1,9 @@
 import { Component, OnInit, Injectable} from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { catchError } from 'rxjs/operators';
-import { Observable, throwError  } from 'rxjs';
+import { UserService } from '../../shared/user.service';
+import { ServerService } from '../../shared/server.service';
 
-const apiUrl = 'http://localhost:7000';
-
-@Injectable({
-  providedIn: 'root'
-})
 
 @Component({
   selector: 'app-login',
@@ -20,7 +14,8 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private http: HttpClient,
+    private user: UserService,
+    private server: ServerService,
     private router: Router,
   ) { }
 
@@ -31,32 +26,25 @@ export class LoginComponent implements OnInit {
     email: ['', [Validators.email, Validators.required]],
   })
 
-  login() {
-    if(this.loginForm.valid){ 
+  email = this.loginForm.get('email').value
+
+  login(email) {
+    if(this.loginForm.valid){
+      this.user.getUserEmail(this.email);
+      let get=this.server.getSome(email).subscribe(data =>{
+        console.log("data: ", data);
+        if(data[0]){
+          this.user.getUserData(data);
+        }
+        if(data){
+          console.log("unsubscribe")
+          return get.unsubscribe();
+        }
+      });
+      
       return this.router.navigate(['user/registration']);
-      console.log('this.loginForm.value:', this.loginForm.value);
-      let post = this.http.post(`${apiUrl}/create`, this.loginForm.value).subscribe(
-        data => {
-          if(data){
-            console.log(data);
-            return post.unsubscribe();
-          }
-        },
-        error => console.log(error)
-      );
-      //post.unsubscribe();
     }
   }
-  get(){
-    let get = this.http.get(`${apiUrl}/create`).subscribe( body => {
-      console.log(body);
-    });
-    //get.unsubscribe();
-  }
-
-  private handleError(err) {
-    console.log('caught mapping error and rethrowing', err);
-    return throwError(err);
-  }
+  
 
 }

@@ -1,9 +1,7 @@
 import { Component, OnInit, Injectable} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
-import { Observable, throwError  } from 'rxjs';
-
-const apiUrl = 'http://localhost:7000';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,33 +9,19 @@ const apiUrl = 'http://localhost:7000';
 
 export class UserService {
 
+  userData = new Subject();
+  userEmail = new Subject();
+
   constructor(
-    private http: HttpClient
   ) { }
 
-  create(value) {
-    let post = this.http.post(`${apiUrl}/create`, value).subscribe(
-      data => {
-        if(data){
-          console.log(data);
-          return post.unsubscribe();
-        }
-      },
-      error => console.log(error)
-    );    
-  }
-  
-  get(){
-    let get = this.http.get(`${apiUrl}/create`).subscribe( body => {
-      console.log(body);
-    });
-    //get.unsubscribe();
+  getUserData(data){
+    this.userData.next(data);
+    //console.log(this.userData);
   }
 
-  private handleError(err) {
-    console.log('caught mapping error and rethrowing', err);
-    return throwError(err);
+  getUserEmail(email){
+    this.userEmail.next(email);
   }
-
 
 }

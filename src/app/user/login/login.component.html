@@ -1,6 +1,6 @@
 <div class="d-flex align-items-center justify-content-center mt-4">
     <div class="max-width">
-        <form class="example-form back2" [formGroup]="loginForm" (ngSubmit)="login()">
+        <form class="example-form back2" [formGroup]="loginForm" (ngSubmit)="login(loginForm.value)">
 
             <mat-form-field class="form-group example-full-width">
                 <input type="email" matInput placeholder="{{'Електронна пошта'}}" formControlName="email">

@@ -60,25 +60,36 @@ app.post("/", (req, res) => {
 app.post("/create", urlencodedParser, function (req, res) {
          
   if(!req.body) return res.sendStatus(400);
-    // const values = [
-    //   email = req.body.email,
-    //   prizv = req.body.prizv,
-    //   city = req.body.city,
-    //   cellphone = req.body.cellphone
-    // ]
-    const email = req.body.email;
-    const prizv = req.body.prizv;
-    const city = req.body.city;
-    const cellphone = req.body.cellphone;
+  
+  const email = req.body.email;
+  const prizv = req.body.prizv;
+  const city = req.body.city;
+  const cellphone = req.body.cellphone;
 
-    connection.query("INSERT INTO visitors (email, prizv, city, cellphone) VALUES (?,?,?,?)", [email, prizv, city, cellphone], function(err, data) {
-      if(err) return console.log(err);
-      console.log(data);
-      res.status(200).type('text/plain');
-      res.send(data);
-    });
-
+  connection.query("INSERT INTO visitors (email, prizv, city, cellphone) VALUES (?,?,?,?)", [email, prizv, city, cellphone], function(err, data) {
+    if(err) return console.log(err);
+    console.log(data);
+    res.status(200).type('text/plain');
+    res.send(data);
   });
+
+});
+
+app.post("/get", urlencodedParser, function (req, res) {
+        
+  if(!req.body) return res.sendStatus(400);
+
+  const email = req.body.email;
+  console.log(req.body.email);
+
+  connection.query("SELECT * FROM visitors WHERE email=?", [email], function(err, data) {
+    if(err) return console.log(err);
+    console.log(data);
+    res.status(200).type('text/plain');
+    res.send(data);
+  });
+
+});
 
 app.get("/create", function(req, res){
   connection.query("SELECT * FROM visitors", function(err, data) {
