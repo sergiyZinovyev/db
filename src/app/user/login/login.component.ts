@@ -26,15 +26,14 @@ export class LoginComponent implements OnInit {
     email: ['', [Validators.email, Validators.required]],
   })
 
-  email = this.loginForm.get('email').value
 
   login(email) {
     if(this.loginForm.valid){
-      this.user.getUserEmail(this.email);
+      this.user.setUserEmail(this.loginForm.get('email').value);
       let get=this.server.getSome(email).subscribe(data =>{
         console.log("data: ", data);
         if(data[0]){
-          this.user.getUserData(data);
+          this.user.setUserData(data);
         }
         if(data){
           console.log("unsubscribe")

@@ -10,18 +10,21 @@ import { Subject } from 'rxjs';
 export class UserService {
 
   userData = new Subject();
-  userEmail = new Subject();
+  userEmail = '';
 
   constructor(
   ) { }
 
-  getUserData(data){
+  setUserData(data){
     this.userData.next(data);
-    //console.log(this.userData);
   }
 
-  getUserEmail(email){
-    this.userEmail.next(email);
+  setUserEmail(email){
+    this.userEmail=email;
+  }
+
+  getUserEmail(){
+    return this.userEmail;
   }
 
 }

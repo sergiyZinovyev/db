@@ -12,15 +12,8 @@ import { ServerService } from '../../shared/server.service';
 })
 export class RegistrationComponent implements OnInit {
 
-  // loginFormData = {
-  //   email: "",
-  //   prizv: "",
-  //   city: "",
-  //   cellphone: ""
-  // };
-  
-  //loginFormEmail: string = '';
-  
+  edit: boolean = false;
+  editData
 
   constructor(
     private fb: FormBuilder,
@@ -29,39 +22,28 @@ export class RegistrationComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.user.userEmail.subscribe({
-      next: value => {
-        console.log('email: ',value);
-        this.loginForm = this.fb.group({
-          email: [value, [Validators.email, Validators.required]],
-          prizv: ['', [Validators.required]],
-          city: ['', [Validators.required]],
-          cellphone: ['', [Validators.required]],
-        })
-      }
-    })
-
     this.user.userData.subscribe({
       next: (value) => {
-        console.log('value:',value[0]);
         this.loginForm = this.fb.group({
           email: [value[0].email, [Validators.email, Validators.required]],
           prizv: [value[0].prizv, [Validators.required]],
           city: [value[0].city, [Validators.required]],
           cellphone: [value[0].cellphone, [Validators.required]],
         })
+        this.edit = true;
+        this.editData = value[0];
       }
     })
   }
 
   loginForm = this.fb.group({
-    email: ['', [Validators.email, Validators.required]],
+    email: [this.user.getUserEmail(), [Validators.email, Validators.required]],
     prizv: ['', [Validators.required]],
     city: ['', [Validators.required]],
     cellphone: ['', [Validators.required]],
   })
 
-  login() {
+  addUser() {
     if(this.loginForm.valid){ 
       let post = this.server.create(this.loginForm.value).subscribe(data =>{
         console.log("data: ", data);
