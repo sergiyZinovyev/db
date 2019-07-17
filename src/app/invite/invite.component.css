@@ -7,6 +7,11 @@
     background-size: cover;
   }
   .example-header-image2 {
+    height: 400px;
+    width: 400px;
     background-image: url('../../img/inviteimg.png');
     background-size: cover;
+  }
+  .color{
+    background-color: rgb(219, 220, 255);
   }

@@ -38,7 +38,9 @@
            
         </form>
         <br>
-        <button mat-stroked-button (click)='invite()' class="btn-lg btn-block py-2">{{'Отримати запрошення'}}</button>
+        <div *ngIf = 'edit'>
+            <button mat-stroked-button (click)='invite()' class="btn-lg btn-block py-2">{{'Отримати запрошення'}}</button>
+        </div>
         <br>
         <br>
         <button mat-stroked-button (click)='get()' class="btn-lg btn-block py-2">{{'Отримати всі записи'}}</button>
