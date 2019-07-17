@@ -1,7 +1,8 @@
-import { Component, OnInit, Injectable} from '@angular/core';
+import { Component, OnInit, OnDestroy} from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { UserService } from '../../shared/user.service';
 import { ServerService } from '../../shared/server.service';
+import { Router } from '@angular/router';
 
 
 
@@ -10,8 +11,11 @@ import { ServerService } from '../../shared/server.service';
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.css']
 })
-export class RegistrationComponent implements OnInit {
+export class RegistrationComponent implements OnInit, OnDestroy {
 
+  submitButtonText: string = '';
+  createText: string = "Додати новий запис та отримати запрошення";
+  editText: string = "Редагувати дані та отримати запрошення";
   edit: boolean = false;
   editData
 
@@ -19,9 +23,11 @@ export class RegistrationComponent implements OnInit {
     private fb: FormBuilder,
     private user: UserService,
     private server: ServerService,
+    private router: Router,
   ) { }
 
   ngOnInit() {
+    this.submitButtonText = this.createText;
     this.user.userData.subscribe({
       next: (value) => {
         this.loginForm = this.fb.group({
@@ -29,8 +35,10 @@ export class RegistrationComponent implements OnInit {
           prizv: [value[0].prizv, [Validators.required]],
           city: [value[0].city, [Validators.required]],
           cellphone: [value[0].cellphone, [Validators.required]],
+          regnum: [value[0].regnum, []],
         })
         this.edit = true;
+        this.submitButtonText = this.editText;
         this.editData = value[0];
       }
     })
@@ -41,18 +49,42 @@ export class RegistrationComponent implements OnInit {
     prizv: ['', [Validators.required]],
     city: ['', [Validators.required]],
     cellphone: ['', [Validators.required]],
+    regnum: ['', []],
   })
 
   addUser() {
-    if(this.loginForm.valid){ 
-      let post = this.server.create(this.loginForm.value).subscribe(data =>{
-        console.log("data: ", data);
-        if(data){
-          console.log("unsubscribe")
-          return post.unsubscribe();
-        }
-      });
+    let post = this.server.post(this.loginForm.value, "create").subscribe(data =>{
+      console.log("data: ", data);
+      if(data){
+        this.router.navigate(['invite'])
+        console.log("unsubscribe")
+        return post.unsubscribe();
+      }
+    });
+  }
+
+  editUser(){
+    let post = this.server.post(this.loginForm.value, "edit").subscribe(data =>{
+      console.log("data: ", data);
+      if(data){
+        this.router.navigate(['invite'])
+        console.log("unsubscribe")
+        return post.unsubscribe();
+      }
+    });
+  }
+
+  submit(){
+    if(this.loginForm.valid){
+      if(this.edit){
+        this.editUser();
+      }
+      else{this.addUser()}
     }
+  }
+
+  invite(){
+    this.router.navigate(['invite'])
   }
 
   get(){
@@ -63,6 +95,10 @@ export class RegistrationComponent implements OnInit {
         return get.unsubscribe();
       }
     });
+  }
+
+  ngOnDestroy(){
+    this.user.setUserEmail('');
   }
 
 }

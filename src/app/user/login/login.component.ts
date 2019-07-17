@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
   login(email) {
     if(this.loginForm.valid){
       this.user.setUserEmail(this.loginForm.get('email').value);
-      let get=this.server.getSome(email).subscribe(data =>{
+      let get=this.server.post(email, "get").subscribe(data =>{
         console.log("data: ", data);
         if(data[0]){
           this.user.setUserData(data);

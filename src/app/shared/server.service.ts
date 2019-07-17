@@ -17,17 +17,8 @@ export class ServerService {
     private http: HttpClient
   ) { }
 
-  create(value) {
-    return this.http.post(`${apiUrl}/create`, value)
-  //   let post = this.http.post(`${apiUrl}/create`, value).subscribe(
-  //     data => {
-  //       if(data){
-  //         console.log(data);
-  //         return post.unsubscribe();
-  //       }
-  //     },
-  //     error => console.log(error)
-  //   );    
+  post(value, prop) {
+    return this.http.post(`${apiUrl}/${prop}`, value)    
   }
   
   get(email?){
@@ -46,9 +37,6 @@ export class ServerService {
     
   }
 
-  getSome(data){
-    return this.http.post(`${apiUrl}/get`, data)
-  }
 
   private handleError(err) {
     console.log('caught mapping error and rethrowing', err);

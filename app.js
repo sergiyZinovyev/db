@@ -75,6 +75,25 @@ app.post("/create", urlencodedParser, function (req, res) {
 
 });
 
+app.post("/edit", urlencodedParser, function (req, res) {
+         
+  if(!req.body) return res.sendStatus(400);
+  
+  const email = req.body.email;
+  const prizv = req.body.prizv;
+  const city = req.body.city;
+  const cellphone = req.body.cellphone;
+  const regnum = req.body.regnum;
+
+  connection.query("UPDATE visitors SET email=?, prizv=?, city=?, cellphone=? WHERE regnum=?", [email, prizv, city, cellphone, regnum], function(err, data) {
+    if(err) return console.log(err);
+    console.log(data);
+    res.status(200).type('text/plain');
+    res.send(data);
+  });
+
+});
+
 app.post("/get", urlencodedParser, function (req, res) {
         
   if(!req.body) return res.sendStatus(400);

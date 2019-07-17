@@ -1,6 +1,10 @@
 <div class="d-flex align-items-center justify-content-center">
     <div class="max-width">
-        <form class="example-form back2" [formGroup]="loginForm" (ngSubmit)="addUser()">
+        <form class="example-form back2" [formGroup]="loginForm" (ngSubmit)="submit()">
+
+            <!-- <mat-form-field class="form-group example-full-width">
+                <input type="text" matInput placeholder="{{'Regnum'}}" formControlName="regnum">
+            </mat-form-field> -->
 
             <mat-form-field class="form-group example-full-width">
                 <input type="email" matInput placeholder="{{'Email'}}" formControlName="email">
@@ -30,10 +34,14 @@
                 </mat-error>
             </mat-form-field>
             
-            <button mat-stroked-button class="btn-lg btn-block py-2">{{'Додати новий запис'}}</button>
-
+            <button mat-stroked-button class="btn-lg btn-block py-2">{{submitButtonText}}</button>
+           
         </form>
         <br>
+        <button mat-stroked-button (click)='invite()' class="btn-lg btn-block py-2">{{'Отримати запрошення'}}</button>
+        <br>
+        <br>
         <button mat-stroked-button (click)='get()' class="btn-lg btn-block py-2">{{'Отримати всі записи'}}</button>
+
     </div>  
 </div>
