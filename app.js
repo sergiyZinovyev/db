@@ -57,6 +57,7 @@ app.post("/", (req, res) => {
   console.log(`post test`);
 });
 
+//додавання запису в основну базу
 app.post("/create", urlencodedParser, function (req, res) {
          
   if(!req.body) return res.sendStatus(400);
@@ -71,6 +72,38 @@ app.post("/create", urlencodedParser, function (req, res) {
     console.log(data);
     res.status(200).type('text/plain');
     res.send(data);
+  });
+
+});
+
+//додавання запису в заявку на внесення
+app.post("/create/req", urlencodedParser, function (req, res) {
+         
+  if(!req.body) return res.sendStatus(400);
+
+  connection.query("(SELECT regnum FROM visitors) UNION (SELECT regnum FROM zajavku)", function(err, result) {
+    if(err) return console.log(err);
+    console.log(result);
+
+    for(let i=0; i < result.length; i++){
+      if(result[0].regnum < result[i].regnum){
+        result[0].regnum = result[i].regnum;
+      }
+    }
+
+    const regnum = result[0].regnum+1;
+    const email = req.body.email;
+    const prizv = req.body.prizv;
+    const city = req.body.city;
+    const cellphone = req.body.cellphone;
+
+    connection.query("INSERT INTO zajavku (regnum, email, prizv, city, cellphone) VALUES (?,?,?,?,?)", [regnum, email, prizv, city, cellphone], function(err, data) {
+      if(err) return console.log(err);
+      console.log(data);
+      res.status(200).type('text/plain');
+      res.send(data);
+    });
+
   });
 
 });
@@ -94,14 +127,15 @@ app.post("/edit", urlencodedParser, function (req, res) {
 
 });
 
+//отримання запису по електронній адресі
 app.post("/get", urlencodedParser, function (req, res) {
         
   if(!req.body) return res.sendStatus(400);
 
   const email = req.body.email;
-  console.log(req.body.email);
+  console.log('req.body.email: ',req.body.email);
 
-  connection.query("SELECT * FROM visitors WHERE email=?", [email], function(err, data) {
+  connection.query("(SELECT regnum, email, prizv, city, cellphone FROM visitors WHERE email=?) UNION (SELECT regnum, email, prizv, city, cellphone FROM zajavku WHERE email=?)", [email, email], function(err, data) {
     if(err) return console.log(err);
     console.log(data);
     res.status(200).type('text/plain');

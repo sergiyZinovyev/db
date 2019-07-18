@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
 
   login(email) {
     if(this.loginForm.valid){
-      this.user.setUserEmail(this.loginForm.get('email').value);
+      this.user.setUserEmail(this.loginForm.value);
       let get=this.server.post(email, "get").subscribe(data =>{
         console.log("data: ", data);
         if(data[0]){

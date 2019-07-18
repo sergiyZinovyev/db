@@ -45,7 +45,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   }
 
   loginForm = this.fb.group({
-    email: [this.user.getUserEmail(), [Validators.email, Validators.required]],
+    email: [this.user.userEmail.email, [Validators.email, Validators.required]],
     prizv: ['', [Validators.required]],
     city: ['', [Validators.required]],
     cellphone: ['', [Validators.required]],
@@ -53,7 +53,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   })
 
   addUser() {
-    let post = this.server.post(this.loginForm.value, "create").subscribe(data =>{
+    let post = this.server.post(this.loginForm.value, "create/req").subscribe(data =>{
       console.log("data: ", data);
       if(data){
         //this.user.setUserData(data);
@@ -69,8 +69,8 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       console.log("data: ", data);
       if(data){
         //this.user.setUserData(data);
-        this.router.navigate(['invite'])
-        console.log("unsubscribe")
+        this.router.navigate(['invite']);
+        console.log("unsubscribe");
         return post.unsubscribe();
       }
     });
@@ -79,16 +79,17 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   submit(){
     if(this.loginForm.valid){
       if(this.edit){
-        this.editUser();
+        //this.editUser();
+        this.router.navigate(['invite'])
       }
       else{this.addUser()}
       console.log(this.loginForm.value);
-      this.user.setInviteData(this.loginForm.value);
+      //this.user.setInviteData(this.loginForm.value);
     }
   }
 
   invite(){
-    this.user.setInviteData(this.loginForm.value);
+    //this.user.setInviteData(this.loginForm.value);
     this.router.navigate(['invite'])
   }
 
@@ -103,7 +104,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(){
-    this.user.setUserEmail('');
+    this.user.setUserEmail(this.loginForm.value);
     
   }
 
