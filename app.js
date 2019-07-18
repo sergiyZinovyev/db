@@ -145,7 +145,7 @@ app.post("/get", urlencodedParser, function (req, res) {
 });
 
 app.get("/create", function(req, res){
-  connection.query("SELECT * FROM visitors", function(err, data) {
+  connection.query("SELECT regnum, email, prizv, city, cellphone FROM visitors", function(err, data) {
     if(err) return console.log(err);
     res.send(data);
   });
