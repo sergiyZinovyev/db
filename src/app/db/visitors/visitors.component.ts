@@ -21,6 +21,8 @@ export interface BDVisitors {
 export class VisitorsComponent implements OnInit {
 
   i = 20;
+  name: string = "База відвідувачів";
+  nameBut: string = "Заявки на внесення";
 
   displayedColumns: string[] = ['regnum', 'prizv', 'email', 'cellphone', 'city'];
   dataSource = new MatTableDataSource();
@@ -36,7 +38,7 @@ export class VisitorsComponent implements OnInit {
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
     
-    this.server.get().subscribe(data =>{
+    this.server.get('visitors').subscribe(data =>{
       console.log("data: ", data);
       let viewData = [];
       for(let i=0; i>=0; i++){
@@ -47,6 +49,45 @@ export class VisitorsComponent implements OnInit {
       this.dataSource.data = viewData;
     });
   }
+
+  butClickBd(){
+    if(this.name == "База відвідувачів"){
+      this.getBd('addreq');
+      this.name = 'Заявки на внесення';
+      this.nameBut = 'База відвідувачів';
+    }
+    else{
+      this.getBd('visitors');
+      this.name = 'База відвідувачів';
+      this.nameBut = 'Заявки на внесення';
+    }
+  }
+
+  getBd(nameTable){
+    this.server.get(nameTable).subscribe(data =>{
+      console.log("data: ", data);
+      let viewData = [];
+      for(let i=0; i>=0; i++){
+        if(!data[i]){break};
+        viewData.push({cellphone: data[i].cellphone, city: data[i].city, email: data[i].email, prizv: data[i].prizv, regnum: data[i].regnum})
+        this.i = i+1;
+      }
+      this.dataSource.data = viewData;
+    });
+  }
+
+  // getRequest(){
+  //   this.server.get('addreq').subscribe(data =>{
+  //     console.log("data: ", data);
+  //     let viewData = [];
+  //     for(let i=0; i>=0; i++){
+  //       if(!data[i]){break};
+  //       viewData.push({cellphone: data[i].cellphone, city: data[i].city, email: data[i].email, prizv: data[i].prizv, regnum: data[i].regnum})
+  //       this.i = i+1;
+  //     }
+  //     this.dataSource.data = viewData;
+  //   });
+  
 
 }
 

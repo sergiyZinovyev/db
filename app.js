@@ -144,12 +144,20 @@ app.post("/get", urlencodedParser, function (req, res) {
 
 });
 
-app.get("/create", function(req, res){
+app.get("/visitors", function(req, res){
   connection.query("SELECT regnum, email, prizv, city, cellphone FROM visitors", function(err, data) {
     if(err) return console.log(err);
     res.send(data);
   });
 });
+
+app.get("/addreq", function(req, res){
+  connection.query("SELECT regnum, email, prizv, city, cellphone FROM zajavku", function(err, data) {
+    if(err) return console.log(err);
+    res.send(data);
+  });
+});
+
 
 app.use((req, res, next) => {
   res.status(404).type('text/plain');

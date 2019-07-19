@@ -29,20 +29,8 @@ export class ServerService {
     return this.http.post(`${apiUrl}/${prop}`, value)    
   }
   
-  get(email?){
-    return this.http.get(`${apiUrl}/create`, email)
-    // let get = this.http.get(`${apiUrl}/create`).subscribe( data => {
-    //   if(data){
-    //     //console.log(data);
-    //     this.getData = data;
-    //     return this.getData;
-    //     //get.unsubscribe();
-        
-    //   }
-    //   //console.log(data);
-    // });
-    // //get.unsubscribe();
-    
+  get(prop){
+    return this.http.get(`${apiUrl}/${prop}`)
   }
 
 
