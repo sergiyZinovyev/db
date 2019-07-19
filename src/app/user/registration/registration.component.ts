@@ -79,8 +79,8 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   submit(){
     if(this.loginForm.valid){
       if(this.edit){
-        //this.editUser();
-        this.router.navigate(['invite'])
+        this.editUser();
+        //this.router.navigate(['invite'])
       }
       else{this.addUser()}
       console.log(this.loginForm.value);
