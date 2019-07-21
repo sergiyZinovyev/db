@@ -7,12 +7,24 @@ const connection = mysql.createConnection({
   password: "XGHAXoGCJk"
 });
 
-exports.connect = function(err){
+var state = {
+	db: null
+};
+
+exports.connect = function(done){
+  if (state.db) {
+    return done();
+  }
+  connection.connect(function(err, db){
     if (err) {
-      return console.error("Ошибка: " + err.message);
+      return done("Ошибка: " + err.message);
     }
-    else{
-      
-   
-    }
-  };
+    state.db = db;
+    console.log(db);
+    done();
+    });
+};
+
+exports.get = function() {
+	return connection;
+};
