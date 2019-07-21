@@ -93,15 +93,15 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     this.router.navigate(['invite'])
   }
 
-  get(){
-    let get=this.server.get().subscribe(data =>{
-      console.log("data: ", data);
-      if(data){
-        console.log("unsubscribe")
-        return get.unsubscribe();
-      }
-    });
-  }
+  // get(){
+  //   let get=this.server.get().subscribe(data =>{
+  //     console.log("data: ", data);
+  //     if(data){
+  //       console.log("unsubscribe")
+  //       return get.unsubscribe();
+  //     }
+  //   });
+  // }
 
   ngOnDestroy(){
     this.user.setUserEmail(this.loginForm.value);

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { Observable, throwError  } from 'rxjs';
 
-const apiUrl = 'http://localhost:7000';
+const apiUrl = 'http://localhost:7001';
 
 export interface BDVisitors {
   cellphone: string;
@@ -30,7 +30,7 @@ export class ServerService {
   }
   
   get(prop){
-    return this.http.get(`${apiUrl}/${prop}`)
+    return this.http.get(`${apiUrl}/db/${prop}`)
   }
 
 

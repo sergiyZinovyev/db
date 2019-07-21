@@ -52,7 +52,7 @@ export class VisitorsComponent implements OnInit {
 
   butClickBd(){
     if(this.name == "База відвідувачів"){
-      this.getBd('addreq');
+      this.getBd('zajavku');
       this.name = 'Заявки на внесення';
       this.nameBut = 'База відвідувачів';
     }

@@ -1,17 +1,17 @@
-var mySend = {
-  "posts": [
-    {
-      "title": "test",
-      "body": "new edit",
-      "id": 5
-    },
-    {
-      "title": "new",
-      "body": "new task",
-      "id": 6
-    }
-  ]
-}
+// var mySend = {
+//   "posts": [
+//     {
+//       "title": "test",
+//       "body": "new edit",
+//       "id": 5
+//     },
+//     {
+//       "title": "new",
+//       "body": "new task",
+//       "id": 6
+//     }
+//   ]
+// }
 
 const express = require('express');
 const cors = require('cors');
@@ -45,17 +45,17 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 
-app.get('/', (req, res) => {
-  res.status(200).type('text/plain');
-  res.send(mySend);
-  console.log(`get test`);
-});
+// app.get('/', (req, res) => {
+//   res.status(200).type('text/plain');
+//   res.send(mySend);
+//   console.log(`get test`);
+// });
 
-app.post("/", (req, res) => {
-  res.status(200).type('text/plain');
-  mySend = req.body;
-  console.log(`post test`);
-});
+// app.post("/", (req, res) => {
+//   res.status(200).type('text/plain');
+//   mySend = req.body;
+//   console.log(`post test`);
+// });
 
 //додавання запису в основну базу
 app.post("/create", urlencodedParser, function (req, res) {
@@ -108,6 +108,7 @@ app.post("/create/req", urlencodedParser, function (req, res) {
 
 });
 
+//редагування запису
 app.post("/edit", urlencodedParser, function (req, res) {
          
   if(!req.body) return res.sendStatus(400);
@@ -144,15 +145,10 @@ app.post("/get", urlencodedParser, function (req, res) {
 
 });
 
-app.get("/visitors", function(req, res){
-  connection.query("SELECT regnum, email, prizv, city, cellphone FROM visitors", function(err, data) {
-    if(err) return console.log(err);
-    res.send(data);
-  });
-});
 
-app.get("/addreq", function(req, res){
-  connection.query("SELECT regnum, email, prizv, city, cellphone FROM zajavku", function(err, data) {
+app.get("/db/:id", function(req, res){
+  console.log('req.params: ',req.params)
+  connection.query(`SELECT regnum, email, prizv, city, cellphone FROM ${req.params.id}`, function(err, data) {
     if(err) return console.log(err);
     res.send(data);
   });
