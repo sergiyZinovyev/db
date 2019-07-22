@@ -1,9 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const db = require('./server/db');
-
-
+//const db = require('./server/db');
+const visitorsController = require('./server/controllers/visitors');
 
 const urlencodedParser = bodyParser.urlencoded({extended: false});
 
@@ -12,16 +11,8 @@ const app = express();
 const host = 'localhost';
 const port = 7001;
 
-db.connect(function(err){
-  if (err) {
-    return console.error("Ошибка: " + err.message);
-  }
-  else{
-    console.log("Подключение к серверу Data Base успешно установлено");
-    app.listen(port, host, function () {
-      console.log(`Server listens http://${host}:${port}`);
-    });
-  }
+app.listen(port, host, function () {
+  console.log(`Server listens http://${host}:${port}`);
 });
 
 app.use(cors())
@@ -29,81 +20,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 //отримати всі записи з вказаної таблиці
-app.get("/db/:id", function(req, res){
-  console.log('req.params: ',req.params)
-  db.get().query(`SELECT regnum, email, prizv, city, cellphone FROM ${req.params.id}`, function(err, data) {
-    if(err) return console.log(err);
-    res.send(data);
-  });
-});
+app.get("/db/:id", visitorsController.all);
 
 //додавання запису в заявку на внесення
-app.post("/create/req", urlencodedParser, function (req, res) {
-         
-  if(!req.body) return res.sendStatus(400);
-
-  db.get().query("(SELECT regnum FROM visitors) UNION (SELECT regnum FROM zajavku)", function(err, result) {
-    if(err) return console.log(err);
-    console.log(result);
-
-    for(let i=0; i < result.length; i++){
-      if(result[0].regnum < result[i].regnum){
-        result[0].regnum = result[i].regnum;
-      }
-    }
-
-    const regnum = result[0].regnum+1;
-    const email = req.body.email;
-    const prizv = req.body.prizv;
-    const city = req.body.city;
-    const cellphone = req.body.cellphone;
-
-    db.get().query("INSERT INTO zajavku (regnum, email, prizv, city, cellphone) VALUES (?,?,?,?,?)", [regnum, email, prizv, city, cellphone], function(err, data) {
-      if(err) return console.log(err);
-      console.log(data);
-      res.status(200).type('text/plain');
-      res.send(data);
-    });
-
-  });
-
-});
+app.post("/create/req", urlencodedParser, visitorsController.create);
 
 //редагування запису
-app.post("/edit", urlencodedParser, function (req, res) {
-         
-  if(!req.body) return res.sendStatus(400);
-  
-  const email = req.body.email;
-  const prizv = req.body.prizv;
-  const city = req.body.city;
-  const cellphone = req.body.cellphone;
-  const regnum = req.body.regnum;
+app.post("/edit", urlencodedParser, visitorsController.edit)
 
-  db.get().query("UPDATE visitors SET email=?, prizv=?, city=?, cellphone=? WHERE regnum=?", [email, prizv, city, cellphone, regnum], function(err, data) {
-    if(err) return console.log(err);
-    console.log(data);
-    res.status(200).type('text/plain');
-    res.send(data);
-  });
-
-});
-
-//отримання запису по електронній адресі
-app.post("/get", urlencodedParser, function (req, res) {
-        
-  if(!req.body) return res.sendStatus(400);
-
-  const email = req.body.email;
-  console.log('req.body.email: ',req.body.email);
-
-  db.get().query("(SELECT regnum, email, prizv, city, cellphone FROM visitors WHERE email=?) UNION (SELECT regnum, email, prizv, city, cellphone FROM zajavku WHERE email=?)", [email, email], function(err, data) {
-    if(err) return console.log(err);
-    console.log(data);
-    res.status(200).type('text/plain');
-    res.send(data);
-  });
-
-});
+//отримання запису по електронній адресі з двох таблиць
+app.post("/get", urlencodedParser, visitorsController.getEmail);
 
 
