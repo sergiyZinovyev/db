@@ -19,6 +19,12 @@ app.use(cors())
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
+// app.use(express.static(__dirname + "/dist/db"));
+ 
+// app.use("/", function(request, response){
+//   response.sendFile(path.join(__dirname+'/dist/db/index.html')); 
+// });
+
 //отримати всі записи з вказаної таблиці
 app.get("/db/:id", visitorsController.all);
 
@@ -29,6 +35,6 @@ app.post("/create/req", urlencodedParser, visitorsController.create);
 app.post("/edit", urlencodedParser, visitorsController.edit)
 
 //отримання запису по електронній адресі з двох таблиць
-app.post("/get", urlencodedParser, visitorsController.getEmail);
+app.post("/get", cors(), urlencodedParser, visitorsController.getEmail);
 
 

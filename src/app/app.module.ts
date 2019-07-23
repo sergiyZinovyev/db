@@ -60,6 +60,8 @@ import { RequestComponent } from './db/request/request.component';
 import { VisitorsComponent } from './db/visitors/visitors.component';
 import { InviteComponent } from './invite/invite.component';
 
+import { NgxBarcodeModule } from 'ngx-barcode';
+
 
 
 
@@ -126,7 +128,8 @@ import { InviteComponent } from './invite/invite.component';
     PortalModule,
     ScrollingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    NgxBarcodeModule
   ],
   providers: [],
   bootstrap: [AppComponent]
