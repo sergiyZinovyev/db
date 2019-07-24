@@ -3,6 +3,7 @@ import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 import { Router } from '@angular/router';
 import { ServerService } from '../../shared/server.service';
+import {animate, state, style, transition, trigger} from '@angular/animations';
 
 export interface BDVisitors {
   cellphone: string;
@@ -16,7 +17,14 @@ export interface BDVisitors {
 @Component({
   selector: 'app-visitors',
   templateUrl: './visitors.component.html',
-  styleUrls: ['./visitors.component.css']
+  styleUrls: ['./visitors.component.css'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class VisitorsComponent implements OnInit {
 
@@ -26,6 +34,7 @@ export class VisitorsComponent implements OnInit {
 
   displayedColumns: string[] = ['regnum', 'prizv', 'email', 'cellphone', 'city'];
   dataSource = new MatTableDataSource();
+  expandedElement: BDVisitors | null;;
   
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
@@ -37,13 +46,37 @@ export class VisitorsComponent implements OnInit {
 
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
-    
-    this.server.get('visitors').subscribe(data =>{
+    this.getBd('visitors');
+    // this.server.get('visitors').subscribe(data =>{
+    //   console.log("data: ", data);
+    //   let viewData = [];
+    //   for(let i=0; i>=0; i++){
+    //     if(!data[i]){break};
+    //     viewData.push({
+    //       cellphone: data[i].cellphone, 
+    //       city: data[i].city, 
+    //       email: data[i].email, 
+    //       prizv: data[i].prizv, 
+    //       regnum: data[i].regnum})
+    //     this.i = i+1;
+    //   }
+    //   this.dataSource.data = viewData;
+    // });
+  }
+
+  getBd(nameTable){
+    this.server.get(nameTable).subscribe(data =>{
       console.log("data: ", data);
       let viewData = [];
       for(let i=0; i>=0; i++){
         if(!data[i]){break};
-        viewData.push({cellphone: data[i].cellphone, city: data[i].city, email: data[i].email, prizv: data[i].prizv, regnum: data[i].regnum})
+        viewData.push({
+          cellphone: data[i].cellphone,
+          city: data[i].city, 
+          email: data[i].email, 
+          prizv: data[i].prizv, 
+          regnum: data[i].regnum
+        })
         this.i = i+1;
       }
       this.dataSource.data = viewData;
@@ -63,31 +96,7 @@ export class VisitorsComponent implements OnInit {
     }
   }
 
-  getBd(nameTable){
-    this.server.get(nameTable).subscribe(data =>{
-      console.log("data: ", data);
-      let viewData = [];
-      for(let i=0; i>=0; i++){
-        if(!data[i]){break};
-        viewData.push({cellphone: data[i].cellphone, city: data[i].city, email: data[i].email, prizv: data[i].prizv, regnum: data[i].regnum})
-        this.i = i+1;
-      }
-      this.dataSource.data = viewData;
-    });
-  }
-
-  // getRequest(){
-  //   this.server.get('addreq').subscribe(data =>{
-  //     console.log("data: ", data);
-  //     let viewData = [];
-  //     for(let i=0; i>=0; i++){
-  //       if(!data[i]){break};
-  //       viewData.push({cellphone: data[i].cellphone, city: data[i].city, email: data[i].email, prizv: data[i].prizv, regnum: data[i].regnum})
-  //       this.i = i+1;
-  //     }
-  //     this.dataSource.data = viewData;
-  //   });
-  
+  function(){}
 
 }
 

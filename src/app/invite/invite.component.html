@@ -5,13 +5,12 @@
             <mat-card-title>ЗАПРОШЕННЯ</mat-card-title>
             <mat-card-subtitle>(назва виставки)</mat-card-subtitle>
         </mat-card-header>
-        <!-- <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt=""> -->
         <div mat-card-image class="example-header-image2"></div>
         <mat-card-content>
             <p>Шановний(а) <strong>{{prizv}}</strong>, Ви отримали Ваше персональне запрошення на виставку.</p>
             <p>Покажіть цей код на вході:</p>
             <p>
-                <ngx-barcode [bc-value]='regnum' [bc-display-value]="true" [bc-height]='70' [bc-font-size]='14' [bc-format]="CODE128"></ngx-barcode>
+                <ngx-barcode [bc-value]='regnum' [bc-display-value]=true [bc-height]=70 [bc-font-size]=14 [bc-format]='bcFormat'></ngx-barcode>
             </p>
             <p>Також це запрошення було відправлено на ваш e-mail: {{email}}.</p>
         </mat-card-content>

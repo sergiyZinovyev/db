@@ -13,7 +13,7 @@ export class InviteComponent implements OnInit, OnDestroy {
   
 
   //inviteData = this.user.getInviteData();
-
+  bcFormat = 'CODE128';
 
   email:string = '';
   prizv:string = '';
