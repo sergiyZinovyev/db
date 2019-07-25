@@ -56,7 +56,6 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     let post = this.server.post(this.loginForm.value, "create/req").subscribe(data =>{
       console.log("data: ", data);
       if(data){
-        //this.user.setUserData(data);
         this.router.navigate(['invite'])
         console.log("unsubscribe")
         return post.unsubscribe();
@@ -68,7 +67,6 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     let post = this.server.post(this.loginForm.value, "edit").subscribe(data =>{
       console.log("data: ", data);
       if(data){
-        //this.user.setUserData(data);
         this.router.navigate(['invite']);
         console.log("unsubscribe");
         return post.unsubscribe();
@@ -80,28 +78,15 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     if(this.loginForm.valid){
       if(this.edit){
         this.editUser();
-        //this.router.navigate(['invite'])
       }
       else{this.addUser()}
       console.log(this.loginForm.value);
-      //this.user.setInviteData(this.loginForm.value);
     }
   }
 
   invite(){
-    //this.user.setInviteData(this.loginForm.value);
     this.router.navigate(['invite'])
   }
-
-  // get(){
-  //   let get=this.server.get().subscribe(data =>{
-  //     console.log("data: ", data);
-  //     if(data){
-  //       console.log("unsubscribe")
-  //       return get.unsubscribe();
-  //     }
-  //   });
-  // }
 
   ngOnDestroy(){
     this.user.setUserEmail(this.loginForm.value);

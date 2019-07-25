@@ -50,3 +50,11 @@ exports.getEmail = function(dataVisitor, cb){
   })
 }
 
+//редагування запису
+exports.delete = function(table, id, cb){
+  let sql = `DELETE FROM ${table} WHERE regnum=${id}`;
+  db.get().query(sql, function(err, data) {
+    cb(err, data)
+  })
+}
+

@@ -16,7 +16,7 @@ const apiUrl = 'http://localhost:7000';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'db';
+  title = 'Baza 2.0';
   
 
   constructor(

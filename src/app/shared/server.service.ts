@@ -5,13 +5,13 @@ import { Observable, throwError  } from 'rxjs';
 
 const apiUrl = 'http://localhost:7001';
 
-export interface BDVisitors {
-  cellphone: string;
-  city: string;
-  email: string;
-  prizv: string;
-  regnum: number;
-}
+// export interface BDVisitors {
+//   cellphone: string;
+//   city: string;
+//   email: string;
+//   prizv: string;
+//   regnum: number;
+// }
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +19,7 @@ export interface BDVisitors {
 
 export class ServerService {
 
-  getData;
+  //getData;
 
   constructor(
     private http: HttpClient

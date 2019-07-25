@@ -18,14 +18,11 @@
             <div class="example-element-detail"
                 [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
                 <div class="example-element-description">
-                <span class="descr-element"><strong>Ім'я: </strong>{{element.prizv}};</span>
-                <span class="descr-element"><strong>Електронна пошта: </strong>{{element.email}};</span>
-                <span class="descr-element"><strong>Мобільний телефон: </strong>{{element.cellphone}};</span>
-                <span class="descr-element"><strong>Місто: </strong>{{element.city}};</span>
-                <br>
-                <button class='m-2 mt-3' mat-raised-button (click)='function()'>редагувати</button>
-                <button class='m-2 mt-3' mat-raised-button (click)='function()'>прийняти заявку</button>
-                <button class='m-2 mt-3' mat-raised-button (click)='function()'>видалити</button>
+                    <app-visitor [element]='element'></app-visitor>
+                    
+                    <button class='ml-2' mat-raised-button (click)='function()'>редагувати</button>
+                    <button class='ml-2' mat-raised-button (click)='function()'>прийняти заявку</button>
+                    <button class='ml-2' mat-raised-button (click)='delete(element.regnum)'>видалити</button>
                 </div>
             </div>
             </td>

@@ -61,6 +61,7 @@ import { VisitorsComponent } from './db/visitors/visitors.component';
 import { InviteComponent } from './invite/invite.component';
 
 import { NgxBarcodeModule } from 'ngx-barcode';
+import { VisitorComponent } from './db/visitors/visitor/visitor.component';
 
 
 
@@ -72,7 +73,8 @@ import { NgxBarcodeModule } from 'ngx-barcode';
     RegistrationComponent,
     RequestComponent,
     VisitorsComponent,
-    InviteComponent
+    InviteComponent,
+    VisitorComponent
   ],
   imports: [
     BrowserModule,

@@ -63,3 +63,13 @@ exports.getEmail = function(req, res) {
         res.send(doc);
     });   
 };
+
+exports.delete = function(req, res) {
+    Visitors.delete(req.body.tableName, req.body.regnum, function(err, doc){
+        if (err) {
+            console.log(err);
+            return res.sendStatus(500);
+        }
+        res.send(doc);
+    });   
+};

@@ -47,21 +47,6 @@ export class VisitorsComponent implements OnInit {
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
     this.getBd('visitors');
-    // this.server.get('visitors').subscribe(data =>{
-    //   console.log("data: ", data);
-    //   let viewData = [];
-    //   for(let i=0; i>=0; i++){
-    //     if(!data[i]){break};
-    //     viewData.push({
-    //       cellphone: data[i].cellphone, 
-    //       city: data[i].city, 
-    //       email: data[i].email, 
-    //       prizv: data[i].prizv, 
-    //       regnum: data[i].regnum})
-    //     this.i = i+1;
-    //   }
-    //   this.dataSource.data = viewData;
-    // });
   }
 
   getBd(nameTable){
@@ -97,6 +82,33 @@ export class VisitorsComponent implements OnInit {
   }
 
   function(){}
+
+  delete(id){
+    let table;
+    if(this.name == "База відвідувачів"){
+      table = 'visitors'
+    }
+    else{
+      table = 'zajavku'
+    }
+    let dataDel = {
+      tableName: table,
+      regnum: id 
+    }
+    let post = this.server.post(dataDel, "delete").subscribe(data =>{
+      console.log("data: ", data);
+      if(data){
+        console.log("unsubscribe");
+        if(this.name == "База відвідувачів"){
+          this.getBd('visitors');
+        }
+        else{
+          this.getBd('zajavku');
+        }
+        return post.unsubscribe();
+      }
+    });
+  }
 
 }
 
