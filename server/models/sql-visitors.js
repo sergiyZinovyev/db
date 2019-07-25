@@ -34,6 +34,14 @@ exports.create = function(dataVisitor, cb){
   })
 }
 
+//створення нового запису в таблиці visitors
+exports.createVis = function(dataVisitor, cb){
+  let sql = `INSERT INTO visitors (regnum, email, prizv, city, cellphone) VALUES (?,?,?,?,?)`;
+  db.get().query(sql, dataVisitor, function(err, data) {
+    cb(err, data)
+  })
+}
+
 //редагування запису
 exports.edit = function(dataVisitor, cb){
   let sql = `UPDATE visitors SET email=?, prizv=?, city=?, cellphone=? WHERE regnum=?`;

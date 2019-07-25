@@ -39,3 +39,6 @@
     <!-- <button mat-stroked-button class="btn-lg btn-block py-2">{{submitButtonText}}</button> -->
     
 </form>
+<button *ngIf='tableName == "База відвідувачів"'class='ml-2' mat-raised-button (click)='editUser()'>редагувати</button>
+<button *ngIf='tableName == "Заявки на внесення"' class='ml-2' mat-raised-button (click)='addUser()'>прийняти заявку</button>
+<!-- <button class='ml-2' mat-raised-button (click)='delete()'>видалити</button> -->

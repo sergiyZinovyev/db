@@ -15,6 +15,8 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
 export class VisitorComponent implements OnInit {
 
   @Input() element: any;
+  @Input() tableName: string;
+  @Output() getData = new EventEmitter<any>();
 
   
 
@@ -43,6 +45,46 @@ export class VisitorComponent implements OnInit {
     regnum: ['', []],
   })
 
+  editUser(){
+    let post = this.server.post(this.loginForm.value, "edit").subscribe(data =>{
+      console.log("data: ", data);
+      if(data){
+        let table;
+        if(this.tableName == "База відвідувачів"){
+          table = 'visitors'
+        }
+        else{
+          table = 'zajavku'
+        }
+        this.getData.emit(table);
+        console.log("unsubscribe");
+        return post.unsubscribe();
+      }
+    });
+  }
+
+  addUser() {
+    let post = this.server.post(this.loginForm.value, "createVis").subscribe(data =>{
+      console.log("data: ", data);
+      if(data){
+        let table;
+        if(this.tableName == "База відвідувачів"){
+          table = 'visitors'
+        }
+        else{
+          table = 'zajavku'
+        }
+        this.getData.emit(table);
+        console.log("unsubscribe")
+        return post.unsubscribe();
+      }
+    });
+  }
+
   submit(){}
+
+  function(){}
+
+  delete(){}
 
 }

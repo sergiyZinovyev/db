@@ -33,6 +33,23 @@ exports.create = function(req, res) {
     });
 };
 
+exports.createNewVis = function(req, res) {
+    var visitorData = [
+        req.body.regnum,
+        req.body.email,
+        req.body.prizv,
+        req.body.city,
+        req.body.cellphone
+    ];
+    Visitors.createVis(visitorData, function(err, doc){
+        if (err) {
+            console.log(err);
+            return res.sendStatus(500);
+        }
+        res.send(doc);
+    });     
+};
+
 exports.edit = function(req, res) {
     var visitorData = [
         req.body.email,
