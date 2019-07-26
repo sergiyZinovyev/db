@@ -68,6 +68,7 @@ export class VisitorComponent implements OnInit {
       console.log("data: ", data);
       if(data){
         let table;
+        this.delete();
         if(this.tableName == "База відвідувачів"){
           table = 'visitors'
         }
@@ -83,8 +84,38 @@ export class VisitorComponent implements OnInit {
 
   submit(){}
 
-  function(){}
+  getTableName(): string{
+    if(this.tableName == "База відвідувачів"){
+      return 'visitors'
+    }
+    else{
+      return 'zajavku'
+    }
+  }
 
-  delete(){}
+  updateData(){
+    this.getData.emit(this.getTableName());
+  }
+
+  delete(){
+    let table;
+    if(this.tableName == "База відвідувачів"){
+      table = 'visitors'
+    }
+    else{
+      table = 'zajavku'
+    }
+    let dataDel = {
+      tableName: table,
+      regnum: this.loginForm.value.regnum 
+    }
+    let post = this.server.post(dataDel, "delete").subscribe(data =>{
+      console.log("data: ", data);
+      if(data){
+        console.log("unsubscribe");
+        return post.unsubscribe();
+      }
+    });
+  }
 
 }

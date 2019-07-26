@@ -9,11 +9,18 @@ const mysql = require("mysql2");
 
 const connection = mysql.createPool({
     connectionLimit: 15,
+    // host: "remotemysql.com",
+    // user: "VNXPG3o4kL",
+    // database: "VNXPG3o4kL",
+    // password: "XGHAXoGCJk"
+
     host: "remotemysql.com",
-    user: "VNXPG3o4kL",
-    database: "VNXPG3o4kL",
-    password: "XGHAXoGCJk"
+    user: "bMDyIZAQkP",
+    database: "bMDyIZAQkP",
+    password: "OALl3svGQf"
   });
+
+
 
 // var state = {
 // 	db: null

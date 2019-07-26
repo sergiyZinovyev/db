@@ -33,7 +33,7 @@ tr.example-element-row:not(.example-expanded-row):active {
 .example-element-detail {
   overflow: hidden;
   display: flex;
-  background-color: rgb(165, 243, 243);
+  background-color: rgb(223, 244, 255);
   margin-left: -24px;
   margin-right: -24px;
 }
