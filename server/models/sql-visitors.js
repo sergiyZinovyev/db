@@ -12,7 +12,7 @@ exports.nextRegnum = function(result){
 
 //отримання всіх записів з обраної таблиці
 exports.all = function(id, cb){
-  let sql = `SELECT regnum, email, prizv, city, cellphone FROM ${id}`;
+  let sql = `SELECT * FROM ${id}`;
   db.get().query(sql, function(err, data) {
     cb(err, data)
   })
@@ -28,7 +28,7 @@ exports.regnVisAndReq = function(cb){
 
 //створення нового запису в таблиці zajavku
 exports.create = function(dataVisitor, cb){
-  let sql = `INSERT INTO zajavku (regnum, email, prizv, city, cellphone) VALUES (?,?,?,?,?)`;
+  let sql = `INSERT INTO zajavku (regnum, email, prizv, city, cellphone, potvid) VALUES (?,?,?,?,?,?)`;
   db.get().query(sql, dataVisitor, function(err, data) {
     cb(err, data)
   })
@@ -36,7 +36,7 @@ exports.create = function(dataVisitor, cb){
 
 //створення нового запису в таблиці visitors
 exports.createVis = function(dataVisitor, cb){
-  let sql = `INSERT INTO visitors (regnum, email, prizv, city, cellphone) VALUES (?,?,?,?,?)`;
+  let sql = `INSERT INTO visitors (regnum, email, prizv, city, cellphone, potvid) VALUES (?,?,?,?,?,?)`;
   db.get().query(sql, dataVisitor, function(err, data) {
     cb(err, data)
   })

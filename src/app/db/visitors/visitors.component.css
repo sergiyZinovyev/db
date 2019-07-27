@@ -1,18 +1,15 @@
-table {
-  width: 100%;
-}
+ td.mat-cell {
+   /* row border */
+   border-left: 1px solid rgb(212, 212, 212);
+   padding-left: 10px;
+ }
+ 
+ table {
+   /* row spacing / margin */
+   width: 100%;
+   /* border-spacing: 0 8px !important; */
+ } 
 
-/* .my-mat-cell {
-  height: 20px;
-  padding: 0px;
-  margin: 0px;
-} */
-
-/* td {
-  height: 10px !important;
-  padding: 0px;
-  margin: 0px;
-} */
 
 tr.example-detail-row {
   height: 0;
@@ -30,6 +27,7 @@ tr.example-element-row:not(.example-expanded-row):active {
   border-bottom-width: 0;
 }
 
+
 .example-element-detail {
   overflow: hidden;
   display: flex;
@@ -38,14 +36,7 @@ tr.example-element-row:not(.example-expanded-row):active {
   margin-right: -24px;
 }
 
-.example-element-diagram {
-  min-width: 80px;
-  border: 2px solid black;
-  padding: 8px;
-  font-weight: lighter;
-  margin: 8px 0;
-  height: 104px;
-}
+
 
 .example-element-symbol {
   font-weight: bold;

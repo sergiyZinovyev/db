@@ -32,10 +32,23 @@ export class VisitorsComponent implements OnInit {
   name: string = "База відвідувачів";
   nameBut: string = "Заявки на внесення";
 
-  displayedColumns: string[] = ['regnum', 'prizv', 'email', 'cellphone', 'city'];
+  displayedColumns: string[] = [
+    'regnum', 
+    'namepovne', 
+    'email', 
+    'cellphone', 
+    'city', 
+    'gender',
+    'sferadij',
+    'posada',
+    'm_robotu',
+    'type',
+    'datawnesenny',
+    //'datelastcor'
+  ];
   dataSource = new MatTableDataSource();
-  expandedElement: BDVisitors | null;;
-  
+  //expandedElement: BDVisitors | null;
+  expandedElement;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
@@ -60,7 +73,21 @@ export class VisitorsComponent implements OnInit {
           city: data[i].city, 
           email: data[i].email, 
           prizv: data[i].prizv, 
-          regnum: data[i].regnum
+          regnum: data[i].regnum,
+          potvid: data[i].potvid,
+          name: data[i].name,
+          namepovne: data[i].namepovne,
+          postaddreses: data[i].postaddreses,
+          pobatcovi: data[i].pobatcovi,
+          gender: data[i].gender,
+          m_robotu: data[i].m_robotu,
+          sferadij: data[i].sferadij,
+          posada: data[i].posada,
+          type: data[i].type,
+          kompeten: data[i].kompeten,
+          datawnesenny: data[i].datawnesenny,
+          datelastcor: data[i].datalastcor,
+          ins_user: data[i].ins_user
         })
         this.i = i+1;
       }

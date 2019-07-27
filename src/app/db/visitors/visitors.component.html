@@ -1,15 +1,18 @@
-<div class="mat-elevation-z8 container">
+<div class="mat-elevation-z8 container-fluid">
     <div class="d-flex justify-content-between">
         <span class="ml-5 mt-3"><strong>{{name}}</strong></span>
         <button class='m-2 mr-n1' mat-raised-button (click)='butClickBd()'>{{nameBut}}</button>
     </div>
 
     <table mat-table
-       [dataSource]="dataSource" multiTemplateDataRows
-       class="mat-elevation-z8">
-        <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns">
+        [dataSource]="dataSource" 
+        multiTemplateDataRows
+        class="mat-elevation-z8 border">
+        <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns" >
+            <!-- <ng-container sticky></ng-container> -->
             <th mat-header-cell *matHeaderCellDef> {{column}} </th>
             <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
+            <!-- <td mat-footer-cell *matFooterCellDef></td> -->
         </ng-container>
 
         <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
@@ -28,16 +31,17 @@
             </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
         <tr mat-row *matRowDef="let element; columns: displayedColumns;"
             class="example-element-row"
             [class.example-expanded-row]="expandedElement === element"
             (click)="expandedElement = expandedElement === element ? null : element">
         </tr>
         <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+        <!-- <tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></tr> -->
     </table>
     
-    <mat-paginator [pageSizeOptions]="[13, 30, 50, 100, i]" showFirstLastButtons></mat-paginator>
+    <mat-paginator [pageSizeOptions]="[15, 30, 50, 100, i]" showFirstLastButtons></mat-paginator>
 </div>
 
 

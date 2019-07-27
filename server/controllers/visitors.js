@@ -21,7 +21,8 @@ exports.create = function(req, res) {
             req.body.email,
             req.body.prizv,
             req.body.city,
-            req.body.cellphone
+            req.body.cellphone,
+            req.body.potvid
         ];
         Visitors.create(visitorData, function(err, doc){
             if (err) {
@@ -39,7 +40,8 @@ exports.createNewVis = function(req, res) {
         req.body.email,
         req.body.prizv,
         req.body.city,
-        req.body.cellphone
+        req.body.cellphone,
+        req.body.potvid
     ];
     Visitors.createVis(visitorData, function(err, doc){
         if (err) {

@@ -34,6 +34,7 @@ export class VisitorComponent implements OnInit {
       city: [this.element.city, [Validators.required]],
       cellphone: [this.element.cellphone, [Validators.required]],
       regnum: [this.element.regnum, []],
+      potvid: ['temp', []]
     })
   }
 
@@ -43,6 +44,8 @@ export class VisitorComponent implements OnInit {
     city: ['', [Validators.required]],
     cellphone: ['', [Validators.required]],
     regnum: ['', []],
+    potvid: ['temp', []]
+
   })
 
   editUser(){

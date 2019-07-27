@@ -36,6 +36,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
           city: [value[0].city, [Validators.required]],
           cellphone: [value[0].cellphone, [Validators.required]],
           regnum: [value[0].regnum, []],
+          potvid: ['temp', []]
         })
         this.edit = true;
         this.submitButtonText = this.editText;
@@ -50,6 +51,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     city: ['', [Validators.required]],
     cellphone: ['', [Validators.required]],
     regnum: ['', []],
+    potvid: ['temp', []]
   })
 
   addUser() {
