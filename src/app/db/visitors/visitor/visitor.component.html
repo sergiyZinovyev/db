@@ -3,38 +3,82 @@
     <!-- <mat-form-field class="form-group example-full-width">
         <input type="text" matInput placeholder="{{'Regnum'}}" formControlName="regnum">
     </mat-form-field> -->
+<div class="conteiner">
+    <div class="row">
+        <div class="col-4">
+            <h5 class="pl-3">Особисті данні</h5>
+            <div class="data-group">
+                <mat-form-field class="form-group example-full-width" appearance="outline">
+                    <mat-label>Електорнонна пошта</mat-label>
+                    <input type="email" matInput placeholder="{{'Email'}}" formControlName="email">
+                    <mat-error *ngIf="!loginForm.get('email').valid">
+                        {{'Please enter a valid email address'}}
+                    </mat-error>
+                </mat-form-field>
 
-    <mat-form-field class="form-group example-full-width" appearance="outline">
-        <mat-label>Електорнонна пошта</mat-label>
-        <input type="email" matInput placeholder="{{'Email'}}" formControlName="email">
-        <mat-error *ngIf="!loginForm.get('email').valid">
-            {{'Please enter a valid email address'}}
-        </mat-error>
-    </mat-form-field>
+                <mat-form-field class="form-group example-full-width" appearance="outline">
+                    <mat-label>Прізвище</mat-label>
+                    <input type="text" matInput placeholder="{{'Last name'}}" formControlName="prizv">
+                    <mat-error *ngIf="!loginForm.get('prizv').valid">
+                        {{'Please enter a last name'}}
+                    </mat-error>
+                </mat-form-field>
 
-    <mat-form-field class="form-group example-full-width" appearance="outline">
-        <mat-label>Прізвище</mat-label>
-        <input type="text" matInput placeholder="{{'Last name'}}" formControlName="prizv">
-        <mat-error *ngIf="!loginForm.get('prizv').valid">
-            {{'Please enter a last name'}}
-        </mat-error>
-    </mat-form-field>
+                <mat-form-field class="form-group example-full-width" appearance="outline">
+                    <mat-label>Мобільний телефон</mat-label>
+                    <input type="text" matInput placeholder="{{'Cellphone'}}" formControlName="cellphone">
+                    <mat-error *ngIf="!loginForm.get('cellphone').valid">
+                        {{'Please enter a cellphone'}}
+                    </mat-error>
+                </mat-form-field> 
+            </div>
+        </div>
 
-    <mat-form-field class="form-group example-full-width" appearance="outline">
-        <mat-label>Місто</mat-label>
-        <input type="text" matInput placeholder="{{'City'}}" formControlName="city">
-        <mat-error *ngIf="!loginForm.get('city').valid">
-            {{'Please enter a city'}}
-        </mat-error>
-    </mat-form-field>
+        <div class="col-4">
+            <h5 class="pl-3">Контактні дані</h5>
+            <div class="data-group">
+            <mat-form-field class="form-group example-full-width" appearance="outline">
+                <mat-label>Місто</mat-label>
+                <input type="text" matInput placeholder="{{'City'}}" formControlName="city">
+                <mat-error *ngIf="!loginForm.get('city').valid">
+                    {{'Please enter a city'}}
+                </mat-error>
+            </mat-form-field>
 
-    <mat-form-field class="form-group example-full-width" appearance="outline">
-        <mat-label>Мобільний телефон</mat-label>
-        <input type="text" matInput placeholder="{{'Cellphone'}}" formControlName="cellphone">
-        <mat-error *ngIf="!loginForm.get('cellphone').valid">
-            {{'Please enter a cellphone'}}
-        </mat-error>
-    </mat-form-field>
+            <mat-form-field class="form-group example-full-width" appearance="outline">
+                <mat-label>Поштова адреса</mat-label>
+                <input type="text" matInput placeholder="{{'postaddreses'}}" formControlName="postaddreses">
+            </mat-form-field>
+
+            <mat-form-field class="form-group example-full-width" appearance="outline">
+                <mat-label>Компетенція</mat-label>
+                <input type="text" matInput placeholder="{{'kompeten'}}" formControlName="kompeten">
+            </mat-form-field>
+            </div>
+        </div>
+
+        <div class="col-4">
+            <h5 class="pl-3">Інша інформація</h5>
+            <div class="data-group">
+            <mat-form-field class="form-group example-full-width" appearance="outline">
+                <mat-label>Місце роботи</mat-label>
+                <input type="text" matInput placeholder="{{'m_robotu'}}" formControlName="m_robotu">
+            </mat-form-field>
+
+            <mat-form-field class="form-group example-full-width" appearance="outline">
+                <mat-label>Сфера діяльності</mat-label>
+                <input type="text" matInput placeholder="{{'sferadij'}}" formControlName="sferadij">
+            </mat-form-field>
+
+            <mat-form-field class="form-group example-full-width" appearance="outline">
+                <mat-label>Посада</mat-label>
+                <input type="text" matInput placeholder="{{'posada'}}" formControlName="posada">
+            </mat-form-field>
+            </div>
+        </div>
+    </div>
+</div>
+    
     
     <!-- <button mat-stroked-button class="btn-lg btn-block py-2">{{submitButtonText}}</button> -->
     

@@ -64,7 +64,7 @@ export class VisitorsComponent implements OnInit {
 
   getBd(nameTable){
     this.server.get(nameTable).subscribe(data =>{
-      console.log("data: ", data);
+      //console.log("data: ", data);
       let viewData = [];
       for(let i=0; i>=0; i++){
         if(!data[i]){break};

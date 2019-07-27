@@ -27,17 +27,29 @@ export class VisitorComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log(this.element);
+    //console.log(this.element);
     this.loginForm = this.fb.group({
       email: [this.element.email, [Validators.email, Validators.required]],
       prizv: [this.element.prizv, [Validators.required]],
       city: [this.element.city, [Validators.required]],
       cellphone: [this.element.cellphone, [Validators.required]],
       regnum: [this.element.regnum, []],
-      potvid: ['temp', []]
+      potvid: ['temp', []],
+      name: [this.element.name, []],
+      postaddreses: [this.element.postaddreses, []],
+      pobatcovi: [this.element.pobatcovi, []],
+      gender: [this.element.gender, []],
+      m_robotu: [this.element.m_robotu, []],
+      sferadij: [this.element.sferadij, []],
+      posada: [this.element.posada, []],
+      type: [this.element.type, []],
+      kompeten: [this.element.kompeten, []],
+      datawnesenny: [this.element.datawnesenny, []],
+      datelastcor: [this.element.datelastcor, []],
+      ins_user: [this.element.ins_user, []]
     })
   }
-
+  
   loginForm = this.fb.group({
     email: ['', [Validators.email, Validators.required]],
     prizv: ['', [Validators.required]],
