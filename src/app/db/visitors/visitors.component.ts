@@ -43,12 +43,13 @@ export class VisitorsComponent implements OnInit {
     'posada',
     'm_robotu',
     'type',
-    'datawnesenny',
-    //'datelastcor'
+    'datawnesenny'
   ];
+  keyData = [];
   dataSource = new MatTableDataSource();
-  //expandedElement: BDVisitors | null;
   expandedElement;
+
+  isLoadingResults = true;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
@@ -63,8 +64,22 @@ export class VisitorsComponent implements OnInit {
   }
 
   getBd(nameTable){
+    this.isLoadingResults = true;
+    this.keyData = [];
     this.server.get(nameTable).subscribe(data =>{
-      //console.log("data: ", data);
+      console.log("data: ", data);
+      this.isLoadingResults = false;
+      for (var key in data[0]) {
+        this.keyData.push(key)
+      }
+      //console.log("this.keyData1: ", this.keyData);
+
+      for (let i=0; i<this.displayedColumns.length; i++){
+        this.keyData.splice(this.checkArrIdVal(this.keyData, this.displayedColumns[i]), 1)
+        //console.log("this.keyData2: ", this.keyData);
+      }
+
+      //console.log("this.keyData2: ", this.keyData);
       let viewData = [];
       for(let i=0; i>=0; i++){
         if(!data[i]){break};
@@ -78,7 +93,7 @@ export class VisitorsComponent implements OnInit {
           name: data[i].name,
           namepovne: data[i].namepovne,
           postaddreses: data[i].postaddreses,
-          pobatcovi: data[i].pobatcovi,
+          pobatkovi: data[i].pobatkovi,
           gender: data[i].gender,
           m_robotu: data[i].m_robotu,
           sferadij: data[i].sferadij,
@@ -86,13 +101,40 @@ export class VisitorsComponent implements OnInit {
           type: data[i].type,
           kompeten: data[i].kompeten,
           datawnesenny: data[i].datawnesenny,
-          datelastcor: data[i].datalastcor,
-          ins_user: data[i].ins_user
+          datelastcor: data[i].datelastcor,
+          ins_user: data[i].ins_user,
+          countryid: data[i].countryid,
+          postindeks: data[i].postindeks,
+          regionid: data[i].regionid,
+          address: data[i].address,
+          telephon: data[i].telephon,
+          rating: data[i].rating
         })
         this.i = i+1;
       }
       this.dataSource.data = viewData;
+      console.log("viewData: ", viewData);
     });
+  }
+
+  checkArrIdVal(array, val):number {
+    for (let i: number = 0; i < array.length; i++){
+      if (array[i] === val){
+        return i;
+      }
+    }
+  }
+
+  addColumn(item: string) {
+    this.displayedColumns.push(item);
+    this.keyData.splice(this.checkArrIdVal(this.keyData, item), 1)
+  }
+
+  removeColumn(item: string) {
+    console.log(this.displayedColumns);
+    this.displayedColumns.splice(this.checkArrIdVal(this.displayedColumns, item), 1)
+    this.keyData.push(item);
+    console.log(this.displayedColumns);
   }
 
   butClickBd(){

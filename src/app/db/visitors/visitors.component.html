@@ -1,13 +1,37 @@
+
 <div class="mat-elevation-z8 container-fluid">
+    <div class="example-loading-shade"
+        *ngIf="isLoadingResults">
+        <mat-spinner></mat-spinner>
+    </div>
     <div class="d-flex justify-content-between">
         <span class="ml-5 mt-3"><strong>{{name}}</strong></span>
-        <button class='m-2 mr-n1' mat-raised-button (click)='butClickBd()'>{{nameBut}}</button>
-    </div>
+        <div>
+            <button class='m-2 mr-n1' mat-raised-button [matMenuTriggerFor]="menu">Додати поле</button>
+                <mat-menu #menu="matMenu" xPosition="after" yPosition="below">
+                    <ng-container *ngFor='let item of keyData'>
+                        <button mat-menu-item (click)='addColumn(item)'>{{item}}</button>
+                    </ng-container>
+                </mat-menu>
+            <button class='m-2 mr-n1' mat-raised-button [matMenuTriggerFor]="menu2">Видалити поле</button>
+                <mat-menu #menu2="matMenu" xPosition="after" yPosition="below">
+                    <ng-container *ngFor='let item of displayedColumns'>
+                        <button mat-menu-item (click)='removeColumn(item)'>{{item}}</button>
+                    </ng-container>
+                </mat-menu>
 
+            <!-- <button class='m-2 mr-n1' mat-raised-button (click)='removeColumn("datelastcor")'>Видалити поле</button> -->
+
+            <button class='m-2 mr-n1' mat-raised-button (click)='butClickBd()'>{{nameBut}}</button>
+        </div>
+        
+    </div>
+ 
     <table mat-table
         [dataSource]="dataSource" 
         multiTemplateDataRows
         class="mat-elevation-z8 border">
+
         <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns" >
             <!-- <ng-container sticky></ng-container> -->
             <th mat-header-cell *matHeaderCellDef> {{column}} </th>

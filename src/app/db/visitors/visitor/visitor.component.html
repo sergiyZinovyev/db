@@ -83,6 +83,7 @@
     <!-- <button mat-stroked-button class="btn-lg btn-block py-2">{{submitButtonText}}</button> -->
     
 </form>
+<span class="pl-3 pr-5">Запис створено {{this.element.datawnesenny}}. Остання модифікація була зроблена {{this.element.datelastcor}}</span>
 <button *ngIf='tableName == "База відвідувачів"'class='ml-2' mat-raised-button (click)='editUser()'>редагувати</button>
 <button *ngIf='tableName == "Заявки на внесення"' class='ml-2' mat-raised-button (click)='addUser()'>прийняти заявку</button>
 <!-- <button class='ml-2' mat-raised-button (click)='delete()'>видалити</button> -->

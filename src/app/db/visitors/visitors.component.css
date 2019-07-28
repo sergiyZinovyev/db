@@ -15,7 +15,7 @@
  }
  
  tr.mat-header-row{
-  height: 40px !important;
+  height: 40px;
   /* padding: 10px !important; */
  }
 
@@ -70,4 +70,23 @@ tr.example-element-row:not(.example-expanded-row):active {
 
 .descr-element{
   padding-left: 10px;
+}
+
+.example-loading-shade {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  bottom: 0px;
+  right: 0;
+  background: rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pos{
+  position: relative;
 }
