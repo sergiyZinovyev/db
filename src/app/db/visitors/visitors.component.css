@@ -6,10 +6,11 @@
  }
 
  th.mat-header-cell{
-   text-align: center;
+   text-align: center !important;
    background-color: rgb(45, 128, 253);
    color: white;
    font-weight: bold;
+   padding-left: 10px;
    
   /* padding-left: 10px; */
  }

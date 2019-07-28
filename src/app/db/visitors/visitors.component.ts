@@ -1,6 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
+import {MatSort} from '@angular/material/sort';
 import { Router } from '@angular/router';
 import { ServerService } from '../../shared/server.service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
@@ -52,6 +53,7 @@ export class VisitorsComponent implements OnInit {
   isLoadingResults = true;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort: MatSort;
 
   constructor(
     private server: ServerService,
@@ -61,6 +63,7 @@ export class VisitorsComponent implements OnInit {
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
     this.getBd('visitors');
+    this.dataSource.sort = this.sort;
   }
 
   getBd(nameTable){
