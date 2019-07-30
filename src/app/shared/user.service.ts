@@ -10,7 +10,11 @@ import { Subject } from 'rxjs';
 export class UserService {
 
   userData = new Subject();
-  userEmail;
+  
+  userLogData = {
+    email: '',
+    cellphone: ''
+  };
   //inviteData;
 
   constructor(
@@ -20,8 +24,8 @@ export class UserService {
     this.userData.next(data);
   }
 
-  setUserEmail(email){
-    this.userEmail=email;
+  setUserLogData(data){
+    this.userLogData=data;
   }
 
   // setInviteData(data){
@@ -29,7 +33,7 @@ export class UserService {
   // }
 
   getUserEmail(){
-    return this.userEmail;
+    return this.userLogData;
   }
 
   // getInviteData(){

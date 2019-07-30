@@ -44,7 +44,7 @@ app.post("/createVis", urlencodedParser, visitorsController.createNewVis);
 //редагування запису
 app.post("/edit", urlencodedParser, visitorsController.edit)
 
-//отримання запису по електронній адресі з двох таблиць
+//отримання запису по електронній адресі або мобільному з двох таблиць
 app.post("/get", cors(), urlencodedParser, visitorsController.getEmail);
 
 //видалення запису з обраної таблиці

@@ -7,33 +7,85 @@
             </mat-form-field> -->
 
             <mat-form-field class="form-group example-full-width">
-                <input type="email" matInput placeholder="{{'Email'}}" formControlName="email">
-                <mat-error *ngIf="!loginForm.get('email').valid">
-                    {{'Please enter a valid email address'}}
-                </mat-error>
-            </mat-form-field>
-
-            <mat-form-field class="form-group example-full-width">
-                <input type="text" matInput placeholder="{{'Last name'}}" formControlName="prizv">
+                <input type="text" matInput placeholder="{{'Прізвище'}}" formControlName="prizv" required>
                 <mat-error *ngIf="!loginForm.get('prizv').valid">
                     {{'Please enter a last name'}}
                 </mat-error>
             </mat-form-field>
 
             <mat-form-field class="form-group example-full-width">
-                <input type="text" matInput placeholder="{{'City'}}" formControlName="city">
+                <input type="text" matInput placeholder="Ім'я" formControlName="name" required>
+            </mat-form-field>
+
+            <mat-form-field class="form-group example-full-width">
+                <input type="text" matInput placeholder="{{'По-батькові'}}" formControlName="pobatkovi">
+            </mat-form-field>
+
+            <!-- <mat-form-field class="form-group example-full-width">
+                <input type="text" matInput placeholder="{{'Країна'}}" formControlName="countryid" required>
+            </mat-form-field> -->
+
+            <mat-form-field class="form-group example-full-width">
+                <mat-select placeholder="{{'Країна'}}" formControlName="countryid" required>
+                    <mat-option value=1>Україна</mat-option>
+                    <mat-option value=2>Польща</mat-option>
+                    <mat-option value=3>Німеччина</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+
+            <!-- <mat-form-field class="form-group example-full-width">
+                <input type="text" matInput placeholder="{{'Область'}}" formControlName="regionid" required>
+            </mat-form-field> -->
+
+            <mat-form-field class="form-group example-full-width">
+                <mat-select placeholder="{{'Область'}}" formControlName="regionid" required>
+                    <ng-container *ngFor="let item of region">
+                    <mat-option value='{{item.regionid}}'>{{item.teretory}}</mat-option>
+                    </ng-container>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field class="form-group example-full-width">
+                <input type="text" matInput placeholder="{{'Місто'}}" formControlName="city" required>
                 <mat-error *ngIf="!loginForm.get('city').valid">
                     {{'Please enter a city'}}
                 </mat-error>
             </mat-form-field>
 
             <mat-form-field class="form-group example-full-width">
-                <input type="text" matInput placeholder="{{'Cellphone'}}" formControlName="cellphone">
+                <input type="email" matInput placeholder="{{'Електронна пошта'}}" formControlName="email" required>
+                <mat-error *ngIf="!loginForm.get('email').valid">
+                    {{'Please enter a valid email address'}}
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="form-group example-full-width">
+                <input type="text" matInput placeholder="{{'380ххххххххх'}}" formControlName="cellphone" required>
                 <mat-error *ngIf="!loginForm.get('cellphone').valid">
                     {{'Please enter a cellphone'}}
                 </mat-error>
             </mat-form-field>
             
+            <mat-form-field class="form-group example-full-width">
+                <input type="text" matInput placeholder="{{'Місце роботи'}}" formControlName="m_robotu">
+            </mat-form-field>
+
+            <mat-form-field class="form-group example-full-width">
+                <input type="text" matInput placeholder="{{'Посада'}}" formControlName="posada">
+            </mat-form-field>
+
+            <mat-form-field class="form-group example-full-width">
+                <input type="text" matInput placeholder="{{'Сфера діяльності'}}" formControlName="sferadij">
+            </mat-form-field>
+
+
+
+            <mat-form-field class="form-group example-full-width">
+                <input type="text" matInput placeholder="{{'Виставки'}}" formControlName="potvid">
+            </mat-form-field>
+
+
             <button mat-stroked-button class="btn-lg btn-block py-2">{{submitButtonText}}</button>
            
         </form>

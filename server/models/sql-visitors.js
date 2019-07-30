@@ -10,6 +10,17 @@ exports.nextRegnum = function(result){
   return result[0].regnum+1
 }
 
+//визначення current date
+exports.curentDate = function(){
+  var now = new Date();
+  var curr_date = ('0' + now.getDate()).slice(-2)
+  var curr_month = ('0' + (now.getMonth() + 1)).slice(-2);
+  var curr_year = now.getFullYear();
+  var formated_date = curr_year + "-" + curr_month + "-" + curr_date;
+
+  return formated_date;
+}
+
 //отримання всіх записів з обраної таблиці
 exports.all = function(id, cb){
   let sql = `SELECT * FROM ${id}`;
@@ -18,17 +29,18 @@ exports.all = function(id, cb){
   })
 }
 
-//отримання всіх id(regnum) з таблиць visitors та zajavku
+//отримання всіх id(regnum) з таблиць visitors та visitors_create
 exports.regnVisAndReq = function(cb){
-  let sql = `(SELECT regnum FROM visitors) UNION (SELECT regnum FROM zajavku)`;
+  let sql = `(SELECT regnum FROM visitors) UNION (SELECT regnum FROM visitors_create)`;
   db.get().query(sql, function(err, data) {
     cb(err, data)
   })
 }
 
-//створення нового запису в таблиці zajavku
+
+//створення нового запису в таблиці visitors_create
 exports.create = function(dataVisitor, cb){
-  let sql = `INSERT INTO zajavku (regnum, email, prizv, city, cellphone, potvid) VALUES (?,?,?,?,?,?)`;
+  let sql = `INSERT INTO visitors_create (regnum, email, prizv, city, cellphone, potvid, name, countryid, regionid, m_robotu, pobatkovi, posada, sferadij, datawnesenny, ins_user) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
   db.get().query(sql, dataVisitor, function(err, data) {
     cb(err, data)
   })
@@ -51,8 +63,8 @@ exports.edit = function(dataVisitor, cb){
 }
 
 //отримання запису по електронній адресі з двох таблиць
-exports.getEmail = function(dataVisitor, cb){
-  let sql = `(SELECT regnum, email, prizv, city, cellphone FROM visitors WHERE email=?) UNION (SELECT regnum, email, prizv, city, cellphone FROM zajavku WHERE email=?)`;
+exports.getEmail = function(dataVisitor, fild, cb){
+  let sql = `(SELECT * FROM visitors WHERE ${fild}=?) UNION (SELECT * FROM visitors_create WHERE ${fild}=?)`;
   db.get().query(sql, dataVisitor, function(err, data) {
     cb(err, data)
   })

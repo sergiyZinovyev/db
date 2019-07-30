@@ -1,9 +1,10 @@
 <div class="d-flex align-items-center justify-content-center mt-4">
     <div class="max-width">
-        <form class="example-form back2" [formGroup]="loginForm" (ngSubmit)="login(loginForm.value)">
+        <form class="example-form back2" [formGroup]="loginForm" (ngSubmit)="login()">
 
             <mat-form-field class="form-group example-full-width">
                 <input type="email" matInput placeholder="{{'Електронна пошта'}}" formControlName="email">
+                <mat-icon matSuffix>alternate_email</mat-icon>
                 <mat-hint>
                     {{'Введіть електронну адресу (якщо ви реєструвалися раніше - введіть електронну адресу яку ви вказували при реєстрації)'}}
                 </mat-hint>
@@ -11,9 +12,22 @@
                     {{'Будь ласка введіть Вашу дійсну електроннну адресу'}}
                 </mat-error>
             </mat-form-field>
+<br><br>
+            <mat-form-field class="form-group example-full-width">
+                <input type="tel" matInput placeholder="{{'380ххххххххх'}}" formControlName="cellphone" [errorStateMatcher]="matcher">
+                <mat-icon matSuffix>phone</mat-icon>
+                <mat-hint>
+                    {{'Введіть свій номер мобільного телефона (якщо ви реєструвалися раніше - введіть номер який ви вказували при реєстрації)'}}
+                </mat-hint>
+                <mat-error *ngIf="!loginForm.get('cellphone').valid">
+                    {{'Будь ласка введіть мобільний телефон у вказаному форматі'}}
+                </mat-error>
+            </mat-form-field>
             
-            <button mat-stroked-button class="btn-lg btn-block py-2 mt-5">{{'Отримати запрошення'}}</button>
-
+            <button mat-stroked-button class="btn-lg btn-block py-2 mt-5"><strong class="pr-2">{{'Отримати запрошення'}}</strong><mat-icon>local_activity</mat-icon></button>
+            <div *ngIf="warning" class="warning">
+                Заповніть хоча б одне поле
+            </div>
         </form>
         <br>
         <!-- <button mat-stroked-button (click)='get()' class="btn-lg btn-block py-2">{{'GET'}}</button> -->

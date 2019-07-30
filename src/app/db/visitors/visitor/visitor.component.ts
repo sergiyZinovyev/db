@@ -69,7 +69,7 @@ export class VisitorComponent implements OnInit {
           table = 'visitors'
         }
         else{
-          table = 'zajavku'
+          table = 'visitors_create'
         }
         this.getData.emit(table);
         console.log("unsubscribe");
@@ -88,7 +88,7 @@ export class VisitorComponent implements OnInit {
           table = 'visitors'
         }
         else{
-          table = 'zajavku'
+          table = 'visitors_create'
         }
         this.getData.emit(table);
         console.log("unsubscribe")
@@ -104,7 +104,7 @@ export class VisitorComponent implements OnInit {
       return 'visitors'
     }
     else{
-      return 'zajavku'
+      return 'visitors_create'
     }
   }
 
@@ -118,7 +118,7 @@ export class VisitorComponent implements OnInit {
       table = 'visitors'
     }
     else{
-      table = 'zajavku'
+      table = 'visitors_create'
     }
     let dataDel = {
       tableName: table,

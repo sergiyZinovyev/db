@@ -14,10 +14,14 @@ import { Router } from '@angular/router';
 export class RegistrationComponent implements OnInit, OnDestroy {
 
   submitButtonText: string = '';
-  createText: string = "Додати новий запис та отримати запрошення";
+  createText: string = "Зареєструватися та отримати запрошення";
   editText: string = "Редагувати дані та отримати запрошення";
   edit: boolean = false;
-  editData
+  editData;
+  region = [{
+    regionid: '',
+    teretory: ''
+  }]
 
   constructor(
     private fb: FormBuilder,
@@ -27,16 +31,24 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.getRegion('region');
     this.submitButtonText = this.createText;
     this.user.userData.subscribe({
       next: (value) => {
         this.loginForm = this.fb.group({
-          email: [value[0].email, [Validators.email, Validators.required]],
+          email: [value[0].email, [Validators.email]],
           prizv: [value[0].prizv, [Validators.required]],
           city: [value[0].city, [Validators.required]],
-          cellphone: [value[0].cellphone, [Validators.required]],
+          cellphone: [value[0].cellphone, [Validators.pattern('380[0-9]{9}')]],
           regnum: [value[0].regnum, []],
-          potvid: ['temp', []]
+          potvid: [value[0].potvid, []],
+          name: [value[0].name, [Validators.required]],
+          countryid: [String(value[0].countryid), [Validators.required]],
+          regionid: [String(value[0].regionid), [Validators.required]],
+          m_robotu: [value[0].m_robotu, []],
+          pobatkovi: [value[0].pobatkovi, []],
+          posada: [value[0].posada, []],
+          sferadij: [value[0].sferadij, []],
         })
         this.edit = true;
         this.submitButtonText = this.editText;
@@ -46,13 +58,34 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   }
 
   loginForm = this.fb.group({
-    email: [this.user.userEmail.email, [Validators.email, Validators.required]],
+    email: [this.user.userLogData.email, [Validators.email]],
     prizv: ['', [Validators.required]],
     city: ['', [Validators.required]],
-    cellphone: ['', [Validators.required]],
+    cellphone: [this.user.userLogData.cellphone, [Validators.pattern('380[0-9]{9}')]],
     regnum: ['', []],
-    potvid: ['temp', []]
+    potvid: ['', []],
+    name: ['', [Validators.required]],
+    countryid: ['1', [Validators.required]],
+    regionid: ['', [Validators.required]],
+    m_robotu: ['', []],
+    pobatkovi: ['', []],
+    posada: ['', []],
+    sferadij: ['', []],
   })
+
+  getRegion(nameTable){
+    this.region = [];
+    this.server.get(nameTable).subscribe(data =>{
+      for(let i=1; i<=25; i++){
+        this.region.push({
+          regionid: data[i].regionid,
+          teretory: data[i].teretory
+        })
+      }
+      console.log(this.region);
+    })
+  }
+  
 
   addUser() {
     let post = this.server.post(this.loginForm.value, "create/req").subscribe(data =>{
@@ -91,7 +124,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(){
-    this.user.setUserEmail(this.loginForm.value);
+    this.user.setUserLogData(this.loginForm.value);
     
   }
 

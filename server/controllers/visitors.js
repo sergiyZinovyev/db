@@ -11,18 +11,28 @@ exports.all = function(req, res) {
 };
 
 exports.create = function(req, res) {
+    //отримуємо всі regnum  з таблиць visitors та visitors_create
     Visitors.regnVisAndReq(function(err, doc){
         if (err) {
 			console.log(err);
 			return res.sendStatus(500);
         }
         var visitorData = [
-            Visitors.nextRegnum(doc),
+            Visitors.nextRegnum(doc), //визначаємо наступний після найбільшого regnum
             req.body.email,
             req.body.prizv,
             req.body.city,
             req.body.cellphone,
-            req.body.potvid
+            req.body.potvid,
+            req.body.name,
+            req.body.countryid,
+            req.body.regionid,
+            req.body.m_robotu,
+            req.body.pobatkovi,
+            req.body.posada,
+            req.body.sferadij,
+            Visitors.curentDate(),
+            99
         ];
         Visitors.create(visitorData, function(err, doc){
             if (err) {
@@ -70,16 +80,49 @@ exports.edit = function(req, res) {
 };
 
 exports.getEmail = function(req, res) {
-    var visitorData = [
-        req.body.email,
-        req.body.email
-    ];
-    Visitors.getEmail(visitorData, function(err, doc){
+    var visitorData;
+    var fild;
+    if(!req.body.email){
+        visitorData = [
+            req.body.cellphone,
+            req.body.cellphone
+        ];
+        fild = 'cellphone';
+    }
+    else{
+        visitorData = [
+            req.body.email,
+            req.body.email
+        ];
+        fild = 'email';
+    }
+    
+    Visitors.getEmail(visitorData, fild, function(err, doc){
         if (err) {
             console.log(err);
             return res.sendStatus(500);
         }
-        res.send(doc);
+        if(doc == ''){
+            if(!req.body.cellphone){return res.send(doc);}
+            visitorData = [
+                req.body.cellphone,
+                req.body.cellphone
+            ];
+            fild = 'cellphone';
+            Visitors.getEmail(visitorData, fild, function(err, doc){
+                if (err) {
+                    console.log(err);
+                    return res.sendStatus(500);
+                }
+                console.log('doc2: ', doc);
+                return res.send(doc);
+            });
+        }
+        else{
+            console.log('doc: ', doc)
+            res.send(doc);
+        }
+        
     });   
 };
 

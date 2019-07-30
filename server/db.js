@@ -8,7 +8,7 @@ const mysql = require("mysql2");
 // });
 
 const connection = mysql.createPool({
-    connectionLimit: 15,
+    connectionLimit: 100,
     // host: "remotemysql.com",
     // user: "VNXPG3o4kL",
     // database: "VNXPG3o4kL",

@@ -142,7 +142,7 @@ export class VisitorsComponent implements OnInit {
 
   butClickBd(){
     if(this.name == "База відвідувачів"){
-      this.getBd('zajavku');
+      this.getBd('visitors_create');
       this.name = 'Заявки на внесення';
       this.nameBut = 'База відвідувачів';
     }
@@ -161,7 +161,7 @@ export class VisitorsComponent implements OnInit {
       table = 'visitors'
     }
     else{
-      table = 'zajavku'
+      table = 'visitors_create'
     }
     let dataDel = {
       tableName: table,
@@ -175,7 +175,7 @@ export class VisitorsComponent implements OnInit {
           this.getBd('visitors');
         }
         else{
-          this.getBd('zajavku');
+          this.getBd('visitors_create');
         }
         return post.unsubscribe();
       }
