@@ -2,11 +2,13 @@
     width: 100%;
   }
 .max-width{
-  border: 2px solid rgb(99, 99, 99);
+  /* border: 2px solid rgb(99, 99, 99); */
   border-radius: 10px;
   padding: 20px;
   margin: 10px;
   max-width: 450px;
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+  
 }
 .warning{
   margin-top: 10px;
