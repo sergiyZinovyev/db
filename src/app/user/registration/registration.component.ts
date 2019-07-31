@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy} from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators, FormControl } from '@angular/forms';
 import { UserService } from '../../shared/user.service';
 import { ServerService } from '../../shared/server.service';
 import { Router } from '@angular/router';
@@ -13,6 +13,8 @@ import { Router } from '@angular/router';
 })
 export class RegistrationComponent implements OnInit, OnDestroy {
 
+  myExhib: string = 'ТурЕКСПО';
+
   submitButtonText: string = '';
   createText: string = "Зареєструватися та отримати запрошення";
   editText: string = "Редагувати дані та отримати запрошення";
@@ -21,7 +23,13 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   region = [{
     regionid: '',
     teretory: ''
-  }]
+  }];
+  exhib = [{
+    id: '',
+    name: '',
+    kod: ''
+  }];
+  checked = false;
 
   constructor(
     private fb: FormBuilder,
@@ -32,6 +40,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getRegion('region');
+    this.getExhib('exhibitions_dict')
     this.submitButtonText = this.createText;
     this.user.userData.subscribe({
       next: (value) => {
@@ -73,6 +82,8 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     sferadij: ['', []],
   })
 
+  exhibForm = this.fb.group({})
+
   getRegion(nameTable){
     this.region = [];
     this.server.get(nameTable).subscribe(data =>{
@@ -86,8 +97,28 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     })
   }
   
+  getExhib(nameTable){
+    this.exhib = [];
+    this.server.get(nameTable).subscribe(data =>{
+      let value: boolean;
+      for(let i=0; i>=0; i++){
+        value = false;
+        if(!data[i]){break};
+        this.exhib.push({
+          id: data[i].id,
+          name: data[i].name,
+          kod: data[i].kod
+        })
+        if(this.getArrFromPotvid().find(currentValue => currentValue == data[i].name) || data[i].name == this.myExhib){value = true}
+        this.exhibForm.addControl(data[i].name, new FormControl(value, Validators.required))
+      }
+      console.log(this.exhib);
+    })
+  }
+
 
   addUser() {
+    this.loginForm.patchValue({potvid: this.getStringExhibForm()})
     let post = this.server.post(this.loginForm.value, "create/req").subscribe(data =>{
       console.log("data: ", data);
       if(data){
@@ -99,6 +130,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   }
 
   editUser(){
+
     let post = this.server.post(this.loginForm.value, "edit").subscribe(data =>{
       console.log("data: ", data);
       if(data){
@@ -121,6 +153,28 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
   invite(){
     this.router.navigate(['invite'])
+  }
+
+
+  getStringExhibForm(){
+    console.log(this.exhibForm.value)
+    let exhibStr: string = '';
+    for(var key in this.exhibForm.value){
+      if(this.exhibForm.value[key]==true){
+        exhibStr=exhibStr+key+', ';
+      }
+      else{
+        exhibStr=exhibStr+', ';
+      }
+    }
+    console.log(exhibStr);
+    return exhibStr
+  }
+
+  getArrFromPotvid(){
+    console.log('potvad: ', this.loginForm.get('potvid').value);
+    console.log('arr.potvid: ', this.loginForm.get('potvid').value.split(', '));
+    return this.loginForm.get('potvid').value.split(', ')
   }
 
   ngOnDestroy(){

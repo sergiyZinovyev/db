@@ -51,7 +51,7 @@
                         <mat-form-field class="form-group example-full-width">
                             <mat-select placeholder="{{'Область'}}" formControlName="regionid" required>
                                 <ng-container *ngFor="let item of region">
-                                <mat-option value='{{item.regionid}}'>{{item.teretory}}</mat-option>
+                                    <mat-option value='{{item.regionid}}'>{{item.teretory}}</mat-option>
                                 </ng-container>
                             </mat-select>
                         </mat-form-field>
@@ -80,7 +80,7 @@
 
                     <div class="col-6">
                         <mat-form-field class="form-group example-full-width">
-                            <input type="text" matInput placeholder="{{'380ххххххххх'}}" formControlName="cellphone" required>
+                            <input type="text" matInput placeholder="{{'моб.тел. 380ххххххххх'}}" formControlName="cellphone" required>
                             <mat-icon matSuffix>phone</mat-icon>
                             <mat-error *ngIf="!loginForm.get('cellphone').valid">
                                 {{'Please enter a cellphone'}}
@@ -119,15 +119,22 @@
             </div>
 
             <div class="reg-form">
-                <mat-form-field class="form-group example-full-width">
-                    <input type="text" matInput placeholder="{{'Виставки'}}" formControlName="potvid">
-                </mat-form-field>
+                <form [formGroup]="exhibForm">
+                    <ng-container *ngFor="let item of exhib">
+                            <ng-container *ngIf='item.kod==1'>
+                                <mat-checkbox class='ml-1' formControlName={{item.name}}>
+                                    {{item.name}}
+                                </mat-checkbox>
+                            </ng-container>
+                    </ng-container>
+                </form>
             </div>
 
             <button mat-stroked-button color="accent" class="btn-lg btn-block py-2 my-btn">{{submitButtonText}}</button>
-            <div *ngIf = 'edit'>
+            <ng-container *ngIf = 'edit'>
                 <button mat-stroked-button color="accent" class="btn-lg btn-block py-2 my-btn" (click)='invite()'>{{'Отримати запрошення'}}</button>
-            </div>
+            </ng-container>
         </form>
     </div>  
 </div>
+<!-- <button mat-stroked-button color="accent" class="btn-lg btn-block py-2 my-btn" (click)='getArrFromPotvid()'>{{'Отримати форму'}}</button> -->
