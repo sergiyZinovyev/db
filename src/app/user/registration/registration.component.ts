@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy} from '@angular/core';
-import { FormBuilder, Validators, FormControl } from '@angular/forms';
+import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms';
 import { UserService } from '../../shared/user.service';
 import { ServerService } from '../../shared/server.service';
 import { Router } from '@angular/router';
@@ -39,11 +39,13 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    
     this.getRegion('region');
-    this.getExhib('exhibitions_dict')
     this.submitButtonText = this.createText;
     this.user.userData.subscribe({
       next: (value) => {
+        console.log(value);
+        this.getExhib('exhibitions_dict');
         this.loginForm = this.fb.group({
           email: [value[0].email, [Validators.email]],
           prizv: [value[0].prizv, [Validators.required]],
@@ -64,6 +66,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         this.editData = value[0];
       }
     })
+    this.getExhib('exhibitions_dict');
   }
 
   loginForm = this.fb.group({
@@ -82,7 +85,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     sferadij: ['', []],
   })
 
-  exhibForm = this.fb.group({})
+  exhibForm = new FormGroup({});
 
   getRegion(nameTable){
     this.region = [];
@@ -98,8 +101,9 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   }
   
   getExhib(nameTable){
-    this.exhib = [];
+    this.exhibForm = new FormGroup({});
     this.server.get(nameTable).subscribe(data =>{
+      this.exhib = new Array;
       let value: boolean;
       for(let i=0; i>=0; i++){
         value = false;

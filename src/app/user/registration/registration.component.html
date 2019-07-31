@@ -118,21 +118,32 @@
                 </div>
             </div>
 
-            <div class="reg-form">
-                <form [formGroup]="exhibForm">
-                    <ng-container *ngFor="let item of exhib">
-                            <ng-container *ngIf='item.kod==1'>
-                                <mat-checkbox class='ml-1' formControlName={{item.name}}>
-                                    {{item.name}}
-                                </mat-checkbox>
+            <div class="reg-form2">
+                <mat-expansion-panel class="reg-form3">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title class="discr2">Оберіть виставки, яки Вас ще можуть зацікавити</mat-panel-title>
+                        <!-- <mat-panel-description>Type your name and age</mat-panel-description> -->
+                    </mat-expansion-panel-header>
+                    <form [formGroup]="exhibForm">
+                        <div class="row">
+                            <ng-container *ngFor="let item of exhib">
+                                <ng-container *ngIf='item.kod==1'>
+                                    <div class="col-12 col-sm-6">
+                                        <mat-checkbox class='ml-1' formControlName={{item.name}}>
+                                            {{item.name}}
+                                        </mat-checkbox>
+                                    </div>
+                                </ng-container>    
                             </ng-container>
-                    </ng-container>
-                </form>
+                        </div>
+                    </form>
+                </mat-expansion-panel>
+                
             </div>
 
-            <button mat-stroked-button color="accent" class="btn-lg btn-block py-2 my-btn">{{submitButtonText}}</button>
+            <button mat-raised-button color="accent" class="btn-lg btn-block py-2 my-btn">{{submitButtonText}}</button>
             <ng-container *ngIf = 'edit'>
-                <button mat-stroked-button color="accent" class="btn-lg btn-block py-2 my-btn" (click)='invite()'>{{'Отримати запрошення'}}</button>
+                <button mat-raised-button color="accent" class="btn-lg btn-block py-2 my-btn" (click)='invite()'>{{'Отримати запрошення'}}</button>
             </ng-container>
         </form>
     </div>  
