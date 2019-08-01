@@ -12,8 +12,8 @@ export class UserService {
   userData = new Subject();
   
   userLogData = {
-    email: '',
-    cellphone: ''
+    email: 'не емейл',
+    cellphone: 'не телефон'
   };
   //inviteData;
 

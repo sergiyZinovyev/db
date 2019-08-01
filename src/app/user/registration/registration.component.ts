@@ -30,6 +30,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     kod: ''
   }];
   checked = false;
+  verification = false;
 
   constructor(
     private fb: FormBuilder,
@@ -42,11 +43,12 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     
     this.getRegion('region');
     this.submitButtonText = this.createText;
-    this.user.userData.subscribe({
+    let get = this.user.userData.subscribe({
       next: (value) => {
         console.log(value);
         this.getExhib('exhibitions_dict');
         this.loginForm = this.fb.group({
+          condition: ['', []],
           email: [value[0].email, [Validators.email]],
           prizv: [value[0].prizv, [Validators.required]],
           city: [value[0].city, [Validators.required]],
@@ -64,12 +66,14 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         this.edit = true;
         this.submitButtonText = this.editText;
         this.editData = value[0];
+        return get.unsubscribe();
       }
     })
     this.getExhib('exhibitions_dict');
   }
 
   loginForm = this.fb.group({
+    condition: ['', []],
     email: [this.user.userLogData.email, [Validators.email]],
     prizv: ['', [Validators.required]],
     city: ['', [Validators.required]],
@@ -134,7 +138,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   }
 
   editUser(){
-
+    this.loginForm.patchValue({potvid: this.getStringExhibForm()})
     let post = this.server.post(this.loginForm.value, "edit").subscribe(data =>{
       console.log("data: ", data);
       if(data){
@@ -145,14 +149,74 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     });
   }
 
-  submit(){
-    if(this.loginForm.valid){
-      if(this.edit){
-        this.editUser();
-      }
-      else{this.addUser()}
-      console.log(this.loginForm.value);
+  verificationExistDataUser(verify) {
+    this.verification = false;
+    if(this.loginForm.get(verify).valid){
+      this.loginForm.patchValue({condition: verify})
+      let get=this.server.post(this.loginForm.value, "get_spec_cond").subscribe(data =>{
+        console.log("data: ", data);
+        if(data[0]){
+          console.log("data[0]: ", data[0]);
+          console.log("unsubscribe")
+          get.unsubscribe();
+          this.verification = true;
+          //return true;
+        }
+        if(data){
+          console.log("unsubscribe")
+          return get.unsubscribe();
+        }
+      });
+      //return console.log('verificationExistDataUser('+verify+'): ',this.verification);
     }
+    else{console.log('invalid: ', verify)}
+  }
+	
+
+  getVerification(){
+    console.log('this.verification: ',this.verification);
+    return this.verification
+  }
+
+  submit(){
+    if(this.loginForm.get('prizv').valid &&
+       this.loginForm.get('city').valid &&
+       this.loginForm.get('name').valid &&
+       this.loginForm.get('countryid').valid &&
+       this.loginForm.get('regionid').valid &&
+       (this.loginForm.get('email').valid ||
+       this.loginForm.get('cellphone').valid)){
+        if(this.edit){
+          this.editUser();
+        }
+        else{this.addUser()}
+        console.log(this.loginForm.value);
+
+
+
+
+      // this.verificationExistDataUser('email');
+      // this.getVerification();
+      // //console.log("this.verificationExistDataUser('email'): ",this.verificationExistDataUser('email'));
+      // if(this.getVerification()){
+      //   return console.log('такий мейл вже існує')
+      // }
+      // else{
+      //   this.verificationExistDataUser('cellphone');
+      //   this.getVerification();
+      //   if(this.getVerification()){
+      //     return console.log('такий телефон вже існує')
+      //   }
+      //   else{
+      //     if(this.edit){
+      //       this.editUser();
+      //     }
+      //     else{this.addUser()}
+      //     console.log(this.loginForm.value);
+      //   }
+      // }
+    }
+    else{console.log('error!')}
   }
 
   invite(){
@@ -176,14 +240,14 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   }
 
   getArrFromPotvid(){
-    console.log('potvad: ', this.loginForm.get('potvid').value);
-    console.log('arr.potvid: ', this.loginForm.get('potvid').value.split(', '));
+    //console.log('potvad: ', this.loginForm.get('potvid').value);
+    //console.log('arr.potvid: ', this.loginForm.get('potvid').value.split(', '));
     return this.loginForm.get('potvid').value.split(', ')
   }
 
   ngOnDestroy(){
     this.user.setUserLogData(this.loginForm.value);
-    
+    this.user.userData.unsubscribe;
   }
 
 }

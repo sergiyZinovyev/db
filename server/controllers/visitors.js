@@ -79,6 +79,23 @@ exports.edit = function(req, res) {
     });   
 };
 
+exports.getSpecCond = function(req, res) {
+    var fild = req.body.condition;
+    var visitorData = [
+        req.body[fild],
+        req.body[fild]
+    ];
+    Visitors.getEmail(visitorData, fild, function(err, doc){
+        if (err) {
+            console.log(err);
+            return res.sendStatus(500);
+        }
+        console.log('doc: ', doc);
+        return res.send(doc);
+    });
+       
+};
+
 exports.getEmail = function(req, res) {
     var visitorData;
     var fild;

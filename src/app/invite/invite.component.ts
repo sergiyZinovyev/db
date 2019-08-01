@@ -27,7 +27,7 @@ export class InviteComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    console.log('this.user.getUserEmail(): ',this.user.userLogData);
+    console.log('this.user.userLogData: ',this.user.userLogData);
     let get=this.server.post(this.user.userLogData, "get").subscribe(data =>{
       console.log("data: ", data);
       if(data[0]){

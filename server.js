@@ -47,6 +47,9 @@ app.post("/edit", urlencodedParser, visitorsController.edit)
 //отримання запису по електронній адресі або мобільному з двох таблиць
 app.post("/get", cors(), urlencodedParser, visitorsController.getEmail);
 
+//отримання запису по вказаній умові
+app.post("/get_spec_cond", cors(), urlencodedParser, visitorsController.getSpecCond);
+
 //видалення запису з обраної таблиці
 app.post("/delete", urlencodedParser, visitorsController.delete)
 

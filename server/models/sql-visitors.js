@@ -62,7 +62,7 @@ exports.edit = function(dataVisitor, cb){
   })
 }
 
-//отримання запису по електронній адресі з двох таблиць
+//отримання запису по вказаній умові з двох таблиць
 exports.getEmail = function(dataVisitor, fild, cb){
   let sql = `(SELECT * FROM visitors WHERE ${fild}=?) UNION (SELECT * FROM visitors_create WHERE ${fild}=?)`;
   db.get().query(sql, dataVisitor, function(err, data) {
