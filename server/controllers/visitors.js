@@ -34,13 +34,39 @@ exports.create = function(req, res) {
             Visitors.curentDate(),
             99
         ];
-        Visitors.create(visitorData, function(err, doc){
-            if (err) {
-                console.log(err);
+
+        //перевірка на email
+        var fild = 'email';
+        var visitorData2 = [
+            req.body[fild],
+            req.body[fild]
+        ];
+        Visitors.getEmail(visitorData2, fild, function(err2, doc2){
+            if (err2) {
+                console.log(err2);
                 return res.sendStatus(500);
             }
-            res.send(doc);
-        });   
+            console.log('getEmail: ', doc2);
+            if (doc2){
+                console.log('doc2.email: ', doc2.email);
+                if (doc2.email == undefined){
+                     //створюємо новий запис в табл. visitors_create
+                    Visitors.create(visitorData, function(err3, doc3){
+                        if (err3) {
+                            console.log(err3);
+                            return res.sendStatus(500);
+                        }
+                        res.send(doc3);
+                    });     
+                }
+                //else{return res.send('emailExist')}
+            }
+            return res.send({"emailresponse": 'emailExist'});
+        });
+
+         
+        
+        
     });
 };
 

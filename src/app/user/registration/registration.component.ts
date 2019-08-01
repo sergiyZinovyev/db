@@ -128,9 +128,12 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   addUser() {
     this.loginForm.patchValue({potvid: this.getStringExhibForm()})
     let post = this.server.post(this.loginForm.value, "create/req").subscribe(data =>{
-      console.log("data: ", data);
+      console.log("dataServer: ", data);
       if(data){
-        this.router.navigate(['invite'])
+        if(data == {emailresponse: 'emailExist'}){
+          console.log('такий мейл вже існує')
+        }
+        else{this.router.navigate(['invite'])}
         console.log("unsubscribe")
         return post.unsubscribe();
       }
@@ -190,7 +193,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
           this.editUser();
         }
         else{this.addUser()}
-        console.log(this.loginForm.value);
+        //console.log(this.loginForm.value);
 
 
 
