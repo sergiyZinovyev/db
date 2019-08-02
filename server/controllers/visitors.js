@@ -46,27 +46,46 @@ exports.create = function(req, res) {
                 console.log(err2);
                 return res.sendStatus(500);
             }
-            console.log('getEmail: ', doc2);
+            console.log('check result on email: ', doc2);
             if (doc2){
-                console.log('doc2.email: ', doc2.email);
-                if (doc2.email == undefined){
-                     //створюємо новий запис в табл. visitors_create
-                    Visitors.create(visitorData, function(err3, doc3){
-                        if (err3) {
-                            console.log(err3);
+                if (doc2[0] == undefined || doc2[0].email == ''){
+                    //перевірка на cellphone
+                    var fild2 = 'cellphone';
+                    var visitorData3 = [
+                        req.body[fild2],
+                        req.body[fild2]
+                    ];
+                    Visitors.getEmail(visitorData3, fild2, function(err4, doc4){
+                        if (err4) {
+                            console.log(err4);
                             return res.sendStatus(500);
                         }
-                        res.send(doc3);
-                    });     
+                        console.log('check result on cellphone: ', doc4);
+                        if (doc4){
+                            if (doc4[0] == undefined || doc4[0].cellphone == ''){
+                                 //створюємо новий запис в табл. visitors_create
+                                console.log('start creating'); 
+                                Visitors.create(visitorData, function(err3, doc3){
+                                    if (err3) {
+                                        console.log(err3);
+                                        return res.sendStatus(500);
+                                    }
+                                    res.send(doc3);
+                                });
+                            }
+                            else{
+                                console.log('phone found');
+                                return res.send(doc4)
+                            }
+                        }
+                    });
                 }
-                //else{return res.send('emailExist')}
+                else{
+                    console.log('email found');
+                    return res.send(doc2)
+                }
             }
-            return res.send({"emailresponse": 'emailExist'});
         });
-
-         
-        
-        
     });
 };
 

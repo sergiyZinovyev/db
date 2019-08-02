@@ -31,6 +31,9 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   }];
   checked = false;
   verification = false;
+  worningCheck: string;
+
+  isLoadingResults = false;
 
   constructor(
     private fb: FormBuilder,
@@ -126,15 +129,22 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
 
   addUser() {
+    this.isLoadingResults = true;
     this.loginForm.patchValue({potvid: this.getStringExhibForm()})
     let post = this.server.post(this.loginForm.value, "create/req").subscribe(data =>{
+      console.log('this.loginForm.value: ',this.loginForm.value);
       console.log("dataServer: ", data);
       if(data){
-        if(data == {emailresponse: 'emailExist'}){
-          console.log('такий мейл вже існує')
+        this.isLoadingResults = false;
+        if(data[0]){
+          console.log('такий мейл вже існує');
+          this.worningCheck = 'Такий емейл або мобільний телефон вже використовується! Внесіть будьласка інший';
         }
-        else{this.router.navigate(['invite'])}
-        console.log("unsubscribe")
+        else{
+          this.worningCheck = '';
+          this.router.navigate(['invite']);
+        }
+        console.log("unsubscribe");
         return post.unsubscribe();
       }
     });
@@ -152,74 +162,59 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     });
   }
 
-  verificationExistDataUser(verify) {
-    this.verification = false;
-    if(this.loginForm.get(verify).valid){
-      this.loginForm.patchValue({condition: verify})
-      let get=this.server.post(this.loginForm.value, "get_spec_cond").subscribe(data =>{
-        console.log("data: ", data);
-        if(data[0]){
-          console.log("data[0]: ", data[0]);
-          console.log("unsubscribe")
-          get.unsubscribe();
-          this.verification = true;
-          //return true;
-        }
-        if(data){
-          console.log("unsubscribe")
-          return get.unsubscribe();
-        }
-      });
-      //return console.log('verificationExistDataUser('+verify+'): ',this.verification);
-    }
-    else{console.log('invalid: ', verify)}
-  }
+  // verificationExistDataUser(verify) {
+  //   this.verification = false;
+  //   if(this.loginForm.get(verify).valid){
+  //     this.loginForm.patchValue({condition: verify})
+  //     let get=this.server.post(this.loginForm.value, "get_spec_cond").subscribe(data =>{
+  //       console.log("data: ", data);
+  //       if(data[0]){
+  //         console.log("data[0]: ", data[0]);
+  //         console.log("unsubscribe")
+  //         get.unsubscribe();
+  //         this.verification = true;
+  //         //return true;
+  //       }
+  //       if(data){
+  //         console.log("unsubscribe")
+  //         return get.unsubscribe();
+  //       }
+  //     });
+  //     //return console.log('verificationExistDataUser('+verify+'): ',this.verification);
+  //   }
+  //   else{console.log('invalid: ', verify)}
+  // }
 	
 
-  getVerification(){
-    console.log('this.verification: ',this.verification);
-    return this.verification
-  }
+  // getVerification(){
+  //   console.log('this.verification: ',this.verification);
+  //   return this.verification
+  // }
 
   submit(){
+    this.worningCheck = '';
     if(this.loginForm.get('prizv').valid &&
        this.loginForm.get('city').valid &&
        this.loginForm.get('name').valid &&
        this.loginForm.get('countryid').valid &&
-       this.loginForm.get('regionid').valid &&
-       (this.loginForm.get('email').valid ||
-       this.loginForm.get('cellphone').valid)){
-        if(this.edit){
-          this.editUser();
-        }
-        else{this.addUser()}
-        //console.log(this.loginForm.value);
-
-
-
-
-      // this.verificationExistDataUser('email');
-      // this.getVerification();
-      // //console.log("this.verificationExistDataUser('email'): ",this.verificationExistDataUser('email'));
-      // if(this.getVerification()){
-      //   return console.log('такий мейл вже існує')
-      // }
-      // else{
-      //   this.verificationExistDataUser('cellphone');
-      //   this.getVerification();
-      //   if(this.getVerification()){
-      //     return console.log('такий телефон вже існує')
-      //   }
-      //   else{
-      //     if(this.edit){
-      //       this.editUser();
-      //     }
-      //     else{this.addUser()}
-      //     console.log(this.loginForm.value);
-      //   }
-      // }
+       this.loginForm.get('regionid').valid){
+        if(this.loginForm.get('email').valid || this.loginForm.get('cellphone').valid){
+          if((this.loginForm.get('email').invalid && this.loginForm.get('email').value != '') || (this.loginForm.get('cellphone').invalid && this.loginForm.get('cellphone').value != '')){
+            return console.log('invalid!')
+          }
+          else{
+            if(this.edit){
+              this.editUser();
+            }
+            else{this.addUser()}
+          }
+        } 
+        else{
+          console.log('заповніть хоча б одне поле')
+          this.worningCheck = 'Для отримання запрошення потрібно вказати або мобільний телефон або електронну пошту';
+        }   
     }
-    else{console.log('error!')}
+    else{console.log('error!')} 
   }
 
   invite(){

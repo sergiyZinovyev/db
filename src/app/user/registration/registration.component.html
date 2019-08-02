@@ -1,6 +1,10 @@
 <div class="d-flex align-items-center justify-content-center">
     <div class="max-width container-fluid">
+        
         <form class="example-form back2" [formGroup]="loginForm" (ngSubmit)="submit()">
+            <div class="example-loading-shade" *ngIf="isLoadingResults">
+                <mat-spinner></mat-spinner>
+            </div>
 
             <div class="reg-form">
                 <div class="discr d-flex justify-content-between">
@@ -12,7 +16,7 @@
                         <mat-form-field class="form-group example-full-width">
                             <input type="text" matInput placeholder="{{'Прізвище'}}" formControlName="prizv" required>
                             <mat-error *ngIf="!loginForm.get('prizv').valid">
-                                {{'Please enter a last name'}}
+                                {{'Будь ласка введіть прізвище'}}
                             </mat-error>
                         </mat-form-field>
                     </div>
@@ -20,6 +24,9 @@
                     <div class="col-4">
                         <mat-form-field class="form-group example-full-width">
                             <input type="text" matInput placeholder="Ім'я" formControlName="name" required>
+                            <mat-error *ngIf="!loginForm.get('name').valid">
+                                {{"Будь ласка введіть ім'я"}}
+                            </mat-error>
                         </mat-form-field>
                     </div>
 
@@ -44,7 +51,11 @@
                                 <mat-option value=2>Польща</mat-option>
                                 <mat-option value=3>Німеччина</mat-option>
                             </mat-select>
+                            <mat-error *ngIf="!loginForm.get('countryid').valid">
+                                {{'Будь ласка введіть країну'}}
+                            </mat-error>
                         </mat-form-field>
+                        
                     </div>
 
                     <div class="col-4">
@@ -54,6 +65,9 @@
                                     <mat-option value='{{item.regionid}}'>{{item.teretory}}</mat-option>
                                 </ng-container>
                             </mat-select>
+                            <mat-error *ngIf="!loginForm.get('regionid').valid">
+                                {{'Будь ласка введіть область'}}
+                            </mat-error>
                         </mat-form-field>
                     </div>
 
@@ -61,7 +75,7 @@
                         <mat-form-field class="form-group example-full-width">
                             <input type="text" matInput placeholder="{{'Місто'}}" formControlName="city" required>
                             <mat-error *ngIf="!loginForm.get('city').valid">
-                                {{'Please enter a city'}}
+                                {{'Будь ласка введіть місто'}}
                             </mat-error>
                         </mat-form-field>
                     </div>
@@ -73,7 +87,7 @@
                             <input type="email" matInput placeholder="{{'Електронна пошта'}}" formControlName="email" required>
                             <mat-icon matSuffix>alternate_email</mat-icon>
                             <mat-error *ngIf="!loginForm.get('email').valid">
-                                {{'Please enter a valid email address'}}
+                                {{'Будь ласка введіть Вашу дійсну електроннну адресу'}}
                             </mat-error>
                         </mat-form-field>
                     </div>
@@ -83,7 +97,7 @@
                             <input type="text" matInput placeholder="{{'моб.тел. 380ххххххххх'}}" formControlName="cellphone" required>
                             <mat-icon matSuffix>phone</mat-icon>
                             <mat-error *ngIf="!loginForm.get('cellphone').valid">
-                                {{'Please enter a cellphone'}}
+                                {{'Будь ласка введіть мобільний телефон у вказаному форматі'}}
                             </mat-error>
                         </mat-form-field>
                     </div>
@@ -144,8 +158,11 @@
             <ng-container *ngIf = 'edit'>
                 <button mat-raised-button color="accent" class="btn-lg btn-block py-2 my-btn" (click)='invite()'>{{'Отримати запрошення'}}</button>
             </ng-container>
+            <ng-container *ngIf = 'worningCheck'>
+                <div class="alert alert-warning" role="alert">{{worningCheck}}</div>
+            </ng-container>
         </form>
     </div>  
 </div>
-<button mat-stroked-button class="btn-lg py-2 my-btn" (click)='verificationExistDataUser("cellphone")'>{{'test'}}</button>
-<button mat-stroked-button class="btn-lg py-2 my-btn" (click)='formValidator()'>{{'test2'}}</button>
+<!-- <button mat-stroked-button class="btn-lg py-2 my-btn" (click)='verificationExistDataUser("cellphone")'>{{'test'}}</button>
+<button mat-stroked-button class="btn-lg py-2 my-btn" (click)='formValidator()'>{{'test2'}}</button> -->
