@@ -52,6 +52,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         this.getExhib('exhibitions_dict');
         this.loginForm = this.fb.group({
           condition: ['', []],
+          table: ['', []],
           email: [value[0].email, [Validators.email]],
           prizv: [value[0].prizv, [Validators.required]],
           city: [value[0].city, [Validators.required]],
@@ -77,6 +78,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
   loginForm = this.fb.group({
     condition: ['', []],
+    table: ['', []],
     email: [this.user.userLogData.email, [Validators.email]],
     prizv: ['', [Validators.required]],
     city: ['', [Validators.required]],
@@ -131,6 +133,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   addUser() {
     this.isLoadingResults = true;
     this.loginForm.patchValue({potvid: this.getStringExhibForm()})
+    this.loginForm.patchValue({table: 'visitors_create'})
     let post = this.server.post(this.loginForm.value, "create/req").subscribe(data =>{
       console.log('this.loginForm.value: ',this.loginForm.value);
       console.log("dataServer: ", data);
@@ -199,15 +202,26 @@ export class RegistrationComponent implements OnInit, OnDestroy {
        this.loginForm.get('countryid').valid &&
        this.loginForm.get('regionid').valid){
         if(this.loginForm.get('email').valid || this.loginForm.get('cellphone').valid){
-          if((this.loginForm.get('email').invalid && this.loginForm.get('email').value != '') || (this.loginForm.get('cellphone').invalid && this.loginForm.get('cellphone').value != '')){
+          console.log('email: ', this.loginForm.get('email').value);
+          console.log('cellphone: ', this.loginForm.get('cellphone').value);
+          if(this.loginForm.get('email').value == null){this.loginForm.patchValue({email: ''})}
+          if(this.loginForm.get('cellphone').value == null){this.loginForm.patchValue({cellphone: ''})}
+
+          if((this.loginForm.get('email').invalid && (this.loginForm.get('email').value != '')) ||
+             (this.loginForm.get('cellphone').invalid && (this.loginForm.get('cellphone').value != ''))){
+            console.log('email: ', this.loginForm.get('email').value);
+            console.log('cellphone: ', this.loginForm.get('cellphone').value);
             return console.log('invalid!')
           }
           else{
+            console.log('email: ', this.loginForm.get('email').value);
+            console.log('cellphone: ', this.loginForm.get('cellphone').value);
             if(this.edit){
               this.editUser();
             }
             else{this.addUser()}
           }
+
         } 
         else{
           console.log('заповніть хоча б одне поле')

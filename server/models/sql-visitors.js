@@ -18,7 +18,8 @@ exports.curentDate = function(){
   var curr_year = now.getFullYear();
   var formated_date = curr_year + "-" + curr_month + "-" + curr_date;
 
-  return formated_date;
+  //return formated_date;
+  return new Date()
 }
 
 //отримання всіх записів з обраної таблиці
@@ -39,8 +40,8 @@ exports.regnVisAndReq = function(cb){
 
 
 //створення нового запису в таблиці visitors_create
-exports.create = function(dataVisitor, cb){
-  let sql = `INSERT INTO visitors_create (regnum, email, prizv, city, cellphone, potvid, name, countryid, regionid, m_robotu, pobatkovi, posada, sferadij, datawnesenny, ins_user) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+exports.create = function(dataVisitor, table, cb){
+  let sql = `INSERT INTO ${table} (regnum, email, prizv, city, cellphone, potvid, name, countryid, regionid, m_robotu, pobatkovi, posada, sferadij, datawnesenny, ins_user, namepovne) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
   db.get().query(sql, dataVisitor, function(err, data) {
     cb(err, data)
   })

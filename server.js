@@ -38,6 +38,9 @@ app.get("/db/:id", visitorsController.all);
 //додавання запису в заявку на внесення
 app.post("/create/req", urlencodedParser, visitorsController.create);
 
+//додавання запису в заявку на зміни
+//app.post("/edit_request", urlencodedParser, visitorsController.editRequest)
+
 //додавання запису в основну базу
 app.post("/createVis", urlencodedParser, visitorsController.createNewVis);
 

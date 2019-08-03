@@ -32,10 +32,14 @@ exports.create = function(req, res) {
             req.body.posada,
             req.body.sferadij,
             Visitors.curentDate(),
-            99
+            99,
+            req.body.prizv+' '+req.body.name+' '+req.body.pobatkovi
         ];
 
         //перевірка на email
+        if (req.body.email == ''){
+
+        }
         var fild = 'email';
         var visitorData2 = [
             req.body[fild],
@@ -65,7 +69,7 @@ exports.create = function(req, res) {
                             if (doc4[0] == undefined || doc4[0].cellphone == ''){
                                  //створюємо новий запис в табл. visitors_create
                                 console.log('start creating'); 
-                                Visitors.create(visitorData, function(err3, doc3){
+                                Visitors.create(visitorData, req.body.table, function(err3, doc3){
                                     if (err3) {
                                         console.log(err3);
                                         return res.sendStatus(500);
