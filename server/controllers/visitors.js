@@ -10,7 +10,86 @@ exports.all = function(req, res) {
 	});
 };
 
-exports.create = function(req, res) {
+//-------------------------------------------------------------------------------------------------------------
+
+exports.editRequest = function(req, res) {
+    var visitorData = [
+        req.body.regnum,
+        req.body.email,
+        req.body.prizv,
+        req.body.city,
+        req.body.cellphone,
+        req.body.potvid,
+        req.body.name,
+        req.body.countryid,
+        req.body.regionid,
+        req.body.m_robotu,
+        req.body.pobatkovi,
+        req.body.posada,
+        req.body.sferadij,
+        Visitors.curentDate(),
+        99,
+        req.body.prizv+' '+req.body.name+' '+req.body.pobatkovi
+    ];
+
+    //перевірка на email
+    if (req.body.email == ''){}
+    
+    var fild = 'email';
+    var visitorData2 = [
+        req.body[fild],
+        req.body[fild]
+    ];
+    Visitors.getEmail(visitorData2, fild, function(err2, doc2){
+        if (err2) {
+            console.log(err2);
+            return res.sendStatus(500);
+        }
+        console.log('check result on email: ', doc2);
+        if (doc2){
+            if (doc2[0] == undefined || doc2[0].email == ''){
+                //перевірка на cellphone
+                var fild2 = 'cellphone';
+                var visitorData3 = [
+                    req.body[fild2],
+                    req.body[fild2]
+                ];
+                Visitors.getEmail(visitorData3, fild2, function(err4, doc4){
+                    if (err4) {
+                        console.log(err4);
+                        return res.sendStatus(500);
+                    }
+                    console.log('check result on cellphone: ', doc4);
+                    if (doc4){
+                        if (doc4[0] == undefined || doc4[0].cellphone == ''){
+                                //створюємо новий запис в табл. visitors_create
+                            console.log('start creating'); 
+                            Visitors.create(visitorData, req.body.table, function(err3, doc3){
+                                if (err3) {
+                                    console.log(err3);
+                                    return res.sendStatus(500);
+                                }
+                                res.send(doc3);
+                            });
+                        }
+                        else{
+                            console.log('phone found');
+                            return res.send(doc4)
+                        }
+                    }
+                });
+            }
+            else{
+                console.log('email found');
+                return res.send(doc2)
+            }
+        }
+    });
+};
+
+//-------------------------------------------------------------------------------------------------------------
+
+exports.createRequest = function(req, res) {
     //отримуємо всі regnum  з таблиць visitors та visitors_create
     Visitors.regnVisAndReq(function(err, doc){
         if (err) {
@@ -93,6 +172,8 @@ exports.create = function(req, res) {
     });
 };
 
+//-------------------------------------------------------------------------------------------------------------
+
 exports.createNewVis = function(req, res) {
     var visitorData = [
         req.body.regnum,
@@ -111,6 +192,8 @@ exports.createNewVis = function(req, res) {
     });     
 };
 
+//-------------------------------------------------------------------------------------------------------------
+
 exports.edit = function(req, res) {
     var visitorData = [
         req.body.email,
@@ -128,6 +211,8 @@ exports.edit = function(req, res) {
     });   
 };
 
+//-------------------------------------------------------------------------------------------------------------
+
 exports.getSpecCond = function(req, res) {
     var fild = req.body.condition;
     var visitorData = [
@@ -144,6 +229,8 @@ exports.getSpecCond = function(req, res) {
     });
        
 };
+
+//-------------------------------------------------------------------------------------------------------------
 
 exports.getEmail = function(req, res) {
     var visitorData;
@@ -192,6 +279,8 @@ exports.getEmail = function(req, res) {
     });   
 };
 
+//-------------------------------------------------------------------------------------------------------------
+
 exports.delete = function(req, res) {
     Visitors.delete(req.body.tableName, req.body.regnum, function(err, doc){
         if (err) {
@@ -201,3 +290,5 @@ exports.delete = function(req, res) {
         res.send(doc);
     });   
 };
+
+//-------------------------------------------------------------------------------------------------------------

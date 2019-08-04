@@ -36,10 +36,10 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.get("/db/:id", visitorsController.all);
 
 //додавання запису в заявку на внесення
-app.post("/create/req", urlencodedParser, visitorsController.create);
+app.post("/create/req", urlencodedParser, visitorsController.createRequest);
 
 //додавання запису в заявку на зміни
-//app.post("/edit_request", urlencodedParser, visitorsController.editRequest)
+app.post("/edit_request", urlencodedParser, visitorsController.editRequest)
 
 //додавання запису в основну базу
 app.post("/createVis", urlencodedParser, visitorsController.createNewVis);

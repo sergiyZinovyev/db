@@ -132,8 +132,8 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
   addUser() {
     this.isLoadingResults = true;
-    this.loginForm.patchValue({potvid: this.getStringExhibForm()})
-    this.loginForm.patchValue({table: 'visitors_create'})
+    this.loginForm.patchValue({potvid: this.getStringExhibForm()}) //змінюємо поле з виставками
+    this.loginForm.patchValue({table: 'visitors_create'}) //змінюємо поле з таблицею в яку вносити дані
     let post = this.server.post(this.loginForm.value, "create/req").subscribe(data =>{
       console.log('this.loginForm.value: ',this.loginForm.value);
       console.log("dataServer: ", data);
@@ -154,11 +154,22 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   }
 
   editUser(){
+    this.isLoadingResults = true;
     this.loginForm.patchValue({potvid: this.getStringExhibForm()})
-    let post = this.server.post(this.loginForm.value, "edit").subscribe(data =>{
-      console.log("data: ", data);
+    this.loginForm.patchValue({table: 'visitors_edit'}) //змінюємо поле з таблицею в яку вносити дані
+    let post = this.server.post(this.loginForm.value, "edit_request").subscribe(data =>{
+      console.log('this.loginForm.value: ',this.loginForm.value);
+      console.log("dataServer: ", data);
       if(data){
-        this.router.navigate(['invite']);
+        this.isLoadingResults = false;
+        if(data[0]){
+          console.log('такий мейл вже існує');
+          this.worningCheck = 'Такий емейл або мобільний телефон вже використовується! Внесіть будьласка інший';
+        }
+        else{
+          this.worningCheck = '';
+          this.router.navigate(['invite']);
+        }
         console.log("unsubscribe");
         return post.unsubscribe();
       }
