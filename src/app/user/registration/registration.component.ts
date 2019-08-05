@@ -17,7 +17,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
   submitButtonText: string = '';
   createText: string = "Зареєструватися та отримати запрошення";
-  editText: string = "Редагувати дані та отримати запрошення";
+  editText: string = "Отримати запрошення";
   edit: boolean = false;
   editData;
   region = [{
@@ -34,6 +34,11 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   worningCheck: string;
 
   isLoadingResults = false;
+
+  myEmail: string = '';
+  myCellphone: string = '';
+
+  startLoginForm;
 
   constructor(
     private fb: FormBuilder,
@@ -53,6 +58,8 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         this.loginForm = this.fb.group({
           condition: ['', []],
           table: ['', []],
+          checkEmail: [false, []],
+          checkPhone: [false, []],
           email: [value[0].email, [Validators.email]],
           prizv: [value[0].prizv, [Validators.required]],
           city: [value[0].city, [Validators.required]],
@@ -68,6 +75,14 @@ export class RegistrationComponent implements OnInit, OnDestroy {
           sferadij: [value[0].sferadij, []],
         })
         this.edit = true;
+
+        this.myEmail = value[0].email;
+        this.myCellphone = value[0].cellphone;
+
+        this.startLoginForm = value[0];
+        
+
+
         this.submitButtonText = this.editText;
         this.editData = value[0];
         return get.unsubscribe();
@@ -79,6 +94,8 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   loginForm = this.fb.group({
     condition: ['', []],
     table: ['', []],
+    checkEmail: [false, []],
+    checkPhone: [false, []],
     email: [this.user.userLogData.email, [Validators.email]],
     prizv: ['', [Validators.required]],
     city: ['', [Validators.required]],
@@ -126,14 +143,19 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         this.exhibForm.addControl(data[i].name, new FormControl(value, Validators.required))
       }
       console.log(this.exhib);
+      this.exhibForm.valueChanges.subscribe(v => {
+        //console.log(v);
+        this.loginForm.patchValue({potvid: this.getStringExhibForm()}) //змінюємо поле з виставками
+       });
     })
   }
 
 
   addUser() {
     this.isLoadingResults = true;
-    this.loginForm.patchValue({potvid: this.getStringExhibForm()}) //змінюємо поле з виставками
+    //this.loginForm.patchValue({potvid: this.getStringExhibForm()}) //змінюємо поле з виставками
     this.loginForm.patchValue({table: 'visitors_create'}) //змінюємо поле з таблицею в яку вносити дані
+   
     let post = this.server.post(this.loginForm.value, "create/req").subscribe(data =>{
       console.log('this.loginForm.value: ',this.loginForm.value);
       console.log("dataServer: ", data);
@@ -154,9 +176,24 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   }
 
   editUser(){
+    //console.log('2_this.myEmail: ',this.myEmail);
     this.isLoadingResults = true;
-    this.loginForm.patchValue({potvid: this.getStringExhibForm()})
+    //перевіряємо чи змінилася форма
+    if(this.checkFormChange()){
+      console.log('дані не змінилися')
+      return this.router.navigate(['invite']);
+    }
+    //this.loginForm.patchValue({potvid: this.getStringExhibForm()}) //змінюємо поле з виставками
     this.loginForm.patchValue({table: 'visitors_edit'}) //змінюємо поле з таблицею в яку вносити дані
+    if(this.loginForm.get('email').value != this.myEmail){
+      console.log(this.loginForm.get('email').value,'--',this.myEmail);
+      this.loginForm.patchValue({checkEmail: true})
+    }
+    else{this.loginForm.patchValue({checkEmail: false})}
+    if(this.loginForm.get('cellphone').value != this.myCellphone){
+      this.loginForm.patchValue({checkPhone: true})
+    }
+    else{this.loginForm.patchValue({checkPhone: false})}
     let post = this.server.post(this.loginForm.value, "edit_request").subscribe(data =>{
       console.log('this.loginForm.value: ',this.loginForm.value);
       console.log("dataServer: ", data);
@@ -164,7 +201,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         this.isLoadingResults = false;
         if(data[0]){
           console.log('такий мейл вже існує');
-          this.worningCheck = 'Такий емейл або мобільний телефон вже використовується! Внесіть будьласка інший';
+          this.worningCheck = 'Такий емейл або мобільний телефон вже використовується! Внесіть будь ласка інший';
         }
         else{
           this.worningCheck = '';
@@ -175,35 +212,6 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       }
     });
   }
-
-  // verificationExistDataUser(verify) {
-  //   this.verification = false;
-  //   if(this.loginForm.get(verify).valid){
-  //     this.loginForm.patchValue({condition: verify})
-  //     let get=this.server.post(this.loginForm.value, "get_spec_cond").subscribe(data =>{
-  //       console.log("data: ", data);
-  //       if(data[0]){
-  //         console.log("data[0]: ", data[0]);
-  //         console.log("unsubscribe")
-  //         get.unsubscribe();
-  //         this.verification = true;
-  //         //return true;
-  //       }
-  //       if(data){
-  //         console.log("unsubscribe")
-  //         return get.unsubscribe();
-  //       }
-  //     });
-  //     //return console.log('verificationExistDataUser('+verify+'): ',this.verification);
-  //   }
-  //   else{console.log('invalid: ', verify)}
-  // }
-	
-
-  // getVerification(){
-  //   console.log('this.verification: ',this.verification);
-  //   return this.verification
-  // }
 
   submit(){
     this.worningCheck = '';
@@ -248,7 +256,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
 
   getStringExhibForm(){
-    console.log(this.exhibForm.value)
+    //console.log(this.exhibForm.value)
     let exhibStr: string = '';
     for(var key in this.exhibForm.value){
       if(this.exhibForm.value[key]==true){
@@ -263,9 +271,26 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   }
 
   getArrFromPotvid(){
-    //console.log('potvad: ', this.loginForm.get('potvid').value);
-    //console.log('arr.potvid: ', this.loginForm.get('potvid').value.split(', '));
     return this.loginForm.get('potvid').value.split(', ')
+  }
+
+  checkFormChange(){
+    let flag = true
+    for (let key in this.startLoginForm){
+      //console.log(key,': ',this.startLoginForm[key])
+      if(this.loginForm.get(key)){
+        if(this.startLoginForm[key] == this.loginForm.get(key).value){
+          console.log(key, ': not changed')
+        }
+        else{
+          flag = false;
+          console.log(key, ': changed')
+        }
+      }
+    }
+    console.log(flag);
+    console.log('-------------------');
+    return flag;
   }
 
   ngOnDestroy(){

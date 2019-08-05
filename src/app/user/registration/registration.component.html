@@ -97,7 +97,7 @@
                             <input type="text" matInput placeholder="{{'моб.тел. 380ххххххххх'}}" formControlName="cellphone" required>
                             <mat-icon matSuffix>phone</mat-icon>
                             <mat-error *ngIf="!loginForm.get('cellphone').valid">
-                                {{'Будь ласка введіть мобільний телефон у вказаному форматі'}}
+                                {{'Будь ласка введіть мобільний телефон у вказаному форматі без пробілів'}}
                             </mat-error>
                         </mat-form-field>
                     </div>
@@ -155,14 +155,14 @@
             </div>
 
             <button mat-raised-button color="accent" class="btn-lg btn-block py-2 my-btn">{{submitButtonText}}</button>
-            <ng-container *ngIf = 'edit'>
+            <!-- <ng-container *ngIf = 'edit'>
                 <button mat-raised-button color="accent" class="btn-lg btn-block py-2 my-btn" (click)='invite()'>{{'Отримати запрошення'}}</button>
-            </ng-container>
+            </ng-container> -->
             <ng-container *ngIf = 'worningCheck'>
                 <div class="alert alert-warning" role="alert">{{worningCheck}}</div>
             </ng-container>
         </form>
     </div>  
 </div>
-<!-- <button mat-stroked-button class="btn-lg py-2 my-btn" (click)='verificationExistDataUser("cellphone")'>{{'test'}}</button>
-<button mat-stroked-button class="btn-lg py-2 my-btn" (click)='formValidator()'>{{'test2'}}</button> -->
+<!-- <button mat-stroked-button class="btn-lg py-2 my-btn" (click)='checkFormChange()'>{{'test'}}</button> -->
+<!-- <button mat-stroked-button class="btn-lg py-2 my-btn" (click)='formValidator()'>{{'test2'}}</button> -->
