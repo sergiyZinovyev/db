@@ -16,8 +16,8 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   myExhib: string = 'ТурЕКСПО';
 
   submitButtonText: string = '';
-  createText: string = "Зареєструватися та отримати запрошення";
-  editText: string = "Отримати запрошення";
+  //createText: string = "Зареєструватися та отримати запрошення";
+  //editText: string = "Отримати запрошення";
   edit: boolean = false;
   editData;
   region = [{
@@ -50,7 +50,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   ngOnInit() {
     
     this.getRegion('region');
-    this.submitButtonText = this.createText;
+    //this.submitButtonText = this.createText;
     let get = this.user.userData.subscribe({
       next: (value) => {
         console.log(value);
@@ -83,7 +83,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         
 
 
-        this.submitButtonText = this.editText;
+        //this.submitButtonText = this.editText;
         this.editData = value[0];
         return get.unsubscribe();
       }
@@ -145,8 +145,8 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       console.log(this.exhib);
       this.exhibForm.valueChanges.subscribe(v => {
         //console.log(v);
-        this.loginForm.patchValue({potvid: this.getStringExhibForm()}) //змінюємо поле з виставками
-       });
+        this.loginForm.patchValue({potvid: this.getStringExhibForm()}) //змінюємо поле з виставками в загальній формі
+      });
     })
   }
 

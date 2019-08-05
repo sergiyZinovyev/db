@@ -15,7 +15,6 @@ export class UserService {
     email: 'не емейл',
     cellphone: 'не телефон'
   };
-  //inviteData;
 
   constructor(
   ) { }
@@ -28,16 +27,9 @@ export class UserService {
     this.userLogData=data;
   }
 
-  // setInviteData(data){
-  //   this.inviteData = data
-  // }
-
   getUserEmail(){
     return this.userLogData;
   }
 
-  // getInviteData(){
-  //   return this.inviteData;
-  // }
 
 }

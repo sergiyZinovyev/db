@@ -8,11 +8,12 @@
 
             <div class="reg-form">
                 <div class="discr d-flex justify-content-between">
-                    Представтесь будь ласка
+                    <ng-container *ngIf='!edit'>Представтесь будь ласка</ng-container>
+                    <ng-container *ngIf='edit'>Вітаємо!</ng-container>
                     <mat-icon matSuffix>person</mat-icon>
                 </div>
                 <div class="row">
-                    <div class="col-4">
+                    <div class="col-12 col-sm-4">
                         <mat-form-field class="form-group example-full-width">
                             <input type="text" matInput placeholder="{{'Прізвище'}}" formControlName="prizv" required>
                             <mat-error *ngIf="!loginForm.get('prizv').valid">
@@ -21,7 +22,7 @@
                         </mat-form-field>
                     </div>
 
-                    <div class="col-4">
+                    <div class="col-12 col-sm-4">
                         <mat-form-field class="form-group example-full-width">
                             <input type="text" matInput placeholder="Ім'я" formControlName="name" required>
                             <mat-error *ngIf="!loginForm.get('name').valid">
@@ -30,7 +31,7 @@
                         </mat-form-field>
                     </div>
 
-                    <div class="col-4">
+                    <div class="col-12 col-sm-4">
                         <mat-form-field class="form-group example-full-width">
                             <input type="text" matInput placeholder="{{'По-батькові'}}" formControlName="pobatkovi">
                         </mat-form-field>
@@ -40,11 +41,12 @@
 
             <div class="reg-form">
                 <div class="discr d-flex justify-content-between">
-                    Заповніть ваші контактні дані
+                    <ng-container *ngIf='!edit'>Заповніть Ваші контактні дані</ng-container>
+                    <ng-container *ngIf='edit'>Відредагуйте Ваші контактні дані, якщо вони змінилися</ng-container>
                     <mat-icon matSuffix>assignment</mat-icon>
                 </div>
                 <div class="row">
-                    <div class="col-4">
+                    <div class="col-12 col-sm-4">
                         <mat-form-field class="form-group example-full-width">
                             <mat-select placeholder="{{'Країна'}}" formControlName="countryid" required>
                                 <mat-option value=1>Україна</mat-option>
@@ -58,7 +60,7 @@
                         
                     </div>
 
-                    <div class="col-4">
+                    <div class="col-12 col-sm-4">
                         <mat-form-field class="form-group example-full-width">
                             <mat-select placeholder="{{'Область'}}" formControlName="regionid" required>
                                 <ng-container *ngFor="let item of region">
@@ -71,7 +73,7 @@
                         </mat-form-field>
                     </div>
 
-                    <div class="col-4">
+                    <div class="col-12 col-sm-4">
                         <mat-form-field class="form-group example-full-width">
                             <input type="text" matInput placeholder="{{'Місто'}}" formControlName="city" required>
                             <mat-error *ngIf="!loginForm.get('city').valid">
@@ -82,7 +84,7 @@
                 </div>        
             
                 <div class="row">
-                    <div class="col-6">
+                    <div class="col-12 col-sm-6">
                         <mat-form-field class="form-group example-full-width">
                             <input type="email" matInput placeholder="{{'Електронна пошта'}}" formControlName="email" required>
                             <mat-icon matSuffix>alternate_email</mat-icon>
@@ -92,7 +94,7 @@
                         </mat-form-field>
                     </div>
 
-                    <div class="col-6">
+                    <div class="col-12 col-sm-6">
                         <mat-form-field class="form-group example-full-width">
                             <input type="text" matInput placeholder="{{'моб.тел. 380ххххххххх'}}" formControlName="cellphone" required>
                             <mat-icon matSuffix>phone</mat-icon>
@@ -106,7 +108,8 @@
 
             <div class="reg-form">
                 <div class="discr d-flex justify-content-between">
-                    Ваша робота
+                    <ng-container *ngIf='!edit'>Ваша робота</ng-container>
+                    <ng-container *ngIf='edit'>Відредагуйте Ваші дані про роботу, якщо вони змінилися</ng-container>
                     <mat-icon matSuffix>business</mat-icon>
                 </div>
                 <div class="row">
@@ -118,13 +121,13 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-6">
+                    <div class="col-12 col-sm-6">
                         <mat-form-field class="form-group example-full-width">
                             <input type="text" matInput placeholder="{{'Посада'}}" formControlName="posada">
                         </mat-form-field>
                     </div>
 
-                    <div class="col-6">
+                    <div class="col-12 col-sm-6">
                         <mat-form-field class="form-group example-full-width">
                             <input type="text" matInput placeholder="{{'Сфера діяльності'}}" formControlName="sferadij">
                         </mat-form-field>
@@ -154,7 +157,7 @@
                 </mat-expansion-panel>  
             </div>
 
-            <button mat-raised-button color="accent" class="btn-lg btn-block py-2 my-btn">{{submitButtonText}}</button>
+            <button mat-raised-button color="accent" class="btn-lg btn-block py-2 my-btn"><strong class="pr-2">{{'Отримати запрошення'}}</strong><mat-icon>local_activity</mat-icon></button>
             <!-- <ng-container *ngIf = 'edit'>
                 <button mat-raised-button color="accent" class="btn-lg btn-block py-2 my-btn" (click)='invite()'>{{'Отримати запрошення'}}</button>
             </ng-container> -->
