@@ -1,12 +1,25 @@
-<div class="d-flex align-items-center justify-content-center mt-2">
-    <button mat-icon-button color="primary" class="px-0 mx-2" (click)='getTest()'><mat-icon>save</mat-icon></button>
-    <button mat-icon-button color="primary" class="px-0 mx-2"><mat-icon>send</mat-icon></button>
-    <button mat-icon-button color="primary" class="px-0 mx-2" (click)='onLogin()'><mat-icon>local_activity</mat-icon></button>
-    <button mat-icon-button color="primary" class="px-0 mx-2" (click)='onLogin()'><mat-icon>home</mat-icon></button>
+<div class="d-flex align-items-stretch justify-content-center mt-2 height-btn-group">
+    <button mat-button color="primary" class="px-0 mx-2" (click)='getTest()'>
+        <mat-icon>save</mat-icon>
+        <div class="text-btn">зберегти</div>
+    </button>
+    <button mat-button color="primary" class="px-0 mx-2">
+        <mat-icon>send</mat-icon>
+        <div class="text-btn">надіслати</div>
+    </button>
+    <button mat-button color="primary" class="px-0 mx-2" (click)='onLogin()'>
+        <mat-icon>local_activity</mat-icon>
+        <div class="text-btn">інше</div>
+        <div class="text-btn2">запрошення</div>
+    </button>
+    <button mat-button color="primary" class="px-0 mx-2" (click)='onLogin()'>
+        <mat-icon>home</mat-icon>
+        <div class="text-btn">повернутися</div>
+    </button>
 </div>
 
 
-<div class="d-flex align-items-center justify-content-center mt-1" id='element-to-print'>
+<div class="d-flex align-items-center justify-content-center mt-2" id='element-to-print'>
     <mat-card class="example-card color" >
         <mat-card-header>
             <div mat-card-avatar class="example-header-image"></div>

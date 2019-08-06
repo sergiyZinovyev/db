@@ -29,7 +29,7 @@ export class InviteComponent implements OnInit, OnDestroy{
     private router: Router,
     //private html2pdf: Html2pdf
   ) { }
-
+  //"assets/js/html2pdf.bundle.js"
   // ngOnInit() {
   //   console.log('this.user.userLogData: ',this.user.userLogData);
   //   let get=this.server.post(this.user.userLogData, "get").subscribe(data =>{
