@@ -27,7 +27,7 @@
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": ["assets/js/html2pdf.bundle.js"]
           },
           "configurations": {
             "production": {

@@ -13,13 +13,18 @@ export class UserService {
   
   userLogData = {
     email: 'не емейл',
-    cellphone: 'не телефон'
+    cellphone: 'не телефон',
+    regnum: '',
+    prizv: '',
+    name: '',
+    pobatkovi: ''
   };
 
   constructor(
   ) { }
 
   setUserData(data){
+    console.log('next userData: ', data);
     this.userData.next(data);
   }
 

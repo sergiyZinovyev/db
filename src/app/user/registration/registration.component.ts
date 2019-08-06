@@ -15,6 +15,8 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
   myExhib: string = 'ТурЕКСПО';
 
+  subUserData;
+
   submitButtonText: string = '';
   //createText: string = "Зареєструватися та отримати запрошення";
   //editText: string = "Отримати запрошення";
@@ -51,9 +53,9 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     
     this.getRegion('region');
     //this.submitButtonText = this.createText;
-    let get = this.user.userData.subscribe({
+    this.subUserData = this.user.userData.subscribe({
       next: (value) => {
-        console.log(value);
+        console.log('reg - user.userData: ',value);
         this.getExhib('exhibitions_dict');
         this.loginForm = this.fb.group({
           condition: ['', []],
@@ -85,7 +87,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
         //this.submitButtonText = this.editText;
         this.editData = value[0];
-        return get.unsubscribe();
+        return this.subUserData.unsubscribe();
       }
     })
     this.getExhib('exhibitions_dict');
@@ -144,7 +146,6 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       }
       console.log(this.exhib);
       this.exhibForm.valueChanges.subscribe(v => {
-        //console.log(v);
         this.loginForm.patchValue({potvid: this.getStringExhibForm()}) //змінюємо поле з виставками в загальній формі
       });
     })
@@ -152,6 +153,13 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
 
   addUser() {
+    this.user.setUserLogData({
+      email: this.loginForm.get('email').value,
+      prizv: this.loginForm.get('prizv').value,
+      name: this.loginForm.get('name').value,
+      pobatkovi: this.loginForm.get('pobatkovi').value,
+      regnum: this.loginForm.get('regnum').value
+    });
     this.isLoadingResults = true;
     //this.loginForm.patchValue({potvid: this.getStringExhibForm()}) //змінюємо поле з виставками
     this.loginForm.patchValue({table: 'visitors_create'}) //змінюємо поле з таблицею в яку вносити дані
@@ -159,6 +167,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     let post = this.server.post(this.loginForm.value, "create/req").subscribe(data =>{
       console.log('this.loginForm.value: ',this.loginForm.value);
       console.log("dataServer: ", data);
+      
       if(data){
         this.isLoadingResults = false;
         if(data[0]){
@@ -176,6 +185,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   }
 
   editUser(){
+    this.user.setUserData(this.loginForm.value);
     //console.log('2_this.myEmail: ',this.myEmail);
     this.isLoadingResults = true;
     //перевіряємо чи змінилася форма
@@ -197,6 +207,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     let post = this.server.post(this.loginForm.value, "edit_request").subscribe(data =>{
       console.log('this.loginForm.value: ',this.loginForm.value);
       console.log("dataServer: ", data);
+      
       if(data){
         this.isLoadingResults = false;
         if(data[0]){
@@ -294,8 +305,11 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(){
+    console.log('destroy reg');
     this.user.setUserLogData(this.loginForm.value);
-    this.user.userData.unsubscribe;
+    //this.user.setUserData(this.loginForm.value);
+    this.subUserData.unsubscribe();
+    //this.user.userData.unsubscribe;
   }
 
 }
