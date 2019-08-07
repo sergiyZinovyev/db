@@ -71,7 +71,8 @@ export class InviteComponent implements OnInit, OnDestroy{
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
     //html2pdf().set(opt).from(element).save();
-    return this.invitePDF = html2pdf().set(opt).from(element).save();
+    //return this.invitePDF = html2pdf().set(opt).from(element).save();
+    return html2pdf().set(opt).from(element).save();
   }
 
   sendEmail(){
@@ -84,7 +85,7 @@ export class InviteComponent implements OnInit, OnDestroy{
         console.log('sending')
         //починаємо відправку
         console.log(this.user.userLogData);
-        let get=this.server.post(this.user.userLogData, "email").subscribe(data =>{
+        let get=this.server.post(this.user.userLogData, "email").subscribe(data =>{ 
           console.log("sending data: ", data);
           if(data){
             console.log("unsubscribe")
