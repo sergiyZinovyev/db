@@ -354,3 +354,67 @@ exports.delete = function(req, res) {
 };
 
 //-------------------------------------------------------------------------------------------------------------
+// пошук в трьох таблицях по емейлу або телефону
+
+exports.getRowOnCond = function(req, res) {
+    //var visitorData = req.body.regnum;
+    //var fild = req.body.regnum;
+    if(!req.body.email && !req.body.cellphone){return res.sendStatus(204)}
+    var visitorData;
+    var fild;
+    if(req.body.email == '' || req.body.email == null){
+        visitorData = [
+            req.body.cellphone
+        ];
+        fild = 'cellphone';
+    }
+    else{
+        visitorData = [
+            req.body.email,
+        ];
+        fild = 'email';
+    }
+    Visitors.getRowOnCondFromTable(visitorData, fild, 'visitors_edit', function(err, doc){
+        if (err) {
+            console.log(err);
+            return res.sendStatus(500);
+        }
+        if(doc == ''){
+            Visitors.getRowOnCondFromTable(visitorData, fild, 'visitors_create', function(err, doc){
+                if (err) {
+                    console.log(err);
+                    return res.sendStatus(500);
+                }
+                if(doc == ''){
+                    Visitors.getRowOnCondFromTable(visitorData, fild, 'visitors', function(err, doc){
+                        if (err) {
+                            console.log(err);
+                            return res.sendStatus(500);
+                        }
+                        if(doc == ''){
+                            console.log('doc is empty: ', doc);
+                            res.send(doc);
+                        }
+                        else{
+                            console.log('doc from visitors: ', doc);
+                            res.send(doc);
+                        }
+                        
+                    });          
+                }
+                else{
+                    console.log('doc from visitors_create: ', doc);
+                    res.send(doc);
+                }
+                
+            });  
+        }
+        else{
+            console.log('doc from visitors_edit: ', doc)
+            res.send(doc);
+        }
+        
+    });   
+};
+
+//-------------------------------------------------------------------------------------------------------------

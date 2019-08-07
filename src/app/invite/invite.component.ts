@@ -21,39 +21,35 @@ export class InviteComponent implements OnInit, OnDestroy{
   name:string = '';
   pobatkovi:string = '';
   regnum:string = '';
-
+  invitePDF: BinaryType;
 
   constructor(
     private user: UserService,
     private server: ServerService,
     private router: Router,
-    //private html2pdf: Html2pdf
   ) { }
-  //"assets/js/html2pdf.bundle.js"
-  // ngOnInit() {
-  //   console.log('this.user.userLogData: ',this.user.userLogData);
-  //   let get=this.server.post(this.user.userLogData, "get").subscribe(data =>{
-  //     console.log("data: ", data);
-  //     if(data[0]){
-  //       this.user.setUserData(data);
-  //       this.email = data[0].email;
-  //       this.prizv = data[0].prizv;
-  //       this.regnum = data[0].regnum;
-  //     }
-  //     if(data){
-  //       console.log("unsubscribe")
-  //       return get.unsubscribe();
-  //     }
-  //   });
-  // }
 
   ngOnInit() {
-    this.email = this.user.userLogData.email;
-    this.prizv = this.user.userLogData.prizv;
-    this.name = this.user.userLogData.name;
-    this.pobatkovi = this.user.userLogData.pobatkovi;
-    this.regnum = this.user.userLogData.regnum;
-    //this.getTest();
+    console.log('this.user.userLogData: ',this.user.userLogData);
+    let get=this.server.post(this.user.userLogData, "get/regnum").subscribe(data =>{ //отримуємо нові дані з бази
+      console.log("data: ", data);
+      if (data == null){
+        console.log("unsubscribe")
+        return get.unsubscribe();
+      }
+      if(data[0]){
+      this.user.setUserLogData(data[0]);
+      this.email = data[0].email;
+      this.prizv = data[0].prizv;
+      this.name = data[0].name;
+      this.pobatkovi = data[0].pobatkovi;
+      this.regnum = data[0].regnum;
+      }
+      if(data){
+        console.log("unsubscribe")
+        return get.unsubscribe();
+      }
+    });
   }
 
   onLogin(){
@@ -64,7 +60,7 @@ export class InviteComponent implements OnInit, OnDestroy{
     this.router.navigate(['user/registration'])
   }
 
-  getTest(){
+  getPDF(){
     let element = document.getElementById('element-to-print');
     //html2pdf(element);
     let opt = {
@@ -74,7 +70,36 @@ export class InviteComponent implements OnInit, OnDestroy{
       html2canvas:  { scale: 2 },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
-    html2pdf().set(opt).from(element).save();
+    //html2pdf().set(opt).from(element).save();
+    return this.invitePDF = html2pdf().set(opt).from(element).save();
+  }
+
+  sendEmail(){
+    if(!this.email){
+      alert('Ви не вказали електронну пошту');
+      console.log('no email!')}
+    else{
+      let isEmail = confirm("запрошення буде відправлено на email: " + this.email);
+      if(isEmail){
+        console.log('sending')
+        //починаємо відправку
+        console.log(this.user.userLogData);
+        let get=this.server.post(this.user.userLogData, "email").subscribe(data =>{
+          console.log("sending data: ", data);
+          if(data){
+            console.log("unsubscribe")
+            return get.unsubscribe();
+          }
+        });
+
+      }
+      else{ console.log('cancel')}
+    }
+    
+  }
+
+  test(){
+    console.log(this.invitePDF);
   }
 
   ngOnDestroy(){

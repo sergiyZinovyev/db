@@ -3,6 +3,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const visitorsController = require('./server/controllers/visitors');
 
+const emailController = require('./server/controllers/email');
+
 const urlencodedParser = bodyParser.urlencoded({extended: false});
 
 //back-end server
@@ -50,10 +52,14 @@ app.post("/edit", urlencodedParser, visitorsController.edit)
 //отримання запису по електронній адресі або мобільному з двох таблиць
 app.post("/get", cors(), urlencodedParser, visitorsController.getEmail);
 
+//отримання запису по електронній адресі або мобільному з 3 таблиць
+app.post("/get/regnum", cors(), urlencodedParser, visitorsController.getRowOnCond);
+
 //отримання запису по вказаній умові
 app.post("/get_spec_cond", cors(), urlencodedParser, visitorsController.getSpecCond);
 
 //видалення запису з обраної таблиці
 app.post("/delete", urlencodedParser, visitorsController.delete)
 
-
+//відправка файлу по вказаній адресі
+app.post("/email", cors(), urlencodedParser, emailController.sendEmail);

@@ -55,7 +55,7 @@ exports.createVis = function(dataVisitor, cb){
   })
 }
 
-//редагування запису
+//редагування запису !!!недороблене!!!
 exports.edit = function(dataVisitor, cb){
   let sql = `UPDATE visitors SET email=?, prizv=?, city=?, cellphone=? WHERE regnum=?`;
   db.get().query(sql, dataVisitor, function(err, data) {
@@ -71,7 +71,15 @@ exports.getEmail = function(dataVisitor, fild, cb){
   })
 }
 
-//редагування запису
+//отримання запису по вказаній умові з вказаної таблиці
+exports.getRowOnCondFromTable = function(dataVisitor, fild, table, cb){
+  let sql = `(SELECT * FROM ${table} WHERE ${fild}=?)`;
+  db.get().query(sql, dataVisitor, function(err, data) {
+    cb(err, data)
+  })
+}
+
+//видалення запису
 exports.delete = function(table, id, cb){
   let sql = `DELETE FROM ${table} WHERE regnum=${id}`;
   db.get().query(sql, function(err, data) {

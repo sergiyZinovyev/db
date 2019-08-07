@@ -1,9 +1,9 @@
 <div class="d-flex align-items-stretch justify-content-center mt-2 height-btn-group">
-    <button mat-button color="primary" class="px-0 mx-2" (click)='getTest()'>
+    <button mat-button color="primary" class="px-0 mx-2" (click)='getPDF()'>
         <mat-icon>save</mat-icon>
         <div class="text-btn">зберегти</div>
     </button>
-    <button mat-button color="primary" class="px-0 mx-2">
+    <button mat-button color="primary" class="px-0 mx-2" (click)='sendEmail()'>
         <mat-icon>send</mat-icon>
         <div class="text-btn">надіслати</div>
     </button>
@@ -41,5 +41,5 @@
         </mat-card-actions> -->
     </mat-card>
 </div>
-
+<button mat-raised-button color="primary" class="px-2" (click)='test()'>test</button>
 

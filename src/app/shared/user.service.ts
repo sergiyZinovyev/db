@@ -12,8 +12,8 @@ export class UserService {
   userData = new Subject();
   
   userLogData = {
-    email: 'не емейл',
-    cellphone: 'не телефон',
+    email: '',
+    cellphone: '',
     regnum: '',
     prizv: '',
     name: '',
