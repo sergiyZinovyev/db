@@ -420,22 +420,47 @@ exports.getRowOnCond = function(req, res) {
 // пошук в трьох таблицях по емейлу або телефону 2***
 
 exports.getRowOnCond2 = function(req, res) {
-    if(!req.body.email && !req.body.cellphone){return res.sendStatus(204)}
+    if(!req.body.email && !req.body.cellphone){return res.sendStatus(400)} //якщо немає даних в запиті то повертаємо помилку
     else{
         let visitorData;
         let fild;
-        if(!req.body.email){
-            visitorData = [
-                req.body.cellphone
-            ];
-            fild = 'cellphone';
+        if(req.body.email){
+            // якщо є email починаємо послідовну перевірку в 3-х таблицях по емейлу та телефону якщо він є
+            Visitors.getRowOnCondFromTable([req.body.email], 'email', 'visitors_edit', function(err, doc){
+                if (err) {
+                    console.log(err);
+                    return res.sendStatus(500);
+                }
+                if(doc == ''){
+                    //якщо у visitors_edit не знайдено даних по емейл - перевіряємо по телефону
+                    Visitors.getRowOnCondFromTable([req.body.cellphone], 'cellphone', 'visitors_edit', function(err, doc){
+                        if (err) {
+                            console.log(err);
+                            return res.sendStatus(500);
+                        }
+                        if(doc == ''){
+                            //якщо у visitors_edit не знайдено даних по cellphone - перевіряємо по email in visitors_create
+                            //...
+                        }
+                        else{
+                            //дані у visitors_edit по cellphone знайдено, повертаємо їх клієнту
+                        } 
+                    })
+                }
+                else{
+                    //дані у visitors_edit по email знайдено, повертаємо їх клієнту
+                }  
+            })
+
         }
         else{
-            visitorData = [
-                req.body.email,
-            ];
-            fild = 'email';
+            //є тільки телефон, перевіряємо в 3-х таблицях тільки телефон
+            visitorData = [req.body.cellphone];
+            fild = 'cellphone';
         }
+
+
+
         Visitors.getRowOnCondFromTable(visitorData, fild, 'visitors_edit', function(err, doc){
             if (err) {
                 console.log(err);
