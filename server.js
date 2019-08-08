@@ -3,6 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const visitorsController = require('./server/controllers/visitors');
 
+
 const emailController = require('./server/controllers/email');
 
 const urlencodedParser = bodyParser.urlencoded({extended: false});
@@ -28,7 +29,7 @@ ang.use("/", function(request, response){
 
 
 
-app.use(cors())
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 

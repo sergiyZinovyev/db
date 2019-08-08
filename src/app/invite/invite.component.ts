@@ -62,7 +62,6 @@ export class InviteComponent implements OnInit, OnDestroy{
 
   getPDF(){
     let element = document.getElementById('element-to-print');
-    //html2pdf(element);
     let opt = {
       margin:       0,
       filename:     'invite.pdf',
@@ -70,8 +69,6 @@ export class InviteComponent implements OnInit, OnDestroy{
       html2canvas:  { scale: 2 },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
-    //html2pdf().set(opt).from(element).save();
-    //return this.invitePDF = html2pdf().set(opt).from(element).save();
     return html2pdf().set(opt).from(element).save();
   }
 

@@ -82,8 +82,6 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         this.myCellphone = value[0].cellphone;
 
         this.startLoginForm = value[0];
-        
-
 
         //this.submitButtonText = this.editText;
         this.editData = value[0];
@@ -287,6 +285,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
   checkFormChange(){
     let flag = true
+    console.log('this.startLoginForm: ', this.startLoginForm);
     for (let key in this.startLoginForm){
       //console.log(key,': ',this.startLoginForm[key])
       if(this.loginForm.get(key)){
