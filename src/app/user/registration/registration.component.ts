@@ -42,6 +42,9 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
   startLoginForm;
 
+  spreadsheet;
+  myRequest;
+
   constructor(
     private fb: FormBuilder,
     private user: UserService,
@@ -83,7 +86,22 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
         this.startLoginForm = value[0];
 
-        //this.submitButtonText = this.editText;
+        // визначаємо запит до сервера (create/edit)
+        switch(value[1].receivedTable) {
+          case 'visitors':
+            this.spreadsheet = 'visitors_edit';
+            this.myRequest = 'createInVisitorsEdit'
+            break;
+          case 'visitors_create':
+            this.spreadsheet = 'visitors_create';
+            this.myRequest = 'edit';
+            break;
+          case 'visitors_edit':
+            this.spreadsheet = 'visitors_edit';
+            this.myRequest = 'edit';
+            break; 
+        }
+
         this.editData = value[0];
         return this.subUserData.unsubscribe();
       }
@@ -162,7 +180,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     this.loginForm.patchValue({potvid: this.getStringExhibForm()}) //змінюємо поле з виставками
     this.loginForm.patchValue({table: 'visitors_create'}) //змінюємо поле з таблицею в яку вносити дані
    
-    let post = this.server.post(this.loginForm.value, "create/req").subscribe(data =>{
+    let post = this.server.post(this.loginForm.value, "createInVisitorsCreate").subscribe(data =>{
       console.log('this.loginForm.value: ',this.loginForm.value);
       console.log("dataServer: ", data);
       
@@ -184,7 +202,6 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
   editUser(){
     this.user.setUserData(this.loginForm.value);
-    //console.log('2_this.myEmail: ',this.myEmail);
     this.isLoadingResults = true;
     //перевіряємо чи змінилася форма
     if(this.checkFormChange()){
@@ -192,7 +209,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       return this.router.navigate(['invite']);
     }
     this.loginForm.patchValue({potvid: this.getStringExhibForm()}) //змінюємо поле з виставками
-    this.loginForm.patchValue({table: 'visitors_edit'}) //змінюємо поле з таблицею в яку вносити дані
+    this.loginForm.patchValue({table: this.spreadsheet}) //змінюємо поле з таблицею в яку вносити дані
     if(this.loginForm.get('email').value != this.myEmail){
       console.log(this.loginForm.get('email').value,'--',this.myEmail);
       this.loginForm.patchValue({checkEmail: true})
@@ -202,7 +219,8 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       this.loginForm.patchValue({checkPhone: true})
     }
     else{this.loginForm.patchValue({checkPhone: false})}
-    let post = this.server.post(this.loginForm.value, "edit_request").subscribe(data =>{
+    if(!this.myRequest){return console.log('Err: myRequest is undefined')};
+    let post = this.server.post(this.loginForm.value, this.myRequest).subscribe(data =>{
       console.log('this.loginForm.value: ',this.loginForm.value);
       console.log("dataServer: ", data);
       

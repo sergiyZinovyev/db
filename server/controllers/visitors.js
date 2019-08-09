@@ -37,7 +37,7 @@ exports.editRequest = function(req, res) {
 
     if (req.body.checkEmail == false){
         if(req.body.checkPhone == false){
-            //створюємо новий запис в табл. visitors_create
+            //створюємо новий запис
             console.log('start creating'); 
             Visitors.create(visitorData, req.body.table, function(err4, doc4){
                 if (err4) {
@@ -48,7 +48,7 @@ exports.editRequest = function(req, res) {
             });
         }
         else{
-            //перевірка на cellphone
+            //перевірка чи не зайнятий cellphone
             var fild2 = 'cellphone';
             var visitorData3 = [
                 req.body[fild2],
@@ -62,7 +62,7 @@ exports.editRequest = function(req, res) {
                 console.log('check result on cellphone: ', doc4);
                 if (doc4){
                     if (doc4[0] == undefined || doc4[0].cellphone == ''){
-                        //створюємо новий запис в табл. visitors_create
+                        //створюємо новий запис в табл
                         console.log('start creating'); 
                         Visitors.create(visitorData, req.body.table, function(err3, doc3){
                             if (err3) {
@@ -81,7 +81,7 @@ exports.editRequest = function(req, res) {
         }
     }
     else{
-        //перевірка на email
+        //перевірка чи не зайнятий email
         var fild = 'email';
         var visitorData2 = [
             req.body[fild],
@@ -96,7 +96,7 @@ exports.editRequest = function(req, res) {
             if (doc2){
                 if (doc2[0] == undefined || doc2[0].email == ''){
                     if(req.body.checkPhone == false){
-                        //створюємо новий запис в табл. visitors_create
+                        //створюємо новий запис в табл
                         console.log('start creating'); 
                         Visitors.create(visitorData, req.body.table, function(err4, doc4){
                             if (err4) {
@@ -107,7 +107,7 @@ exports.editRequest = function(req, res) {
                         });
                     }
                     else{
-                        //перевірка на cellphone
+                        //перевірка чи не зайнятий cellphone
                         var fild2 = 'cellphone';
                         var visitorData3 = [
                             req.body[fild2],
@@ -121,7 +121,7 @@ exports.editRequest = function(req, res) {
                             console.log('check result on cellphone: ', doc4);
                             if (doc4){
                                 if (doc4[0] == undefined || doc4[0].cellphone == ''){
-                                    //створюємо новий запис в табл. visitors_create
+                                    //створюємо новий запис в табл
                                     console.log('start creating'); 
                                     Visitors.create(visitorData, req.body.table, function(err3, doc3){
                                         if (err3) {
@@ -151,7 +151,7 @@ exports.editRequest = function(req, res) {
 
 //-------------------------------------------------------------------------------------------------------------
 
-exports.createRequest = function(req, res) {
+exports.createInVisitorsCreate = function(req, res) {
     //отримуємо всі regnum  з таблиць visitors та visitors_create
     Visitors.regnVisAndReq(function(err, doc){
         if (err) {
@@ -471,19 +471,31 @@ exports.getRowOnCond2 = function(req, res) {
                                                         if(doc == ''){
                                                             //якщо у visitors не знайдено даних по cellphone - повертаємо null
                                                             //recurs...
-                                                            console.log('doc is empty: ', doc)
+                                                            console.log('doc is empty: ', doc);
+                                                            // doc.push({
+                                                            //     "receivedTable": "",
+                                                            //     "receivedParam": ""
+                                                            // });
                                                             res.send(doc);
                                                         }
                                                         else{
                                                             //дані у visitors по cellphone знайдено, повертаємо їх клієнту
-                                                            console.log('doc from visitors on cellphone: ', doc)
+                                                            console.log('doc from visitors on cellphone: ', doc);
+                                                            doc.push({
+                                                                "receivedTable": "visitors",
+                                                                "receivedParam": "cellphone"
+                                                            });
                                                             res.send(doc);
                                                         } 
                                                     })
                                                 }
                                                 else{
                                                     //дані у visitors по email знайдено, повертаємо їх клієнту
-                                                    console.log('doc from visitors on email: ', doc)
+                                                    console.log('doc from visitors on email: ', doc);
+                                                    doc.push({
+                                                        "receivedTable": "visitors",
+                                                        "receivedParam": "email"
+                                                    });
                                                     res.send(doc);
                                                 }  
                                             })
@@ -491,28 +503,44 @@ exports.getRowOnCond2 = function(req, res) {
                                         }
                                         else{
                                             //дані у visitors_create по cellphone знайдено, повертаємо їх клієнту
-                                            console.log('doc from visitors_create on cellphone: ', doc)
+                                            console.log('doc from visitors_create on cellphone: ', doc);
+                                            doc.push({
+                                                "receivedTable": "visitors_create",
+                                                "receivedParam": "cellphone"
+                                            })
                                             res.send(doc);
                                         } 
                                     })
                                 }
                                 else{
                                     //дані у visitors_create по email знайдено, повертаємо їх клієнту
-                                    console.log('doc from visitors_create on email: ', doc)
+                                    console.log('doc from visitors_create on email: ', doc);
+                                    doc.push({
+                                        "receivedTable": "visitors_create",
+                                        "receivedParam": "email"
+                                    })
                                     res.send(doc);
                                 }  
                             })
                         }
                         else{
                             //дані у visitors_edit по cellphone знайдено, повертаємо їх клієнту
-                            console.log('doc from visitors_edit on cellphone: ', doc)
+                            console.log('doc from visitors_edit on cellphone: ', doc);
+                            doc.push({
+                                "receivedTable": "visitors_edit",
+                                "receivedParam": "cellphone"
+                            })
                             res.send(doc);
                         } 
                     })
                 }
                 else{
                     //дані у visitors_edit по email знайдено, повертаємо їх клієнту
-                    console.log('doc from visitors_edit on email: ', doc)
+                    console.log('doc from visitors_edit on email: ', doc);
+                    doc.push({
+                        "receivedTable": "visitors_edit",
+                        "receivedParam": "email"
+                    })
                     res.send(doc);
                 }  
             })
@@ -541,10 +569,18 @@ exports.getRowOnCond2 = function(req, res) {
                                 }
                                 if(doc == ''){
                                     console.log('doc(cellphone) is empty: ', doc);
+                                    // doc.push({
+                                    //     "receivedTable": "",
+                                    //     "receivedParam": ""
+                                    // })
                                     res.send(doc);
                                 }
                                 else{
                                     console.log('doc(cellphone) from visitors: ', doc);
+                                    doc.push({
+                                        "receivedTable": "visitors",
+                                        "receivedParam": "cellphone"
+                                    })
                                     res.send(doc);
                                 }
                                 
@@ -552,13 +588,21 @@ exports.getRowOnCond2 = function(req, res) {
                         }
                         else{
                             console.log('doc(cellphone) from visitors_create: ', doc);
+                            doc.push({
+                                "receivedTable": "visitors_create",
+                                "receivedParam": "cellphone"
+                            })
                             res.send(doc);
                         }
                         
                     });  
                 }
                 else{
-                    console.log('doc(cellphone) from visitors_edit: ', doc)
+                    console.log('doc(cellphone) from visitors_edit: ', doc);
+                    doc.push({
+                        "receivedTable": "visitors_edit",
+                        "receivedParam": "cellphone"
+                    })
                     res.send(doc);
                 }
             });
@@ -586,10 +630,18 @@ exports.getRowOnCond2 = function(req, res) {
                                 }
                                 if(doc == ''){
                                     console.log('doc(email) is empty: ', doc);
+                                    // doc.push({
+                                    //     "receivedTable": "",
+                                    //     "receivedParam": ""
+                                    // })
                                     res.send(doc);
                                 }
                                 else{
                                     console.log('doc(email) from visitors: ', doc);
+                                    doc.push({
+                                        "receivedTable": "visitors",
+                                        "receivedParam": "email"
+                                    })
                                     res.send(doc);
                                 }
                                 
@@ -597,19 +649,21 @@ exports.getRowOnCond2 = function(req, res) {
                         }
                         else{
                             console.log('doc(email) from visitors_create: ', doc);
-
-
-
-
-
-                            doc.push({'table': 'visitors_create'})
+                            doc.push({
+                                "receivedTable": "visitors_create",
+                                "receivedParam": "email"
+                            })
                             res.send(doc);
                         }
                         
                     });  
                 }
                 else{
-                    console.log('doc(email) from visitors_edit: ', doc)
+                    console.log('doc(email) from visitors_edit: ', doc);
+                    doc.push({
+                        "receivedTable": "visitors_edit",
+                        "receivedParam": "email"
+                    })
                     res.send(doc);
                 }
             });

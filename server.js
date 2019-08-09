@@ -39,10 +39,13 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.get("/db/:id", visitorsController.all);
 
 //додавання запису в заявку на внесення
-app.post("/create/req", urlencodedParser, visitorsController.createRequest);
+//app.post("/create/req", urlencodedParser, visitorsController.createRequest);
 
 //додавання запису в заявку на зміни
-app.post("/edit_request", urlencodedParser, visitorsController.editRequest)
+app.post("/createInVisitorsEdit", urlencodedParser, visitorsController.editRequest);
+
+//додавання запису в заявку на внесення
+app.post("/createInVisitorsCreate", urlencodedParser, visitorsController.createInVisitorsCreate);
 
 //додавання запису в основну базу
 app.post("/createVis", urlencodedParser, visitorsController.createNewVis);
