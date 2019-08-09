@@ -47,7 +47,7 @@ export class LoginComponent implements OnInit {
       this.warning = false;
       this.user.setUserLogData(this.loginForm.value);
       let get=this.server.post(this.loginForm.value, "get").subscribe(data =>{
-        console.log("data: ", data);
+        console.log("data login: ", data);
         if(data[0]){
           this.user.setUserData(data);
         }

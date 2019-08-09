@@ -3,23 +3,15 @@ import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { Observable, throwError  } from 'rxjs';
 
-const apiUrl = 'http://localhost:7001';
+const apiUrl = 'http://localhost:7001'; //dev host
+//const apiUrl = 'http://192.168.5.107:7001'; //prod host
 
-// export interface BDVisitors {
-//   cellphone: string;
-//   city: string;
-//   email: string;
-//   prizv: string;
-//   regnum: number;
-// }
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class ServerService {
-
-  //getData;
 
   constructor(
     private http: HttpClient
@@ -32,7 +24,6 @@ export class ServerService {
   get(prop){
     return this.http.get(`${apiUrl}/db/${prop}`)
   }
-
 
   private handleError(err) {
     console.log('caught mapping error and rethrowing', err);

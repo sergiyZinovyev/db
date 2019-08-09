@@ -159,7 +159,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       regnum: this.loginForm.get('regnum').value
     });
     this.isLoadingResults = true;
-    //this.loginForm.patchValue({potvid: this.getStringExhibForm()}) //змінюємо поле з виставками
+    this.loginForm.patchValue({potvid: this.getStringExhibForm()}) //змінюємо поле з виставками
     this.loginForm.patchValue({table: 'visitors_create'}) //змінюємо поле з таблицею в яку вносити дані
    
     let post = this.server.post(this.loginForm.value, "create/req").subscribe(data =>{
@@ -191,7 +191,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       console.log('дані не змінилися')
       return this.router.navigate(['invite']);
     }
-    //this.loginForm.patchValue({potvid: this.getStringExhibForm()}) //змінюємо поле з виставками
+    this.loginForm.patchValue({potvid: this.getStringExhibForm()}) //змінюємо поле з виставками
     this.loginForm.patchValue({table: 'visitors_edit'}) //змінюємо поле з таблицею в яку вносити дані
     if(this.loginForm.get('email').value != this.myEmail){
       console.log(this.loginForm.get('email').value,'--',this.myEmail);

@@ -51,7 +51,7 @@ app.post("/createVis", urlencodedParser, visitorsController.createNewVis);
 app.post("/edit", urlencodedParser, visitorsController.edit)
 
 //отримання запису по електронній адресі або мобільному з двох таблиць
-app.post("/get", cors(), urlencodedParser, visitorsController.getEmail);
+app.post("/get", cors(), urlencodedParser, visitorsController.getRowOnCond2);
 
 //отримання запису по електронній адресі або мобільному з 3 таблиць
 app.post("/get/regnum", cors(), urlencodedParser, visitorsController.getRowOnCond);

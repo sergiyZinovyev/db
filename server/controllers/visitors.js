@@ -424,7 +424,7 @@ exports.getRowOnCond2 = function(req, res) {
     else{
         let visitorData;
         let fild;
-        if(req.body.email){
+        if(req.body.email && req.body.cellphone){
             // якщо є email починаємо послідовну перевірку в 3-х таблицях по емейлу та телефону якщо він є
             Visitors.getRowOnCondFromTable([req.body.email], 'email', 'visitors_edit', function(err, doc){
                 if (err) {
@@ -440,68 +440,180 @@ exports.getRowOnCond2 = function(req, res) {
                         }
                         if(doc == ''){
                             //якщо у visitors_edit не знайдено даних по cellphone - перевіряємо по email in visitors_create
-                            //...
+                            //recurs...
+                            Visitors.getRowOnCondFromTable([req.body.email], 'email', 'visitors_create', function(err, doc){
+                                if (err) {
+                                    console.log(err);
+                                    return res.sendStatus(500);
+                                }
+                                if(doc == ''){
+                                    //якщо у visitors_create не знайдено даних по емейл - перевіряємо по телефону
+                                    Visitors.getRowOnCondFromTable([req.body.cellphone], 'cellphone', 'visitors_create', function(err, doc){
+                                        if (err) {
+                                            console.log(err);
+                                            return res.sendStatus(500);
+                                        }
+                                        if(doc == ''){
+                                            //якщо у visitors_create не знайдено даних по cellphone - перевіряємо по email in visitors
+                                            //recurs...
+                                            Visitors.getRowOnCondFromTable([req.body.email], 'email', 'visitors', function(err, doc){
+                                                if (err) {
+                                                    console.log(err);
+                                                    return res.sendStatus(500);
+                                                }
+                                                if(doc == ''){
+                                                    //якщо у visitors не знайдено даних по емейл - перевіряємо по телефону
+                                                    Visitors.getRowOnCondFromTable([req.body.cellphone], 'cellphone', 'visitors', function(err, doc){
+                                                        if (err) {
+                                                            console.log(err);
+                                                            return res.sendStatus(500);
+                                                        }
+                                                        if(doc == ''){
+                                                            //якщо у visitors не знайдено даних по cellphone - повертаємо null
+                                                            //recurs...
+                                                            console.log('doc is empty: ', doc)
+                                                            res.send(doc);
+                                                        }
+                                                        else{
+                                                            //дані у visitors по cellphone знайдено, повертаємо їх клієнту
+                                                            console.log('doc from visitors on cellphone: ', doc)
+                                                            res.send(doc);
+                                                        } 
+                                                    })
+                                                }
+                                                else{
+                                                    //дані у visitors по email знайдено, повертаємо їх клієнту
+                                                    console.log('doc from visitors on email: ', doc)
+                                                    res.send(doc);
+                                                }  
+                                            })
+                                            
+                                        }
+                                        else{
+                                            //дані у visitors_create по cellphone знайдено, повертаємо їх клієнту
+                                            console.log('doc from visitors_create on cellphone: ', doc)
+                                            res.send(doc);
+                                        } 
+                                    })
+                                }
+                                else{
+                                    //дані у visitors_create по email знайдено, повертаємо їх клієнту
+                                    console.log('doc from visitors_create on email: ', doc)
+                                    res.send(doc);
+                                }  
+                            })
                         }
                         else{
                             //дані у visitors_edit по cellphone знайдено, повертаємо їх клієнту
+                            console.log('doc from visitors_edit on cellphone: ', doc)
+                            res.send(doc);
                         } 
                     })
                 }
                 else{
                     //дані у visitors_edit по email знайдено, повертаємо їх клієнту
+                    console.log('doc from visitors_edit on email: ', doc)
+                    res.send(doc);
                 }  
             })
 
         }
-        else{
+        else if(!req.body.email && req.body.cellphone){
             //є тільки телефон, перевіряємо в 3-х таблицях тільки телефон
             visitorData = [req.body.cellphone];
             fild = 'cellphone';
-        }
+            Visitors.getRowOnCondFromTable(visitorData, fild, 'visitors_edit', function(err, doc){
+                if (err) {
+                    console.log(err);
+                    return res.sendStatus(500);
+                }
+                if(doc == ''){
+                    Visitors.getRowOnCondFromTable(visitorData, fild, 'visitors_create', function(err, doc){
+                        if (err) {
+                            console.log(err);
+                            return res.sendStatus(500);
+                        }
+                        if(doc == ''){
+                            Visitors.getRowOnCondFromTable(visitorData, fild, 'visitors', function(err, doc){
+                                if (err) {
+                                    console.log(err);
+                                    return res.sendStatus(500);
+                                }
+                                if(doc == ''){
+                                    console.log('doc(cellphone) is empty: ', doc);
+                                    res.send(doc);
+                                }
+                                else{
+                                    console.log('doc(cellphone) from visitors: ', doc);
+                                    res.send(doc);
+                                }
+                                
+                            });          
+                        }
+                        else{
+                            console.log('doc(cellphone) from visitors_create: ', doc);
+                            res.send(doc);
+                        }
+                        
+                    });  
+                }
+                else{
+                    console.log('doc(cellphone) from visitors_edit: ', doc)
+                    res.send(doc);
+                }
+            });
+        }  
+        else {
+            //є тільки email, перевіряємо в 3-х таблицях тільки email
+            visitorData = [req.body.email];
+            fild = 'email';
+            Visitors.getRowOnCondFromTable(visitorData, fild, 'visitors_edit', function(err, doc){
+                if (err) {
+                    console.log(err);
+                    return res.sendStatus(500);
+                }
+                if(doc == ''){
+                    Visitors.getRowOnCondFromTable(visitorData, fild, 'visitors_create', function(err, doc){
+                        if (err) {
+                            console.log(err);
+                            return res.sendStatus(500);
+                        }
+                        if(doc == ''){
+                            Visitors.getRowOnCondFromTable(visitorData, fild, 'visitors', function(err, doc){
+                                if (err) {
+                                    console.log(err);
+                                    return res.sendStatus(500);
+                                }
+                                if(doc == ''){
+                                    console.log('doc(email) is empty: ', doc);
+                                    res.send(doc);
+                                }
+                                else{
+                                    console.log('doc(email) from visitors: ', doc);
+                                    res.send(doc);
+                                }
+                                
+                            });          
+                        }
+                        else{
+                            console.log('doc(email) from visitors_create: ', doc);
 
 
 
-        Visitors.getRowOnCondFromTable(visitorData, fild, 'visitors_edit', function(err, doc){
-            if (err) {
-                console.log(err);
-                return res.sendStatus(500);
-            }
-            if(doc == ''){
-                Visitors.getRowOnCondFromTable(visitorData, fild, 'visitors_create', function(err, doc){
-                    if (err) {
-                        console.log(err);
-                        return res.sendStatus(500);
-                    }
-                    if(doc == ''){
-                        Visitors.getRowOnCondFromTable(visitorData, fild, 'visitors', function(err, doc){
-                            if (err) {
-                                console.log(err);
-                                return res.sendStatus(500);
-                            }
-                            if(doc == ''){
-                                console.log('doc is empty: ', doc);
-                                res.send(doc);
-                            }
-                            else{
-                                console.log('doc from visitors: ', doc);
-                                res.send(doc);
-                            }
-                            
-                        });          
-                    }
-                    else{
-                        console.log('doc from visitors_create: ', doc);
-                        res.send(doc);
-                    }
-                    
-                });  
-            }
-            else{
-                console.log('doc from visitors_edit: ', doc)
-                res.send(doc);
-            }
-            
-        });    
+
+
+                            doc.push({'table': 'visitors_create'})
+                            res.send(doc);
+                        }
+                        
+                    });  
+                }
+                else{
+                    console.log('doc(email) from visitors_edit: ', doc)
+                    res.send(doc);
+                }
+            });
+        }           
     } 
 };
 
