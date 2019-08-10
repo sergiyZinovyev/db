@@ -65,6 +65,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
           table: ['', []],
           checkEmail: [false, []],
           checkPhone: [false, []],
+
           email: [value[0].email, [Validators.email]],
           prizv: [value[0].prizv, [Validators.required]],
           city: [value[0].city, [Validators.required]],
@@ -78,7 +79,21 @@ export class RegistrationComponent implements OnInit, OnDestroy {
           pobatkovi: [value[0].pobatkovi, []],
           posada: [value[0].posada, []],
           sferadij: [value[0].sferadij, []],
+          namepovne: [value[0].namepovne, []],
+          postindeks: [value[0].postindeks, []],
+          address: [value[0].address, []],
+          postaddreses: [value[0].postaddreses, []],
+          telephon: [value[0].telephon, []],
+          gender: [value[0].gender, []],
+          type: [value[0].type, []],
+          kompeten: [value[0].kompeten, []],
+          datawnesenny: [value[0].datawnesenny, []],
+          datelastcor: [value[0].datelastcor, []],
+          rating: [value[0].rating, []],
+          ins_user: [value[0].ins_user, []],
+
         })
+        //визначаємо: редагуємо дані чи вносимо нові
         this.edit = true;
 
         this.myEmail = value[0].email;
@@ -94,11 +109,11 @@ export class RegistrationComponent implements OnInit, OnDestroy {
             break;
           case 'visitors_create':
             this.spreadsheet = 'visitors_create';
-            this.myRequest = 'edit';
+            this.myRequest = 'editPro';
             break;
           case 'visitors_edit':
             this.spreadsheet = 'visitors_edit';
-            this.myRequest = 'edit';
+            this.myRequest = 'editPro';
             break; 
         }
 
@@ -114,6 +129,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     table: ['', []],
     checkEmail: [false, []],
     checkPhone: [false, []],
+
     email: [this.user.userLogData.email, [Validators.email]],
     prizv: ['', [Validators.required]],
     city: ['', [Validators.required]],
@@ -127,6 +143,18 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     pobatkovi: ['', []],
     posada: ['', []],
     sferadij: ['', []],
+    namepovne: ['', []],
+    postindeks: ['', []],
+    address: ['', []],
+    postaddreses: ['', []],
+    telephon: ['', []],
+    gender: ['', []],
+    type: ['', []],
+    kompeten: ['', []],
+    datawnesenny: ['', []],
+    datelastcor: ['', []],
+    rating: ['', []],
+    ins_user: ['', []],
   })
 
   exhibForm = new FormGroup({});
@@ -179,7 +207,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     this.isLoadingResults = true;
     this.loginForm.patchValue({potvid: this.getStringExhibForm()}) //змінюємо поле з виставками
     this.loginForm.patchValue({table: 'visitors_create'}) //змінюємо поле з таблицею в яку вносити дані
-   
+    console.log('this.loginForm.value - after: ',this.loginForm.value);
     let post = this.server.post(this.loginForm.value, "createInVisitorsCreate").subscribe(data =>{
       console.log('this.loginForm.value: ',this.loginForm.value);
       console.log("dataServer: ", data);
@@ -203,12 +231,13 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   editUser(){
     this.user.setUserData(this.loginForm.value);
     this.isLoadingResults = true;
+    this.loginForm.patchValue({potvid: this.getStringExhibForm()}) //змінюємо поле з виставками
     //перевіряємо чи змінилася форма
     if(this.checkFormChange()){
       console.log('дані не змінилися')
       return this.router.navigate(['invite']);
     }
-    this.loginForm.patchValue({potvid: this.getStringExhibForm()}) //змінюємо поле з виставками
+    //this.loginForm.patchValue({potvid: this.getStringExhibForm()}) //змінюємо поле з виставками
     this.loginForm.patchValue({table: this.spreadsheet}) //змінюємо поле з таблицею в яку вносити дані
     if(this.loginForm.get('email').value != this.myEmail){
       console.log(this.loginForm.get('email').value,'--',this.myEmail);
@@ -247,6 +276,8 @@ export class RegistrationComponent implements OnInit, OnDestroy {
        this.loginForm.get('name').valid &&
        this.loginForm.get('countryid').valid &&
        this.loginForm.get('regionid').valid){
+        console.log("this.loginForm.get('email').valid: ", this.loginForm.get('email').value," - ",this.loginForm.get('email').valid);
+        console.log("this.loginForm.get('cellphone').valid: ", this.loginForm.get('cellphone').value," - ",this.loginForm.get('cellphone').valid);
         if(this.loginForm.get('email').valid || this.loginForm.get('cellphone').valid){
           console.log('email: ', this.loginForm.get('email').value);
           console.log('cellphone: ', this.loginForm.get('cellphone').value);
@@ -283,7 +314,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
 
   getStringExhibForm(){
-    //console.log(this.exhibForm.value)
+    //перетворення форми виставки(this.exhibForm) в список обраних виставок
     let exhibStr: string = '';
     for(var key in this.exhibForm.value){
       if(this.exhibForm.value[key]==true){
@@ -304,6 +335,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   checkFormChange(){
     let flag = true
     console.log('this.startLoginForm: ', this.startLoginForm);
+    console.log('this.loginForm: ', this.loginForm.value);
     for (let key in this.startLoginForm){
       //console.log(key,': ',this.startLoginForm[key])
       if(this.loginForm.get(key)){

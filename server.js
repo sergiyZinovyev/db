@@ -51,7 +51,10 @@ app.post("/createInVisitorsCreate", urlencodedParser, visitorsController.createI
 app.post("/createVis", urlencodedParser, visitorsController.createNewVis);
 
 //редагування запису
-app.post("/edit", urlencodedParser, visitorsController.edit)
+//app.post("/edit", urlencodedParser, visitorsController.edit)
+
+//редагування запису
+app.post("/editPro", urlencodedParser, visitorsController.editPro)
 
 //отримання запису по електронній адресі або мобільному з двох таблиць
 app.post("/get", cors(), urlencodedParser, visitorsController.getRowOnCond2);

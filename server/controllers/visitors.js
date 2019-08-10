@@ -27,9 +27,18 @@ exports.editRequest = function(req, res) {
         req.body.pobatkovi,
         req.body.posada,
         req.body.sferadij,
-        Visitors.curentDate(),
+        Visitors.curentDate(),//потрібно поправити на req.body.datawnesenny в потрібному форматі,
         99,
-        req.body.prizv+' '+req.body.name+' '+req.body.pobatkovi
+        req.body.prizv+' '+req.body.name+' '+req.body.pobatkovi,
+        req.body.postindeks,
+        req.body.address,
+        req.body.postaddreses,
+        req.body.telephon,
+        req.body.gender,
+        req.body.type,
+        req.body.kompeten,
+        Visitors.curentDate(),
+        req.body.rating
     ];
 
     console.log('req.body.checkEmail: ',req.body.checkEmail);
@@ -51,6 +60,7 @@ exports.editRequest = function(req, res) {
             //перевірка чи не зайнятий cellphone
             var fild2 = 'cellphone';
             var visitorData3 = [
+                req.body[fild2],
                 req.body[fild2],
                 req.body[fild2]
             ];
@@ -85,6 +95,7 @@ exports.editRequest = function(req, res) {
         var fild = 'email';
         var visitorData2 = [
             req.body[fild],
+            req.body[fild],
             req.body[fild]
         ];
         Visitors.getEmail(visitorData2, fild, function(err2, doc2){
@@ -110,6 +121,7 @@ exports.editRequest = function(req, res) {
                         //перевірка чи не зайнятий cellphone
                         var fild2 = 'cellphone';
                         var visitorData3 = [
+                            req.body[fild2],
                             req.body[fild2],
                             req.body[fild2]
                         ];
@@ -174,7 +186,16 @@ exports.createInVisitorsCreate = function(req, res) {
             req.body.sferadij,
             Visitors.curentDate(),
             99,
-            req.body.prizv+' '+req.body.name+' '+req.body.pobatkovi
+            req.body.prizv+' '+req.body.name+' '+req.body.pobatkovi,
+            req.body.postindeks,
+            req.body.address,
+            req.body.postaddreses,
+            req.body.telephon,
+            req.body.gender,
+            req.body.type,
+            req.body.kompeten,
+            Visitors.curentDate(),
+            req.body.rating
         ];
 
         //перевірка на email
@@ -183,6 +204,7 @@ exports.createInVisitorsCreate = function(req, res) {
         }
         var fild = 'email';
         var visitorData2 = [
+            req.body[fild],
             req.body[fild],
             req.body[fild]
         ];
@@ -197,6 +219,7 @@ exports.createInVisitorsCreate = function(req, res) {
                     //перевірка на cellphone
                     var fild2 = 'cellphone';
                     var visitorData3 = [
+                        req.body[fild2],
                         req.body[fild2],
                         req.body[fild2]
                     ];
@@ -274,10 +297,158 @@ exports.edit = function(req, res) {
 };
 
 //-------------------------------------------------------------------------------------------------------------
+//Редазування запису
+exports.editPro = function(req, res) {
+    var visitorData = [
+        req.body.email,
+        req.body.prizv,
+        req.body.city,
+        req.body.cellphone,
+        req.body.potvid,
+        req.body.name,
+        req.body.countryid,
+        req.body.regionid,
+        req.body.m_robotu,
+        req.body.pobatkovi,
+        req.body.posada,
+        req.body.sferadij,
+        Visitors.curentDate(),//потрібно поправити на req.body.datawnesenny в потрібному форматі,
+        99,
+        req.body.prizv+' '+req.body.name+' '+req.body.pobatkovi,
+        req.body.postindeks,
+        req.body.address,
+        req.body.postaddreses,
+        req.body.telephon,
+        req.body.gender,
+        req.body.type,
+        req.body.kompeten,
+        Visitors.curentDate(),
+        req.body.rating,
+        req.body.regnum
+    ];
+    if (req.body.checkEmail == false){
+        if(req.body.checkPhone == false){
+            //створюємо новий запис
+            console.log('start creating'); 
+            Visitors.editPro(visitorData, req.body.table, function(err4, doc4){
+                if (err4) {
+                    console.log('err4: ',err4);
+                    return res.sendStatus(500);
+                }
+                return res.send(doc4);
+            });
+        }
+        else{
+            //перевірка чи не зайнятий cellphone
+            var fild2 = 'cellphone';
+            var visitorData3 = [
+                req.body[fild2],
+                req.body[fild2],
+                req.body[fild2]
+            ];
+            Visitors.getEmail(visitorData3, fild2, function(err4, doc4){
+                if (err4) {
+                    console.log(err4);
+                    return res.sendStatus(500);
+                }
+                console.log('check result on cellphone: ', doc4);
+                if (doc4){
+                    if (doc4[0] == undefined || doc4[0].cellphone == ''){
+                        //створюємо новий запис в табл
+                        console.log('start creating'); 
+                        Visitors.editPro(visitorData, req.body.table, function(err3, doc3){
+                            if (err3) {
+                                console.log(err3);
+                                return res.sendStatus(500);
+                            }
+                            res.send(doc3);
+                        });
+                    }
+                    else{
+                        console.log('phone found');
+                        return res.send(doc4)
+                    }
+                }
+            }); 
+        }
+    }
+    else{
+        //перевірка чи не зайнятий email
+        var fild = 'email';
+        var visitorData2 = [
+            req.body[fild],
+            req.body[fild],
+            req.body[fild]
+        ];
+        Visitors.getEmail(visitorData2, fild, function(err2, doc2){
+            if (err2) {
+                console.log(err2);
+                return res.sendStatus(500);
+            }
+            console.log('check result on email: ', doc2);
+            if (doc2){
+                if (doc2[0] == undefined || doc2[0].email == ''){
+                    if(req.body.checkPhone == false){
+                        //створюємо новий запис в табл
+                        console.log('start creating'); 
+                        Visitors.editPro(visitorData, req.body.table, function(err4, doc4){
+                            if (err4) {
+                                console.log(err4);
+                                return res.sendStatus(500);
+                            }
+                            return res.send(doc4);
+                        });
+                    }
+                    else{
+                        //перевірка чи не зайнятий cellphone
+                        var fild2 = 'cellphone';
+                        var visitorData3 = [
+                            req.body[fild2],
+                            req.body[fild2],
+                            req.body[fild2]
+                        ];
+                        Visitors.getEmail(visitorData3, fild2, function(err4, doc4){
+                            if (err4) {
+                                console.log(err4);
+                                return res.sendStatus(500);
+                            }
+                            console.log('check result on cellphone: ', doc4);
+                            if (doc4){
+                                if (doc4[0] == undefined || doc4[0].cellphone == ''){
+                                    //створюємо новий запис в табл
+                                    console.log('start creating'); 
+                                    Visitors.editPro(visitorData, req.body.table, function(err3, doc3){
+                                        if (err3) {
+                                            console.log(err3);
+                                            return res.sendStatus(500);
+                                        }
+                                        res.send(doc3);
+                                    });
+                                }
+                                else{
+                                    console.log('phone found');
+                                    return res.send(doc4)
+                                }
+                            }
+                        });
+                    }
+                    
+                }
+                else{
+                    console.log('email found');
+                    return res.send(doc2)
+                }
+            }
+        });
+    }   
+};
+
+//-------------------------------------------------------------------------------------------------------------
 
 exports.getSpecCond = function(req, res) {
     var fild = req.body.condition;
     var visitorData = [
+        req.body[fild],
         req.body[fild],
         req.body[fild]
     ];
@@ -294,52 +465,52 @@ exports.getSpecCond = function(req, res) {
 
 //-------------------------------------------------------------------------------------------------------------
 
-exports.getEmail = function(req, res) {
-    var visitorData;
-    var fild;
-    if(!req.body.email){
-        visitorData = [
-            req.body.cellphone,
-            req.body.cellphone
-        ];
-        fild = 'cellphone';
-    }
-    else{
-        visitorData = [
-            req.body.email,
-            req.body.email
-        ];
-        fild = 'email';
-    }
+// exports.getEmail = function(req, res) {
+//     var visitorData;
+//     var fild;
+//     if(!req.body.email){
+//         visitorData = [
+//             req.body.cellphone,
+//             req.body.cellphone
+//         ];
+//         fild = 'cellphone';
+//     }
+//     else{
+//         visitorData = [
+//             req.body.email,
+//             req.body.email
+//         ];
+//         fild = 'email';
+//     }
     
-    Visitors.getEmail(visitorData, fild, function(err, doc){
-        if (err) {
-            console.log(err);
-            return res.sendStatus(500);
-        }
-        if(doc == ''){
-            if(!req.body.cellphone){return res.send(doc);}
-            visitorData = [
-                req.body.cellphone,
-                req.body.cellphone
-            ];
-            fild = 'cellphone';
-            Visitors.getEmail(visitorData, fild, function(err, doc){
-                if (err) {
-                    console.log(err);
-                    return res.sendStatus(500);
-                }
-                console.log('doc2: ', doc);
-                return res.send(doc);
-            });
-        }
-        else{
-            console.log('doc: ', doc)
-            res.send(doc);
-        }
+//     Visitors.getEmail(visitorData, fild, function(err, doc){
+//         if (err) {
+//             console.log(err);
+//             return res.sendStatus(500);
+//         }
+//         if(doc == ''){
+//             if(!req.body.cellphone){return res.send(doc);}
+//             visitorData = [
+//                 req.body.cellphone,
+//                 req.body.cellphone
+//             ];
+//             fild = 'cellphone';
+//             Visitors.getEmail(visitorData, fild, function(err, doc){
+//                 if (err) {
+//                     console.log(err);
+//                     return res.sendStatus(500);
+//                 }
+//                 console.log('doc2: ', doc);
+//                 return res.send(doc);
+//             });
+//         }
+//         else{
+//             console.log('doc: ', doc)
+//             res.send(doc);
+//         }
         
-    });   
-};
+//     });   
+// };
 
 //-------------------------------------------------------------------------------------------------------------
 

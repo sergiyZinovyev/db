@@ -41,7 +41,34 @@ exports.regnVisAndReq = function(cb){
 
 //створення нового запису в таблиці visitors_create
 exports.create = function(dataVisitor, table, cb){
-  let sql = `INSERT INTO ${table} (regnum, email, prizv, city, cellphone, potvid, name, countryid, regionid, m_robotu, pobatkovi, posada, sferadij, datawnesenny, ins_user, namepovne) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+  let sql = `INSERT INTO ${table} (
+      regnum, 
+      email, 
+      prizv, 
+      city, 
+      cellphone, 
+      potvid, 
+      name, 
+      countryid, 
+      regionid, 
+      m_robotu, 
+      pobatkovi, 
+      posada, 
+      sferadij, 
+      datawnesenny, 
+      ins_user, 
+      namepovne,
+      postindeks,
+      address,
+      postaddreses,
+      telephon,
+      gender,
+      type,
+      kompeten,
+      datelastcor,
+      rating
+    ) 
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
   db.get().query(sql, dataVisitor, function(err, data) {
     cb(err, data)
   })
@@ -63,9 +90,42 @@ exports.edit = function(dataVisitor, cb){
   })
 }
 
+//редагування запису у вказаній таблиці
+exports.editPro = function(dataVisitor, table, cb){
+  let sql = `UPDATE ${table} SET 
+  email=?, 
+  prizv=?, 
+  city=?, 
+  cellphone=?, 
+  potvid=?, 
+  name=?, 
+  countryid=?, 
+  regionid=?, 
+  m_robotu=?, 
+  pobatkovi=?, 
+  posada=?, 
+  sferadij=?, 
+  datawnesenny=?, 
+  ins_user=?, 
+  namepovne=?,
+  postindeks=?,
+  address=?,
+  postaddreses=?,
+  telephon=?,
+  gender=?,
+  type=?,
+  kompeten=?,
+  datelastcor=?,
+  rating=? 
+    WHERE regnum=?`;
+  db.get().query(sql, dataVisitor, function(err, data) {
+    cb(err, data)
+  })
+}
+
 //отримання запису по вказаній умові з двох таблиць
 exports.getEmail = function(dataVisitor, fild, cb){
-  let sql = `(SELECT * FROM visitors WHERE ${fild}=?) UNION (SELECT * FROM visitors_create WHERE ${fild}=?)`;
+  let sql = `(SELECT * FROM visitors WHERE ${fild} LIKE ?) UNION (SELECT * FROM visitors_create WHERE ${fild} LIKE ?) UNION (SELECT * FROM visitors_edit WHERE ${fild} LIKE ?)`;
   db.get().query(sql, dataVisitor, function(err, data) {
     cb(err, data)
   })
