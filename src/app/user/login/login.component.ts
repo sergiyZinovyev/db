@@ -30,6 +30,13 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    console.log('window.location: ',window.location);
+    this.server.setFrontURL(window.location);
+  }
+
+  getCurrURL(){
+    console.log(this.server.frontURL);
+    console.log(this.server.frontURL.searchParams.get('id'));
   }
 
   loginForm = this.fb.group({

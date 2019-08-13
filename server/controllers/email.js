@@ -5,6 +5,7 @@ var transporter = nodemailer.createTransport({
     auth: {
         user: '',
         pass: ''
+        
     }
 });
 

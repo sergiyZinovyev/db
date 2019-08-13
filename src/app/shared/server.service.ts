@@ -13,9 +13,17 @@ const apiUrl = 'http://localhost:7001'; //dev host
 
 export class ServerService {
 
+  frontURL: URL;
+
   constructor(
     private http: HttpClient
   ) { }
+
+  setFrontURL(url){
+    if (this.frontURL){return console.log('url not change - ', this.frontURL)}
+    this.frontURL = new URL(url);
+    console.log(this.frontURL);
+  }
 
   post(value, prop) {
     return this.http.post(`${apiUrl}/${prop}`, value)    

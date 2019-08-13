@@ -11,15 +11,20 @@ exports.nextRegnum = function(result){
 }
 
 //визначення current date
-exports.curentDate = function(){
-  var now = new Date();
-  var curr_date = ('0' + now.getDate()).slice(-2)
-  var curr_month = ('0' + (now.getMonth() + 1)).slice(-2);
-  var curr_year = now.getFullYear();
-  var formated_date = curr_year + "-" + curr_month + "-" + curr_date;
-
-  //return formated_date;
-  return new Date()
+exports.curentDate = function(d){
+  if(d){
+    var now = new Date(d);
+    var curr_date = ('0' + now.getDate()).slice(-2)
+    var curr_month = ('0' + (now.getMonth() + 1)).slice(-2);
+    var curr_year = now.getFullYear();
+    var curr_hour = now.getHours();
+    var curr_minute = now.getMinutes();
+    var curr_second = now.getSeconds();
+    var formated_date = curr_year + "-" + curr_month + "-" + curr_date + " " + curr_hour + ":" + curr_minute + ":" + curr_second;
+  }
+  else {return new Date()};
+  return formated_date;
+  //return new Date()
 }
 
 //отримання всіх записів з обраної таблиці
