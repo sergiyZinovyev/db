@@ -31,6 +31,7 @@ export class VisitorsComponent implements OnInit {
 
   i = 20;
   name: string = "База відвідувачів";
+  headerColor = 'rgb(45, 128, 253)';
   nameBut: string = "Заявки на внесення";
 
   displayedColumns: string[] = [
@@ -156,16 +157,35 @@ export class VisitorsComponent implements OnInit {
   butGetEditTable(){
     this.getBd('visitors_edit');
     this.name = 'Заявки на зміну';
+    this.getHeaderColor()
   }
 
   butGetCreateTable(){
     this.getBd('visitors_create');
     this.name = 'Заявки на внесення';
+    this.getHeaderColor()
   }
 
   butGetBd(){
     this.getBd('visitors');
     this.name = 'База відвідувачів';
+    this.getHeaderColor()
+  }
+
+  getHeaderColor() {
+    switch (this.name) {
+      case 'База відвідувачів':
+        this.headerColor = 'rgb(45, 128, 253)';
+        break;
+      case 'Заявки на внесення':
+        this.headerColor = 'rgb(0, 179, 164)';
+        break;
+      case 'Заявки на зміну':
+        this.headerColor = 'rgb(0, 102, 116)';
+        break;
+      default:
+        break;
+    }
   }
   //function(){}
 

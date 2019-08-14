@@ -29,15 +29,15 @@ export class VisitorComponent implements OnInit {
   ngOnInit() {
     //console.log(this.element);
     this.loginForm = this.fb.group({
-      email: [this.element.email, [Validators.email, Validators.required]],
+      email: [this.element.email, [Validators.email]],
       prizv: [this.element.prizv, [Validators.required]],
       city: [this.element.city, [Validators.required]],
-      cellphone: [this.element.cellphone, [Validators.required]],
+      cellphone: [this.element.cellphone, [Validators.pattern('380[0-9]{9}')]],
       regnum: [this.element.regnum, []],
-      potvid: ['temp', []],
-      name: [this.element.name, []],
+      potvid: [this.element.potvid, []],
+      name: [this.element.name, [Validators.required]],
       postaddreses: [this.element.postaddreses, []],
-      pobatcovi: [this.element.pobatcovi, []],
+      pobatkovi: [this.element.pobatcovi, []],
       gender: [this.element.gender, []],
       m_robotu: [this.element.m_robotu, []],
       sferadij: [this.element.sferadij, []],
@@ -46,7 +46,15 @@ export class VisitorComponent implements OnInit {
       kompeten: [this.element.kompeten, []],
       datawnesenny: [this.element.datawnesenny, []],
       datelastcor: [this.element.datelastcor, []],
-      ins_user: [this.element.ins_user, []]
+      ins_user: [this.element.ins_user, []],
+      countryid: [String(this.element.countryid), [Validators.required]],
+      regionid: [String(this.element.regionid), [Validators.required]],
+      namepovne: [this.element.namepovne, []],
+      postindeks: [this.element.postindeks, []],
+      address: [this.element.address, []],
+      telephon: [this.element.telephon, []],
+      rating: [this.element.rating, []],
+
     })
   }
   
@@ -97,20 +105,20 @@ export class VisitorComponent implements OnInit {
     });
   }
 
-  submit(){}
+  // submit(){}
 
-  getTableName(): string{
-    if(this.tableName == "База відвідувачів"){
-      return 'visitors'
-    }
-    else{
-      return 'visitors_create'
-    }
-  }
+  // getTableName(): string{
+  //   if(this.tableName == "База відвідувачів"){
+  //     return 'visitors'
+  //   }
+  //   else{
+  //     return 'visitors_create'
+  //   }
+  // }
 
-  updateData(){
-    this.getData.emit(this.getTableName());
-  }
+  // updateData(){
+  //   this.getData.emit(this.getTableName());
+  // }
 
   delete(){
     let table;

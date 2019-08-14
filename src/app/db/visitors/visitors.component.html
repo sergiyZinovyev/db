@@ -6,26 +6,44 @@
         <mat-spinner></mat-spinner>
     </div>
     <div class="d-flex justify-content-between">
-        <span class="ml-5 mt-3"><strong>{{name}}</strong></span>
+        <span class="ml-5 my-2" [style.color]="headerColor"><strong>{{name}}</strong></span>
         <div>
-            <button class='m-2 mr-n1' mat-raised-button [matMenuTriggerFor]="menu">Додати поле</button>
+            <!-- <button class='m-2 mr-n1' mat-raised-button [matMenuTriggerFor]="menu">Додати поле</button> -->
+            <button mat-icon-button [style.color]="headerColor" aria-label="Example icon-button with a heart icon" [matMenuTriggerFor]="menu">
+                <mat-icon>add_box</mat-icon>
+            </button>
                 <mat-menu #menu="matMenu" xPosition="after" yPosition="below">
                     <ng-container *ngFor='let item of keyData'>
                         <button mat-menu-item (click)='addColumn(item)'>{{item}}</button>
                     </ng-container>
                 </mat-menu>
-            <button class='m-2 mr-n1' mat-raised-button [matMenuTriggerFor]="menu2">Видалити поле</button>
+            <!-- <button class='m-2 mr-n1' mat-raised-button [matMenuTriggerFor]="menu2">Видалити поле</button> -->
+            <button mat-icon-button [style.color]="headerColor" aria-label="Example icon-button with a heart icon" [matMenuTriggerFor]="menu2">
+                <mat-icon>indeterminate_check_box</mat-icon>
+            </button>
                 <mat-menu #menu2="matMenu" xPosition="after" yPosition="below">
                     <ng-container *ngFor='let item of displayedColumns'>
                         <button mat-menu-item (click)='removeColumn(item)'>{{item}}</button>
                     </ng-container>
                 </mat-menu>
+                
+            <!-- <button class='m-2 mr-n1' mat-raised-button [matMenuTriggerFor]="menu3">Таблиці</button> -->
+            <button mat-icon-button [style.color]="headerColor" aria-label="Example icon-button with a heart icon" [matMenuTriggerFor]="menu3">
+                <mat-icon>date_range</mat-icon>
+            </button>
+                <mat-menu #menu3="matMenu" xPosition="after" yPosition="below">
+                    <ng-container>
+                        <button mat-menu-item (click)='butGetBd()'>База відвідувачів</button>
+                        <button mat-menu-item (click)='butGetCreateTable()'>Заявки на внесення</button>
+                        <button mat-menu-item (click)='butGetEditTable()'>Заявки на зміну</button>
+                    </ng-container>
+                </mat-menu>
 
             <!-- <button class='m-2 mr-n1' mat-raised-button (click)='removeColumn("datelastcor")'>Видалити поле</button> -->
 
-            <button class='m-2 mr-n1' mat-raised-button (click)='butGetBd()'>База відвідувачів</button>
+            <!-- <button class='m-2 mr-n1' mat-raised-button (click)='butGetBd()'>База відвідувачів</button>
             <button class='m-2 mr-n1' mat-raised-button (click)='butGetCreateTable()'>Заявки на внесення</button>
-            <button class='m-2 mr-n1' mat-raised-button (click)='butGetEditTable()'>Заявки на зміну</button>
+            <button class='m-2 mr-n1' mat-raised-button (click)='butGetEditTable()'>Заявки на зміну</button> -->
         </div>
         
     </div>
@@ -38,7 +56,7 @@
 
         <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns" >
             <!-- <ng-container sticky></ng-container> -->
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{column}} </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header [style.background-color]="headerColor"> {{column}} </th>
             <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
             <!-- <td mat-footer-cell *matFooterCellDef></td> -->
         </ng-container>

@@ -7,7 +7,7 @@
 
  th.mat-header-cell{
    text-align: center !important;
-   background-color: rgb(45, 128, 253);
+   /* background-color: rgb(0, 102, 116); */
    color: white;
    font-weight: bold;
    padding-left: 10px;
