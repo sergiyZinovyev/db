@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { Observable, throwError  } from 'rxjs';
 
-const apiUrl = 'http://localhost:7001'; //dev host
+//const apiUrl = 'http://localhost:7001'; //dev host
 //const apiUrl = 'http://192.168.5.107:7001'; //prod host
 
 
@@ -14,6 +14,8 @@ const apiUrl = 'http://localhost:7001'; //dev host
 export class ServerService {
 
   frontURL: URL;
+  apiUrl = 'http://localhost:7001'; //dev host
+  //apiUrl = 'http://192.168.5.107:7001'; //prod host
 
   constructor(
     private http: HttpClient
@@ -26,11 +28,11 @@ export class ServerService {
   }
 
   post(value, prop) {
-    return this.http.post(`${apiUrl}/${prop}`, value)    
+    return this.http.post(`${this.apiUrl}/${prop}`, value)    
   }
   
   get(prop){
-    return this.http.get(`${apiUrl}/db/${prop}`)
+    return this.http.get(`${this.apiUrl}/db/${prop}`)
   }
 
   private handleError(err) {

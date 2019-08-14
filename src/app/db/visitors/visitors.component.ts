@@ -140,47 +140,61 @@ export class VisitorsComponent implements OnInit {
     console.log(this.displayedColumns);
   }
 
-  butClickBd(){
-    if(this.name == "База відвідувачів"){
-      this.getBd('visitors_create');
-      this.name = 'Заявки на внесення';
-      this.nameBut = 'База відвідувачів';
-    }
-    else{
-      this.getBd('visitors');
-      this.name = 'База відвідувачів';
-      this.nameBut = 'Заявки на внесення';
-    }
+  // butClickBd(){
+  //   if(this.name == "База відвідувачів"){
+  //     this.getBd('visitors_create');
+  //     this.name = 'Заявки на внесення';
+  //     this.nameBut = 'База відвідувачів';
+  //   }
+  //   else{
+  //     this.getBd('visitors');
+  //     this.name = 'База відвідувачів';
+  //     this.nameBut = 'Заявки на внесення';
+  //   }
+  // }
+
+  butGetEditTable(){
+    this.getBd('visitors_edit');
+    this.name = 'Заявки на зміну';
   }
 
-  function(){}
-
-  delete(id){
-    let table;
-    if(this.name == "База відвідувачів"){
-      table = 'visitors'
-    }
-    else{
-      table = 'visitors_create'
-    }
-    let dataDel = {
-      tableName: table,
-      regnum: id 
-    }
-    let post = this.server.post(dataDel, "delete").subscribe(data =>{
-      console.log("data: ", data);
-      if(data){
-        console.log("unsubscribe");
-        if(this.name == "База відвідувачів"){
-          this.getBd('visitors');
-        }
-        else{
-          this.getBd('visitors_create');
-        }
-        return post.unsubscribe();
-      }
-    });
+  butGetCreateTable(){
+    this.getBd('visitors_create');
+    this.name = 'Заявки на внесення';
   }
+
+  butGetBd(){
+    this.getBd('visitors');
+    this.name = 'База відвідувачів';
+  }
+  //function(){}
+
+  // delete(id){
+  //   let table;
+  //   if(this.name == "База відвідувачів"){
+  //     table = 'visitors'
+  //   }
+  //   else{
+  //     table = 'visitors_create'
+  //   }
+  //   let dataDel = {
+  //     tableName: table,
+  //     regnum: id 
+  //   }
+  //   let post = this.server.post(dataDel, "delete").subscribe(data =>{
+  //     console.log("data: ", data);
+  //     if(data){
+  //       console.log("unsubscribe");
+  //       if(this.name == "База відвідувачів"){
+  //         this.getBd('visitors');
+  //       }
+  //       else{
+  //         this.getBd('visitors_create');
+  //       }
+  //       return post.unsubscribe();
+  //     }
+  //   });
+  // }
 
 }
 

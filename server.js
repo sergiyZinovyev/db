@@ -38,6 +38,9 @@ app.use(bodyParser.urlencoded({extended: true}));
 //отримати всі записи з вказаної таблиці
 app.get("/db/:id", visitorsController.all);
 
+//отримати файли
+app.get("/img/:id", visitorsController.file);
+
 //додавання запису в заявку на внесення
 //app.post("/create/req", urlencodedParser, visitorsController.createRequest);
 

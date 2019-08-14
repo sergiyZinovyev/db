@@ -14,6 +14,8 @@ import * as html2pdf from 'html2pdf.js';
 export class InviteComponent implements OnInit, OnDestroy{
 
   //html2pdf: any;
+
+  //myUrl = 'http://localhost:7001/img/bud.png';
   bcFormat = 'CODE128'; //формат штрихкоду
 
   email:string = '';
@@ -96,8 +98,13 @@ export class InviteComponent implements OnInit, OnDestroy{
     
   }
 
+  getImg(){
+    return `${this.server.apiUrl}/img/${this.server.frontURL.searchParams.get('exhib')}.png`
+  }
+
   test(){
-    console.log(this.invitePDF);
+      console.log(this.server.frontURL);
+      console.log(this.server.frontURL.searchParams.get('exhib'));
   }
 
   ngOnDestroy(){

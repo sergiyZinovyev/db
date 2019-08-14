@@ -1,4 +1,5 @@
 var Visitors = require('../models/sql-visitors');
+var Shared = require('../models/shared');
 
 exports.all = function(req, res) {
 	Visitors.all(req.params.id, function(err, doc) {
@@ -6,6 +7,19 @@ exports.all = function(req, res) {
 			console.log(err);
 			return res.sendStatus(500);
 		}
+		res.send(doc);
+	});
+};
+
+//-------------------------------------------------------------------------------------------------------------
+
+exports.file = function(req, res) {
+	Shared.file(req.params.id, function(err, doc) {
+		if (err) {
+			console.log(err);
+			return res.sendStatus(500);
+        }
+        console.log('file '+req.params.id+' sent');
 		res.send(doc);
 	});
 };

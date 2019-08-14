@@ -114,12 +114,23 @@ export class VisitorComponent implements OnInit {
 
   delete(){
     let table;
-    if(this.tableName == "База відвідувачів"){
-      table = 'visitors'
+    switch(this.tableName){
+      case "База відвідувачів":
+        table = 'visitors';
+        break;
+      case "Заявки на внесення":
+        table = 'visitors_create';
+        break;
+      case "Заявки на зміну":
+        table = 'visitors_edit';
+        break;
     }
-    else{
-      table = 'visitors_create'
-    }
+    // if(this.tableName == "База відвідувачів"){
+    //   table = 'visitors'
+    // }
+    // else{
+    //   table = 'visitors_create'
+    // }
     let dataDel = {
       tableName: table,
       regnum: this.loginForm.value.regnum 
@@ -128,6 +139,7 @@ export class VisitorComponent implements OnInit {
       console.log("data: ", data);
       if(data){
         console.log("unsubscribe");
+        this.getData.emit(table);
         return post.unsubscribe();
       }
     });
