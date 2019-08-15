@@ -89,7 +89,6 @@ export class RegistrationComponent implements OnInit, OnDestroy {
           datelastcor: [value[0].datelastcor, []],
           rating: [value[0].rating, []],
           ins_user: [value[0].ins_user, []],
-
         })
         //визначаємо: редагуємо дані чи вносимо нові
         this.edit = true;
