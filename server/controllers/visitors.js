@@ -293,25 +293,25 @@ exports.createNewVis = function(req, res) {
 
 //-------------------------------------------------------------------------------------------------------------
 
-exports.edit = function(req, res) {
-    var visitorData = [
-        req.body.email,
-        req.body.prizv,
-        req.body.city,
-        req.body.cellphone,
-        req.body.regnum
-    ];
-    Visitors.edit(visitorData, function(err, doc){
-        if (err) {
-            console.log(err);
-            return res.sendStatus(500);
-        }
-        res.send(doc);
-    });   
-};
+// exports.edit = function(req, res) {
+//     var visitorData = [
+//         req.body.email,
+//         req.body.prizv,
+//         req.body.city,
+//         req.body.cellphone,
+//         req.body.regnum
+//     ];
+//     Visitors.edit(visitorData, function(err, doc){
+//         if (err) {
+//             console.log(err);
+//             return res.sendStatus(500);
+//         }
+//         res.send(doc);
+//     });   
+// };
 
 //-------------------------------------------------------------------------------------------------------------
-//Редазування запису
+//Редагування запису
 exports.editPro = function(req, res) {
     var visitorData = [
         req.body.email,
@@ -340,7 +340,7 @@ exports.editPro = function(req, res) {
         req.body.rating,
         req.body.regnum
     ];
-    if (req.body.checkEmail == false){
+    if (req.body.checkEmail == false){//якщо поле не змінювалося то пропускаємо перевірку на співпадіння
         if(req.body.checkPhone == false){
             //створюємо новий запис
             console.log('start creating'); 

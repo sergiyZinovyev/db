@@ -18,8 +18,6 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   subUserData;
 
   submitButtonText: string = '';
-  //createText: string = "Зареєструватися та отримати запрошення";
-  //editText: string = "Отримати запрошення";
   edit: boolean = false;
   editData;
   region = [{
@@ -190,7 +188,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       }
       console.log(this.exhib);
       this.exhibForm.valueChanges.subscribe(v => {
-        this.loginForm.patchValue({potvid: this.getStringExhibForm()}) //змінюємо поле з виставками в загальній формі
+        this.loginForm.patchValue({potvid: this.server.getStringExhibForm(this.exhibForm.value)}) //змінюємо поле з виставками в загальній формі
       });
     })
   }
@@ -205,7 +203,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       regnum: this.loginForm.get('regnum').value
     });
     this.isLoadingResults = true;
-    this.loginForm.patchValue({potvid: this.getStringExhibForm()}) //змінюємо поле з виставками
+    this.loginForm.patchValue({potvid: this.server.getStringExhibForm(this.exhibForm.value)}) //змінюємо поле з виставками
     this.loginForm.patchValue({table: 'visitors_create'}) //змінюємо поле з таблицею в яку вносити дані
     console.log('this.loginForm.value - after: ',this.loginForm.value);
     let post = this.server.post(this.loginForm.value, "createInVisitorsCreate").subscribe(data =>{
@@ -231,14 +229,14 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   editUser(){
     this.user.setUserData(this.loginForm.value);
     this.isLoadingResults = true;
-    this.loginForm.patchValue({potvid: this.getStringExhibForm()}) //змінюємо поле з виставками
+    this.loginForm.patchValue({potvid: this.server.getStringExhibForm(this.exhibForm.value)}) //змінюємо поле з виставками
     //перевіряємо чи змінилася форма
     if(this.checkFormChange()){
       console.log('дані не змінилися')
       return this.router.navigate(['invite']);
     }
-    //this.loginForm.patchValue({potvid: this.getStringExhibForm()}) //змінюємо поле з виставками
     this.loginForm.patchValue({table: this.spreadsheet}) //змінюємо поле з таблицею в яку вносити дані
+    //перевіряємо чи були змінені поля email/cellphone та вносимо відповідні зміни у форму
     if(this.loginForm.get('email').value != this.myEmail){
       console.log(this.loginForm.get('email').value,'--',this.myEmail);
       this.loginForm.patchValue({checkEmail: true})
@@ -248,6 +246,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       this.loginForm.patchValue({checkPhone: true})
     }
     else{this.loginForm.patchValue({checkPhone: false})}
+
     if(!this.myRequest){return console.log('Err: myRequest is undefined')};
     let post = this.server.post(this.loginForm.value, this.myRequest).subscribe(data =>{
       console.log('this.loginForm.value: ',this.loginForm.value);
@@ -313,20 +312,20 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   }
 
 
-  getStringExhibForm(){
-    //перетворення форми виставки(this.exhibForm) в список обраних виставок
-    let exhibStr: string = '';
-    for(var key in this.exhibForm.value){
-      if(this.exhibForm.value[key]==true){
-        exhibStr=exhibStr+key+', ';
-      }
-      else{
-        exhibStr=exhibStr+', ';
-      }
-    }
-    console.log(exhibStr);
-    return exhibStr
-  }
+  // getStringExhibForm(){
+  //   //перетворення форми виставки(this.exhibForm) в список обраних виставок
+  //   let exhibStr: string = '';
+  //   for(var key in this.exhibForm.value){
+  //     if(this.exhibForm.value[key]==true){
+  //       exhibStr=exhibStr+key+', ';
+  //     }
+  //     else{
+  //       exhibStr=exhibStr+', ';
+  //     }
+  //   }
+  //   console.log(exhibStr);
+  //   return exhibStr
+  // }
 
   getArrFromPotvid(){
     return this.loginForm.get('potvid').value.split(', ')

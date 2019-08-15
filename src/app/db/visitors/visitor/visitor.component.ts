@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild, Input, Output, EventEmitter} from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators, FormGroup, FormControl } from '@angular/forms';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -18,7 +18,7 @@ export class VisitorComponent implements OnInit {
   @Input() tableName: string;
   @Output() getData = new EventEmitter<any>();
 
-  
+  exhibForm = new FormGroup({});
 
   constructor(
     private server: ServerService,
@@ -28,6 +28,7 @@ export class VisitorComponent implements OnInit {
 
   ngOnInit() {
     //console.log(this.element);
+    //зібрати форму з виставками
     this.loginForm = this.fb.group({
       email: [this.element.email, [Validators.email]],
       prizv: [this.element.prizv, [Validators.required]],
@@ -68,60 +69,72 @@ export class VisitorComponent implements OnInit {
 
   })
 
-  editUser(){
-    let post = this.server.post(this.loginForm.value, "edit").subscribe(data =>{
-      console.log("data: ", data);
-      if(data){
-        let table;
-        if(this.tableName == "База відвідувачів"){
-          table = 'visitors'
-        }
-        else{
-          table = 'visitors_create'
-        }
-        this.getData.emit(table);
-        console.log("unsubscribe");
-        return post.unsubscribe();
-      }
-    });
-  }
+  // editUser(){
+  //   let post = this.server.post(this.loginForm.value, "edit").subscribe(data =>{
+  //     console.log("data: ", data);
+  //     if(data){
+  //       this.getData.emit(this.getTableName());
+  //       console.log("unsubscribe");
+  //       return post.unsubscribe();
+  //     }
+  //   });
+  // }
+
+  // editUser(){
+  //   //this.user.setUserData(this.loginForm.value);
+  //   //this.isLoadingResults = true;
+  //   this.loginForm.patchValue({potvid: this.server.getStringExhibForm(this.exhibForm.value)}) //змінюємо поле з виставками
+  //   //перевіряємо чи змінилася форма
+  //   if(this.checkFormChange()){
+  //     console.log('дані не змінилися')
+  //     return this.router.navigate(['invite']);
+  //   }
+  //   this.loginForm.patchValue({table: this.spreadsheet}) //змінюємо поле з таблицею в яку вносити дані
+  //   //перевіряємо чи були змінені поля email/cellphone та вносимо відповідні зміни у форму
+  //   if(this.loginForm.get('email').value != this.myEmail){
+  //     console.log(this.loginForm.get('email').value,'--',this.myEmail);
+  //     this.loginForm.patchValue({checkEmail: true})
+  //   }
+  //   else{this.loginForm.patchValue({checkEmail: false})}
+  //   if(this.loginForm.get('cellphone').value != this.myCellphone){
+  //     this.loginForm.patchValue({checkPhone: true})
+  //   }
+  //   else{this.loginForm.patchValue({checkPhone: false})}
+
+  //   if(!this.myRequest){return console.log('Err: myRequest is undefined')};
+  //   let post = this.server.post(this.loginForm.value, this.myRequest).subscribe(data =>{
+  //     console.log('this.loginForm.value: ',this.loginForm.value);
+  //     console.log("dataServer: ", data);
+      
+  //     if(data){
+  //       this.isLoadingResults = false;
+  //       if(data[0]){
+  //         console.log('такий мейл вже існує');
+  //         this.worningCheck = 'Такий емейл або мобільний телефон вже використовується! Внесіть будь ласка інший';
+  //       }
+  //       else{
+  //         this.worningCheck = '';
+  //         this.router.navigate(['invite']);
+  //       }
+  //       console.log("unsubscribe");
+  //       return post.unsubscribe();
+  //     }
+  //   });
+  // }
 
   addUser() {
     let post = this.server.post(this.loginForm.value, "createVis").subscribe(data =>{
       console.log("data: ", data);
       if(data){
-        let table;
-        this.delete();
-        if(this.tableName == "База відвідувачів"){
-          table = 'visitors'
-        }
-        else{
-          table = 'visitors_create'
-        }
-        this.getData.emit(table);
+        this.getData.emit(this.getTableName());
         console.log("unsubscribe")
         return post.unsubscribe();
       }
     });
   }
 
-  // submit(){}
-
-  // getTableName(): string{
-  //   if(this.tableName == "База відвідувачів"){
-  //     return 'visitors'
-  //   }
-  //   else{
-  //     return 'visitors_create'
-  //   }
-  // }
-
-  // updateData(){
-  //   this.getData.emit(this.getTableName());
-  // }
-
-  delete(){
-    let table;
+  getTableName(): string{
+    let table: string;
     switch(this.tableName){
       case "База відвідувачів":
         table = 'visitors';
@@ -133,21 +146,19 @@ export class VisitorComponent implements OnInit {
         table = 'visitors_edit';
         break;
     }
-    // if(this.tableName == "База відвідувачів"){
-    //   table = 'visitors'
-    // }
-    // else{
-    //   table = 'visitors_create'
-    // }
+    return table
+  }
+
+  delete(){
     let dataDel = {
-      tableName: table,
+      tableName: this.getTableName(),
       regnum: this.loginForm.value.regnum 
     }
     let post = this.server.post(dataDel, "delete").subscribe(data =>{
       console.log("data: ", data);
       if(data){
         console.log("unsubscribe");
-        this.getData.emit(table);
+        this.getData.emit(this.getTableName());
         return post.unsubscribe();
       }
     });
