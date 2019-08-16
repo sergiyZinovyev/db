@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
 })
 export class RegistrationComponent implements OnInit, OnDestroy {
 
-  myExhib: string = 'ТурЕКСПО';
+  myExhib = ['ТурЕКСПО'];
 
   subUserData;
 
@@ -29,6 +29,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     name: '',
     kod: ''
   }];
+  //exhib = this.server.getExhib('exhibitions_dict', this.getArrFromPotvid(), [])[1];
   checked = false;
   verification = false;
   worningCheck: string;
@@ -42,6 +43,43 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
   spreadsheet;
   myRequest;
+
+  loginForm = this.fb.group({
+    condition: ['', []],
+    table: ['', []],
+    checkEmail: [false, []],
+    checkPhone: [false, []],
+
+    email: [this.user.userLogData.email, [Validators.email]],
+    prizv: ['', [Validators.required]],
+    city: ['', [Validators.required]],
+    cellphone: [this.user.userLogData.cellphone, [Validators.pattern('380[0-9]{9}')]],
+    regnum: ['', []],
+    potvid: ['', []],
+    name: ['', [Validators.required]],
+    countryid: ['1', [Validators.required]],
+    regionid: ['', [Validators.required]],
+    m_robotu: ['', []],
+    pobatkovi: ['', []],
+    posada: ['', []],
+    sferadij: ['', []],
+    namepovne: ['', []],
+    postindeks: ['', []],
+    address: ['', []],
+    postaddreses: ['', []],
+    telephon: ['', []],
+    gender: ['', []],
+    type: ['', []],
+    kompeten: ['', []],
+    datawnesenny: ['', []],
+    datelastcor: ['', []],
+    rating: ['', []],
+    ins_user: ['', []],
+  })
+
+  exhibForm = new FormGroup({});
+  //exhibForm = this.server.getExhib('exhibitions_dict', this.getArrFromPotvid(), [])[0];
+ 
 
   constructor(
     private fb: FormBuilder,
@@ -58,6 +96,8 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       next: (value) => {
         console.log('reg - user.userData: ',value);
         this.getExhib('exhibitions_dict');
+        // this.exhibForm = this.server.getExhib('exhibitions_dict', this.getArrFromPotvid(), this.myExhib)[0];
+        // this.exhib = this.server.getExhib('exhibitions_dict', this.getArrFromPotvid(), this.myExhib)[1];
         this.loginForm = this.fb.group({
           condition: ['', []],
           table: ['', []],
@@ -99,7 +139,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         this.startLoginForm = value[0];
 
         // визначаємо запит до сервера (create/edit)
-        switch(value[1].receivedTable) {
+        switch(value[this.getIndexArrOfRequest(value, 'receivedTable')].receivedTable) {
           case 'visitors':
             this.spreadsheet = 'visitors_edit';
             this.myRequest = 'createInVisitorsEdit'
@@ -118,43 +158,21 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         return this.subUserData.unsubscribe();
       }
     })
+    // this.exhibForm = this.server.getExhib('exhibitions_dict', this.getArrFromPotvid(), this.myExhib)[0];
+    // this.exhib = this.server.getExhib('exhibitions_dict', this.getArrFromPotvid(), this.myExhib)[1];
     this.getExhib('exhibitions_dict');
   }
 
-  loginForm = this.fb.group({
-    condition: ['', []],
-    table: ['', []],
-    checkEmail: [false, []],
-    checkPhone: [false, []],
-
-    email: [this.user.userLogData.email, [Validators.email]],
-    prizv: ['', [Validators.required]],
-    city: ['', [Validators.required]],
-    cellphone: [this.user.userLogData.cellphone, [Validators.pattern('380[0-9]{9}')]],
-    regnum: ['', []],
-    potvid: ['', []],
-    name: ['', [Validators.required]],
-    countryid: ['1', [Validators.required]],
-    regionid: ['', [Validators.required]],
-    m_robotu: ['', []],
-    pobatkovi: ['', []],
-    posada: ['', []],
-    sferadij: ['', []],
-    namepovne: ['', []],
-    postindeks: ['', []],
-    address: ['', []],
-    postaddreses: ['', []],
-    telephon: ['', []],
-    gender: ['', []],
-    type: ['', []],
-    kompeten: ['', []],
-    datawnesenny: ['', []],
-    datelastcor: ['', []],
-    rating: ['', []],
-    ins_user: ['', []],
-  })
-
-  exhibForm = new FormGroup({});
+  getIndexArrOfRequest(arr: any, myKey: string): number{
+    //отримати індекс елеманта масиву, який містить об'єкт з вказаним ключем
+    let num: number
+    arr.forEach((item: {}, index: number) => {
+      for(var key in item){
+        if(key == myKey){num = index}
+      }
+    });
+    return num;
+  }
 
   getRegion(nameTable){
     this.region = [];
@@ -182,7 +200,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
           name: data[i].name,
           kod: data[i].kod
         })
-        if(this.getArrFromPotvid().find(currentValue => currentValue == data[i].name) || data[i].name == this.myExhib){value = true}
+        if(this.getArrFromPotvid().find(currentValue => currentValue == data[i].name) || this.myExhib.find(currentValue => currentValue == data[i].name)){value = true}
         this.exhibForm.addControl(data[i].name, new FormControl(value, Validators.required))
       }
       console.log(this.exhib);
@@ -328,6 +346,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
   getArrFromPotvid(){
     return this.loginForm.get('potvid').value.split(', ')
+    //return this.user.userData[0].potvid.split(', ')
   }
 
   checkFormChange(){

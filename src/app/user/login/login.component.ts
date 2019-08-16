@@ -55,8 +55,10 @@ export class LoginComponent implements OnInit {
       this.user.setUserLogData(this.loginForm.value);
       let get=this.server.post(this.loginForm.value, "get").subscribe(data =>{
         console.log("data login: ", data);
+        //if(data == ''){this.router.navigate(['user/registration']);}
         if(data[0]){
           this.user.setUserData(data);
+          this.router.navigate(['user/registration']);
         }
         if(data){
           console.log("unsubscribe")
