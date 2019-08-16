@@ -25,7 +25,7 @@ exports.file = function(req, res) {
 };
 
 //-------------------------------------------------------------------------------------------------------------
-
+//порівняти з наступним методом та обєднати методи
 exports.editRequest = function(req, res) {
     var visitorData = [
         req.body.regnum,
@@ -177,7 +177,7 @@ exports.editRequest = function(req, res) {
 
 //-------------------------------------------------------------------------------------------------------------
 
-exports.createInVisitorsCreate = function(req, res) {
+exports.createCpecTable = function(req, res) {
     //отримуємо всі regnum  з таблиць visitors та visitors_create
     Visitors.regnVisAndReq(function(err, doc){
         if (err) {

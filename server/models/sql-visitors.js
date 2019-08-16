@@ -44,7 +44,7 @@ exports.regnVisAndReq = function(cb){
 }
 
 
-//створення нового запису в таблиці visitors_create
+//створення нового запису у вказаній таблиці
 exports.create = function(dataVisitor, table, cb){
   let sql = `INSERT INTO ${table} (
       regnum, 

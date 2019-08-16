@@ -91,3 +91,22 @@ tr.example-element-row:not(.example-expanded-row):active {
 .pos{
   position: relative;
 }
+
+.sticky {
+  position: sticky;
+  top: 0px;
+  left: 0;
+  bottom: 0px;
+  right: 0;
+  background-color: white;
+  z-index: 102;
+}
+
+.sticky2 {
+  position: sticky;
+  top: 40px;
+  left: 0;
+  bottom: 0px;
+  right: 0;
+  z-index: 101;
+}

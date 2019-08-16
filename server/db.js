@@ -9,7 +9,7 @@ const connection = mysql.createPool({
     password: "OALl3svGQf"
   });
 
-// dev db
+//dev db
 // const connection = mysql.createPool({
 //   connectionLimit: 100,
 //   host: "192.168.5.105",

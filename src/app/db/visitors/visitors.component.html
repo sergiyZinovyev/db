@@ -5,7 +5,7 @@
         *ngIf="isLoadingResults">
         <mat-spinner></mat-spinner>
     </div>
-    <div class="d-flex justify-content-between">
+    <div class="d-flex justify-content-between sticky">
         <span class="ml-5 my-2" [style.color]="headerColor"><strong>{{name}}</strong></span>
         <div>
             <!-- <button class='m-2 mr-n1' mat-raised-button [matMenuTriggerFor]="menu">Додати поле</button> -->
@@ -77,7 +77,7 @@
             </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: false" class="sticky2"></tr>
         <tr mat-row *matRowDef="let element; columns: displayedColumns;"
             class="example-element-row"
             [class.example-expanded-row]="expandedElement === element"

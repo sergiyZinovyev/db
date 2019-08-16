@@ -2,8 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const visitorsController = require('./server/controllers/visitors');
-
-
 const emailController = require('./server/controllers/email');
 
 const urlencodedParser = bodyParser.urlencoded({extended: false});
@@ -48,7 +46,7 @@ app.get("/img/:id", visitorsController.file);
 app.post("/createInVisitorsEdit", urlencodedParser, visitorsController.editRequest);
 
 //додавання запису в заявку на внесення
-app.post("/createInVisitorsCreate", urlencodedParser, visitorsController.createInVisitorsCreate);
+app.post("/createInVisitorsCreate", urlencodedParser, visitorsController.createCpecTable);
 
 //додавання запису в основну базу
 app.post("/createVis", urlencodedParser, visitorsController.createNewVis);
@@ -59,7 +57,7 @@ app.post("/createVis", urlencodedParser, visitorsController.createNewVis);
 //редагування запису
 app.post("/editPro", urlencodedParser, visitorsController.editPro)
 
-//отримання запису по електронній адресі або мобільному з двох таблиць
+//отримання запису по електронній адресі або мобільному з 3 таблиць
 app.post("/get", cors(), urlencodedParser, visitorsController.getRowOnCond2);
 
 //отримання запису по електронній адресі або мобільному з 3 таблиць

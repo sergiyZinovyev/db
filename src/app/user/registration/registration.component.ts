@@ -186,9 +186,9 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         this.exhibForm.addControl(data[i].name, new FormControl(value, Validators.required))
       }
       console.log(this.exhib);
-      this.exhibForm.valueChanges.subscribe(v => {
-        this.loginForm.patchValue({potvid: this.server.getStringExhibForm(this.exhibForm.value)}) //змінюємо поле з виставками в загальній формі
-      });
+      // this.exhibForm.valueChanges.subscribe(v => {
+      //   this.loginForm.patchValue({potvid: this.server.getStringExhibForm(this.exhibForm.value)}) //змінюємо поле з виставками в загальній формі
+      // });
     })
   }
 

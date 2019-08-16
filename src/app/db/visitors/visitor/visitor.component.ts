@@ -18,6 +18,35 @@ export class VisitorComponent implements OnInit {
   @Input() tableName: string;
   @Output() getData = new EventEmitter<any>();
 
+  loginForm = this.fb.group({
+    email: ['', [Validators.email]],
+    prizv: ['', [Validators.required]],
+    city: ['', [Validators.required]],
+    cellphone: ['', [Validators.pattern('380[0-9]{9}')]],
+    regnum: ['', []],
+    potvid: ['', []],
+    name: ['', [Validators.required]],
+    postaddreses: ['', []],
+    pobatkovi: ['', []],
+    gender: ['', []],
+    m_robotu: ['', []],
+    sferadij: ['', []],
+    posada: ['', []],
+    type: ['', []],
+    kompeten: ['', []],
+    datawnesenny: ['', []],
+    datelastcor: ['', []],
+    ins_user: ['', []],
+    countryid: [String(''), [Validators.required]],
+    regionid: [String(''), [Validators.required]],
+    namepovne: ['', []],
+    postindeks: ['', []],
+    address: ['', []],
+    telephon: ['', []],
+    rating: ['', []],
+
+  })
+
   exhibForm = new FormGroup({});
   exhib = this.server.getExhib('exhibitions_dict', this.getArrFromPotvid(), [])[1];
 
@@ -45,7 +74,7 @@ export class VisitorComponent implements OnInit {
       potvid: [this.element.potvid, []],
       name: [this.element.name, [Validators.required]],
       postaddreses: [this.element.postaddreses, []],
-      pobatkovi: [this.element.pobatcovi, []],
+      pobatkovi: [this.element.pobatkovi, []],
       gender: [this.element.gender, []],
       m_robotu: [this.element.m_robotu, []],
       sferadij: [this.element.sferadij, []],
@@ -73,15 +102,7 @@ export class VisitorComponent implements OnInit {
     // });
   }
   
-  loginForm = this.fb.group({
-    email: ['', [Validators.email, Validators.required]],
-    prizv: ['', [Validators.required]],
-    city: ['', [Validators.required]],
-    cellphone: ['', [Validators.required]],
-    regnum: ['', []],
-    potvid: ['temp', []]
-
-  })
+  
 
   // editUser(){
   //   let post = this.server.post(this.loginForm.value, "edit").subscribe(data =>{
@@ -109,15 +130,19 @@ export class VisitorComponent implements OnInit {
     if(this.loginForm.get('email').value != this.myEmail){
       console.log(this.loginForm.get('email').value,'--',this.myEmail);
       this.loginForm.patchValue({checkEmail: true})
-    }
-    else{this.loginForm.patchValue({checkEmail: false})}
+    } else{this.loginForm.patchValue({checkEmail: false})}
+
     if(this.loginForm.get('cellphone').value != this.myCellphone){
       this.loginForm.patchValue({checkPhone: true})
-    }
-    else{this.loginForm.patchValue({checkPhone: false})}
+    } else{this.loginForm.patchValue({checkPhone: false})}
 
     //if(!this.myRequest){return console.log('Err: myRequest is undefined')};
-    let post = this.server.post(this.loginForm.value, 'editPro').subscribe(data =>{
+    let myRequest: string;
+    if(this.tableName == 'Заявки на внесення'){
+      myRequest = "createInVisitorsEdit"
+    } else myRequest = "editPro";
+
+    let post = this.server.post(this.loginForm.value, myRequest).subscribe(data =>{
       console.log('this.loginForm.value: ',this.loginForm.value);
       console.log("dataServer: ", data);
       
@@ -128,7 +153,8 @@ export class VisitorComponent implements OnInit {
         }
         else{
           //this.worningCheck = '';
-          this.getData.emit(this.getTableName());
+          if(this.tableName == 'Заявки на зміну' || this.tableName == 'Заявки на внесення') {this.delete()}
+          else {this.getData.emit(this.getTableName())}
         }
         console.log("unsubscribe");
         return post.unsubscribe();
