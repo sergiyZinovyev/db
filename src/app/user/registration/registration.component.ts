@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./registration.component.css']
 })
 export class RegistrationComponent implements OnInit, OnDestroy {
-
+  
   myExhib = ['ТурЕКСПО'];
 
   subUserData;
@@ -95,6 +95,34 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     this.subUserData = this.user.userData.subscribe({
       next: (value) => {
         console.log('reg - user.userData: ',value);
+        switch (this.server.frontURL.searchParams.get('exhib')) {
+          case 'tur':
+            this.myExhib = ['ТурЕКСПО', 'Готельний та рестор. бізнес', 'Континент розваг'];
+            break;
+          case 'bud':
+            this.myExhib = ['БудЕКСПО', 'Вікна-двері-дах', 'Опалення', 'Опалення на твердому паливі', 'Альтернативна енергетика'];
+            break;
+          case 'med':
+            this.myExhib = ['ГалМЕД'];
+            break;
+          case 'dent':
+            this.myExhib = ['Дентал-УКРАЇНА'];
+            break;
+          case 'wood':
+            this.myExhib = ['Деревообробка'];
+            break;
+          case 'elit':
+            this.myExhib = ['ЕлітЕКСПО'];
+            break;
+          case 'agro':
+            this.myExhib = ['ЄвроАГРО'];
+            break;
+          case 'child':
+            this.myExhib = ['Дитячий світ'];
+            break;
+          default:
+            break;
+        }
         this.getExhib('exhibitions_dict');
         // this.exhibForm = this.server.getExhib('exhibitions_dict', this.getArrFromPotvid(), this.myExhib)[0];
         // this.exhib = this.server.getExhib('exhibitions_dict', this.getArrFromPotvid(), this.myExhib)[1];
