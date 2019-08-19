@@ -38,7 +38,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.get("/db/:id", visitorsController.all);
 
 //отримати файли
-app.get("/img/:id", visitorsController.file);
+app.get("/img/:id", cors(), visitorsController.file);
 
 //отримати файли
 app.get("/pdf", pdfController.pdf);
