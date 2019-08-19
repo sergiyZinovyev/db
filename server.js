@@ -3,6 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const visitorsController = require('./server/controllers/visitors');
 const emailController = require('./server/controllers/email');
+const pdfController = require('./server/controllers/pdf');
 
 const urlencodedParser = bodyParser.urlencoded({extended: false});
 
@@ -38,6 +39,9 @@ app.get("/db/:id", visitorsController.all);
 
 //отримати файли
 app.get("/img/:id", visitorsController.file);
+
+//отримати файли
+app.get("/pdf", pdfController.pdf);
 
 //додавання запису в заявку на внесення
 //app.post("/create/req", urlencodedParser, visitorsController.createRequest);

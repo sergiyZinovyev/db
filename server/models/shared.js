@@ -7,6 +7,13 @@ exports.file = function(file, cb){
     });
 }
 
+// 
+exports.writeFile = function(file, cb){
+  fs.writeFile(`server/img`, file, function(err,data){
+      cb(err, data)
+  });
+}
+
 //-------------------------------------------------------------------------------------------------------------------------------------
 
 //визначення current date

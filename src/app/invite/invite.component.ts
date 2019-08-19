@@ -74,6 +74,18 @@ export class InviteComponent implements OnInit, OnDestroy{
     return html2pdf().set(opt).from(element).save();
   }
 
+  getPDFTest(){
+    let element = '<p>Збережіть це запрошення або відправте собі на електронну пошу або просто покажіть на екрані вашого смартфону</p>';
+    let opt = {
+      margin:       0,
+      filename:     'invite.pdf',
+      image:        { type: 'jpeg', quality: 1 },
+      html2canvas:  { scale: 2 },
+      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    return html2pdf().set(opt).from(element).save();
+  }
+
   sendEmail(){
     if(!this.email){
       alert('Ви не вказали електронну пошту');
