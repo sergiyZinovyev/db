@@ -76,8 +76,12 @@ export class InviteComponent implements OnInit, OnDestroy{
     return html2pdf().set(opt).from(element).save();
   }
 
+  myCallback(pdf) {
+    console.log('pdf: ',pdf);
+  }
+
   getPDFTest(){
-    let element = '<p>Збережіть це запрошення або відправте собі на електронну пошу або просто покажіть на екрані вашого смартфону</p>';
+    let element = document.getElementById('element-to-print');
     let opt = {
       margin:       0,
       filename:     'invite.pdf',
@@ -85,8 +89,54 @@ export class InviteComponent implements OnInit, OnDestroy{
       html2canvas:  { scale: 2 },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
-    return html2pdf().set(opt).from(element).save();
+    //console.log('PDF',btoa(html2pdf().set(opt).from(element)));
+    return html2pdf().set(opt).from(element).outputPdf().then(data => {console.log('PDFdata: ',data); this.invitePDF = data});
+  };
+    // var element = document.getElementById('element-to-print');
+    // html2pdf(element, {
+    //     margin:       0,
+    //     filename:     'invite.pdf',
+    //     image:        { type: 'jpeg', quality: 1 },
+    //     html2canvas:  { scale: 2 },
+    //     jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    //     pdfCallback: this.myCallback
+    // });
+
+  saveAs(uri, filename) {
+    var link = document.createElement('a');
+    if (typeof link.download === 'string') {
+      link.href = uri;
+      link.download = filename;
+  
+      //Firefox requires the link to be in the body
+      document.body.appendChild(link);
+      
+      //simulate click
+      link.click();
+  
+      //remove the link when done
+      document.body.removeChild(link);
+    } else {
+      window.open(uri);
+    }
   }
+
+  //R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7
+
+  testPDF(){
+    let file = 'data:application/octet-stream,' + this.invitePDF;
+    this.saveAs(file, 'invite.pdf');
+  }
+
+  // testPDF() {
+  //   var msg=this.invitePDF;
+  //   var blob = new File([msg], "hello2.pdf", {"type": "application/octet-stream"});
+  
+  //   var a = document.createElement("a");
+  //   a.href = URL.createObjectURL(blob);
+  
+  //   window.location.href=a;
+  // }  
 
   sendEmail(){
     if(!this.email){
@@ -113,7 +163,7 @@ export class InviteComponent implements OnInit, OnDestroy{
   }
 
   getImg(){
-    return `url(${this.server.frontURL.searchParams.get('exhib')}.png)`
+    return `${this.server.frontURL.searchParams.get('exhib')}.png`
     //return `${this.server.apiUrl}/img/${this.server.frontURL.searchParams.get('exhib')}.png`
     //return this.sanitizer.bypassSecurityTrustUrl('data:application/octet-stream;base64,' + btoa(`${this.server.apiUrl}/img/${this.server.frontURL.searchParams.get('exhib')}.png`));
   }
