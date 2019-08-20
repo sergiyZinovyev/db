@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy} from '@angular/core';
 import { UserService } from '../shared/user.service';
 import { ServerService } from '../shared/server.service';
 import { Router } from '@angular/router';
+import { DomSanitizer, SafeResourceUrl, SafeUrl} from '@angular/platform-browser';
 import * as html2pdf from 'html2pdf.js';
 
 
@@ -29,6 +30,7 @@ export class InviteComponent implements OnInit, OnDestroy{
     private user: UserService,
     private server: ServerService,
     private router: Router,
+    private sanitizer: DomSanitizer,
   ) { }
 
   ngOnInit() {
@@ -111,7 +113,9 @@ export class InviteComponent implements OnInit, OnDestroy{
   }
 
   getImg(){
-    return `${this.server.apiUrl}/img/${this.server.frontURL.searchParams.get('exhib')}.png`
+    return `url(${this.server.frontURL.searchParams.get('exhib')}.png)`
+    //return `${this.server.apiUrl}/img/${this.server.frontURL.searchParams.get('exhib')}.png`
+    //return this.sanitizer.bypassSecurityTrustUrl('data:application/octet-stream;base64,' + btoa(`${this.server.apiUrl}/img/${this.server.frontURL.searchParams.get('exhib')}.png`));
   }
 
   test(){
