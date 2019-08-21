@@ -85,21 +85,21 @@ export class InviteComponent implements OnInit, OnDestroy{
       html2canvas:  { scale: 2 },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
-    return html2pdf().set(opt).from(element).outputPdf('blob').then(data => {
-      console.log('PDFdata: ',data); 
-      this.invitePDF = data;
+    return html2pdf().set(opt).from(element).outputPdf('datauristring').then(data => {
+      //console.log('PDFdata: ',data); 
+      //this.invitePDF = data;
       this.sendEmail(data);
     });
   }
  
-  saveBlobAsPDF() {
-    var msg=this.invitePDF;
-    var blob = new File([msg], "hello2.pdf", {"type": "application/octet-stream"});
-    var a: any = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
+  // saveBlobAsPDF() {
+  //   var msg=this.invitePDF;
+  //   var blob = new File([msg], "hello2.pdf", {"type": "application/octet-stream"});
+  //   var a: any = document.createElement("a");
+  //   a.href = URL.createObjectURL(blob);
   
-    window.location.href=a;
-  }  
+  //   window.location.href=a;
+  // }  
 
   sendEmail(myData){
     if(!this.email){
@@ -110,7 +110,7 @@ export class InviteComponent implements OnInit, OnDestroy{
       if(isEmail){
         console.log('sending')
         //починаємо відправку
-        console.log('this.user.userLogData1: ', this.user.userLogData);
+        //console.log('this.user.userLogData1: ', this.user.userLogData);
         let data = this.user.userLogData;
         data.file = myData;
         console.log('this.user.userLogData2: ', data);
