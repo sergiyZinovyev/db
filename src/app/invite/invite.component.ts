@@ -76,11 +76,7 @@ export class InviteComponent implements OnInit, OnDestroy{
     return html2pdf().set(opt).from(element).save();
   }
 
-  myCallback(pdf) {
-    console.log('pdf: ',pdf);
-  }
-
-  getPDFTest(){
+  getPDFAndSend(){
     let element = document.getElementById('element-to-print');
     let opt = {
       margin:       0,
@@ -89,56 +85,23 @@ export class InviteComponent implements OnInit, OnDestroy{
       html2canvas:  { scale: 2 },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
-    //console.log('PDF',btoa(html2pdf().set(opt).from(element)));
-    return html2pdf().set(opt).from(element).outputPdf().then(data => {console.log('PDFdata: ',data); this.invitePDF = data});
-  };
-    // var element = document.getElementById('element-to-print');
-    // html2pdf(element, {
-    //     margin:       0,
-    //     filename:     'invite.pdf',
-    //     image:        { type: 'jpeg', quality: 1 },
-    //     html2canvas:  { scale: 2 },
-    //     jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-    //     pdfCallback: this.myCallback
-    // });
-
-  saveAs(uri, filename) {
-    var link = document.createElement('a');
-    if (typeof link.download === 'string') {
-      link.href = uri;
-      link.download = filename;
-  
-      //Firefox requires the link to be in the body
-      document.body.appendChild(link);
-      
-      //simulate click
-      link.click();
-  
-      //remove the link when done
-      document.body.removeChild(link);
-    } else {
-      window.open(uri);
-    }
+    return html2pdf().set(opt).from(element).outputPdf('blob').then(data => {
+      console.log('PDFdata: ',data); 
+      this.invitePDF = data;
+      this.sendEmail(data);
+    });
   }
-
-  //R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7
-
-  testPDF(){
-    let file = 'data:application/octet-stream,' + this.invitePDF;
-    this.saveAs(file, 'invite.pdf');
-  }
-
-  // testPDF() {
-  //   var msg=this.invitePDF;
-  //   var blob = new File([msg], "hello2.pdf", {"type": "application/octet-stream"});
+ 
+  saveBlobAsPDF() {
+    var msg=this.invitePDF;
+    var blob = new File([msg], "hello2.pdf", {"type": "application/octet-stream"});
+    var a: any = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
   
-  //   var a = document.createElement("a");
-  //   a.href = URL.createObjectURL(blob);
-  
-  //   window.location.href=a;
-  // }  
+    window.location.href=a;
+  }  
 
-  sendEmail(){
+  sendEmail(myData){
     if(!this.email){
       alert('Ви не вказали електронну пошту');
       console.log('no email!')}
@@ -147,8 +110,12 @@ export class InviteComponent implements OnInit, OnDestroy{
       if(isEmail){
         console.log('sending')
         //починаємо відправку
-        console.log(this.user.userLogData);
-        let get=this.server.post(this.user.userLogData, "email").subscribe(data =>{ 
+        console.log('this.user.userLogData1: ', this.user.userLogData);
+        let data = this.user.userLogData;
+        data.file = myData;
+        console.log('this.user.userLogData2: ', data);
+        let get=this.server.post(data, "email").subscribe(data =>{
+        //let get=this.server.post(data, "email").subscribe(data =>{ 
           console.log("sending data: ", data);
           if(data){
             console.log("unsubscribe")

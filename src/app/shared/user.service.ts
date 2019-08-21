@@ -17,7 +17,8 @@ export class UserService {
     regnum: '',
     prizv: '',
     name: '',
-    pobatkovi: ''
+    pobatkovi: '',
+    file: ''
   };
 
   constructor(
