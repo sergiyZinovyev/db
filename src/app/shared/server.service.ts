@@ -4,9 +4,6 @@ import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms'
 import { catchError } from 'rxjs/operators';
 import { Observable, throwError  } from 'rxjs';
 
-//const apiUrl = 'http://localhost:7001'; //dev host
-//const apiUrl = 'http://192.168.5.107:7001'; //prod host
-
 
 @Injectable({
   providedIn: 'root'
