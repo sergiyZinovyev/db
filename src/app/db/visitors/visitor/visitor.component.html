@@ -1,88 +1,120 @@
 <form class="example-form back2" [formGroup]="loginForm"> 
-    
-    <!-- (ngSubmit)="submit()" -->
+    <div class="conteiner">
+        <div class="row">
+            <div class="col-4">
+                <h5 class="pl-3">Особисті данні</h5>
+                <div class="data-group">
+                    <mat-form-field class="form-group example-full-width" appearance="outline">
+                        <mat-label>Прізвище</mat-label>
+                        <input type="text" matInput placeholder="{{'Last name'}}" formControlName="prizv">
+                        <mat-error *ngIf="!loginForm.get('prizv').valid">
+                            {{'Please enter a last name'}}
+                        </mat-error>
+                    </mat-form-field>
 
-    <!-- <mat-form-field class="form-group example-full-width">
-        <input type="text" matInput placeholder="{{'Regnum'}}" formControlName="regnum">
-    </mat-form-field> -->
-<div class="conteiner">
-    <div class="row">
-        <div class="col-4">
-            <h5 class="pl-3">Особисті данні</h5>
-            <div class="data-group">
-                <mat-form-field class="form-group example-full-width" appearance="outline">
-                    <mat-label>Електорнонна пошта</mat-label>
-                    <input type="email" matInput placeholder="{{'Email'}}" formControlName="email">
-                    <mat-error *ngIf="!loginForm.get('email').valid">
-                        {{'Please enter a valid email address'}}
-                    </mat-error>
-                </mat-form-field>
+                    <mat-form-field class="form-group example-full-width" appearance="outline">
+                        <mat-label>Ім'я</mat-label>
+                        <input type="text" matInput placeholder="{{'Name'}}" formControlName="name">
+                        <mat-error *ngIf="!loginForm.get('prizv').valid">
+                            {{'Please enter a name'}}
+                        </mat-error>
+                    </mat-form-field>
 
-                <mat-form-field class="form-group example-full-width" appearance="outline">
-                    <mat-label>Прізвище</mat-label>
-                    <input type="text" matInput placeholder="{{'Last name'}}" formControlName="prizv">
-                    <mat-error *ngIf="!loginForm.get('prizv').valid">
-                        {{'Please enter a last name'}}
-                    </mat-error>
-                </mat-form-field>
+                    <mat-form-field class="form-group example-full-width" appearance="outline">
+                        <mat-label>По-батькові</mat-label>
+                        <input type="text" matInput placeholder="{{'pobatkovi'}}" formControlName="pobatkovi">
+                        <mat-error *ngIf="!loginForm.get('prizv').valid">
+                            {{'Please enter a pobatkovi'}}
+                        </mat-error>
+                    </mat-form-field>
 
-                <mat-form-field class="form-group example-full-width" appearance="outline">
-                    <mat-label>Мобільний телефон</mat-label>
-                    <input type="text" matInput placeholder="{{'Cellphone'}}" formControlName="cellphone">
-                    <mat-error *ngIf="!loginForm.get('cellphone').valid">
-                        {{'Please enter a cellphone'}}
-                    </mat-error>
-                </mat-form-field> 
+                    <mat-form-field class="form-group example-full-width" appearance="outline">
+                        <mat-label>Стать</mat-label>
+                        <mat-select placeholder="{{'gender'}}" formControlName="gender">
+                            <mat-option value='male'>male</mat-option>
+                            <mat-option value='female'>female</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="!loginForm.get('prizv').valid">
+                            {{'Please enter'}}
+                        </mat-error>
+                    </mat-form-field>
+                </div>
             </div>
-        </div>
 
-        <div class="col-4">
-            <h5 class="pl-3">Контактні дані</h5>
-            <div class="data-group">
-            <mat-form-field class="form-group example-full-width" appearance="outline">
-                <mat-label>Місто</mat-label>
-                <input type="text" matInput placeholder="{{'City'}}" formControlName="city">
-                <mat-error *ngIf="!loginForm.get('city').valid">
-                    {{'Please enter a city'}}
-                </mat-error>
-            </mat-form-field>
+            <div class="col-4">
+                <h5 class="pl-3">Контактні дані</h5>
+                <div class="data-group">
+                    <mat-form-field class="form-group example-full-width" appearance="outline">
+                        <mat-label>Країна</mat-label>
+                        <mat-select placeholder="{{'Країна'}}" formControlName="countryid">
+                            <mat-option value=1>Україна</mat-option>
+                            <mat-option value=2>Польща</mat-option>
+                            <mat-option value=3>Німеччина</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="!loginForm.get('countryid').valid">
+                            {{'Будь ласка введіть країну'}}
+                        </mat-error>
+                    </mat-form-field>
 
-            <mat-form-field class="form-group example-full-width" appearance="outline">
-                <mat-label>Поштова адреса</mat-label>
-                <input type="text" matInput placeholder="{{'postaddreses'}}" formControlName="postaddreses">
-            </mat-form-field>
+                    <mat-form-field class="form-group example-full-width" appearance="outline">
+                        <mat-label>Регіон</mat-label>
+                        <mat-select placeholder="{{'Область'}}" formControlName="regionid">
+                            <ng-container *ngFor="let item of region">
+                                <mat-option value='{{item.regionid}}'>{{item.teretory}}</mat-option>
+                            </ng-container>
+                        </mat-select>
+                        <mat-error *ngIf="!loginForm.get('regionid').valid">
+                            {{'Будь ласка введіть область'}}
+                        </mat-error>
+                    </mat-form-field>
 
-            <mat-form-field class="form-group example-full-width" appearance="outline">
-                <mat-label>Компетенція</mat-label>
-                <input type="text" matInput placeholder="{{'kompeten'}}" formControlName="kompeten">
-            </mat-form-field>
+                    <mat-form-field class="form-group example-full-width" appearance="outline">
+                        <mat-label>Місто</mat-label>
+                        <input type="text" matInput placeholder="{{'City'}}" formControlName="city">
+                        <mat-error *ngIf="!loginForm.get('city').valid">
+                            {{'Please enter a city'}}
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field class="form-group example-full-width" appearance="outline">
+                        <mat-label>Електорнонна пошта</mat-label>
+                        <input type="email" matInput placeholder="{{'Email'}}" formControlName="email">
+                        <mat-error *ngIf="!loginForm.get('email').valid">
+                            {{'Please enter a valid email address'}}
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field class="form-group example-full-width" appearance="outline">
+                        <mat-label>Мобільний телефон</mat-label>
+                        <input type="text" matInput placeholder="{{'Cellphone'}}" formControlName="cellphone">
+                        <mat-error *ngIf="!loginForm.get('cellphone').valid">
+                            {{'Please enter a cellphone'}}
+                        </mat-error>
+                    </mat-form-field>
+                </div>
             </div>
-        </div>
 
-        <div class="col-4">
-            <h5 class="pl-3">Інша інформація</h5>
-            <div class="data-group">
-            <mat-form-field class="form-group example-full-width" appearance="outline">
-                <mat-label>Місце роботи</mat-label>
-                <input type="text" matInput placeholder="{{'m_robotu'}}" formControlName="m_robotu">
-            </mat-form-field>
+            <div class="col-4">
+                <h5 class="pl-3">Інша інформація</h5>
+                <div class="data-group">
+                    <mat-form-field class="form-group example-full-width" appearance="outline">
+                        <mat-label>Місце роботи</mat-label>
+                        <input type="text" matInput placeholder="{{'m_robotu'}}" formControlName="m_robotu">
+                    </mat-form-field>
 
-            <mat-form-field class="form-group example-full-width" appearance="outline">
-                <mat-label>Сфера діяльності</mat-label>
-                <input type="text" matInput placeholder="{{'sferadij'}}" formControlName="sferadij">
-            </mat-form-field>
+                    <mat-form-field class="form-group example-full-width" appearance="outline">
+                        <mat-label>Посада</mat-label>
+                        <input type="text" matInput placeholder="{{'posada'}}" formControlName="posada">
+                    </mat-form-field>
 
-            <mat-form-field class="form-group example-full-width" appearance="outline">
-                <mat-label>Посада</mat-label>
-                <input type="text" matInput placeholder="{{'posada'}}" formControlName="posada">
-            </mat-form-field>
+                    <mat-form-field class="form-group example-full-width" appearance="outline">
+                        <mat-label>Сфера діяльності</mat-label>
+                        <input type="text" matInput placeholder="{{'sferadij'}}" formControlName="sferadij">
+                    </mat-form-field>
+                </div>
             </div>
         </div>
     </div>
-</div>
-    
-    
-    <!-- <button mat-stroked-button class="btn-lg btn-block py-2">{{submitButtonText}}</button> -->
     
 </form>
 <span class="pl-3 pr-5">Запис створено {{this.element.datawnesenny}}. Остання модифікація була зроблена {{this.element.datelastcor}}</span>

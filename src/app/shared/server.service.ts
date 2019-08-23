@@ -73,7 +73,20 @@ export class ServerService {
     return [exhibForm, exhib]
   }
 
-
+  // getRegion(nameTable){
+  //   let region = [];
+  //   let get = this.get(nameTable).subscribe(data =>{
+  //     for(let i=1; i<=25; i++){
+  //       region.push({
+  //         regionid: data[i].regionid,
+  //         teretory: data[i].teretory
+  //       })
+  //     }
+  //     console.log(region);
+  //     get.unsubscribe();
+  //     return region
+  //   })
+  // }
 
 
   private handleError(err) {

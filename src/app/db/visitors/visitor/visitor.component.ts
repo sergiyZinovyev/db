@@ -49,6 +49,7 @@ export class VisitorComponent implements OnInit {
 
   exhibForm = new FormGroup({});
   exhib = this.server.getExhib('exhibitions_dict', this.getArrFromPotvid(), [])[1];
+  region;
 
   myEmail: string = '';
   myCellphone: string = '';
@@ -60,7 +61,8 @@ export class VisitorComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    //console.log(this.element);
+    this.getRegion('region');
+    //console.log(this.region);
     this.loginForm = this.fb.group({
       table: ['visitors', []],
       checkEmail: [false, []],
@@ -91,7 +93,7 @@ export class VisitorComponent implements OnInit {
       address: [this.element.address, []],
       telephon: [this.element.telephon, []],
       rating: [this.element.rating, []],
-    })
+    }) 
 
     this.myEmail = this.element.email;
     this.myCellphone = this.element.cellphone;
@@ -102,7 +104,17 @@ export class VisitorComponent implements OnInit {
     // });
   }
   
-  
+  getRegion(nameTable){
+    this.region = [];
+    this.server.get(nameTable).subscribe(data =>{
+      for(let i=1; i<=25; i++){
+        this.region.push({
+          regionid: data[i].regionid,
+          teretory: data[i].teretory
+        })
+      }
+    })
+  }
 
   // editUser(){
   //   let post = this.server.post(this.loginForm.value, "edit").subscribe(data =>{
