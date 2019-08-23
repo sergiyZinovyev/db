@@ -103,9 +103,9 @@ export class VisitorsComponent implements OnInit {
           sferadij: data[i].sferadij,
           posada: data[i].posada,
           type: data[i].type,
-          kompeten: data[i].kompeten,
-          datawnesenny: data[i].datawnesenny,
-          datelastcor: data[i].datelastcor,
+          kompeten: data[i].kompeten, 
+          datawnesenny: this.dateFormat(data[i].datawnesenny),
+          datelastcor: this.dateFormat(data[i].datelastcor),
           ins_user: data[i].ins_user,
           countryid: data[i].countryid,
           postindeks: data[i].postindeks,
@@ -186,6 +186,21 @@ export class VisitorsComponent implements OnInit {
       default:
         break;
     }
+  }
+
+  dateFormat(d){
+    if(d){
+      var now = new Date(d);
+      var curr_date = ('0' + now.getDate()).slice(-2)
+      var curr_month = ('0' + (now.getMonth() + 1)).slice(-2);
+      var curr_year = now.getFullYear();
+      var curr_hour = ('0' + now.getHours()).slice(-2);
+      var curr_minute = ('0' + now.getMinutes()).slice(-2);
+      var curr_second = ('0' + now.getSeconds()).slice(-2);
+      var formated_date = curr_year + "-" + curr_month + "-" + curr_date + " " + curr_hour + ":" + curr_minute + ":" + curr_second;
+    }
+    else {return new Date()};
+    return formated_date;
   }
   //function(){}
 
