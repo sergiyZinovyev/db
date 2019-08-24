@@ -15,7 +15,7 @@
                     <mat-form-field class="form-group example-full-width" appearance="outline">
                         <mat-label>Ім'я</mat-label>
                         <input type="text" matInput placeholder="{{'Name'}}" formControlName="name">
-                        <mat-error *ngIf="!loginForm.get('prizv').valid">
+                        <mat-error *ngIf="!loginForm.get('name').valid">
                             {{'Please enter a name'}}
                         </mat-error>
                     </mat-form-field>
@@ -23,9 +23,9 @@
                     <mat-form-field class="form-group example-full-width" appearance="outline">
                         <mat-label>По-батькові</mat-label>
                         <input type="text" matInput placeholder="{{'pobatkovi'}}" formControlName="pobatkovi">
-                        <mat-error *ngIf="!loginForm.get('prizv').valid">
+                        <!-- <mat-error *ngIf="!loginForm.get('prizv').valid">
                             {{'Please enter a pobatkovi'}}
-                        </mat-error>
+                        </mat-error> -->
                     </mat-form-field>
 
                     <mat-form-field class="form-group example-full-width" appearance="outline">
@@ -34,9 +34,9 @@
                             <mat-option value='male'>male</mat-option>
                             <mat-option value='female'>female</mat-option>
                         </mat-select>
-                        <mat-error *ngIf="!loginForm.get('prizv').valid">
+                        <!-- <mat-error *ngIf="!loginForm.get('prizv').valid">
                             {{'Please enter'}}
-                        </mat-error>
+                        </mat-error> -->
                     </mat-form-field>
                 </div>
             </div>
@@ -111,6 +111,37 @@
                         <mat-label>Сфера діяльності</mat-label>
                         <input type="text" matInput placeholder="{{'sferadij'}}" formControlName="sferadij">
                     </mat-form-field>
+
+                    <div class="reg-form2 mb-5">
+                        <mat-expansion-panel class="reg-form3">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title class="">Потенційне відвідування</mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <form [formGroup]="exhibForm">
+                                <div class="row">
+                                    <ng-container *ngFor="let item of exhib">
+                                        <ng-container *ngIf='item.kod==1'>
+                                            <div class="col-12 col-sm-6"> 
+                                                <mat-checkbox class='ml-1' formControlName={{item.name}}>
+                                                    {{item.name}}
+                                                </mat-checkbox>
+                                            </div>
+                                        </ng-container>    
+                                    </ng-container>
+                                </div>
+                            </form>
+                        </mat-expansion-panel>  
+                    </div>
+
+                    <div class="reg-form2 mt-5">
+                        <mat-expansion-panel class="reg-form3">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title class="">Відвідані виставки</mat-panel-title>
+                            </mat-expansion-panel-header>
+                            тут будуть відвідані виставки
+                        </mat-expansion-panel>  
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -118,7 +149,10 @@
     
 </form>
 <span class="pl-3 pr-5">Запис створено {{this.element.datawnesenny}}. Остання модифікація була зроблена {{this.element.datelastcor}}</span>
-<button *ngIf='tableName == "База відвідувачів"'class='ml-2' mat-raised-button (click)='editUser()'>редагувати</button>
-<button *ngIf='tableName == "Заявки на внесення"' class='ml-2' mat-raised-button (click)='editUser()'>прийняти заявку</button>
-<button *ngIf='tableName == "Заявки на зміну"' class='ml-2' mat-raised-button (click)='editUser()'>прийняти заявку</button>
+<button *ngIf='tableName == "База відвідувачів"'class='ml-2' mat-raised-button (click)='submit()'>редагувати</button>
+<button *ngIf='tableName == "Заявки на внесення"' class='ml-2' mat-raised-button (click)='submit()'>прийняти заявку</button>
+<button *ngIf='tableName == "Заявки на зміну"' class='ml-2' mat-raised-button (click)='submit()'>прийняти заявку</button>
 <button class='ml-2' mat-raised-button (click)='delete()'>видалити</button>
+<ng-container *ngIf = 'worningCheck'>
+    <div class="alert alert-warning mt-1" role="alert">{{worningCheck}}</div>
+</ng-container>

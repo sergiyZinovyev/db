@@ -46,13 +46,21 @@ export class VisitorComponent implements OnInit {
     rating: ['', []],
 
   })
-
+  exhib = [{
+    id: '',
+    name: '',
+    kod: ''
+  }];
   exhibForm = new FormGroup({});
-  exhib = this.server.getExhib('exhibitions_dict', this.getArrFromPotvid(), [])[1];
+  
   region;
 
   myEmail: string = '';
   myCellphone: string = '';
+
+  worningCheck: string;
+
+  startLoginForm;
 
   constructor(
     private server: ServerService,
@@ -62,16 +70,15 @@ export class VisitorComponent implements OnInit {
 
   ngOnInit() {
     this.getRegion('region');
-    //console.log(this.region);
     this.loginForm = this.fb.group({
       table: ['visitors', []],
       checkEmail: [false, []],
       checkPhone: [false, []],
 
-      email: [this.element.email, [Validators.email]],
+      email: [this.element.email, [Validators.email, Validators.required]],
       prizv: [this.element.prizv, [Validators.required]],
       city: [this.element.city, [Validators.required]],
-      cellphone: [this.element.cellphone, [Validators.pattern('380[0-9]{9}')]],
+      cellphone: [this.element.cellphone, [Validators.pattern('380[0-9]{9}'), Validators.required]],
       regnum: [this.element.regnum, []],
       potvid: [this.element.potvid, []],
       name: [this.element.name, [Validators.required]],
@@ -95,13 +102,12 @@ export class VisitorComponent implements OnInit {
       rating: [this.element.rating, []],
     }) 
 
+    this.startLoginForm = this.element;
+
     this.myEmail = this.element.email;
     this.myCellphone = this.element.cellphone;
     //збираємо форму з виставками
-    this.exhibForm = this.server.getExhib('exhibitions_dict', this.getArrFromPotvid(), [])[0];
-    // this.exhibForm.valueChanges.subscribe(v => {
-    //   this.loginForm.patchValue({potvid: this.server.getStringExhibForm(this.exhibForm.value)}) //змінюємо поле з виставками в загальній формі
-    // });
+    this.getExhib('exhibitions_dict');
   }
   
   getRegion(nameTable){
@@ -127,15 +133,36 @@ export class VisitorComponent implements OnInit {
   //   });
   // }
 
+  checkFormChange(){
+    let flag = true
+    console.log('this.startLoginForm: ', this.startLoginForm);
+    console.log('this.loginForm: ', this.loginForm.value);
+    for (let key in this.startLoginForm){
+      //console.log(key,': ',this.startLoginForm[key])
+      if(this.loginForm.get(key)){
+        if(this.startLoginForm[key] == this.loginForm.get(key).value){
+          console.log(key, ': not changed')
+        }
+        else{
+          flag = false;
+          console.log(key, ': changed')
+        }
+      }
+    }
+    console.log(flag);
+    console.log('-------------------');
+    return flag;
+  }
+
   editUser(){
     //this.user.setUserData(this.loginForm.value);
     //this.isLoadingResults = true;
     this.loginForm.patchValue({potvid: this.server.getStringExhibForm(this.exhibForm.value)}) //змінюємо поле з виставками
     //перевіряємо чи змінилася форма
-    // if(this.checkFormChange()){
-    //   console.log('дані не змінилися')
-    //   return this.router.navigate(['invite']);
-    // }
+    if(this.checkFormChange()){
+      console.log('дані не змінилися')
+      return //this.router.navigate(['invite']);
+    }
     //this.loginForm.patchValue({table: this.spreadsheet}) //змінюємо поле з таблицею в яку вносити дані
 
     //перевіряємо чи були змінені поля email/cellphone та вносимо відповідні зміни у форму
@@ -161,10 +188,10 @@ export class VisitorComponent implements OnInit {
       if(data){
         if(data[0]){
           console.log('такий мейл вже існує');
-          //this.worningCheck = 'Такий емейл або мобільний телефон вже використовується! Внесіть будь ласка інший';
+          this.worningCheck = 'Такий емейл або мобільний телефон вже використовується! Внесіть будь ласка інший';
         }
         else{
-          //this.worningCheck = '';
+          this.worningCheck = '';
           if(this.tableName == 'Заявки на зміну' || this.tableName == 'Заявки на внесення') {this.delete()}
           else {this.getData.emit(this.getTableName())}
         }
@@ -175,6 +202,7 @@ export class VisitorComponent implements OnInit {
   }
 
   addUser() {
+    //ще не використовується і до кінця не реалізований
     let post = this.server.post(this.loginForm.value, "createVis").subscribe(data =>{
       console.log("data: ", data);
       if(data){
@@ -216,10 +244,69 @@ export class VisitorComponent implements OnInit {
     });
   }
 
+  getExhib(nameTable){
+    //створити форму зі всіх виставок
+    this.exhibForm = new FormGroup({});
+    this.server.get(nameTable).subscribe(data =>{
+      this.exhib = new Array;
+      let value: boolean;
+      for(let i=0; i>=0; i++){
+        value = false;
+        if(!data[i]){break};
+        this.exhib.push({
+          id: data[i].id,
+          name: data[i].name,
+          kod: data[i].kod
+        })
+        if(this.getArrFromPotvid().find(currentValue => currentValue == data[i].name)){value = true}
+        this.exhibForm.addControl(data[i].name, new FormControl(value, Validators.required))
+      }
+      console.log(this.exhib); 
+    })
+  }
+
   getArrFromPotvid(){
+    //створюємо масив виставок
     return this.loginForm.get('potvid').value.split(', ')
   }
 
+  submit(){
+    this.worningCheck = '';
+    //перевіряємо валідність обов'язкових полей
+    if(this.loginForm.get('prizv').valid &&
+       this.loginForm.get('name').valid &&
+       this.loginForm.get('countryid').valid &&
+       this.loginForm.get('regionid').valid){
+        console.log("this.loginForm.get('email').valid: ", this.loginForm.get('email').value," - ",this.loginForm.get('email').valid);
+        console.log("this.loginForm.get('cellphone').valid: ", this.loginForm.get('cellphone').value," - ",this.loginForm.get('cellphone').valid);
+        //перевіряємо чи валідне хоча б одне поле
+        if(this.loginForm.get('email').valid || this.loginForm.get('cellphone').valid){
+          console.log('email: ', this.loginForm.get('email').value);
+          console.log('cellphone: ', this.loginForm.get('cellphone').value);
+          if(this.loginForm.get('email').value == null){this.loginForm.patchValue({email: ''})}
+          if(this.loginForm.get('cellphone').value == null){this.loginForm.patchValue({cellphone: ''})}
 
+          if((this.loginForm.get('email').invalid && (this.loginForm.get('email').value != '')) ||
+             (this.loginForm.get('cellphone').invalid && (this.loginForm.get('cellphone').value != ''))){
+            console.log('email: ', this.loginForm.get('email').value);
+            console.log('cellphone: ', this.loginForm.get('cellphone').value);
+            return console.log('invalid!')
+          }
+          else{
+            //обираємо метод (редагування чи внесення нового)
+            this.editUser();
+          }
+
+        } 
+        else{
+          console.log('заповніть хоча б одне поле')
+          this.worningCheck = 'Для внесення в базу потрібно вказати або мобільний телефон або електронну пошту';
+        }   
+    }
+    else{
+      console.log('error!')
+      this.worningCheck = "Не заповнені всі обов'язкові поля";
+    } 
+  }
 
 }

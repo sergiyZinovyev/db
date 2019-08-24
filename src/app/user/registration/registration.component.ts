@@ -342,6 +342,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
             return console.log('invalid!')
           }
           else{
+            //обираємо метод (редагування чи внесення нового)
             console.log('email: ', this.loginForm.get('email').value);
             console.log('cellphone: ', this.loginForm.get('cellphone').value);
             if(this.edit){

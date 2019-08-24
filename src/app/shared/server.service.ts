@@ -48,30 +48,30 @@ export class ServerService {
     return exhibStr
   }
 
-  getExhib(nameTable: string, arrFromFormControl: [], arrFromMyExhib): [FormGroup, {id: string, name: string, kod: string}[]]{
-    //створити форму зі всіх виставок
-    let exhibForm = new FormGroup({});
-    let exhib = new Array;
-    this.get(nameTable).subscribe(data =>{
-      let value: boolean;
-      for(let i=0; i>=0; i++){
-        value = false;
-        if(!data[i]){break};
-        exhib.push({
-          id: data[i].id,
-          name: data[i].name,
-          kod: data[i].kod
-        })
-        if(arrFromFormControl.find(currentValue => currentValue == data[i].name) || arrFromMyExhib.find(currentValue => currentValue == data[i].name)){value = true}
-        exhibForm.addControl(data[i].name, new FormControl(value, Validators.required))
-      }
-      //console.log('exhibForm: ', exhibForm);
-      // this.exhibForm.valueChanges.subscribe(v => {
-      //   this.loginForm.patchValue({potvid: this.server.getStringExhibForm(this.exhibForm.value)}) //змінюємо поле з виставками в загальній формі
-      // }); 
-    })
-    return [exhibForm, exhib]
-  }
+  // getExhib(nameTable: string, arrFromFormControl: [], arrFromMyExhib): [FormGroup, {id: string, name: string, kod: string}[]]{
+  //   //створити форму зі всіх виставок
+  //   let exhibForm = new FormGroup({});
+  //   let exhib = new Array;
+  //   this.get(nameTable).subscribe(data =>{
+  //     let value: boolean;
+  //     for(let i=0; i>=0; i++){
+  //       value = false;
+  //       if(!data[i]){break};
+  //       exhib.push({
+  //         id: data[i].id,
+  //         name: data[i].name,
+  //         kod: data[i].kod
+  //       })
+  //       if(arrFromFormControl.find(currentValue => currentValue == data[i].name) || arrFromMyExhib.find(currentValue => currentValue == data[i].name)){value = true}
+  //       exhibForm.addControl(data[i].name, new FormControl(value, Validators.required))
+  //     }
+  //     //console.log('exhibForm: ', exhibForm);
+  //     // this.exhibForm.valueChanges.subscribe(v => {
+  //     //   this.loginForm.patchValue({potvid: this.server.getStringExhibForm(this.exhibForm.value)}) //змінюємо поле з виставками в загальній формі
+  //     // }); 
+  //   })
+  //   return [exhibForm, exhib]
+  // }
 
   // getRegion(nameTable){
   //   let region = [];
