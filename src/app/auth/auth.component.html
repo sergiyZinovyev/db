@@ -1,0 +1,31 @@
+<div class="back d-flex justify-content-center vh-100">
+    <div class=''>
+    
+        <form class="example-form back2 mt-5" [formGroup]="loginForm" (ngSubmit)="login()">
+        
+            <mat-form-field class="form-group example-full-width">
+            <input type="text" matInput placeholder="{{'Логін'}}" formControlName="login">
+            <mat-error *ngIf="!loginForm.get('login').valid">
+                {{'Введіть логін'}}
+            </mat-error>
+            </mat-form-field>
+        
+            <mat-form-field class="form-group example-full-width">
+            <input type="password" matInput placeholder="{{'Пароль'}}" formControlName="password">
+            <mat-error *ngIf="!loginForm.get('password').valid">
+                {{'Введіть пароль'}}
+            </mat-error>
+            </mat-form-field>
+             
+            <button mat-stroked-button class="btn-lg btn-block py-2">{{'Вхід'}}</button>
+            <br>
+            <div *ngIf='getSpinner' class="d-flex justify-content-center mt-5">
+                <div class="spinner-border text-secondary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+            <div *ngIf='errorMessage' class="alert alert-danger mt-3  max-width" role="alert">{{errorMessage}}</div>
+        </form>
+        
+    </div>
+</div>

@@ -10,7 +10,7 @@ const urlencodedParser = bodyParser.urlencoded({extended: false});
 //back-end server
 const app = express();
 const host = 'localhost'; //dev host
-//const host = '192.168.5.107'; //dev host
+//const host = '192.168.5.107'; //prod host
 const port = 7001;
 app.listen(port, host, function () {
   console.log(`Server listens http://${host}:${port}`);
@@ -35,8 +35,11 @@ app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:500
 
 
 
-//отримати всі записи з вказаної таблиці
+//отримати всі записи з вказаної таблиці 
 app.get("/db/:id", visitorsController.all);
+
+//отримати запис з таблиці usersaccount
+app.post("/db/users", visitorsController.users);
 
 //отримати файли
 app.get("/img/:id", cors(), visitorsController.file);

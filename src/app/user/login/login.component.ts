@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit {
   login() {
     this.warning = true;
     if(this.loginForm.value.email == 'db@db'){
-        return this.router.navigate(['db/visitors']);
+        return this.router.navigate(['auth']);
       }
     if(this.loginForm.get('email').valid || this.loginForm.get('cellphone').valid){
       this.warning = false;

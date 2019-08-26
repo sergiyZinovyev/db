@@ -35,6 +35,14 @@ exports.all = function(id, cb){
   })
 }
 
+//отримання ...
+exports.users = function(data, cb){
+  let sql = `SELECT * FROM usersaccount WHERE name=?`;
+  db.get().query(sql, data, function(err, data) {
+    cb(err, data)
+  })
+}
+
 //отримання всіх id(regnum) з таблиць visitors та visitors_create
 exports.regnVisAndReq = function(cb){
   let sql = `(SELECT regnum FROM visitors) UNION (SELECT regnum FROM visitors_create)`;

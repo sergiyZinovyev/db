@@ -59,9 +59,11 @@ import { RegistrationComponent } from './user/registration/registration.componen
 import { RequestComponent } from './db/request/request.component';
 import { VisitorsComponent } from './db/visitors/visitors.component';
 import { InviteComponent } from './invite/invite.component';
+import { AuthComponent } from './auth/auth.component';
 
 import { NgxBarcodeModule } from 'ngx-barcode';
 import { VisitorComponent } from './db/visitors/visitor/visitor.component';
+
 
 
 
@@ -74,7 +76,8 @@ import { VisitorComponent } from './db/visitors/visitor/visitor.component';
     RequestComponent,
     VisitorsComponent,
     InviteComponent,
-    VisitorComponent
+    VisitorComponent,
+    AuthComponent
   ],
   imports: [
     BrowserModule,

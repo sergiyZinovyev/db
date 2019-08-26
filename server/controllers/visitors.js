@@ -12,6 +12,49 @@ exports.all = function(req, res) {
 };
 
 //-------------------------------------------------------------------------------------------------------------
+//перевірка логіну/пароля
+exports.users = function(req, res) {
+    let data =[
+        req.body.login,
+    ]
+	Visitors.users(data, function(err, doc) {
+		if (err) {
+			console.log(err);
+			return res.sendStatus(500);
+        }
+        if(doc[0]){
+            if(req.body.password == doc[0].passw){
+                console.log(doc);
+                res.send([
+                    {
+                        "password": "true",
+                        "login": "true"
+                    },
+                    {
+                        'accessRights': doc[0].insupdvisitors,
+                        'id': doc[0].id
+                    }
+                ]);
+            }
+            else{
+                console.log(doc);
+                res.send([{
+                    "password": "false",
+                    "login": "true"
+                }]);
+            }
+        }
+		else{
+            console.log(doc);
+            res.send([{
+                "password": "false",
+                "login": "false"
+            }]);
+        }
+	});
+};
+
+//-------------------------------------------------------------------------------------------------------------
 
 exports.file = function(req, res) {
 	Shared.file(req.params.id, function(err, doc) {
