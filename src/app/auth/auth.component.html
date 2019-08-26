@@ -1,7 +1,10 @@
-<div class="back d-flex justify-content-center vh-100">
+<div class="back d-flex justify-content-between flex-column vh-100">
+    <!-- <div>
+        <h1 class="m-2 text-center">BAZA 2.0</h1>
+    </div> -->
     <div class=''>
     
-        <form class="example-form back2 mt-5" [formGroup]="loginForm" (ngSubmit)="login()">
+        <form class="example-form back2 max-width mt-5" [formGroup]="loginForm" (ngSubmit)="login()">
         
             <mat-form-field class="form-group example-full-width">
             <input type="text" matInput placeholder="{{'Логін'}}" formControlName="login">
@@ -27,5 +30,15 @@
             <div *ngIf='errorMessage' class="alert alert-danger mt-3  max-width" role="alert">{{errorMessage}}</div>
         </form>
         
+    </div>
+    <div class="m-2 font-weight-bold text-center">
+        Акціонерне товариство
+        ГАЛ-ЕКСПО®
+        вул. В.Винниченка,30
+        Львів, 79008, Україна
+        тел: +380(322) 970627, 971369
+        факс: +380(322) 971756
+        E-mail:
+        info@galexpo.lviv.ua
     </div>
 </div>

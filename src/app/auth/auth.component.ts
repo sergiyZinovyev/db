@@ -17,6 +17,15 @@ export class AuthComponent implements OnInit {
     password: ['', [Validators.required]]
   })
 
+  // promise = new Promise((resolve, reject) => {
+
+  //   setTimeout(() => {
+  //     // переведёт промис в состояние fulfilled с результатом "result"
+  //     resolve("result");
+  //   }, 1000);
+  
+  // });
+
   constructor(
     private fb: FormBuilder,
     private auth: AuthService,
@@ -24,6 +33,7 @@ export class AuthComponent implements OnInit {
 
   ngOnInit() {
   }
+
 
   login() {
     if(this.loginForm.valid){
@@ -33,7 +43,7 @@ export class AuthComponent implements OnInit {
         this.getSpinner = false;
         this.errorMessage = this.auth.errorMessage;
         console.log('this.auth.errorMessage: ',this.auth.errorMessage)
-      }, 300);
+      }, 500);
       
       
     } 

@@ -6,10 +6,11 @@ import { RequestComponent } from './db/request/request.component';
 import { VisitorsComponent } from './db/visitors/visitors.component';
 import { InviteComponent } from './invite/invite.component';
 import { AuthComponent } from './auth/auth.component';
+import { StartComponent } from './start/start.component';
 import { AuthGuard } from '../app/auth.guard';
 
 const routes: Routes = [
-  { path: '', component: LoginComponent},
+  { path: '', component: StartComponent},
   { path: 'auth', component: AuthComponent},
   { path: 'user/login', component: LoginComponent},
   { path: 'user/registration', component: RegistrationComponent},
