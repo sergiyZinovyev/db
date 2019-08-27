@@ -26,12 +26,12 @@ export class ServerService {
   }
 
   post(value, prop) {
-    console.log(value);
-    console.log(localStorage.getItem('user'));
-    console.log(localStorage.getItem('password'));
-    value.user = localStorage.getItem('user');
-    value.password = localStorage.getItem('password');
-    console.log('value: ',value);
+    // console.log(value);
+    // console.log(localStorage.getItem('user'));
+    // console.log(localStorage.getItem('password'));
+    // value.user = localStorage.getItem('user');
+    // value.password = localStorage.getItem('password');
+    // console.log('value: ',value);
     return this.http.post(`${this.apiUrl}/${prop}`, value)    
   }
   
