@@ -17,15 +17,6 @@ export class AuthComponent implements OnInit {
     password: ['', [Validators.required]]
   })
 
-  // promise = new Promise((resolve, reject) => {
-
-  //   setTimeout(() => {
-  //     // переведёт промис в состояние fulfilled с результатом "result"
-  //     resolve("result");
-  //   }, 1000);
-  
-  // });
-
   constructor(
     private fb: FormBuilder,
     private auth: AuthService,
@@ -37,16 +28,15 @@ export class AuthComponent implements OnInit {
 
   login() {
     if(this.loginForm.valid){
+      this.errorMessage = '';
       this.getSpinner = true;
-      this.auth.loginUser(this.loginForm.value);
-      setTimeout(()=>{
+      this.auth.loginUser(this.loginForm.value, (msg:string) =>{
         this.getSpinner = false;
-        this.errorMessage = this.auth.errorMessage;
-        console.log('this.auth.errorMessage: ',this.auth.errorMessage)
-      }, 500);
-      
-      
+        this.errorMessage = msg;
+        console.log('this.auth.errorMessage: ', msg)
+      });
     } 
   }
 
+ 
 }

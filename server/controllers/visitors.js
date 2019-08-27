@@ -35,6 +35,8 @@ exports.users = function(req, res) {
                         'id': doc[0].id
                     }
                 ]);
+                exports.login = true;
+                //next('true')
             }
             else{
                 console.log(doc);
@@ -42,6 +44,7 @@ exports.users = function(req, res) {
                     "password": "false",
                     "login": "true"
                 }]);
+                //exports.login = true;
             }
         }
 		else{
@@ -50,6 +53,7 @@ exports.users = function(req, res) {
                 "password": "false",
                 "login": "false"
             }]);
+            //exports.login = true;
         }
 	});
 };
