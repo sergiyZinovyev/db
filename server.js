@@ -1,6 +1,13 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const passport = require('passport');
+const session = require('express-session');
+//const RedisStore = require('connect-redis')(session);
+const localStrategy = require('passport-local').Strategy;
+const flash = require('connect-flash');
+
+
 const visitorsController = require('./server/controllers/visitors');
 const emailController = require('./server/controllers/email');
 const pdfController = require('./server/controllers/pdf');
@@ -27,38 +34,62 @@ ang.use("/", function(request, response){
   response.sendFile(path.join(__dirname+'/dist/db/index.html')); 
 });
 
+// function checkAuth(){
+//   return app.use((req, res, next) => {
+//     if(req.user)
+//       next();
+//     else
+//       console.log("checkAuth: error!")
+//       //res.redirect('/login');
+//   });
+//  }
 
+// passport.serializeUser((user, done) => done(null, user));
+// passport.deserializeUser((user, done) => done(null, user));
 
 app.use(cors());
 app.use(bodyParser.json({limit: "50mb"}));
 app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
 
+// app.use(session({
+//   secret: 'you secret key',
+//   resave: false,
+//   saveUninitialized: false
+// }));
+// app.use(flash());
+// app.use(passport.initialize());
+// app.use(passport.session());
 
-
-app.use(function (req, res, next) {
-  let n = 2;
-  console.log('Request Type:', req.method);
-  if (req.method == 'POST'){
-    visitorsController.users;
-    setTimeout(function(){
-      if(n == 2){
-        next()
-      }
-    }, 50);
-  }
-  if (req.method == 'GET'){
-    next()
-  }
-  
-});
-
+// passport.use(new localStrategy(
+//   {
+//     usernameField: 'login',
+//     passwordField: 'password'
+//   },
+//   (user, password, done) => {
+//   if(user !== 'Sergey')
+//     return done(null, false, {message: 'User not found'});
+//   else if(password !== 'serg')
+//     return done(null, false, {message: 'Wrong password'});
  
+//   return done(null, {id: 14, name: 'Sergey', age: 39});
+//  }));
+app.use(function (req, res, next) {
+  console.log('Request Type:', req.headers);
+  next()
+});
+// app.use((req, res, next) => {
+//   if(req.user)
+//     next();
+//   else
+//     console.log("app.use: res.redirect('/login')")
+//     //res.redirect('/login');
+//  });
+ 
+//отримати запис з таблиці usersaccount
+app.post("/users", visitorsController.users);
 
 //отримати всі записи з вказаної таблиці 
 app.get("/db/:id", visitorsController.all);
-
-//отримати запис з таблиці usersaccount
-app.post("/db/users", visitorsController.users);
 
 //отримати файли
 app.get("/img/:id", cors(), visitorsController.file);

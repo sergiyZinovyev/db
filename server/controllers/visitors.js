@@ -1,5 +1,8 @@
 var Visitors = require('../models/sql-visitors');
 var Shared = require('../models/shared');
+const jwt = require('jsonwebtoken');
+
+const JWT_Secret = 'secret_key_ge';
 
 exports.all = function(req, res) {
 	Visitors.all(req.params.id, function(err, doc) {
@@ -25,6 +28,7 @@ exports.users = function(req, res) {
         if(doc[0]){
             if(req.body.password == doc[0].passw){
                 console.log(doc);
+                let token = jwt.sign(doc[0].id, JWT_Secret);
                 res.send([
                     {
                         "password": "true",
@@ -32,10 +36,11 @@ exports.users = function(req, res) {
                     },
                     {
                         'accessRights': doc[0].insupdvisitors,
-                        'id': doc[0].id
+                        'id': doc[0].id,
+                        'token': token
                     }
                 ]);
-                exports.login = true;
+                //exports.login = true;
                 //next('true')
             }
             else{
