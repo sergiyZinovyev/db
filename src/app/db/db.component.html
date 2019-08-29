@@ -1,0 +1,14 @@
+<nav class="navbar navbar-dark bg-dark justify-content-start text-info">
+    <button mat-button color="primary" (click)='getDashboars()'>Меню</button>
+    <button mat-button color="primary" (click)='getVisitors()'>Відвідувачі</button>
+    <!-- <button mat-button color="accent">Accent</button>
+    <button mat-button color="accent">Accent</button> -->
+</nav>
+
+<ng-container *ngIf = 'dashboard'>
+    <app-dashboard></app-dashboard>
+</ng-container> 
+
+<ng-container *ngIf = 'visitors'>  
+    <app-visitors></app-visitors>
+</ng-container>

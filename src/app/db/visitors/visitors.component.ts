@@ -69,8 +69,8 @@ export class VisitorsComponent implements OnInit {
 
   getBd(nameTable){
     this.isLoadingResults = true;
-    this.keyData = [];
-    this.server.get(nameTable).subscribe(data =>{
+    this.keyData = []; 
+    this.server.getVisitors(nameTable).subscribe(data =>{
       console.log("data: ", data);
       this.isLoadingResults = false;
       for (var key in data[0]) {

@@ -64,6 +64,8 @@ import { AuthComponent } from './auth/auth.component';
 import { NgxBarcodeModule } from 'ngx-barcode';
 import { VisitorComponent } from './db/visitors/visitor/visitor.component';
 import { StartComponent } from './start/start.component';
+import { DashboardComponent } from './db/dashboard/dashboard.component';
+import { DbComponent } from './db/db.component';
 
 
 
@@ -79,7 +81,9 @@ import { StartComponent } from './start/start.component';
     InviteComponent,
     VisitorComponent,
     AuthComponent,
-    StartComponent
+    StartComponent,
+    DashboardComponent,
+    DbComponent
   ],
   imports: [
     BrowserModule,

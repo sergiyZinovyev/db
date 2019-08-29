@@ -11,6 +11,8 @@ const flash = require('connect-flash');
 const visitorsController = require('./server/controllers/visitors');
 const emailController = require('./server/controllers/email');
 const pdfController = require('./server/controllers/pdf');
+const authController = require('./server/controllers/auth');
+const Visitors = require('./server/models/sql-visitors');
 
 const urlencodedParser = bodyParser.urlencoded({extended: false});
 
@@ -34,59 +36,33 @@ ang.use("/", function(request, response){
   response.sendFile(path.join(__dirname+'/dist/db/index.html')); 
 });
 
-// function checkAuth(){
-//   return app.use((req, res, next) => {
-//     if(req.user)
-//       next();
-//     else
-//       console.log("checkAuth: error!")
-//       //res.redirect('/login');
-//   });
-//  }
 
-// passport.serializeUser((user, done) => done(null, user));
-// passport.deserializeUser((user, done) => done(null, user));
 
 app.use(cors());
 app.use(bodyParser.json({limit: "50mb"}));
 app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
 
-// app.use(session({
-//   secret: 'you secret key',
-//   resave: false,
-//   saveUninitialized: false
-// }));
-// app.use(flash());
-// app.use(passport.initialize());
-// app.use(passport.session());
 
-// passport.use(new localStrategy(
-//   {
-//     usernameField: 'login',
-//     passwordField: 'password'
-//   },
-//   (user, password, done) => {
-//   if(user !== 'Sergey')
-//     return done(null, false, {message: 'User not found'});
-//   else if(password !== 'serg')
-//     return done(null, false, {message: 'Wrong password'});
- 
-//   return done(null, {id: 14, name: 'Sergey', age: 39});
-//  }));
-app.use(function (req, res, next) {
-  console.log('Request Type:', req.headers);
-  next()
-});
-// app.use((req, res, next) => {
-//   if(req.user)
-//     next();
-//   else
-//     console.log("app.use: res.redirect('/login')")
-//     //res.redirect('/login');
-//  });
- 
-//отримати запис з таблиці usersaccount
-app.post("/users", visitorsController.users);
+
+//отримати запис з таблиці usersaccount для авторизації
+app.post("/users", authController.users);
+//------------------------------------------------------------------------------------------------------
+
+
+// *** захищені роути ***
+
+//отримати всі записи з вказаної таблиці 
+app.get("/visitors/:id", authController.checkAuth, visitorsController.all);
+
+//додавання запису в основну базу
+app.post("/createVis", authController.checkAuth, urlencodedParser, visitorsController.createNewVis);
+
+//видалення запису з обраної таблиці
+app.post("/delete", authController.checkAuth, urlencodedParser, visitorsController.delete)
+//------------------------------------------------------------------------------------------------------
+
+
+// *** не захищені роути ***
 
 //отримати всі записи з вказаної таблиці 
 app.get("/db/:id", visitorsController.all);
@@ -106,9 +82,6 @@ app.post("/createInVisitorsEdit", urlencodedParser, visitorsController.editReque
 //додавання запису в заявку на внесення
 app.post("/createInVisitorsCreate", urlencodedParser, visitorsController.createCpecTable);
 
-//додавання запису в основну базу
-app.post("/createVis", urlencodedParser, visitorsController.createNewVis);
-
 //редагування запису
 //app.post("/edit", urlencodedParser, visitorsController.edit)
 
@@ -123,9 +96,6 @@ app.post("/get/regnum", cors(), urlencodedParser, visitorsController.getRowOnCon
 
 //отримання запису по вказаній умові
 app.post("/get_spec_cond", cors(), urlencodedParser, visitorsController.getSpecCond);
-
-//видалення запису з обраної таблиці
-app.post("/delete", urlencodedParser, visitorsController.delete)
 
 //відправка файлу по вказаній адресі
 app.post("/email", cors(), urlencodedParser, emailController.sendEmail);
