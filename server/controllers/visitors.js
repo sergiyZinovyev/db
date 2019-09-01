@@ -1,5 +1,8 @@
 var Visitors = require('../models/sql-visitors');
 var Shared = require('../models/shared');
+const jwt = require('jsonwebtoken');
+
+const JWT_Secret = 'secret_key_ge';
 
 exports.all = function(req, res) {
 	Visitors.all(req.params.id, function(err, doc) {
@@ -13,50 +16,52 @@ exports.all = function(req, res) {
 
 //-------------------------------------------------------------------------------------------------------------
 //перевірка логіну/пароля
-exports.users = function(req, res) {
-    let data =[
-        req.body.login,
-    ]
-	Visitors.users(data, function(err, doc) {
-		if (err) {
-			console.log(err);
-			return res.sendStatus(500);
-        }
-        if(doc[0]){
-            if(req.body.password == doc[0].passw){
-                console.log(doc);
-                res.send([
-                    {
-                        "password": "true",
-                        "login": "true"
-                    },
-                    {
-                        'accessRights': doc[0].insupdvisitors,
-                        'id': doc[0].id
-                    }
-                ]);
-                exports.login = true;
-                //next('true')
-            }
-            else{
-                console.log(doc);
-                res.send([{
-                    "password": "false",
-                    "login": "true"
-                }]);
-                //exports.login = true;
-            }
-        }
-		else{
-            console.log(doc);
-            res.send([{
-                "password": "false",
-                "login": "false"
-            }]);
-            //exports.login = true;
-        }
-	});
-};
+// exports.users = function(req, res) {
+//     let data =[
+//         req.body.login,
+//     ]
+// 	Visitors.users(data, function(err, doc) {
+// 		if (err) {
+// 			console.log(err);
+// 			return res.sendStatus(500);
+//         }
+//         if(doc[0]){
+//             if(req.body.password == doc[0].passw){
+//                 console.log(doc);
+//                 let token = jwt.sign(doc[0].id, JWT_Secret);
+//                 res.send([
+//                     {
+//                         "password": "true",
+//                         "login": "true"
+//                     },
+//                     {
+//                         'accessRights': doc[0].insupdvisitors,
+//                         'id': doc[0].id,
+//                         'token': token
+//                     }
+//                 ]);
+//                 //exports.login = true;
+//                 //next('true')
+//             }
+//             else{
+//                 console.log(doc);
+//                 res.send([{
+//                     "password": "false",
+//                     "login": "true"
+//                 }]);
+//                 //exports.login = true;
+//             }
+//         }
+// 		else{
+//             console.log(doc);
+//             res.send([{
+//                 "password": "false",
+//                 "login": "false"
+//             }]);
+//             //exports.login = true;
+//         }
+// 	});
+// };
 
 //-------------------------------------------------------------------------------------------------------------
 

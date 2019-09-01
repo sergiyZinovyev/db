@@ -26,17 +26,15 @@ export class ServerService {
   }
 
   post(value, prop) {
-    // console.log(value);
-    // console.log(localStorage.getItem('user'));
-    // console.log(localStorage.getItem('password'));
-    // value.user = localStorage.getItem('user');
-    // value.password = localStorage.getItem('password');
-    // console.log('value: ',value);
-    return this.http.post(`${this.apiUrl}/${prop}`, value)    
+    return this.http.post(`${this.apiUrl}/${prop}?login=${localStorage.getItem('login')}&password=${localStorage.getItem('password')}`, value)    
   }
   
   get(prop){
-    return this.http.get(`${this.apiUrl}/db/${prop}`)
+    return this.http.get(`${this.apiUrl}/db/${prop}?login=${localStorage.getItem('user')}&password=${localStorage.getItem('password')}`)
+  }
+
+  getVisitors(prop){
+    return this.http.get(`${this.apiUrl}/visitors/${prop}?login=${localStorage.getItem('user')}&password=${localStorage.getItem('password')}`)
   }
 
   getStringExhibForm(exhibForm: {}): string{

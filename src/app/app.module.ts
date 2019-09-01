@@ -56,7 +56,6 @@ import {MatTreeModule} from '@angular/material/tree';
 
 import { LoginComponent } from './user/login/login.component';
 import { RegistrationComponent } from './user/registration/registration.component';
-import { RequestComponent } from './db/request/request.component';
 import { VisitorsComponent } from './db/visitors/visitors.component';
 import { InviteComponent } from './invite/invite.component';
 import { AuthComponent } from './auth/auth.component';
@@ -64,6 +63,11 @@ import { AuthComponent } from './auth/auth.component';
 import { NgxBarcodeModule } from 'ngx-barcode';
 import { VisitorComponent } from './db/visitors/visitor/visitor.component';
 import { StartComponent } from './start/start.component';
+import { DashboardComponent } from './db/dashboard/dashboard.component';
+import { DbComponent } from './db/db.component';
+import { PlahtyComponent } from './db/plahty/plahty.component';
+import { CompaniesComponent } from './db/companies/companies.component';
+import { VisexhibsComponent } from './db/visexhibs/visexhibs.component';
 
 
 
@@ -74,12 +78,16 @@ import { StartComponent } from './start/start.component';
     AppComponent,
     LoginComponent,
     RegistrationComponent,
-    RequestComponent,
     VisitorsComponent,
     InviteComponent,
     VisitorComponent,
     AuthComponent,
-    StartComponent
+    StartComponent,
+    DashboardComponent,
+    DbComponent,
+    PlahtyComponent,
+    CompaniesComponent,
+    VisexhibsComponent
   ],
   imports: [
     BrowserModule,

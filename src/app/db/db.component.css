@@ -1,0 +1,22 @@
+.back{
+    background-image: url(./../shared/img/backDB.png);
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: top center;
+    padding-top: 10px;
+    min-height: 250px;
+    /* opacity: 0.5; */
+    /* color: rgb(43, 45, 54); */
+    height: 1000px;
+}
+
+.baza{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: small;
+    font-weight: bold;
+    color: white;
+}
+.content{
+    margin-top: 70px;
+}
+

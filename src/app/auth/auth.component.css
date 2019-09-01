@@ -6,7 +6,7 @@
   margin: auto;
 }
 .back{
-    background-image: url(backDB.png);
+    background-image: url(./../shared/img/backDB.png);
     background-size: cover;
     background-position: top center;
     padding-top: 80px;

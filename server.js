@@ -1,9 +1,18 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+//const passport = require('passport');
+//const session = require('express-session');
+//const RedisStore = require('connect-redis')(session);
+//const localStrategy = require('passport-local').Strategy;
+//const flash = require('connect-flash');
+
+
 const visitorsController = require('./server/controllers/visitors');
 const emailController = require('./server/controllers/email');
 const pdfController = require('./server/controllers/pdf');
+const authController = require('./server/controllers/auth');
+const Visitors = require('./server/models/sql-visitors');
 
 const urlencodedParser = bodyParser.urlencoded({extended: false});
 
@@ -35,30 +44,28 @@ app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:500
 
 
 
-app.use(function (req, res, next) {
-  let n = 2;
-  console.log('Request Type:', req.method);
-  if (req.method == 'POST'){
-    visitorsController.users;
-    setTimeout(function(){
-      if(n == 2){
-        next()
-      }
-    }, 50);
-  }
-  if (req.method == 'GET'){
-    next()
-  }
-  
-});
+//отримати запис з таблиці usersaccount для авторизації
+app.post("/users", authController.users);
+//------------------------------------------------------------------------------------------------------
 
- 
+
+// *** захищені роути ***
+
+//отримати всі записи з вказаної таблиці 
+app.get("/visitors/:id", authController.checkAuth, visitorsController.all);
+
+//додавання запису в основну базу
+app.post("/createVis", authController.checkAuth, urlencodedParser, visitorsController.createNewVis);
+
+//видалення запису з обраної таблиці
+app.post("/delete", authController.checkAuth, urlencodedParser, visitorsController.delete)
+//------------------------------------------------------------------------------------------------------
+
+
+// *** не захищені роути ***
 
 //отримати всі записи з вказаної таблиці 
 app.get("/db/:id", visitorsController.all);
-
-//отримати запис з таблиці usersaccount
-app.post("/db/users", visitorsController.users);
 
 //отримати файли
 app.get("/img/:id", cors(), visitorsController.file);
@@ -75,9 +82,6 @@ app.post("/createInVisitorsEdit", urlencodedParser, visitorsController.editReque
 //додавання запису в заявку на внесення
 app.post("/createInVisitorsCreate", urlencodedParser, visitorsController.createCpecTable);
 
-//додавання запису в основну базу
-app.post("/createVis", urlencodedParser, visitorsController.createNewVis);
-
 //редагування запису
 //app.post("/edit", urlencodedParser, visitorsController.edit)
 
@@ -92,9 +96,6 @@ app.post("/get/regnum", cors(), urlencodedParser, visitorsController.getRowOnCon
 
 //отримання запису по вказаній умові
 app.post("/get_spec_cond", cors(), urlencodedParser, visitorsController.getSpecCond);
-
-//видалення запису з обраної таблиці
-app.post("/delete", urlencodedParser, visitorsController.delete)
 
 //відправка файлу по вказаній адресі
 app.post("/email", cors(), urlencodedParser, emailController.sendEmail);

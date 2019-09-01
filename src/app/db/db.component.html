@@ -1,0 +1,41 @@
+<div class="back">
+    <nav class="navbar navbar-dark bg-dark justify-content-between text-info py-1 pr-1 shadow-sm fixed-top">
+        <div>
+            <span class="baza">BAZA 2.0</span>
+            <button mat-icon-button [matMenuTriggerFor]="menu" class="mx-2 font-weight-bold"><mat-icon>menu</mat-icon></button>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)='getItemMenu("dashboard")'>Головна</button>
+                <button mat-menu-item (click)='getItemMenu("companies")'>База фірм</button>
+                <button mat-menu-item (click)='getItemMenu("visitors")'>База відвідувачів</button>
+                <button mat-menu-item (click)='getItemMenu("plahty")'>Плахти</button>
+                <button mat-menu-item (click)='getItemMenu("visexhibs")'>Відвідувачі виставок</button>
+            </mat-menu>
+        </div>
+        <div>
+            <span class="baza">{{user}}</span>
+            <button mat-button class="mx-2 font-weight-bold" (click)='exit()'>вихід <mat-icon>exit_to_app</mat-icon></button>
+        </div>
+    </nav>
+
+    <div class="content">
+        <ng-container *ngIf = 'nav.dashboard'>
+            <app-dashboard></app-dashboard>
+        </ng-container> 
+
+        <ng-container *ngIf = 'nav.visitors'>  
+            <app-visitors></app-visitors>
+        </ng-container>
+
+        <ng-container *ngIf = 'nav.companies'>  
+            <app-companies></app-companies>
+        </ng-container>
+
+        <ng-container *ngIf = 'nav.plahty'>  
+            <app-plahty></app-plahty>
+        </ng-container>
+
+        <ng-container *ngIf = 'nav.visexhibs'>  
+            <app-visexhibs></app-visexhibs>
+        </ng-container>
+    </div>
+</div>
