@@ -27,7 +27,7 @@ export class AuthService {
         localStorage.setItem('id', data[1].id);
         localStorage.setItem('access rights', data[1].accessRights);
         localStorage.setItem('token', data[1].token);
-        this.router.navigate(['db/dashboard']);
+        this.router.navigate(['db']);
       }
       else if(data[0].login == 'true' && data[0].password == 'false'){
         console.log('wrong pwd');

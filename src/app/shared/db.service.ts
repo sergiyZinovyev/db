@@ -10,7 +10,8 @@ export class DbService {
     visitors: false,
     companies: false,
     plahty: false,
-    visexhibs: false
+    visexhibs: false,
+    visexhib: false,
   }
   constructor() { }
 

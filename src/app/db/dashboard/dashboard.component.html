@@ -1,39 +1,56 @@
-<div style="text-align:center"><h1>Welcome to BAZA 2.0</h1></div> 
-<div class="row m-3 mt-5 row-width mx-auto">
+<div style="text-align:center" class='mt-5 pt-5'><h1>Welcome to BAZA 2.0</h1></div> 
+<div class="row mt-5 row-width mx-auto">
     <div class="col">
-        <div class="card m-3 width">
-        <div class="card-body">
-            <h5 class="card-title font-weight-bold">База відвідувачаів</h5>
-            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-            <button mat-raised-button color="primary" class="btn-lg btn-block py-2" (click)='getVisitors()'>Вхід</button> 
-        </div>
+        <div class="card m-3 width flex-column justify-content-between">
+            <div class="card-body">
+                <h5 class="card-title font-weight-bold text-primary">База відвідувачаів</h5>
+                <p class="card-text">Тут можна перегляну дані всіх потенційних відвідувачів, внести нових та відредагувати існуючих</p>
+            </div>
+            <div class="card-body2">
+                <button mat-raised-button color="primary" class="btn-lg btn-block py-2" (click)='getItemMenu("visitors")'>Вхід</button> 
+            </div>
         </div>
     </div>
     <div class="col">
-        <div class="card m-3 width">
-        <div class="card-body">
-            <h5 class="card-title font-weight-bold">База фірм</h5>
-            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-            <button mat-raised-button color="primary" class="btn-lg btn-block py-2" (click)='getCompanies()'>Вхід</button>
-        </div>
-        </div>
-    </div>
-    <div class="col">
-        <div class="card m-3 width">
-        <div class="card-body">
-            <h5 class="card-title font-weight-bold">Таблиці відвідувачів виставок</h5>
-            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-            <button mat-raised-button color="primary" class="btn-lg btn-block py-2" (click)='getVisitorsExhib()'>Вхід</button>
-        </div>
+        <div class="card m-3 width flex-column justify-content-between">
+            <div class="card-body">
+                <h5 class="card-title font-weight-bold text-primary">База фірм</h5>
+                <p class="card-text">Тут буде колсь буде база підприємств</p>
+            </div>
+            <div class="card-body2">
+                <button mat-raised-button color="primary" class="btn-lg btn-block py-2" (click)='getItemMenu("companies")'>Вхід</button> 
+            </div>
         </div>
     </div>
     <div class="col">
-        <div class="card m-3 width">
-        <div class="card-body">
-            <h5 class="card-title font-weight-bold">Плахти</h5>
-            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-            <button mat-raised-button color="primary" class="btn-lg btn-block py-2" (click)='getPlahts()'>Вхід</button>
+        <div class="card m-3 width flex-column justify-content-between">
+            <div class="card-body">
+                <h5 class="card-title font-weight-bold text-primary">Списки відвідувачів виставок</h5>
+                <p class="card-text">Таблиці реєстрації відвідувачів по виставкам</p>
+                <form class="" [formGroup]="visexhibsForm" >
+                    <mat-form-field class="form-group example-full-width">
+                        <mat-select placeholder="Оберіть потрібну виставку" formControlName="exhib">
+                            <ng-container *ngFor="let item of exhibs">
+                                <mat-option [style.fontSize.px]=12 value='{{item.numexhib}}'>{{item.nameexhibkor}}</mat-option>
+                            </ng-container>
+                        </mat-select> 
+                    </mat-form-field>
+                </form> 
+            </div>
+            <div class="card-body2 mt-n5">
+                <button mat-raised-button color="primary" class="btn-lg btn-block py-2" (click)='getItemMenu(curVisexhib)'>Вхід</button> 
+            </div>
         </div>
+    </div>
+    <div class="col">
+        <div class="card m-3 width flex-column justify-content-between">
+            <div class="card-body">
+                <h5 class="card-title font-weight-bold text-primary">Плахти</h5>
+                <p class="card-text">Тут колись будуть плахти</p>
+            </div>
+            <div class="card-body2">
+                <button mat-raised-button color="primary" class="btn-lg btn-block py-2" (click)='getItemMenu("plahty")'>Вхід</button> 
+            </div>
         </div>
     </div>
 </div>

@@ -66,7 +66,7 @@
                                 <ng-container *ngFor="let item of region">
                                     <mat-option value='{{item.regionid}}'>{{item.teretory}}</mat-option>
                                 </ng-container>
-                            </mat-select>
+                            </mat-select> 
                             <mat-error *ngIf="!loginForm.get('regionid').valid">
                                 {{'Будь ласка введіть область'}}
                             </mat-error>

@@ -68,6 +68,7 @@ import { DbComponent } from './db/db.component';
 import { PlahtyComponent } from './db/plahty/plahty.component';
 import { CompaniesComponent } from './db/companies/companies.component';
 import { VisexhibsComponent } from './db/visexhibs/visexhibs.component';
+import { VisexhibComponent } from './db/visexhib/visexhib.component';
 
 
 
@@ -87,7 +88,8 @@ import { VisexhibsComponent } from './db/visexhibs/visexhibs.component';
     DbComponent,
     PlahtyComponent,
     CompaniesComponent,
-    VisexhibsComponent
+    VisexhibsComponent,
+    VisexhibComponent
   ],
   imports: [
     BrowserModule,
