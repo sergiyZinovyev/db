@@ -99,3 +99,7 @@ app.post("/get_spec_cond", cors(), urlencodedParser, visitorsController.getSpecC
 
 //відправка файлу по вказаній адресі
 app.post("/email", cors(), urlencodedParser, emailController.sendEmail);
+
+//додавання запису в exhibition_vis
+app.post("/createInExhibition_vis", urlencodedParser, visitorsController.createInExhibition_vis);
+

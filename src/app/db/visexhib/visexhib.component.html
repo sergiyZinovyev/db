@@ -4,7 +4,15 @@
     </div>
     <div class="d-flex justify-content-between sticky">
         <span class="ml-5 my-2" [style.color]="headerColor"><strong>{{name}}</strong></span>
-        <div>
+        
+        <div class="d-flex justify-content-between">
+            <form [formGroup]="visitorsIds" (ngSubmit)="addId()" class="d-flex align-items-center mx-1">
+                <input type="text" class="my-form" formControlName="id_visitor" autofocus>
+                <button mat-icon-button aria-label="Example icon-button with a heart icon" class="but-color">
+                    <mat-icon>add_circle_outline</mat-icon>
+                </button>
+            </form>
+            <mat-divider [vertical]="true"></mat-divider>
             <button mat-icon-button [style.color]="headerColor" aria-label="Example icon-button with a heart icon" [matMenuTriggerFor]="menu">
                 <mat-icon>add_box</mat-icon>
             </button>

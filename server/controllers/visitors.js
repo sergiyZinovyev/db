@@ -1,8 +1,6 @@
 var Visitors = require('../models/sql-visitors');
 var Shared = require('../models/shared');
-const jwt = require('jsonwebtoken');
 
-const JWT_Secret = 'secret_key_ge';
 
 exports.all = function(req, res) {
 	Visitors.all(req.params.id, function(err, doc) {
@@ -344,6 +342,35 @@ exports.createNewVis = function(req, res) {
 };
 
 //-------------------------------------------------------------------------------------------------------------
+
+exports.createInExhibition_vis = function(req, res) {
+    let date_vis;
+    let date_reg;
+    if(req.body.date_vis){date_vis = Visitors.curentDate(req.body.date_vis)}
+    else date_vis = '';
+    if(req.body.date_reg){date_reg = Visitors.curentDate(req.body.date_reg)}
+    else date_reg = '';
+    var visitorData = [
+        req.body.id_exhibition,
+        req.body.id_visitor,
+        req.body.registered,
+        req.body.visited,
+        //Visitors.curentDate(req.body.date_vis),
+        //Visitors.curentDate(req.body.date_reg)
+        date_vis,
+        date_reg
+    ];
+    Visitors.createExhibition_vis(visitorData, function(err, doc){
+        if (err) {
+            console.log(err);
+            return res.sendStatus(500);
+        }
+        res.send(doc);
+    });     
+};
+
+//-------------------------------------------------------------------------------------------------------------
+
 
 // exports.edit = function(req, res) {
 //     var visitorData = [

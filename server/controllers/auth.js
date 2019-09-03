@@ -1,6 +1,6 @@
 var Visitors = require('../models/sql-visitors');
 var Shared = require('../models/shared');
-const jwt = require('jsonwebtoken');
+//const jwt = require('jsonwebtoken');
 
 const JWT_Secret = 'secret_key_ge';
 
@@ -19,7 +19,7 @@ exports.users = function(req, res) {
         if(doc[0]){
             if(req.body.password == doc[0].passw){
                 console.log(doc);
-                let token = jwt.sign(doc[0].id, JWT_Secret);
+                //let token = jwt.sign(doc[0].id, JWT_Secret);
                 res.send([
                     {
                         "password": "true",
@@ -28,7 +28,7 @@ exports.users = function(req, res) {
                     {
                         'accessRights': doc[0].insupdvisitors,
                         'id': doc[0].id,
-                        'token': token
+                        //'token': token
                     }
                 ]);
                 //exports.login = true;
@@ -55,6 +55,7 @@ exports.users = function(req, res) {
 };
 
 //-----------------------------------------------------------------------------------------------------------
+// підтвердження пароля
 exports.checkAuth = function(req, res, next){
     let data =[
       req.query.login,

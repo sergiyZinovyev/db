@@ -5,6 +5,7 @@ import {MatSort} from '@angular/material/sort';
 import { Router } from '@angular/router';
 import { ServerService } from '../../shared/server.service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
+import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-visexhib',
@@ -27,6 +28,8 @@ export class VisexhibComponent implements OnInit {
   nameBut: string = "Зареєстровані відвідувачі";
 
   displayedColumns: string[] = [
+    'id',
+    'id_exhibition',
     'id_visitor', 
     'registered', 
     'visited', 
@@ -38,6 +41,15 @@ export class VisexhibComponent implements OnInit {
   expandedElement;
 
   isLoadingResults = true;
+
+  visitorsIds = new FormGroup({
+    id_exhibition: new FormControl('2'),
+    id_visitor: new FormControl('', [Validators.required]),
+    registered: new FormControl(''),
+    visited: new FormControl('1'),
+    date_vis: new FormControl(''),
+    date_reg: new FormControl(''),
+  });
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
@@ -55,7 +67,7 @@ export class VisexhibComponent implements OnInit {
   getBd(nameTable){
     this.isLoadingResults = true;
     this.keyData = []; 
-    this.server.getVisitors(nameTable).subscribe(data =>{
+    let get = this.server.getVisitors(nameTable).subscribe(data =>{
       console.log("data: ", data);
       this.isLoadingResults = false;
       for (var key in data[0]) {
@@ -73,6 +85,8 @@ export class VisexhibComponent implements OnInit {
       for(let i=0; i>=0; i++){
         if(!data[i]){break};
         viewData.push({
+          id: data[i].id,
+          id_exhibition: data[i].id_exhibition,
           id_visitor: data[i].id_visitor,
           registered: data[i].registered, 
           visited: data[i].visited, 
@@ -83,6 +97,7 @@ export class VisexhibComponent implements OnInit {
       }
       this.dataSource.data = viewData;
       console.log("viewData: ", viewData);
+      get.unsubscribe();
     });
   }
 
@@ -105,8 +120,67 @@ export class VisexhibComponent implements OnInit {
       var curr_second = ('0' + now.getSeconds()).slice(-2);
       var formated_date = curr_year + "-" + curr_month + "-" + curr_date + " " + curr_hour + ":" + curr_minute + ":" + curr_second;
     }
-    else {return new Date()};
+    else {return ''};
     return formated_date;
+  }
+
+  addColumn(item: string) {
+    this.displayedColumns.push(item);
+    this.keyData.splice(this.checkArrIdVal(this.keyData, item), 1)
+  }
+
+  removeColumn(item: string) {
+    console.log(this.displayedColumns);
+    this.displayedColumns.splice(this.checkArrIdVal(this.displayedColumns, item), 1)
+    this.keyData.push(item);
+    console.log(this.displayedColumns);
+  }
+
+  butGetEditTable(){
+    this.getBd('visitors_edit');
+    this.name = 'Заявки на зміну';
+    this.getHeaderColor()
+  }
+
+  butGetCreateTable(){
+    this.getBd('visitors_create');
+    this.name = 'Заявки на внесення';
+    this.getHeaderColor()
+  }
+
+  butGetBd(){
+    this.getBd('visitors');
+    this.name = 'База відвідувачів';
+    this.getHeaderColor()
+  }
+
+  getHeaderColor() {
+    switch (this.name) {
+      case 'База відвідувачів':
+        this.headerColor = 'rgb(45, 128, 253)';
+        break;
+      case 'Заявки на внесення':
+        this.headerColor = 'rgb(0, 179, 164)';
+        break;
+      case 'Заявки на зміну':
+        this.headerColor = 'rgb(0, 102, 116)';
+        break;
+      default:
+        break;
+    }
+  }
+
+
+  addId(){
+    if(this.visitorsIds.valid){
+      this.visitorsIds.patchValue({date_vis: new Date});
+      console.log(this.visitorsIds.value);
+      this.server.post(this.visitorsIds.value, 'createInExhibition_vis').subscribe(data =>{
+        console.log("data: ", data);
+        this.visitorsIds.patchValue({id_visitor: ''});
+        this.getBd('exhibition_vis');
+      })
+    } 
   }
 
 }

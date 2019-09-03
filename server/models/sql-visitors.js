@@ -87,6 +87,22 @@ exports.create = function(dataVisitor, table, cb){
   })
 }
 
+//створення нового запису у Exhibition_vis
+exports.createExhibition_vis = function(dataVisitor, cb){
+  let sql = `INSERT INTO exhibition_vis (
+    id_exhibition,
+    id_visitor, 
+    registered, 
+    visited, 
+    date_vis, 
+    date_reg
+    ) 
+    VALUES (?,?,?,?,?,?)`;
+  db.get().query(sql, dataVisitor, function(err, data) {
+    cb(err, data)
+  })
+}
+
 //створення нового запису в таблиці visitors
 exports.createVis = function(dataVisitor, cb){
   let sql = `INSERT INTO visitors (regnum, email, prizv, city, cellphone, potvid) VALUES (?,?,?,?,?,?)`;

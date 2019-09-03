@@ -110,3 +110,13 @@ td.mat-cell {
    right: 0;
    z-index: 101;
  }
+
+ .my-form{
+   margin-top: 3px;
+   font-size: 12px;
+   border-radius: 5px;
+ }
+
+ .but-color{
+   color: dimgrey;
+ }

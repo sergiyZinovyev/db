@@ -15,7 +15,7 @@ export class DashboardComponent implements OnInit {
 
   visexhibsForm = new FormGroup({
     exhib: new FormControl('-1')
-  });
+  }); 
 
   exhibs = [{
     nameexhibkor: '',
