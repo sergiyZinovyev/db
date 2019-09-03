@@ -43,7 +43,7 @@ export class VisexhibComponent implements OnInit {
   isLoadingResults = true;
 
   visitorsIds = new FormGroup({
-    id_exhibition: new FormControl('2'),
+    id_exhibition: new FormControl(this.server.exhib),
     id_visitor: new FormControl('', [Validators.required]),
     registered: new FormControl(''),
     visited: new FormControl('1'),
@@ -60,14 +60,14 @@ export class VisexhibComponent implements OnInit {
 
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
-    this.getBd('exhibition_vis');
+    this.getBd(this.server.exhib);
     this.dataSource.sort = this.sort;
   }
 
   getBd(nameTable){
     this.isLoadingResults = true;
     this.keyData = []; 
-    let get = this.server.getVisitors(nameTable).subscribe(data =>{
+    let get = this.server.getVisExhib(nameTable).subscribe(data =>{
       console.log("data: ", data);
       this.isLoadingResults = false;
       for (var key in data[0]) {
@@ -178,7 +178,7 @@ export class VisexhibComponent implements OnInit {
       this.server.post(this.visitorsIds.value, 'createInExhibition_vis').subscribe(data =>{
         console.log("data: ", data);
         this.visitorsIds.patchValue({id_visitor: ''});
-        this.getBd('exhibition_vis');
+        this.getBd(this.server.exhib);
       })
     } 
   }

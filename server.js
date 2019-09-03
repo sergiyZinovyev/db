@@ -54,6 +54,9 @@ app.post("/users", authController.users);
 //отримати всі записи з вказаної таблиці 
 app.get("/visitors/:id", authController.checkAuth, visitorsController.all);
 
+//отримати всі записи про відвідувачів з вказаної виставки 
+app.get("/visexhib/:id", authController.checkAuth, visitorsController.visexhib);
+
 //додавання запису в основну базу
 app.post("/createVis", authController.checkAuth, urlencodedParser, visitorsController.createNewVis);
 

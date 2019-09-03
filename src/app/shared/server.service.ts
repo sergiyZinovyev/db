@@ -10,7 +10,7 @@ import { Observable, throwError  } from 'rxjs';
 })
 
 export class ServerService {
-
+  exhib = 2; 
   frontURL: URL;
   apiUrl = 'http://localhost:7001'; //dev host
   //apiUrl = 'http://192.168.5.107:7001'; //prod host
@@ -25,12 +25,20 @@ export class ServerService {
     console.log(this.frontURL);
   }
 
+  setExhib(ex){
+    return this.exhib = ex;
+  }
+
   post(value, prop) {
     return this.http.post(`${this.apiUrl}/${prop}?login=${localStorage.getItem('login')}&password=${localStorage.getItem('password')}`, value)    
   }
   
   get(prop){
     return this.http.get(`${this.apiUrl}/db/${prop}?login=${localStorage.getItem('user')}&password=${localStorage.getItem('password')}`)
+  }
+
+  getVisExhib(prop){
+    return this.http.get(`${this.apiUrl}/visexhib/${prop}?login=${localStorage.getItem('user')}&password=${localStorage.getItem('password')}`)
   }
 
   getVisitors(prop){

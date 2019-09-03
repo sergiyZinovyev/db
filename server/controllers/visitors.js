@@ -13,6 +13,18 @@ exports.all = function(req, res) {
 };
 
 //-------------------------------------------------------------------------------------------------------------
+
+exports.visexhib = function(req, res) {
+	Visitors.visexhib(req.params.id, function(err, doc) {
+		if (err) {
+			console.log(err);
+			return res.sendStatus(500);
+		}
+		res.send(doc);
+	});
+};
+
+//-------------------------------------------------------------------------------------------------------------
 //перевірка логіну/пароля
 // exports.users = function(req, res) {
 //     let data =[

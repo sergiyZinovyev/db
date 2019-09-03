@@ -45,6 +45,7 @@ export class DashboardComponent implements OnInit {
     //console.log('item: ',item)
     if (item == '2'){
       this.db.setNavDB('visexhib');
+      this.server.setExhib(this.visexhibsForm.get('exhib').value);
       return
     }
     if (item == '1'){

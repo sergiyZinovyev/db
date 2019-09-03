@@ -35,6 +35,14 @@ exports.all = function(id, cb){
   })
 }
 
+//отримання відвідувачів виставки
+exports.visexhib = function(data, cb){
+  let sql = `SELECT * FROM exhibition_vis WHERE id_exhibition=?`;
+  db.get().query(sql, data, function(err, data) {
+    cb(err, data)
+  })
+}
+
 //отримання ...
 exports.users = function(data, cb){
   let sql = `SELECT * FROM usersaccount WHERE name=?`;
