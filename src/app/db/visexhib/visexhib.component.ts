@@ -43,7 +43,7 @@ export class VisexhibComponent implements OnInit {
   isLoadingResults = true;
 
   visitorsIds = new FormGroup({
-    id_exhibition: new FormControl(this.server.exhib),
+    id_exhibition: new FormControl(this.server.exhib.id),
     id_visitor: new FormControl('', [Validators.required]),
     registered: new FormControl(''),
     visited: new FormControl('1'),
@@ -60,8 +60,27 @@ export class VisexhibComponent implements OnInit {
 
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
-    this.getBd(this.server.exhib);
+    this.getBd(this.server.exhib.id);
     this.dataSource.sort = this.sort;
+  }
+
+  getExhibName(){
+    return this.server.exhib.name;
+  }
+
+  checkVis(id, cb){
+    let get = this.server.getCheckViv(id, this.server.exhib.id).subscribe(data =>{
+      console.log("checkVis: ", data);
+      if(data[0]){
+        get.unsubscribe()
+        return cb(true)
+      }
+      else{
+        get.unsubscribe()
+        return cb(false)
+      }
+      
+    })
   }
 
   getBd(nameTable){
@@ -175,11 +194,19 @@ export class VisexhibComponent implements OnInit {
     if(this.visitorsIds.valid){
       this.visitorsIds.patchValue({date_vis: new Date});
       console.log(this.visitorsIds.value);
-      this.server.post(this.visitorsIds.value, 'createInExhibition_vis').subscribe(data =>{
-        console.log("data: ", data);
-        this.visitorsIds.patchValue({id_visitor: ''});
-        this.getBd(this.server.exhib);
-      })
+      this.checkVis(this.visitorsIds.get('id_visitor').value, cb=>{
+        if(!cb){
+          this.server.post(this.visitorsIds.value, 'createInExhibition_vis').subscribe(data =>{
+            console.log("data: ", data);
+            this.visitorsIds.patchValue({id_visitor: ''});
+            this.getBd(this.server.exhib.id);
+          })
+        }
+        else {
+          alert('Відвідувач вже реєструвався на цю виставку')
+          console.log('user already exist');
+        }
+      });
     } 
   }
 

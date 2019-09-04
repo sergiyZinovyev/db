@@ -11,7 +11,7 @@ import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms'
 })
 export class DashboardComponent implements OnInit {
 
-  curVisexhib: string = 'visexhibs';
+  //curVisexhib: string = 'visexhibs';
 
   visexhibsForm = new FormGroup({
     exhib: new FormControl('-1')
@@ -30,33 +30,51 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.getExhibs('exhibitions');
-    this.visexhibsForm.get('exhib').valueChanges.subscribe(v => {
-      //console.log('v: ', v);
-      if(v == ''){
-        this.curVisexhib = '1'
-      }
-      else {this.curVisexhib = '2'};
-      //console.log(this.curVisexhib)
-    });
+    // this.visexhibsForm.get('exhib').valueChanges.subscribe(v => {
+    //   //console.log('v: ', v);
+    //   if(v == ''){
+    //     this.curVisexhib = '1'
+    //   }
+    //   else {this.curVisexhib = '2'};
+    //   //console.log(this.curVisexhib)
+    // });
     
   }
-
+ 
   getItemMenu(item){
-    //console.log('item: ',item)
-    if (item == '2'){
-      this.db.setNavDB('visexhib');
-      this.server.setExhib(this.visexhibsForm.get('exhib').value);
-      return
-    }
-    if (item == '1'){
-      this.db.setNavDB('visexhibs');
-      return
-    }
     this.db.setNavDB(item);
   }
 
+  getVisEx(){
+    //console.log('item: ',item)
+    if (this.visexhibsForm.get('exhib').value !== '-1'){
+      let exhibName = this.getNameExhib(this.visexhibsForm.get('exhib').value); 
+      this.db.setNavDB('visexhib');
+      this.server.setExhib(this.visexhibsForm.get('exhib').value, exhibName);
+      return
+    }
+    if (this.visexhibsForm.get('exhib').value == '-1'){
+      this.db.setNavDB('visexhibs');
+      return
+    }
+    //this.db.setNavDB(item);
+  }
+
+  getNameExhib(num){
+    let name;
+    console.log('this.exhibs: ', this.exhibs);
+    this.exhibs.forEach(item =>{
+      if(item.numexhib == num){
+        // console.log(item.numexhib);
+        // console.log(num);
+        // console.log(item.nameexhibkor);
+        name = item.nameexhibkor
+      }
+    })
+    return name;   
+  }
+
   getExhibs(nameTable){
-    
     this.exhibs = [];
     this.server.get(nameTable).subscribe(data =>{
       //console.log('getExhibs: ',data);

@@ -10,7 +10,10 @@ import { Observable, throwError  } from 'rxjs';
 })
 
 export class ServerService {
-  exhib = 2; 
+  exhib = {
+    id: 2,
+    name: ''
+  }; 
   frontURL: URL;
   apiUrl = 'http://localhost:7001'; //dev host
   //apiUrl = 'http://192.168.5.107:7001'; //prod host
@@ -25,8 +28,11 @@ export class ServerService {
     console.log(this.frontURL);
   }
 
-  setExhib(ex){
-    return this.exhib = ex;
+  setExhib(id, name){
+    return this.exhib = {
+      id: id,
+      name: name
+    }
   }
 
   post(value, prop) {
@@ -35,6 +41,10 @@ export class ServerService {
   
   get(prop){
     return this.http.get(`${this.apiUrl}/db/${prop}?login=${localStorage.getItem('user')}&password=${localStorage.getItem('password')}`)
+  }
+
+  getCheckViv(idVis, exhib){ //перевірка чи зареєстрований відвідувач
+    return this.http.get(`${this.apiUrl}/checkViv/?login=${localStorage.getItem('user')}&password=${localStorage.getItem('password')}&idVis=${idVis}&exhib=${exhib}`)
   }
 
   getVisExhib(prop){

@@ -18,7 +18,23 @@ exports.visexhib = function(req, res) {
 	Visitors.visexhib(req.params.id, function(err, doc) {
 		if (err) {
 			console.log(err);
-			return res.sendStatus(500);
+			return res.sendStatus(500); 
+		}
+		res.send(doc);
+	});
+};
+
+//-------------------------------------------------------------------------------------------------------------
+
+exports.checkViv = function(req, res) {
+    var data = [
+        req.query.idVis,
+        req.query.exhib,  
+    ];
+	Visitors.checkViv(data, function(err, doc) {
+		if (err) {
+			console.log(err);
+			return res.sendStatus(500); 
 		}
 		res.send(doc);
 	});
