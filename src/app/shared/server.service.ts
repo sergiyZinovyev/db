@@ -37,7 +37,7 @@ export class ServerService {
   }
 
   post(value, prop) {
-    return this.http.post(`${this.apiUrl}/${prop}?login=${localStorage.getItem('login')}&password=${localStorage.getItem('password')}`, value)    
+    return this.http.post(`${this.apiUrl}/${prop}?login=${localStorage.getItem('user')}&password=${localStorage.getItem('password')}`, value)    
   }
   
   get(prop){

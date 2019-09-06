@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ServerService } from './server.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,9 @@ export class DbService {
     visexhibs: false,
     visexhib: false,
   }
-  constructor() { }
+  constructor(
+    private server: ServerService,
+  ) { }
 
   setNavDB(keyArg){
     for (let key in this.navDB) {
@@ -24,6 +27,21 @@ export class DbService {
         this.navDB[key] = false
       }
     }
+  }
+
+  checkVis(id, cb){
+    let get = this.server.getCheckViv(id, this.server.exhib.id).subscribe(data =>{
+      console.log("checkVis: ", data);
+      if(data[0]){
+        get.unsubscribe()
+        return cb(data)
+      }
+      else{
+        get.unsubscribe()
+        return cb(data)
+      }
+      
+    })
   }
 
 }

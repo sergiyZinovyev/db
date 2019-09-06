@@ -4,6 +4,7 @@ import {MatTableDataSource} from '@angular/material/table';
 import {MatSort} from '@angular/material/sort';
 import { Router } from '@angular/router';
 import { ServerService } from '../../shared/server.service';
+import { DbService } from '../../shared/db.service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms';
 
@@ -56,6 +57,7 @@ export class VisexhibComponent implements OnInit {
  
   constructor(
     private server: ServerService,
+    private db: DbService,
   ) { }
 
   ngOnInit() {
@@ -68,20 +70,20 @@ export class VisexhibComponent implements OnInit {
     return this.server.exhib.name;
   }
 
-  checkVis(id, cb){
-    let get = this.server.getCheckViv(id, this.server.exhib.id).subscribe(data =>{
-      console.log("checkVis: ", data);
-      if(data[0]){
-        get.unsubscribe()
-        return cb(true)
-      }
-      else{
-        get.unsubscribe()
-        return cb(false)
-      }
+  // checkVis(id, cb){
+  //   let get = this.server.getCheckViv(id, this.server.exhib.id).subscribe(data =>{
+  //     console.log("checkVis: ", data);
+  //     if(data[0]){
+  //       get.unsubscribe()
+  //       return cb(true)
+  //     }
+  //     else{
+  //       get.unsubscribe()
+  //       return cb(false)
+  //     }
       
-    })
-  }
+  //   })
+  // }
 
   getBd(nameTable){
     this.isLoadingResults = true;
@@ -193,9 +195,9 @@ export class VisexhibComponent implements OnInit {
   addId(){
     if(this.visitorsIds.valid){
       this.visitorsIds.patchValue({date_vis: new Date});
-      console.log(this.visitorsIds.value);
-      this.checkVis(this.visitorsIds.get('id_visitor').value, cb=>{
-        if(!cb){
+      //console.log(this.visitorsIds.value);
+      this.db.checkVis(this.visitorsIds.get('id_visitor').value, cb=>{
+        if(!cb[0]){
           this.server.post(this.visitorsIds.value, 'createInExhibition_vis').subscribe(data =>{
             console.log("data: ", data);
             this.visitorsIds.patchValue({id_visitor: ''});
@@ -203,8 +205,16 @@ export class VisexhibComponent implements OnInit {
           })
         }
         else {
-          alert('Відвідувач вже реєструвався на цю виставку')
+          this.visitorsIds.patchValue({visited: cb[0].visited + 1});
+          alert('Відвідувач вже реєструвався на цю виставку');
           console.log('user already exist');
+          console.log('edit data: ', this.visitorsIds.value);
+          this.server.post(this.visitorsIds.value, 'editExhibition_vis').subscribe(data =>{
+            console.log("data: ", data);
+            this.visitorsIds.patchValue({id_visitor: ''});
+            this.visitorsIds.patchValue({visited: '1'});
+            this.getBd(this.server.exhib.id);
+          })
         }
       });
     } 

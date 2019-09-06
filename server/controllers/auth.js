@@ -63,11 +63,12 @@ exports.checkAuth = function(req, res, next){
     console.log(data)
     Visitors.users(data, function(err, doc) {
   
-      if (err) {
-        console.log(err);
-        return res.sendStatus(500);
-          }
-          if(doc[0]){
+        if (err) {
+            console.log(err);
+            return res.sendStatus(500);
+        }
+
+        if(doc[0]){
             if(req.query.password == doc[0].passw){
                 console.log(doc);
                 return next();
@@ -76,10 +77,10 @@ exports.checkAuth = function(req, res, next){
                 console.log(doc);
                 return console.log("checkAuth: error!")
             }
-          }
-      else{
-        console.log(doc);
-        return console.log("checkAuth: error!")
-      }
+        }
+        else{
+            console.log(doc);
+            return console.log("checkAuth: error!")
+        }
     });
   };

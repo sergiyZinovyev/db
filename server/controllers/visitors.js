@@ -399,6 +399,25 @@ exports.createInExhibition_vis = function(req, res) {
 
 //-------------------------------------------------------------------------------------------------------------
 
+exports.editExhibition_vis = function(req, res) {
+    var visitorData = [
+        req.body.visited,
+        Visitors.curentDate(req.body.date_vis),
+        req.body.id_visitor,
+        req.body.id_exhibition,
+    ];
+    console.log('editExhibition_vis data: ',visitorData)
+    Visitors.editExhibition_vis(visitorData, function(err, doc){
+        if (err) {
+            console.log(err);
+            return res.sendStatus(500);
+        }
+        res.send(doc);
+    });     
+};
+
+//-------------------------------------------------------------------------------------------------------------
+
 
 // exports.edit = function(req, res) {
 //     var visitorData = [

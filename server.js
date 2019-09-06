@@ -61,7 +61,10 @@ app.get("/visexhib/:id", authController.checkAuth, visitorsController.visexhib);
 app.post("/createVis", authController.checkAuth, urlencodedParser, visitorsController.createNewVis);
 
 //видалення запису з обраної таблиці
-app.post("/delete", authController.checkAuth, urlencodedParser, visitorsController.delete)
+app.post("/delete", authController.checkAuth, urlencodedParser, visitorsController.delete);
+
+//редагування запису в exhibition_vis
+app.post("/editExhibition_vis", authController.checkAuth, urlencodedParser, visitorsController.editExhibition_vis);
 //------------------------------------------------------------------------------------------------------
 
 

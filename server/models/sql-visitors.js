@@ -135,6 +135,14 @@ exports.edit = function(dataVisitor, cb){
   })
 }
 
+//редагування запису відвідування виставки у таблиці Exhibition_vis
+exports.editExhibition_vis = function(dataVisitor, cb){
+  let sql = `UPDATE exhibition_vis SET visited=?, date_vis=? WHERE (id_visitor=? AND id_exhibition=?)`;
+  db.get().query(sql, dataVisitor, function(err, data) {
+    cb(err, data)
+  })
+}
+
 //редагування запису у вказаній таблиці
 exports.editPro = function(dataVisitor, table, cb){
   let sql = `UPDATE ${table} SET 
