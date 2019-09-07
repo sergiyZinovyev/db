@@ -11,7 +11,12 @@ const mysql = require("mysql2");
 
 //dev db
 const connection = mysql.createPool({
-	
+	connectionLimit: 100,
+	host: "192.168.5.105",
+	user: "galexpo",
+	database: "visitorsdev",
+	password: "ufktrcgj",
+	charset: "cp1251"
 });
 
 
