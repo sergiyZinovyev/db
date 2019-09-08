@@ -29,13 +29,18 @@ export class VisexhibComponent implements OnInit {
   nameBut: string = "Зареєстровані відвідувачі";
 
   displayedColumns: string[] = [
-    'id',
-    'id_exhibition',
+    //'id',
+    //'id_exhibition',
     'id_visitor', 
-    'registered', 
+    //'registered', 
     'visited', 
     'date_vis', 
-    'date_reg'
+    //'date_reg',
+    'namepovne',
+    'cellphone',
+    'email'
+
+
   ];
   keyData = [];
   dataSource = new MatTableDataSource();
@@ -113,6 +118,32 @@ export class VisexhibComponent implements OnInit {
           visited: data[i].visited, 
           date_vis: this.dateFormat(data[i].date_vis),
           date_reg: this.dateFormat(data[i].date_reg),
+
+          cellphone: data[i].cellphone,
+          city: data[i].city, 
+          email: data[i].email, 
+          prizv: data[i].prizv, 
+          regnum: data[i].regnum,
+          potvid: data[i].potvid,
+          name: data[i].name,
+          namepovne: data[i].namepovne,
+          postaddreses: data[i].postaddreses,
+          pobatkovi: data[i].pobatkovi,
+          gender: data[i].gender,
+          m_robotu: data[i].m_robotu,
+          sferadij: data[i].sferadij,
+          posada: data[i].posada,
+          type: data[i].type,
+          kompeten: data[i].kompeten, 
+          datawnesenny: this.dateFormat(data[i].datawnesenny),
+          datelastcor: this.dateFormat(data[i].datelastcor),
+          ins_user: data[i].ins_user,
+          countryid: data[i].countryid,
+          postindeks: data[i].postindeks,
+          regionid: data[i].regionid,
+          address: data[i].address,
+          telephon: data[i].telephon,
+          rating: data[i].rating
         })
         this.i = i+1;
       }

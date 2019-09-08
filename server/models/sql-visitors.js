@@ -37,7 +37,10 @@ exports.all = function(id, cb){
 
 //отримання відвідувачів виставки
 exports.visexhib = function(data, cb){
-  let sql = `SELECT * FROM exhibition_vis WHERE id_exhibition=?`;
+  let sql = `SELECT *
+  FROM exhibition_vis
+  LEFT OUTER JOIN visitors ON exhibition_vis.id_visitor = visitors.regnum
+  WHERE id_exhibition =?`;
   db.get().query(sql, data, function(err, data) {
     cb(err, data)
   })
