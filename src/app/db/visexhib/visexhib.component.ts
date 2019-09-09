@@ -32,13 +32,13 @@ export class VisexhibComponent implements OnInit {
     //'id',
     //'id_exhibition',
     'id_visitor', 
-    //'registered', 
-    'visited', 
     'date_vis', 
     //'date_reg',
     'namepovne',
     'cellphone',
-    'email'
+    'email',
+    'visited',
+    'registered', 
 
 
   ];

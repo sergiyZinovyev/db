@@ -14,31 +14,37 @@ exports.all = function(req, res) {
 
 //-------------------------------------------------------------------------------------------------------------
 
-exports.visexhib = function(req, res) {
-	Visitors.visexhib(req.params.id, function(err, doc) {
-		if (err) {
-			console.log(err);
-			return res.sendStatus(500); 
-		}
-		res.send(doc);
-	});
-};
+// exports.visexhib = function(req, res) {
+//     let data = [
+//         req.params.id,
+//         req.params.id,
+//         req.params.id,
+//         req.params.id  
+//     ];
+// 	Visitors.visexhib(data, function(err, doc) {
+// 		if (err) {
+// 			console.log(err);
+// 			return res.sendStatus(500); 
+// 		}
+// 		res.send(doc);
+// 	});
+// };
 
 //-------------------------------------------------------------------------------------------------------------
 
-exports.checkViv = function(req, res) {
-    var data = [
-        req.query.idVis,
-        req.query.exhib,  
-    ];
-	Visitors.checkViv(data, function(err, doc) {
-		if (err) {
-			console.log(err);
-			return res.sendStatus(500); 
-		}
-		res.send(doc);
-	});
-};
+// exports.checkViv = function(req, res) {
+//     var data = [
+//         req.query.idVis,
+//         req.query.exhib,  
+//     ];
+// 	Visitors.checkViv(data, function(err, doc) {
+// 		if (err) {
+// 			console.log(err);
+// 			return res.sendStatus(500); 
+// 		}
+// 		res.send(doc);
+// 	});
+// };
 
 //-------------------------------------------------------------------------------------------------------------
 //перевірка логіну/пароля
@@ -371,50 +377,50 @@ exports.createNewVis = function(req, res) {
 
 //-------------------------------------------------------------------------------------------------------------
 
-exports.createInExhibition_vis = function(req, res) {
-    let date_vis;
-    let date_reg;
-    if(req.body.date_vis){date_vis = Visitors.curentDate(req.body.date_vis)}
-    else date_vis = '';
-    if(req.body.date_reg){date_reg = Visitors.curentDate(req.body.date_reg)}
-    else date_reg = '';
-    var visitorData = [
-        req.body.id_exhibition,
-        req.body.id_visitor,
-        req.body.registered,
-        req.body.visited,
-        //Visitors.curentDate(req.body.date_vis),
-        //Visitors.curentDate(req.body.date_reg)
-        date_vis,
-        date_reg
-    ];
-    Visitors.createExhibition_vis(visitorData, function(err, doc){
-        if (err) {
-            console.log(err);
-            return res.sendStatus(500);
-        }
-        res.send(doc);
-    });     
-};
+// exports.createInExhibition_vis = function(req, res) {
+//     let date_vis;
+//     let date_reg;
+//     if(req.body.date_vis){date_vis = Visitors.curentDate(req.body.date_vis)}
+//     else date_vis = '';
+//     if(req.body.date_reg){date_reg = Visitors.curentDate(req.body.date_reg)}
+//     else date_reg = '';
+//     var visitorData = [
+//         req.body.id_exhibition,
+//         req.body.id_visitor,
+//         req.body.registered,
+//         req.body.visited,
+//         //Visitors.curentDate(req.body.date_vis),
+//         //Visitors.curentDate(req.body.date_reg)
+//         date_vis,
+//         date_reg
+//     ];
+//     Visitors.createExhibition_vis(visitorData, function(err, doc){
+//         if (err) {
+//             console.log(err);
+//             return res.sendStatus(500);
+//         }
+//         res.send(doc);
+//     });     
+// };
 
 //-------------------------------------------------------------------------------------------------------------
 
-exports.editExhibition_vis = function(req, res) {
-    var visitorData = [
-        req.body.visited,
-        Visitors.curentDate(req.body.date_vis),
-        req.body.id_visitor,
-        req.body.id_exhibition,
-    ];
-    console.log('editExhibition_vis data: ',visitorData)
-    Visitors.editExhibition_vis(visitorData, function(err, doc){
-        if (err) {
-            console.log(err);
-            return res.sendStatus(500);
-        }
-        res.send(doc);
-    });     
-};
+// exports.editExhibition_vis = function(req, res) {
+//     var visitorData = [
+//         req.body.visited,
+//         Visitors.curentDate(req.body.date_vis),
+//         req.body.id_visitor,
+//         req.body.id_exhibition,
+//     ];
+//     console.log('editExhibition_vis data: ',visitorData)
+//     Visitors.editExhibition_vis(visitorData, function(err, doc){
+//         if (err) {
+//             console.log(err);
+//             return res.sendStatus(500);
+//         }
+//         res.send(doc);
+//     });     
+// };
 
 //-------------------------------------------------------------------------------------------------------------
 

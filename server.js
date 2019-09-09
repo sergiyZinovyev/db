@@ -9,10 +9,11 @@ const bodyParser = require('body-parser');
 
 
 const visitorsController = require('./server/controllers/visitors');
+const visitorsExhibController = require('./server/controllers/visitors_exhib');
 const emailController = require('./server/controllers/email');
 const pdfController = require('./server/controllers/pdf');
 const authController = require('./server/controllers/auth');
-const Visitors = require('./server/models/sql-visitors');
+//const Visitors = require('./server/models/sql-visitors');
 
 const urlencodedParser = bodyParser.urlencoded({extended: false});
 
@@ -54,17 +55,22 @@ app.post("/users", authController.users);
 //отримати всі записи з вказаної таблиці 
 app.get("/visitors/:id", authController.checkAuth, visitorsController.all);
 
-//отримати всі записи про відвідувачів з вказаної виставки 
-app.get("/visexhib/:id", authController.checkAuth, visitorsController.visexhib);
-
 //додавання запису в основну базу
 app.post("/createVis", authController.checkAuth, urlencodedParser, visitorsController.createNewVis);
 
 //видалення запису з обраної таблиці
 app.post("/delete", authController.checkAuth, urlencodedParser, visitorsController.delete);
 
+
+//-----------exhibition_vis---------------
+
+//отримати всі записи про відвідувачів з вказаної виставки 
+app.get("/visexhib/:id", authController.checkAuth, visitorsExhibController.visexhib);
+
 //редагування запису в exhibition_vis
-app.post("/editExhibition_vis", authController.checkAuth, urlencodedParser, visitorsController.editExhibition_vis);
+app.post("/editExhibition_vis", authController.checkAuth, urlencodedParser, visitorsExhibController.editExhibition_vis);
+
+//----------------------------------------
 //------------------------------------------------------------------------------------------------------
 
 
@@ -106,11 +112,16 @@ app.post("/get_spec_cond", cors(), urlencodedParser, visitorsController.getSpecC
 //відправка файлу по вказаній адресі
 app.post("/email", cors(), urlencodedParser, emailController.sendEmail);
 
+
+//-----------exhibition_vis---------------
+
 //додавання запису в exhibition_vis
-app.post("/createInExhibition_vis", urlencodedParser, visitorsController.createInExhibition_vis);
+app.post("/createInExhibition_vis", urlencodedParser, visitorsExhibController.createInExhibition_vis);
 
 //отримати запис з  exhibition_vis про відвідувача вказаної виставки 
-app.get("/checkViv", visitorsController.checkViv);
+app.get("/checkViv", visitorsExhibController.checkViv);
+
+//----------------------------------------
 
 
 
