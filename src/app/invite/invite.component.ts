@@ -1,9 +1,11 @@
 import { Component, OnInit, OnDestroy} from '@angular/core';
 import { UserService } from '../shared/user.service';
 import { ServerService } from '../shared/server.service';
+import { DbvisexService } from '../shared/dbvisex.service';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl, SafeUrl} from '@angular/platform-browser';
 import * as html2pdf from 'html2pdf.js';
+import { timeoutWith } from 'rxjs/operators';
 
 
 
@@ -29,11 +31,13 @@ export class InviteComponent implements OnInit, OnDestroy{
   constructor(
     private user: UserService,
     private server: ServerService,
+    private dbsisex: DbvisexService,
     private router: Router,
     private sanitizer: DomSanitizer,
   ) { }
 
   ngOnInit() {
+    this.dbsisex.addVisEx();
     console.log('this.user.userLogData: ',this.user.userLogData);
     let get=this.server.post(this.user.userLogData, "get/regnum").subscribe(data =>{ //отримуємо нові дані з бази
       console.log("data: ", data);
@@ -54,6 +58,7 @@ export class InviteComponent implements OnInit, OnDestroy{
         return get.unsubscribe();
       }
     });
+
   }
 
   onLogin(){
@@ -77,7 +82,7 @@ export class InviteComponent implements OnInit, OnDestroy{
   }
 
   getPDFAndSend(){
-    let element = document.getElementById('element-to-print');
+    let element = document.getElementById('element-to-print'); 
     let opt = {
       margin:       0,
       filename:     'invite.pdf',

@@ -73,7 +73,9 @@ exports.createInExhibition_vis = function(req, res) {
 exports.editExhibition_vis = function(req, res) {
     var visitorData = [
         req.body.visited,
+        req.body.registered,
         Shared.curentDate(req.body.date_vis),
+        Shared.curentDate(req.body.date_reg),
         req.body.id_visitor,
         req.body.id_exhibition,
     ];

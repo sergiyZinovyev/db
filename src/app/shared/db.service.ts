@@ -30,7 +30,7 @@ export class DbService {
   }
 
   checkVis(id, cb){
-    let get = this.server.getCheckViv(id, this.server.exhib.id).subscribe(data =>{
+    let get = this.server.getCheckViv(id, this.server.exhib.id).subscribe(data =>{ 
       console.log("checkVis: ", data);
       if(data[0]){
         get.unsubscribe()

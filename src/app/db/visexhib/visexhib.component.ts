@@ -229,7 +229,7 @@ export class VisexhibComponent implements OnInit {
       //console.log(this.visitorsIds.value);
       this.db.checkVis(this.visitorsIds.get('id_visitor').value, cb=>{
         if(!cb[0]){
-          this.server.post(this.visitorsIds.value, 'createInExhibition_vis').subscribe(data =>{
+          this.server.post(this.visitorsIds.value, 'createInExhibition_vis').subscribe(data =>{ 
             console.log("data: ", data);
             this.visitorsIds.patchValue({id_visitor: ''});
             this.getBd(this.server.exhib.id);
@@ -237,10 +237,11 @@ export class VisexhibComponent implements OnInit {
         }
         else {
           this.visitorsIds.patchValue({visited: cb[0].visited + 1});
+          cb[0].visited = cb[0].visited + 1;
           alert('Відвідувач вже реєструвався на цю виставку');
           console.log('user already exist');
           console.log('edit data: ', this.visitorsIds.value);
-          this.server.post(this.visitorsIds.value, 'editExhibition_vis').subscribe(data =>{
+          this.server.post(cb[0], 'editExhibition_vis').subscribe(data =>{
             console.log("data: ", data);
             this.visitorsIds.patchValue({id_visitor: ''});
             this.visitorsIds.patchValue({visited: '1'});
