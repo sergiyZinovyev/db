@@ -1,7 +1,7 @@
 const db = require('../db');
 
 //отримання відвідувачів виставки
-exports.visexhib = function(data, cb){
+exports.visexhib = function(data, condition, cb){
   let sql = `SELECT *
     FROM (
       (
@@ -12,15 +12,15 @@ exports.visexhib = function(data, cb){
         
         SELECT *
         FROM exhibition_vis
-        LEFT OUTER JOIN visitors_create ON exhibition_vis.id_visitor = visitors_create.regnum
-        WHERE id_exhibition =?
+        LEFT OUTER JOIN visitors_create ON exhibition_vis.id_visitor = visitors_create.regnum 
+        WHERE id_exhibition =? ${condition}
         )
         UNION ALL (
         
         SELECT *
         FROM exhibition_vis
         LEFT OUTER JOIN visitors ON exhibition_vis.id_visitor = visitors.regnum
-        WHERE id_exhibition =?
+        WHERE id_exhibition =? ${condition}
         )
         ) AS v_table
       WHERE namepovne IS NOT NULL
@@ -34,14 +34,14 @@ exports.visexhib = function(data, cb){
         SELECT *
         FROM exhibition_vis
         LEFT OUTER JOIN visitors_create ON exhibition_vis.id_visitor = visitors_create.regnum
-        WHERE id_exhibition =?
+        WHERE id_exhibition =? ${condition}
         )
         UNION ALL (
         
         SELECT *
         FROM exhibition_vis
         LEFT OUTER JOIN visitors ON exhibition_vis.id_visitor = visitors.regnum
-        WHERE id_exhibition =?
+        WHERE id_exhibition =? ${condition}
         )
         ) AS v_table
       WHERE namepovne IS NULL

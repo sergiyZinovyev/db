@@ -22,9 +22,9 @@ import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms'
 })
 
 export class VisexhibComponent implements OnInit {
-
+  
   i = 20;
-  name: string = "Відвідувачі";
+  name: string = "Відвідали";
   headerColor = 'rgb(45, 128, 253)';
   nameBut: string = "Зареєстровані відвідувачі";
 
@@ -38,9 +38,7 @@ export class VisexhibComponent implements OnInit {
     'cellphone',
     'email',
     'visited',
-    'registered', 
-
-
+    //'registered', 
   ];
   keyData = [];
   dataSource = new MatTableDataSource();
@@ -67,7 +65,7 @@ export class VisexhibComponent implements OnInit {
 
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
-    this.getBd(this.server.exhib.id);
+    this.getBd(this.server.exhib.id, 1);
     this.dataSource.sort = this.sort;
   }
 
@@ -90,10 +88,10 @@ export class VisexhibComponent implements OnInit {
   //   })
   // }
 
-  getBd(nameTable){
+  getBd(idExhib, cond?){
     this.isLoadingResults = true;
     this.keyData = []; 
-    let get = this.server.getVisExhib(nameTable).subscribe(data =>{
+    let get = this.server.getVisExhib(idExhib, cond).subscribe(data =>{
       console.log("data: ", data);
       this.isLoadingResults = false;
       for (var key in data[0]) {
@@ -147,11 +145,18 @@ export class VisexhibComponent implements OnInit {
         })
         this.i = i+1;
       }
-      this.dataSource.data = viewData;
+      this.dataSource.data = viewData.sort(this.compareNumeric);
       console.log("viewData: ", viewData);
       get.unsubscribe();
     });
   }
+
+  compareNumeric(a, b) {
+    if (a.date_vis < b.date_vis) return 1;
+    if (a.date_vis == b.date_vis) return 0;
+    if (a.date_vis > b.date_vis) return -1;
+  }
+  
 
   checkArrIdVal(array, val):number {
     for (let i: number = 0; i < array.length; i++){
@@ -188,33 +193,61 @@ export class VisexhibComponent implements OnInit {
     console.log(this.displayedColumns);
   }
 
-  butGetEditTable(){
-    this.getBd('visitors_edit');
-    this.name = 'Заявки на зміну';
+  butGetReg(){
+    this.displayedColumns = [
+      'id_visitor', 
+      'date_reg',
+      'namepovne',
+      'cellphone',
+      'email',
+      'registered',  
+    ];
+    this.getBd(this.server.exhib.id, 2);
+    this.name = 'Зареєструвалися на';
     this.getHeaderColor()
   }
 
   butGetCreateTable(){
-    this.getBd('visitors_create');
-    this.name = 'Заявки на внесення';
+    this.displayedColumns = [
+      'id_visitor', 
+      'date_reg',
+      'namepovne',
+      'cellphone',
+      'email',
+      'registered', 
+    ];
+    this.getBd(this.server.exhib.id, 3);
+    this.name = 'Ще не відвідали';
     this.getHeaderColor()
   }
 
-  butGetBd(){
-    this.getBd('visitors');
-    this.name = 'База відвідувачів';
+  butGetVis(){
+    this.displayedColumns = [
+      //'id',
+      //'id_exhibition',
+      'id_visitor', 
+      'date_vis', 
+      //'date_reg',
+      'namepovne',
+      'cellphone',
+      'email',
+      'visited',
+      //'registered', 
+    ];
+    this.getBd(this.server.exhib.id, 1);
+    this.name = 'Відвідали';
     this.getHeaderColor()
   }
 
   getHeaderColor() {
     switch (this.name) {
-      case 'База відвідувачів':
+      case 'Відвідали':
         this.headerColor = 'rgb(45, 128, 253)';
         break;
-      case 'Заявки на внесення':
+      case 'Зареєструвалися на':
         this.headerColor = 'rgb(0, 179, 164)';
         break;
-      case 'Заявки на зміну':
+      case 'Ще не відвідали':
         this.headerColor = 'rgb(0, 102, 116)';
         break;
       default:
@@ -238,6 +271,7 @@ export class VisexhibComponent implements OnInit {
         else {
           this.visitorsIds.patchValue({visited: cb[0].visited + 1});
           cb[0].visited = cb[0].visited + 1;
+          cb[0].vis = 1;
           alert('Відвідувач вже реєструвався на цю виставку');
           console.log('user already exist');
           console.log('edit data: ', this.visitorsIds.value);

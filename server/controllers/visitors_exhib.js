@@ -5,13 +5,29 @@ var Shared = require('../models/shared');
 //-------------------------------------------------------------------------------------------------------------
 //отримати всі записи про відвідувачів з вказаної виставки
 exports.visexhib = function(req, res) {
+    console.log(req.query.cond);
+    let condition;
+    switch (req.query.cond) {
+        case '1':
+            condition = 'AND visited > 0';
+            break;
+        case '2':
+            condition = 'AND registered > 0';
+            break;
+        case '3':
+            condition = 'AND (registered > 0 AND visited = 0)';
+            break;
+        default:
+            condition = '';
+      }
     let data = [
         req.params.id,
         req.params.id,
         req.params.id,
         req.params.id  
     ];
-	SQL.visexhib(data, function(err, doc) {
+    console.log(condition);
+	SQL.visexhib(data, condition, function(err, doc) {
 		if (err) {
 			console.log(err);
 			return res.sendStatus(500); 
@@ -45,9 +61,9 @@ exports.checkViv = function(req, res) {
 exports.createInExhibition_vis = function(req, res) {
     let date_vis;
     let date_reg;
-    if(req.body.date_vis){date_vis = Shared.curentDate(req.body.date_vis)}
+    if(req.body.visited){date_vis = Shared.curentDate(req.body.date_vis)}
     else date_vis = '';
-    if(req.body.date_reg){date_reg = Shared.curentDate(req.body.date_reg)}
+    if(req.body.registered){date_reg = Shared.curentDate(req.body.date_reg)}
     else date_reg = '';
     var visitorData = [
         req.body.id_exhibition,
@@ -67,15 +83,32 @@ exports.createInExhibition_vis = function(req, res) {
 };
 
 
-//-------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------- 
 //редагування запису в exhibition_vis
 
 exports.editExhibition_vis = function(req, res) {
+    let date_vis;
+    let date_reg;
+    if(req.body.vis){
+        date_vis = Shared.curentDate();
+        if(req.body.date_reg){
+            date_reg = Shared.curentDate(req.body.date_reg)
+        }
+        else { date_reg = '' }
+        
+    }
+    else {
+        if(req.body.date_vis){
+            date_vis = Shared.curentDate(req.body.date_vis)
+        }
+        else { date_vis = '' }
+        date_reg = Shared.curentDate();
+    }
     var visitorData = [
         req.body.visited,
         req.body.registered,
-        Shared.curentDate(req.body.date_vis),
-        Shared.curentDate(req.body.date_reg),
+        date_vis,
+        date_reg,
         req.body.id_visitor,
         req.body.id_exhibition,
     ];

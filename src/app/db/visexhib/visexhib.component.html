@@ -6,13 +6,15 @@
         <span class="ml-5 my-2" [style.color]="headerColor"><strong>{{name}}</strong></span>
         <span class="my-2 name-exhib"><strong>{{getExhibName()}}</strong></span>
         <div class="d-flex justify-content-between">
-            <form [formGroup]="visitorsIds" (ngSubmit)="addId()" class="d-flex align-items-center mx-1">
-                <input type="text" class="my-form" formControlName="id_visitor" autofocus>
-                <button mat-icon-button aria-label="Example icon-button with a heart icon" class="but-color">
-                    <mat-icon>add_circle_outline</mat-icon>
-                </button>
-            </form>
-            <mat-divider [vertical]="true"></mat-divider>
+            <ng-container *ngIf='name == "Відвідали"')>
+                <form [formGroup]="visitorsIds" (ngSubmit)="addId()" class="d-flex align-items-center mx-1">
+                    <input type="text" class="my-form" formControlName="id_visitor" autofocus>
+                    <button mat-icon-button aria-label="Example icon-button with a heart icon" class="but-color">
+                        <mat-icon>add_circle_outline</mat-icon>
+                    </button>
+                </form>
+                <mat-divider [vertical]="true"></mat-divider>
+            </ng-container>
             <button mat-icon-button [style.color]="headerColor" aria-label="Example icon-button with a heart icon" [matMenuTriggerFor]="menu">
                 <mat-icon>add_box</mat-icon>
             </button>
@@ -35,9 +37,9 @@
             </button>
                 <mat-menu #menu3="matMenu" xPosition="after" yPosition="below">
                     <ng-container>
-                        <button mat-menu-item (click)='butGetBd()'>База відвідувачів</button>
-                        <button mat-menu-item (click)='butGetCreateTable()'>Заявки на внесення</button>
-                        <button mat-menu-item (click)='butGetEditTable()'>Заявки на зміну</button>
+                        <button mat-menu-item (click)='butGetVis()'>Відвідувачі</button>
+                        <button mat-menu-item (click)='butGetReg()'>Зареєстровані</button>
+                        <button mat-menu-item (click)='butGetCreateTable()'>Не прийшли</button>
                     </ng-container>
                 </mat-menu>
         </div>
@@ -76,5 +78,5 @@
         <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
     </table>
     
-    <mat-paginator [pageSizeOptions]="[15, 30, 50, 100, i]" showFirstLastButtons></mat-paginator>
+    <mat-paginator [pageSizeOptions]="[i, 15, 30, 50, 100]" showFirstLastButtons></mat-paginator>
 </div>

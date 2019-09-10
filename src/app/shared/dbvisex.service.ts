@@ -36,8 +36,10 @@ export class DbvisexService {
 
         let get2 = this.server.getCheckViv(data[0].regnum, this.server.frontURL.searchParams.get('idex')).subscribe(data2 =>{ 
           console.log("checkVis: ", data2);
+
           if(data2[0]){
             data2[0].registered = data2[0].registered + 1;
+            data2[0].reg = 1;
             this.server.post(data2[0], 'editExhibition_vis').subscribe(data3 =>{
               console.log("data: ", data3);
               //this.visitorsIds.id_visitor = '';

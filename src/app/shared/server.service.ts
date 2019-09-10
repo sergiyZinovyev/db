@@ -48,8 +48,8 @@ export class ServerService {
     return this.http.get(`${this.apiUrl}/checkViv/?login=${localStorage.getItem('user')}&password=${localStorage.getItem('password')}&idVis=${idVis}&exhib=${exhib}`)
   }
 
-  getVisExhib(prop){
-    return this.http.get(`${this.apiUrl}/visexhib/${prop}?login=${localStorage.getItem('user')}&password=${localStorage.getItem('password')}`)
+  getVisExhib(prop, cond?){
+    return this.http.get(`${this.apiUrl}/visexhib/${prop}?login=${localStorage.getItem('user')}&password=${localStorage.getItem('password')}&cond=${cond}`)
   }
 
   getVisitors(prop){
