@@ -12,6 +12,28 @@ exports.all = function(req, res) {
 	});
 };
 
+exports.checkIdVisitor = function(req, res) {
+    Visitors.getRowOnCondFromTable([req.query.id], 'regnum', 'visitors_create', function(err, doc){
+        if (err) {
+            console.log(err);
+            return res.sendStatus(500);
+        }
+        if(doc == ''){
+            Visitors.getRowOnCondFromTable([req.query.id], 'regnum', 'visitors', function(err, doc2){
+                if (err) {
+                    console.log(err);
+                    return res.sendStatus(500);
+                }
+                else{
+                    return res.send(doc2)
+                }
+            }) 
+        }
+        else{
+            return res.send(doc)
+        }
+    })  
+};
 //-------------------------------------------------------------------------------------------------------------
 
 // exports.visexhib = function(req, res) {
@@ -673,64 +695,64 @@ exports.delete = function(req, res) {
 //-------------------------------------------------------------------------------------------------------------
 // пошук в трьох таблицях по емейлу або телефону
 
-exports.getRowOnCond = function(req, res) {
-    if(!req.body.email && !req.body.cellphone){return res.sendStatus(204)}
-    var visitorData;
-    var fild;
-    if(req.body.email == '' || req.body.email == null){
-        visitorData = [
-            req.body.cellphone
-        ];
-        fild = 'cellphone';
-    }
-    else{
-        visitorData = [
-            req.body.email,
-        ];
-        fild = 'email';
-    }
-    Visitors.getRowOnCondFromTable(visitorData, fild, 'visitors_edit', function(err, doc){
-        if (err) {
-            console.log(err);
-            return res.sendStatus(500);
-        }
-        if(doc == ''){
-            Visitors.getRowOnCondFromTable(visitorData, fild, 'visitors_create', function(err, doc){
-                if (err) {
-                    console.log(err);
-                    return res.sendStatus(500);
-                }
-                if(doc == ''){
-                    Visitors.getRowOnCondFromTable(visitorData, fild, 'visitors', function(err, doc){
-                        if (err) {
-                            console.log(err);
-                            return res.sendStatus(500);
-                        }
-                        if(doc == ''){
-                            console.log('doc is empty: ', doc);
-                            res.send(doc);
-                        }
-                        else{
-                            console.log('doc from visitors: ', doc);
-                            res.send(doc);
-                        }
+// exports.getRowOnCond = function(req, res) {
+//     if(!req.body.email && !req.body.cellphone){return res.sendStatus(204)}
+//     var visitorData;
+//     var fild;
+//     if(req.body.email == '' || req.body.email == null){
+//         visitorData = [
+//             req.body.cellphone
+//         ];
+//         fild = 'cellphone';
+//     }
+//     else{
+//         visitorData = [
+//             req.body.email,
+//         ];
+//         fild = 'email';
+//     }
+//     Visitors.getRowOnCondFromTable(visitorData, fild, 'visitors_edit', function(err, doc){
+//         if (err) {
+//             console.log(err);
+//             return res.sendStatus(500);
+//         }
+//         if(doc == ''){
+//             Visitors.getRowOnCondFromTable(visitorData, fild, 'visitors_create', function(err, doc){
+//                 if (err) {
+//                     console.log(err);
+//                     return res.sendStatus(500);
+//                 }
+//                 if(doc == ''){
+//                     Visitors.getRowOnCondFromTable(visitorData, fild, 'visitors', function(err, doc){
+//                         if (err) {
+//                             console.log(err);
+//                             return res.sendStatus(500);
+//                         }
+//                         if(doc == ''){
+//                             console.log('doc is empty: ', doc);
+//                             res.send(doc);
+//                         }
+//                         else{
+//                             console.log('doc from visitors: ', doc);
+//                             res.send(doc);
+//                         }
                         
-                    });          
-                }
-                else{
-                    console.log('doc from visitors_create: ', doc);
-                    res.send(doc);
-                }
+//                     });          
+//                 }
+//                 else{
+//                     console.log('doc from visitors_create: ', doc);
+//                     res.send(doc);
+//                 }
                 
-            });  
-        }
-        else{
-            console.log('doc from visitors_edit: ', doc)
-            res.send(doc);
-        }
+//             });  
+//         }
+//         else{
+//             console.log('doc from visitors_edit: ', doc)
+//             res.send(doc);
+//         }
         
-    });   
-};
+//     });   
+// };
 
 //-------------------------------------------------------------------------------------------------------------
 

@@ -38,7 +38,8 @@ export class VisexhibComponent implements OnInit {
     'cellphone',
     'email',
     'visited',
-    //'registered', 
+    //'registered',
+    'fake_id'
   ];
   keyData = [];
   dataSource = new MatTableDataSource();
@@ -111,6 +112,7 @@ export class VisexhibComponent implements OnInit {
         viewData.push({
           id: data[i].id,
           id_exhibition: data[i].id_exhibition,
+          fake_id: data[i].fake_id,
           id_visitor: data[i].id_visitor,
           registered: data[i].registered, 
           visited: data[i].visited, 
@@ -223,16 +225,13 @@ export class VisexhibComponent implements OnInit {
 
   butGetVis(){
     this.displayedColumns = [
-      //'id',
-      //'id_exhibition',
       'id_visitor', 
       'date_vis', 
-      //'date_reg',
       'namepovne',
       'cellphone',
       'email',
       'visited',
-      //'registered', 
+      'fake_id'
     ];
     this.getBd(this.server.exhib.id, 1);
     this.name = 'Відвідали';
@@ -272,7 +271,7 @@ export class VisexhibComponent implements OnInit {
           this.visitorsIds.patchValue({visited: cb[0].visited + 1});
           cb[0].visited = cb[0].visited + 1;
           cb[0].vis = 1;
-          alert('Відвідувач вже реєструвався на цю виставку');
+          //alert('Відвідувач вже реєструвався на цю виставку');
           console.log('user already exist');
           console.log('edit data: ', this.visitorsIds.value);
           this.server.post(cb[0], 'editExhibition_vis').subscribe(data =>{

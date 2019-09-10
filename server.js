@@ -61,6 +61,8 @@ app.post("/createVis", authController.checkAuth, urlencodedParser, visitorsContr
 //видалення запису з обраної таблиці
 app.post("/delete", authController.checkAuth, urlencodedParser, visitorsController.delete);
 
+//отримати запис з таблиць visitors, visitors_create по id
+app.get("/checkIdVisitor", authController.checkAuth, visitorsController.checkIdVisitor);
 
 //-----------exhibition_vis---------------
 
@@ -104,7 +106,7 @@ app.post("/editPro", urlencodedParser, visitorsController.editPro)
 app.post("/get", cors(), urlencodedParser, visitorsController.getRowOnCond2);
 
 //отримання запису по електронній адресі або мобільному з 3 таблиць
-app.post("/get/regnum", cors(), urlencodedParser, visitorsController.getRowOnCond);
+//app.post("/get/regnum", cors(), urlencodedParser, visitorsController.getRowOnCond);
 
 //отримання запису по вказаній умові
 app.post("/get_spec_cond", cors(), urlencodedParser, visitorsController.getSpecCond);
@@ -122,6 +124,8 @@ app.post("/createInExhibition_vis", urlencodedParser, visitorsExhibController.cr
 app.get("/checkViv", visitorsExhibController.checkViv);
 
 //----------------------------------------
+
+
 
 
 
