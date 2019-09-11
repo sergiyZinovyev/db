@@ -24,7 +24,7 @@ import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms'
 
 export class VisexhibComponent implements OnInit {
   
-  i = 20;
+  i=10000;
   name: string = "Відвідали";
   headerColor = 'rgb(45, 128, 253)';
   nameBut: string = "Зареєстровані відвідувачі";
@@ -64,6 +64,7 @@ export class VisexhibComponent implements OnInit {
     private server: ServerService,
     private db: DbService,
     private dbvisex: DbvisexService,
+    private router: Router,
   ) { }
 
   ngOnInit() {
@@ -280,6 +281,11 @@ export class VisexhibComponent implements OnInit {
             }
             else{
               alert('потрібно зареєструватися');
+              this.server.setFrontURL(window.location);
+              this.server.frontURL.searchParams.set('idex', '303');
+              this.server.frontURL.searchParams.set('exhib', 'tur');
+              this.server.frontURL.searchParams.set('exhibreg', '1');
+              this.router.navigate(['user/login']);  
             }
           });
           // this.server.post(this.visitorsIds.value, 'createInExhibition_vis').subscribe(data =>{ 
