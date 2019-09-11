@@ -36,6 +36,10 @@ export class ServerService {
     }
   }
 
+  getAll(prop, id?, q1?, q2?, q3?, q4?){ //універсальний метод де prop - назва роута на сервері, id?, q1, ... - параметри запиту
+    return this.http.get(`${this.apiUrl}/${prop}?login=${localStorage.getItem('user')}&password=${localStorage.getItem('password')}&id=${id}&q1=${q1}&q2=${q2}&q3=${q3}&q4=${q4}`)
+  }
+
   post(value, prop) {
     return this.http.post(`${this.apiUrl}/${prop}?login=${localStorage.getItem('user')}&password=${localStorage.getItem('password')}`, value)    
   }

@@ -5,6 +5,7 @@ import {MatSort} from '@angular/material/sort';
 import { Router } from '@angular/router';
 import { ServerService } from '../../shared/server.service';
 import { DbService } from '../../shared/db.service';
+import { DbvisexService } from '../../shared/dbvisex.service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms';
 
@@ -62,6 +63,7 @@ export class VisexhibComponent implements OnInit {
   constructor(
     private server: ServerService,
     private db: DbService,
+    private dbvisex: DbvisexService
   ) { }
 
   ngOnInit() {
@@ -257,21 +259,27 @@ export class VisexhibComponent implements OnInit {
 
   addId(){
     if(this.visitorsIds.valid){
-      this.visitorsIds.patchValue({date_vis: new Date});
+
+      //this.visitorsIds.patchValue({date_vis: new Date});
       //console.log(this.visitorsIds.value);
+
+      //перевіряємо чи є в таблиці реєстрації відвідувач з таким id 
       this.db.checkVis(this.visitorsIds.get('id_visitor').value, cb=>{
-        if(!cb[0]){
-          this.server.post(this.visitorsIds.value, 'createInExhibition_vis').subscribe(data =>{ 
-            console.log("data: ", data);
-            this.visitorsIds.patchValue({id_visitor: ''});
-            this.getBd(this.server.exhib.id);
-          })
+        if(!cb[0]){ //якщо нема
+          // перевіряємо id на наявність в базі
+          this.dbvisex.checkId(this.visitorsIds.get('id_visitor').value, cb2=>{
+            console.log('cb2: ', cb2);
+          });
+          // this.server.post(this.visitorsIds.value, 'createInExhibition_vis').subscribe(data =>{ 
+          //   console.log("data: ", data);
+          //   this.visitorsIds.patchValue({id_visitor: ''});
+          //   this.getBd(this.server.exhib.id);
+          // })
         }
-        else {
+        else { //якщо є то редагуємо запис (додаємо відмітку visited та час)
           this.visitorsIds.patchValue({visited: cb[0].visited + 1});
           cb[0].visited = cb[0].visited + 1;
           cb[0].vis = 1;
-          //alert('Відвідувач вже реєструвався на цю виставку');
           console.log('user already exist');
           console.log('edit data: ', this.visitorsIds.value);
           this.server.post(cb[0], 'editExhibition_vis').subscribe(data =>{

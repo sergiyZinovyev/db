@@ -66,5 +66,21 @@ export class DbvisexService {
     })
   }
 
+  // checkVis(id, cb){
+  //   let get = this.server.getCheckViv(id, this.server.exhib.id).subscribe(data =>{ 
+  //     console.log("checkVis: ", data);
+  //       get.unsubscribe();
+  //       return cb(data)     
+  //   })
+  // }
+
+  checkId(id, cb){
+    let get = this.server.getAll('checkIdVisitor',id).subscribe(data =>{ 
+      console.log("checkIdVisitor: ", data);
+        get.unsubscribe();
+        return cb(data)     
+    })
+  }
+
 
 }
