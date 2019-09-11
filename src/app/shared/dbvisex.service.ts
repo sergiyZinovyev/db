@@ -8,14 +8,14 @@ import { DbService } from '../shared/db.service';
 })
 export class DbvisexService {
 
-  visitorsIds = {
-    id_exhibition: this.server.frontURL.searchParams.get('idex'),
-    id_visitor: '',
-    registered: '1',
-    visited: '',
-    date_vis: '',
-    date_reg: '',
-  }
+  // visitorsIds = {
+  //   id_exhibition: this.server.frontURL.searchParams.get('idex'),
+  //   id_visitor: '',
+  //   registered: '1',
+  //   visited: '',
+  //   date_vis: '',
+  //   date_reg: '',
+  // }
 
   constructor(
     private server: ServerService,
@@ -24,6 +24,14 @@ export class DbvisexService {
   ) { }
 
   addVisEx(){
+    let visitorsIds = {
+      id_exhibition: this.server.frontURL.searchParams.get('idex'),
+      id_visitor: '',
+      registered: '1',
+      visited: '',
+      date_vis: '',
+      date_reg: '',
+    };
     let get=this.server.post(this.user.userLogData, "get").subscribe(data =>{ //отримуємо нові дані з бази
       console.log("data: ", data);
       if (data == null){
@@ -49,10 +57,10 @@ export class DbvisexService {
             //return cb(data)
           }
           else{
-            this.visitorsIds.id_visitor = data[0].regnum
-            this.server.post(this.visitorsIds, 'createInExhibition_vis').subscribe(data4 =>{ 
+            visitorsIds.id_visitor = data[0].regnum
+            this.server.post(visitorsIds, 'createInExhibition_vis').subscribe(data4 =>{ 
               console.log("data: ", data4);
-              this.visitorsIds.id_visitor = '';
+              visitorsIds.id_visitor = '';
             })
             get2.unsubscribe()
             //return cb(data)
@@ -66,13 +74,13 @@ export class DbvisexService {
     })
   }
 
-  // checkVis(id, cb){
-  //   let get = this.server.getCheckViv(id, this.server.exhib.id).subscribe(data =>{ 
-  //     console.log("checkVis: ", data);
-  //       get.unsubscribe();
-  //       return cb(data)     
-  //   })
-  // }
+  checkVis(id, cb){
+    let get = this.server.getCheckViv(id, this.server.exhib.id).subscribe(data =>{ 
+      console.log("checkVis: ", data);
+        get.unsubscribe();
+        return cb(data)     
+    })
+  }
 
   checkId(id, cb){
     let get = this.server.getAll('checkIdVisitor',id).subscribe(data =>{ 

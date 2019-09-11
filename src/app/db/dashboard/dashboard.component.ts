@@ -47,10 +47,13 @@ export class DashboardComponent implements OnInit {
 
   getVisEx(){
     //console.log('item: ',item)
+    console.log('this.visexhibsForm.get("exhib").value: ', this.visexhibsForm.get('exhib').value)
     if (this.visexhibsForm.get('exhib').value !== '-1'){
-      let exhibName = this.getNameExhib(this.visexhibsForm.get('exhib').value); 
-      this.db.setNavDB('visexhib');
+      let exhibName = this.getNameExhib(this.visexhibsForm.get('exhib').value);
       this.server.setExhib(this.visexhibsForm.get('exhib').value, exhibName);
+      console.log('переходимо на visexhib');
+      this.db.setNavDB('visexhib');
+      
       return
     }
     if (this.visexhibsForm.get('exhib').value == '-1'){

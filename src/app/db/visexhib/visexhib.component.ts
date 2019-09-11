@@ -4,8 +4,8 @@ import {MatTableDataSource} from '@angular/material/table';
 import {MatSort} from '@angular/material/sort';
 import { Router } from '@angular/router';
 import { ServerService } from '../../shared/server.service';
-import { DbService } from '../../shared/db.service';
-import { DbvisexService } from '../../shared/dbvisex.service';
+import { DbService} from '../../shared/db.service';
+import { DbvisexService} from '../../shared/dbvisex.service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms';
 
@@ -63,10 +63,11 @@ export class VisexhibComponent implements OnInit {
   constructor(
     private server: ServerService,
     private db: DbService,
-    private dbvisex: DbvisexService
+    private dbvisex: DbvisexService,
   ) { }
 
   ngOnInit() {
+    console.log('this.server.exhib.id: ',this.server.exhib.id);
     this.dataSource.paginator = this.paginator;
     this.getBd(this.server.exhib.id, 1);
     this.dataSource.sort = this.sort;
@@ -259,19 +260,30 @@ export class VisexhibComponent implements OnInit {
 
   addId(){
     if(this.visitorsIds.valid){
-
+      console.log(this.visitorsIds.get('id_visitor').value);
       //this.visitorsIds.patchValue({date_vis: new Date});
       //console.log(this.visitorsIds.value);
 
       //перевіряємо чи є в таблиці реєстрації відвідувач з таким id 
-      this.db.checkVis(this.visitorsIds.get('id_visitor').value, cb=>{
+      this.dbvisex.checkVis(this.visitorsIds.get('id_visitor').value, cb=>{
         if(!cb[0]){ //якщо нема
           // перевіряємо id на наявність в базі
+          alert('відвідувач ще не реєструвався')
           this.dbvisex.checkId(this.visitorsIds.get('id_visitor').value, cb2=>{
             console.log('cb2: ', cb2);
+            if(cb2[0]){
+              this.server.post(this.visitorsIds.value, 'createInExhibition_vis').subscribe(data =>{ 
+                console.log("data: ", data); 
+                this.visitorsIds.patchValue({id_visitor: ''});
+                this.getBd(this.server.exhib.id);
+              })
+            }
+            else{
+              alert('потрібно зареєструватися');
+            }
           });
           // this.server.post(this.visitorsIds.value, 'createInExhibition_vis').subscribe(data =>{ 
-          //   console.log("data: ", data);
+          //   console.log("data: ", data); 
           //   this.visitorsIds.patchValue({id_visitor: ''});
           //   this.getBd(this.server.exhib.id);
           // })
