@@ -406,39 +406,38 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     return flag;
   }
 
-  getIdExDect(){
-    
-  }
-
   getMyExhib(){
-    switch (this.server.frontURL.searchParams.get('exhib')) {
-      case 'tur':
-        this.myExhib = ['ТурЕКСПО', 'Готельний та рестор. бізнес', 'Континент розваг'];
-        break;
-      case 'bud':
-        this.myExhib = ['БудЕКСПО', 'Вікна-двері-дах', 'Опалення', 'Опалення на твердому паливі', 'Альтернативна енергетика'];
-        break;
-      case 'med':
-        this.myExhib = ['ГалМЕД'];
-        break;
-      case 'dent':
-        this.myExhib = ['Дентал-УКРАЇНА'];
-        break;
-      case 'wood':
-        this.myExhib = ['Деревообробка'];
-        break;
-      case 'elit':
-        this.myExhib = ['ЕлітЕКСПО'];
-        break;
-      case 'agro':
-        this.myExhib = ['ЄвроАГРО'];
-        break;
-      case 'child':
-        this.myExhib = ['Дитячий світ'];
-        break;
-      default:
-        break;
-    }
+    this.user.getIdExDect(this.server.frontURL.searchParams.get('idex'), data=>{
+      //повертаємо з бази id виставки
+      switch (data) {
+        case 13:
+          this.myExhib = ['ТурЕКСПО', 'Готельний та рестор. бізнес', 'Континент розваг'];
+          break;
+        case 2:
+          this.myExhib = ['БудЕКСПО', 'Вікна-двері-дах', 'Опалення', 'Опалення на твердому паливі', 'Альтернативна енергетика'];
+          break;
+        case 8:
+          this.myExhib = ['ГалМЕД'];
+          break;
+        case 7:
+          this.myExhib = ['Дентал-УКРАЇНА'];
+          break;
+        case 3:
+          this.myExhib = ['Деревообробка'];
+          break;
+        case 17:
+          this.myExhib = ['ЕлітЕКСПО'];
+          break;
+        case 11:
+          this.myExhib = ['ЄвроАГРО'];
+          break;
+        case 22:
+          this.myExhib = ['Дитячий світ'];
+          break;
+        default:
+          break;
+      }
+    });
   }
 
 

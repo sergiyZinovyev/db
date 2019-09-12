@@ -1,7 +1,8 @@
 import { Component, OnInit, Injectable} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { Subject, from } from 'rxjs';
+import {ServerService} from './server.service'
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +23,7 @@ export class UserService {
   };
 
   constructor(
+    private server: ServerService
   ) { }
 
   setUserData(data){
@@ -37,5 +39,20 @@ export class UserService {
     return this.userLogData;
   }
 
+  getIdExDect(id, cb){
+    let get = this.server.getAll('getAll', id, 'numexhib', 'exhibitions').subscribe(data =>{
+      //console.log('getIdExDect data:', data);
+      if(data[0]){
+        cb(data[0].id_exhib_dict)
+        get.unsubscribe();  
+      }
+      else{
+        cb(0);
+        get.unsubscribe();
+        
+      }
+      
+    })
+  }
 
 }

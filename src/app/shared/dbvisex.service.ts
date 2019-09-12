@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ServerService } from './server.service';
 import { UserService } from '../shared/user.service';
 import { DbService } from '../shared/db.service';
+import { Alert } from 'selenium-webdriver';
 
 @Injectable({
   providedIn: 'root'
@@ -41,32 +42,44 @@ export class DbvisexService {
       }
       if(data[0]){
         console.log("data[0].regnum: ",data[0].regnum)
-
-        let get2 = this.server.getCheckViv(data[0].regnum, this.server.frontURL.searchParams.get('idex')).subscribe(data2 =>{ 
-          console.log("checkVis: ", data2);
-
-          if(data2[0]){
-            data2[0].registered = data2[0].registered + 1;
-            data2[0].reg = 1;
-            this.server.post(data2[0], 'editExhibition_vis').subscribe(data3 =>{
-              console.log("data: ", data3);
-              //this.visitorsIds.id_visitor = '';
-              //this.visitorsIds.visited = '1';
-            })
-            get2.unsubscribe()
-            //return cb(data)
-          }
-          else{
-            visitorsIds.id_visitor = data[0].regnum
-            this.server.post(visitorsIds, 'createInExhibition_vis').subscribe(data4 =>{ 
-              console.log("data: ", data4);
-              visitorsIds.id_visitor = '';
-            })
-            get2.unsubscribe()
-            //return cb(data)
-          }
-          
-        })
+        //перевіряємо звідки прийшов запит реєстрації (від відвідувача/від реєстратора)
+        console.log('exhibreg: ',this.server.frontURL.searchParams.get('exhibreg'));
+        //якщо від відвідувача...
+        if(this.server.frontURL.searchParams.get('exhibreg')!='1'){
+          //перевіряємо чи зареєстрований відвідувач
+          let get2 = this.server.getCheckViv(data[0].regnum, this.server.frontURL.searchParams.get('idex')).subscribe(data2 =>{ 
+            console.log("checkVis: ", data2);
+            //якщо зареєстрований то редагуємо
+            if(data2[0]){
+              alert('ви вже реєструвалися')
+              // data2[0].registered = data2[0].registered + 1;
+              // data2[0].reg = 1;
+              // this.server.post(data2[0], 'editExhibition_vis').subscribe(data3 =>{
+              //   console.log("data: ", data3);
+              //   //this.visitorsIds.id_visitor = '';
+              //   //this.visitorsIds.visited = '1';
+              // })
+              get2.unsubscribe()
+              //return cb(data)
+            }
+            //інакше вносимо нового
+            else{
+              visitorsIds.id_visitor = data[0].regnum
+              this.server.post(visitorsIds, 'createInExhibition_vis').subscribe(data4 =>{ 
+                console.log("data: ", data4);
+                visitorsIds.id_visitor = '';
+              })
+              get2.unsubscribe()
+              //return cb(data)
+            }
+            
+          })
+        }
+        //якщо не від відвідувача...
+        else{
+          alert('реєструємо.....');
+        }
+        
 
         console.log("unsubscribe")
         return get.unsubscribe();

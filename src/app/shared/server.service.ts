@@ -34,7 +34,7 @@ export class ServerService {
       id: id,
       name: name
     }
-    console.log('this.exhib: ',this.exhib);
+    console.log('this.exhib: ',this.exhib); 
   }
 
   getAll(prop, id?, q1?, q2?, q3?, q4?){ //універсальний метод де prop - назва роута на сервері, id?, q1, ... - параметри запиту

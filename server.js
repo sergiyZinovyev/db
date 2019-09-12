@@ -7,12 +7,13 @@ const bodyParser = require('body-parser');
 //const localStrategy = require('passport-local').Strategy;
 //const flash = require('connect-flash');
 
-
+//підключаємо контроллери
 const visitorsController = require('./server/controllers/visitors');
 const visitorsExhibController = require('./server/controllers/visitors_exhib');
 const emailController = require('./server/controllers/email');
 const pdfController = require('./server/controllers/pdf');
 const authController = require('./server/controllers/auth');
+const sharedController = require('./server/controllers/shared');
 //const Visitors = require('./server/models/sql-visitors');
 
 const urlencodedParser = bodyParser.urlencoded({extended: false});
@@ -73,6 +74,9 @@ app.get("/visexhib/:id", authController.checkAuth, visitorsExhibController.visex
 app.post("/editExhibition_vis", authController.checkAuth, urlencodedParser, visitorsExhibController.editExhibition_vis);
 
 //----------------------------------------
+
+
+
 //------------------------------------------------------------------------------------------------------
 
 
@@ -126,6 +130,7 @@ app.get("/checkViv", visitorsExhibController.checkViv);
 //----------------------------------------
 
 
-
+//отримати запис з вказаної виставки по вказаному полю
+app.get("/getAll", sharedController.getAll);
 
 

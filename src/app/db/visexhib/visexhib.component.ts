@@ -282,17 +282,11 @@ export class VisexhibComponent implements OnInit {
             else{
               alert('потрібно зареєструватися');
               this.server.setFrontURL(window.location);
-              this.server.frontURL.searchParams.set('idex', '303');
-              this.server.frontURL.searchParams.set('exhib', 'tur');
+              this.server.frontURL.searchParams.set('idex', String(this.server.exhib.id));
               this.server.frontURL.searchParams.set('exhibreg', '1');
               this.router.navigate(['user/login']);  
             }
           });
-          // this.server.post(this.visitorsIds.value, 'createInExhibition_vis').subscribe(data =>{ 
-          //   console.log("data: ", data); 
-          //   this.visitorsIds.patchValue({id_visitor: ''});
-          //   this.getBd(this.server.exhib.id);
-          // })
         }
         else { //якщо є то редагуємо запис (додаємо відмітку visited та час)
           this.visitorsIds.patchValue({visited: cb[0].visited + 1});

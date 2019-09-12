@@ -139,15 +139,15 @@ export class InviteComponent implements OnInit, OnDestroy{
   }
 
   getImg(){
-    return `${this.server.frontURL.searchParams.get('exhib')}.png`
+    return `../../img/${this.server.frontURL.searchParams.get('idex')}.png`
     //return `${this.server.apiUrl}/img/${this.server.frontURL.searchParams.get('exhib')}.png`
     //return this.sanitizer.bypassSecurityTrustUrl('data:application/octet-stream;base64,' + btoa(`${this.server.apiUrl}/img/${this.server.frontURL.searchParams.get('exhib')}.png`));
   }
 
-  test(){
-      console.log(this.server.frontURL);
-      console.log(this.server.frontURL.searchParams.get('exhib'));
-  }
+  // test(){
+  //     console.log(this.server.frontURL);
+  //     console.log(this.server.frontURL.searchParams.get('exhib'));
+  // }
 
   ngOnDestroy(){
     this.user.setUserLogData("");
