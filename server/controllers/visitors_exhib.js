@@ -71,8 +71,9 @@ exports.createInExhibition_vis = function(req, res) {
         req.body.registered,
         req.body.visited,
         date_vis,
-        date_reg
-    ];
+        date_reg,
+        fake_id
+    ]; 
     SQL.createExhibition_vis(visitorData, function(err, doc){
         if (err) {
             console.log(err);

@@ -69,9 +69,10 @@ exports.createExhibition_vis = function(dataVisitor, cb){
     registered, 
     visited, 
     date_vis, 
-    date_reg
+    date_reg,
+    fake_id
     ) 
-    VALUES (?,?,?,?,?,?)`;
+    VALUES (?,?,?,?,?,?,?)`;
   db.get().query(sql, dataVisitor, function(err, data) {
     cb(err, data)
   })

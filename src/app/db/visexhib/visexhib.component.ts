@@ -55,6 +55,7 @@ export class VisexhibComponent implements OnInit {
     visited: new FormControl('1'),
     date_vis: new FormControl(''),
     date_reg: new FormControl(''),
+    fake_id: new FormControl(''),
   });
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
@@ -268,22 +269,23 @@ export class VisexhibComponent implements OnInit {
       //перевіряємо чи є в таблиці реєстрації відвідувач з таким id 
       this.dbvisex.checkVis(this.visitorsIds.get('id_visitor').value, cb=>{
         if(!cb[0]){ //якщо нема
-          // перевіряємо id на наявність в базі
-          alert('відвідувач ще не реєструвався')
+          alert('відвідувач ще не реєструвався');
+          // перевіряємо id на наявність в базі 
           this.dbvisex.checkId(this.visitorsIds.get('id_visitor').value, cb2=>{
             console.log('cb2: ', cb2);
-            if(cb2[0]){
+            if(cb2[0]){ //якщо є то відразу заносимо його з бази 
               this.server.post(this.visitorsIds.value, 'createInExhibition_vis').subscribe(data =>{ 
                 console.log("data: ", data); 
                 this.visitorsIds.patchValue({id_visitor: ''});
                 this.getBd(this.server.exhib.id);
               })
             }
-            else{
+            else{ //якщо нема
               alert('потрібно зареєструватися');
               this.server.setFrontURL(window.location);
               this.server.frontURL.searchParams.set('idex', String(this.server.exhib.id));
               this.server.frontURL.searchParams.set('exhibreg', '1');
+              this.server.frontURL.searchParams.set('fakeid', String(this.visitorsIds.get('id_visitor').value));
               this.router.navigate(['user/login']);  
             }
           });

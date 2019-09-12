@@ -32,6 +32,7 @@ export class DbvisexService {
       visited: '',
       date_vis: '',
       date_reg: '',
+      fake_id: ''
     };
     let get=this.server.post(this.user.userLogData, "get").subscribe(data =>{ //отримуємо нові дані з бази
       console.log("data: ", data);
@@ -40,7 +41,7 @@ export class DbvisexService {
         console.log("unsubscribe")
         return get.unsubscribe();
       }
-      if(data[0]){
+      if(data[0]){//якщо отримано id з бази відвідувачів...
         console.log("data[0].regnum: ",data[0].regnum)
         //перевіряємо звідки прийшов запит реєстрації (від відвідувача/від реєстратора)
         console.log('exhibreg: ',this.server.frontURL.searchParams.get('exhibreg'));
@@ -60,7 +61,6 @@ export class DbvisexService {
               //   //this.visitorsIds.visited = '1';
               // })
               get2.unsubscribe()
-              //return cb(data)
             }
             //інакше вносимо нового
             else{
@@ -70,7 +70,6 @@ export class DbvisexService {
                 visitorsIds.id_visitor = '';
               })
               get2.unsubscribe()
-              //return cb(data)
             }
             
           })
@@ -78,6 +77,13 @@ export class DbvisexService {
         //якщо не від відвідувача...
         else{
           alert('реєструємо.....');
+          visitorsIds.id_visitor = data[0].regnum;
+          visitorsIds.fake_id = this.server.frontURL.searchParams.get('fakeid');
+          this.server.post(visitorsIds, 'createInExhibition_vis').subscribe(data5 =>{ 
+            console.log("data: ", data5);
+            visitorsIds.id_visitor = '';
+          })
+          get.unsubscribe()
         }
         
 
