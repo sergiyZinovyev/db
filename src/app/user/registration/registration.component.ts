@@ -406,6 +406,10 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     return flag;
   }
 
+  getIdExDect(){
+    
+  }
+
   getMyExhib(){
     switch (this.server.frontURL.searchParams.get('exhib')) {
       case 'tur':

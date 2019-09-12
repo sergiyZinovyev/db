@@ -229,7 +229,7 @@ exports.getEmail = function(dataVisitor, fild, cb){
   })
 }
 
-//отримання запису по вказаній умові з вказаної таблиці
+//отримання запису по вказаній умові з вказаної таблиці 
 exports.getRowOnCondFromTable = function(dataVisitor, fild, table, cb){
   let sql = `(SELECT * FROM ${table} WHERE ${fild}=?)`;
   db.get().query(sql, dataVisitor, function(err, data) {
