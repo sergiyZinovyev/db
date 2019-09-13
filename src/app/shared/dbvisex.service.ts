@@ -76,9 +76,12 @@ export class DbvisexService {
         }
         //якщо не від відвідувача...
         else{
-          alert('реєструємо.....');
+          //alert('реєструємо.....');
           visitorsIds.id_visitor = data[0].regnum;
+          visitorsIds.registered = '';
+          visitorsIds.visited = '1';
           visitorsIds.fake_id = this.server.frontURL.searchParams.get('fakeid');
+          console.log('visitorsIds data: ',visitorsIds);
           this.server.post(visitorsIds, 'createInExhibition_vis').subscribe(data5 =>{ 
             console.log("data: ", data5);
             visitorsIds.id_visitor = '';

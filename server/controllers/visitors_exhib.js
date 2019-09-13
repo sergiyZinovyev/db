@@ -58,7 +58,7 @@ exports.checkViv = function(req, res) {
 //-------------------------------------------------------------------------------------------------------------
 //додавання запису в exhibition_vis
 
-exports.createInExhibition_vis = function(req, res) {
+exports.createInExhibition_vis = function(req, res) { 
     let date_vis;
     let date_reg;
     if(req.body.visited){date_vis = Shared.curentDate(req.body.date_vis)}
@@ -72,7 +72,7 @@ exports.createInExhibition_vis = function(req, res) {
         req.body.visited,
         date_vis,
         date_reg,
-        fake_id
+        req.body.fake_id
     ]; 
     SQL.createExhibition_vis(visitorData, function(err, doc){
         if (err) {

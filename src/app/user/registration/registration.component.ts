@@ -193,7 +193,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         return this.subUserData.unsubscribe();
       }
     })
-    // this.exhibForm = this.server.getExhib('exhibitions_dict', this.getArrFromPotvid(), this.myExhib)[0];
+    // this.exhibForm = this.server.getExhib('exhibitions_dict', this.getArrFromPotvid(), this.myExhib)[0]; 
     // this.exhib = this.server.getExhib('exhibitions_dict', this.getArrFromPotvid(), this.myExhib)[1];
     this.getExhib('exhibitions_dict');
   }
@@ -281,43 +281,56 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   editUser(){
     this.user.setUserData(this.loginForm.value);
     this.isLoadingResults = true;
-    this.loginForm.patchValue({potvid: this.server.getStringExhibForm(this.exhibForm.value)}) //змінюємо поле з виставками
-    //перевіряємо чи змінилася форма
-    if(this.checkFormChange()){
-      console.log('дані не змінилися')
-      return this.router.navigate(['invite']);
-    }
-    this.loginForm.patchValue({table: this.spreadsheet}) //змінюємо поле з таблицею в яку вносити дані
-    //перевіряємо чи були змінені поля email/cellphone та вносимо відповідні зміни у форму
-    if(this.loginForm.get('email').value != this.myEmail){
-      console.log(this.loginForm.get('email').value,'--',this.myEmail);
-      this.loginForm.patchValue({checkEmail: true})
-    }
-    else{this.loginForm.patchValue({checkEmail: false})}
-    if(this.loginForm.get('cellphone').value != this.myCellphone){
-      this.loginForm.patchValue({checkPhone: true})
-    }
-    else{this.loginForm.patchValue({checkPhone: false})}
-
-    if(!this.myRequest){return console.log('Err: myRequest is undefined')};
-    let post = this.server.post(this.loginForm.value, this.myRequest).subscribe(data =>{
-      console.log('this.loginForm.value: ',this.loginForm.value);
-      console.log("dataServer: ", data);
-      
-      if(data){
+    console.log('data check email&cellphone',this.loginForm.value)
+    let get=this.server.post(this.loginForm.value, "get").subscribe(checkData =>{
+      //перевіряємо чи є ще інші такі емейли та телефони
+      console.log("data check email & cellphone: ", checkData);
+      if(checkData[2]){ //якщо є...
         this.isLoadingResults = false;
-        if(data[0]){
-          console.log('такий мейл вже існує');
-          this.worningCheck = 'Такий емейл або мобільний телефон вже використовується! Внесіть будь ласка інший';
-        }
-        else{
-          this.worningCheck = '';
-          this.router.navigate(['invite']);
-        }
-        console.log("unsubscribe");
-        return post.unsubscribe();
+        get.unsubscribe();
+        return this.worningCheck = 'Такий емейл або мобільний телефон вже використовується! Внесіть будь ласка інший';
       }
-    });
+      else{//якщо нема то продовжуємо...
+        this.loginForm.patchValue({potvid: this.server.getStringExhibForm(this.exhibForm.value)}) //змінюємо поле з виставками
+        //перевіряємо чи змінилася форма
+        if(this.checkFormChange()){
+          console.log('дані не змінилися')
+          return this.router.navigate(['invite']);
+        }
+        this.loginForm.patchValue({table: this.spreadsheet}) //змінюємо поле з таблицею в яку вносити дані
+        //перевіряємо чи були змінені поля email/cellphone та вносимо відповідні зміни у форму
+        if(this.loginForm.get('email').value != this.myEmail){
+          console.log(this.loginForm.get('email').value,'--',this.myEmail);
+          this.loginForm.patchValue({checkEmail: true})
+        }
+        else{this.loginForm.patchValue({checkEmail: false})}
+        if(this.loginForm.get('cellphone').value != this.myCellphone){
+          this.loginForm.patchValue({checkPhone: true})
+        }
+        else{this.loginForm.patchValue({checkPhone: false})}
+
+        if(!this.myRequest){return console.log('Err: myRequest is undefined')};
+        let post = this.server.post(this.loginForm.value, this.myRequest).subscribe(data =>{
+          console.log('this.loginForm.value: ',this.loginForm.value);
+          console.log("dataServer: ", data);
+          
+          if(data){
+            this.isLoadingResults = false;
+            if(data[0]){
+              console.log('такий мейл вже існує');
+              this.worningCheck = 'Такий емейл або мобільний телефон вже використовується! Внесіть будь ласка інший';
+            }
+            else{
+              this.worningCheck = '';
+              this.router.navigate(['invite']);
+            }
+            console.log("unsubscribe");
+            return post.unsubscribe();
+          }
+        });
+        get.unsubscribe();
+      }
+    }); 
   }
 
   submit(){

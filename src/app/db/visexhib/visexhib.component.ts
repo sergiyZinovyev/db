@@ -280,7 +280,7 @@ export class VisexhibComponent implements OnInit {
                 this.getBd(this.server.exhib.id);
               })
             }
-            else{ //якщо нема
+            else{ //якщо нема 
               alert('потрібно зареєструватися');
               this.server.setFrontURL(window.location);
               this.server.frontURL.searchParams.set('idex', String(this.server.exhib.id));
