@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild, OnDestroy} from '@angular/core';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatSort} from '@angular/material/sort';
@@ -22,7 +22,7 @@ import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms'
   ],
 })
 
-export class VisexhibComponent implements OnInit {
+export class VisexhibComponent implements OnInit, OnDestroy {
   
   i=10000;
   name: string = "Відвідали";
@@ -286,7 +286,12 @@ export class VisexhibComponent implements OnInit {
               this.server.frontURL.searchParams.set('idex', String(this.server.exhib.id));
               this.server.frontURL.searchParams.set('exhibreg', '1');
               this.server.frontURL.searchParams.set('fakeid', String(this.visitorsIds.get('id_visitor').value));
-              this.router.navigate(['user/login']);  
+              //alert('переходимо до реєстрації');
+              //this.db.setNavDB('dashboard');
+              
+              this.router.navigate(['user/login']);
+              //this.getBd(this.server.exhib.id);
+              
             }
           });
         }
@@ -306,5 +311,6 @@ export class VisexhibComponent implements OnInit {
       });
     } 
   }
-
+  
+  ngOnDestroy(){}
 }

@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy} from '@angular/core';
 import { UserService } from '../shared/user.service';
 import { ServerService } from '../shared/server.service';
 import { DbvisexService } from '../shared/dbvisex.service';
+import { DbService} from '../shared/db.service';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl, SafeUrl} from '@angular/platform-browser';
 import * as html2pdf from 'html2pdf.js';
@@ -32,6 +33,7 @@ export class InviteComponent implements OnInit, OnDestroy{
     private user: UserService,
     private server: ServerService,
     private dbsisex: DbvisexService,
+    private db: DbService,
     private router: Router,
     private sanitizer: DomSanitizer,
   ) { }
@@ -39,6 +41,7 @@ export class InviteComponent implements OnInit, OnDestroy{
   ngOnInit() {
     this.dbsisex.addVisEx();
     if(this.server.frontURL.searchParams.has('exhibreg')){
+      //this.db.setNavDB('visexhib');
       this.router.navigate(['db']);
     }
 

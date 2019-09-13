@@ -76,16 +76,34 @@ export class DbvisexService {
         }
         //якщо не від відвідувача...
         else{
-          //alert('реєструємо.....');
-          visitorsIds.id_visitor = data[0].regnum;
-          visitorsIds.registered = '';
-          visitorsIds.visited = '1';
-          visitorsIds.fake_id = this.server.frontURL.searchParams.get('fakeid');
-          console.log('visitorsIds data: ',visitorsIds);
-          this.server.post(visitorsIds, 'createInExhibition_vis').subscribe(data5 =>{ 
-            console.log("data: ", data5);
-            visitorsIds.id_visitor = '';
+
+          //перевіряємо чи є такий id в зареєстрованих цієї виставки
+          let get3 = this.server.getCheckViv(data[0].regnum, this.server.frontURL.searchParams.get('idex')).subscribe(dataCheckVis =>{
+            //якщо зареєстрований то редагуємо
+            if (dataCheckVis[0]){
+              dataCheckVis[0].visited = String(dataCheckVis[0].visited + 1);
+              dataCheckVis[0].vis = 1;
+              this.server.post(dataCheckVis[0], 'editExhibition_vis').subscribe(data3 =>{
+                console.log("data: ", data3);
+                get3.unsubscribe()
+              })
+            }
+            //інакше вносимо нового
+            else{
+              visitorsIds.id_visitor = data[0].regnum;
+              visitorsIds.registered = '';
+              visitorsIds.visited = '1';
+              visitorsIds.fake_id = this.server.frontURL.searchParams.get('fakeid');
+              console.log('visitorsIds data: ',visitorsIds);
+              let postCreate=this.server.post(visitorsIds, 'createInExhibition_vis').subscribe(data5 =>{ 
+                console.log("data: ", data5);
+                visitorsIds.id_visitor = '';
+                postCreate.unsubscribe();
+                get3.unsubscribe();
+              })
+            } 
           })
+          
           get.unsubscribe()
         }
         
