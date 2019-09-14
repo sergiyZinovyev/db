@@ -285,7 +285,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     let get=this.server.post(this.loginForm.value, "get").subscribe(checkData =>{
       //перевіряємо чи є ще інші такі емейли та телефони
       console.log("data check email & cellphone: ", checkData);
-      if(checkData[2]){ //якщо є...
+      if(checkData[2]){ // якщо є...
         this.isLoadingResults = false;
         get.unsubscribe();
         return this.worningCheck = 'Такий емейл або мобільний телефон вже використовується! Внесіть будь ласка інший';
