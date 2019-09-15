@@ -77,12 +77,12 @@ app.post("/editExhibition_vis", authController.checkAuth, urlencodedParser, visi
 
 
 
-//------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 // *** не захищені роути ***
 
-//отримати всі записи з вказаної таблиці 
+//отримати всі записи з вказаної таблиці / !!! незахищений роут використовується в формах реєстрації юзерів, потрібно зробити нові роути для юзерів, а ці захистити !!!
 app.get("/db/:id", visitorsController.all);
 
 //отримати файли
@@ -92,25 +92,22 @@ app.get("/img/:id", cors(), visitorsController.file);
 app.get("/pdf", pdfController.pdf);
 
 //додавання запису в заявку на внесення
-//app.post("/create/req", urlencodedParser, visitorsController.createRequest);
+//app.post("/create/req", urlencodedParser, visitorsController.createRequest); 
 
-//додавання запису в заявку на зміни
+//додавання нового запису у вказану таблицю / !!! незахищений роут використовується в формах реєстрації юзерів, потрібно зробити нові роути для юзерів, а ці захистити !!!
 app.post("/createInVisitorsEdit", urlencodedParser, visitorsController.editRequest);
 
-//додавання запису в заявку на внесення
+//додавання нового запису у вказану таблицю / !!! незахищений роут використовується в формах реєстрації юзерів, потрібно зробити нові роути для юзерів, а ці захистити !!!
 app.post("/createInVisitorsCreate", urlencodedParser, visitorsController.createCpecTable);
 
 //редагування запису
 //app.post("/edit", urlencodedParser, visitorsController.edit)
 
-//редагування запису
+//редагування запису / !!! незахищений роут використовується в формах реєстрації юзерів, потрібно зробити нові роути для юзерів, а ці захистити !!!
 app.post("/editPro", urlencodedParser, visitorsController.editPro)
 
 //отримання запису по електронній адресі або мобільному з 3 таблиць
 app.post("/get", cors(), urlencodedParser, visitorsController.getRowOnCond2);
-
-//отримання запису по електронній адресі або мобільному з 3 таблиць
-//app.post("/get/regnum", cors(), urlencodedParser, visitorsController.getRowOnCond);
 
 //отримання запису по вказаній умові
 app.post("/get_spec_cond", cors(), urlencodedParser, visitorsController.getSpecCond);

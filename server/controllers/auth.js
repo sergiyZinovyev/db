@@ -54,33 +54,41 @@ exports.users = function(req, res) {
 	});
 };
 
-//-----------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------  
 // підтвердження пароля
 exports.checkAuth = function(req, res, next){
-    let data =[
-      req.query.login,
-    ]
-    console.log(data)
-    Visitors.users(data, function(err, doc) {
-  
-        if (err) {
-            console.log(err);
-            return res.sendStatus(500);
-        }
+    if(req.query.rights == '0'){
+        console.log('у вас немає прав доступу: ', req.query);
+        return res.send([{
+            "rights": "false",
+        }]);
+    }
+    else{
+        let data =[
+        req.query.login,
+        ]
+        console.log(data)
+        Visitors.users(data, function(err, doc) {
+    
+            if (err) {
+                console.log(err);
+                return res.sendStatus(500);
+            }
 
-        if(doc[0]){
-            if(req.query.password == doc[0].passw){
-                console.log(doc);
-                return next();
+            if(doc[0]){
+                if(req.query.password == doc[0].passw){
+                    console.log(doc);
+                    return next();
+                }
+                else{
+                    console.log(doc);
+                    return console.log("checkAuth: error!")
+                }
             }
             else{
                 console.log(doc);
                 return console.log("checkAuth: error!")
             }
-        }
-        else{
-            console.log(doc);
-            return console.log("checkAuth: error!")
-        }
-    });
-  };
+        });
+    }    
+};

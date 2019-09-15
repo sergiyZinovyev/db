@@ -155,14 +155,14 @@ export class VisitorComponent implements OnInit {
   }
 
   editUser(){
-    //this.user.setUserData(this.loginForm.value);
+    //this.user.setUserData(this.loginForm.value); 
     //this.isLoadingResults = true;
     this.loginForm.patchValue({potvid: this.server.getStringExhibForm(this.exhibForm.value)}) //змінюємо поле з виставками
     //перевіряємо чи змінилася форма
-    if(this.checkFormChange()){
-      console.log('дані не змінилися')
-      return //this.router.navigate(['invite']);
-    }
+    // if(this.checkFormChange()){
+    //   console.log('дані не змінилися')
+    //   return //this.router.navigate(['invite']);
+    // }
     //this.loginForm.patchValue({table: this.spreadsheet}) //змінюємо поле з таблицею в яку вносити дані
 
     //перевіряємо чи були змінені поля email/cellphone та вносимо відповідні зміни у форму

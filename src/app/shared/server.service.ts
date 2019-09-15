@@ -37,29 +37,37 @@ export class ServerService {
     console.log('this.exhib: ',this.exhib); 
   }
 
+  getAuth(){
+    return `login=${localStorage.getItem('user')}&password=${localStorage.getItem('password')}&rights=${localStorage.getItem('access rights')}`
+  }
+
   getAll(prop, id?, q1?, q2?, q3?, q4?){ //універсальний метод де prop - назва роута на сервері, id?, q1, ... - параметри запиту
-    return this.http.get(`${this.apiUrl}/${prop}?login=${localStorage.getItem('user')}&password=${localStorage.getItem('password')}&id=${id}&q1=${q1}&q2=${q2}&q3=${q3}&q4=${q4}`)
+    return this.http.get(`${this.apiUrl}/${prop}?${this.getAuth()}&id=${id}&q1=${q1}&q2=${q2}&q3=${q3}&q4=${q4}`)
   }
 
   post(value, prop) {
-    return this.http.post(`${this.apiUrl}/${prop}?login=${localStorage.getItem('user')}&password=${localStorage.getItem('password')}`, value)    
+    return this.http.post(`${this.apiUrl}/${prop}?${this.getAuth()}`, value)    
   }
   
   get(prop){
-    return this.http.get(`${this.apiUrl}/db/${prop}?login=${localStorage.getItem('user')}&password=${localStorage.getItem('password')}`)
+    return this.http.get(`${this.apiUrl}/db/${prop}?${this.getAuth()}`)
   }
 
   getCheckViv(idVis, exhib){ //перевірка чи зареєстрований відвідувач
-    return this.http.get(`${this.apiUrl}/checkViv/?login=${localStorage.getItem('user')}&password=${localStorage.getItem('password')}&idVis=${idVis}&exhib=${exhib}`)
+    return this.http.get(`${this.apiUrl}/checkViv/?${this.getAuth()}&idVis=${idVis}&exhib=${exhib}`)
   }
 
   getVisExhib(prop, cond?){
-    return this.http.get(`${this.apiUrl}/visexhib/${prop}?login=${localStorage.getItem('user')}&password=${localStorage.getItem('password')}&cond=${cond}`)
+    return this.http.get(`${this.apiUrl}/visexhib/${prop}?${this.getAuth()}&cond=${cond}`)
   }
 
   getVisitors(prop){
-    return this.http.get(`${this.apiUrl}/visitors/${prop}?login=${localStorage.getItem('user')}&password=${localStorage.getItem('password')}`)
+    return this.http.get(`${this.apiUrl}/visitors/${prop}?${this.getAuth()}`)
   }
+
+
+
+
 
   getStringExhibForm(exhibForm: {}): string{
     //перетворення форми(об'єкту) в список обраних виставок
