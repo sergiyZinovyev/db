@@ -91,7 +91,7 @@ export class VisexhibComponent implements OnInit, OnDestroy {
   //       return cb(false)
   //     }
       
-  //   })
+  //   }) 
   // }
 
   getBd(idExhib, cond?){
@@ -100,6 +100,7 @@ export class VisexhibComponent implements OnInit, OnDestroy {
     let get = this.server.getVisExhib(idExhib, cond).subscribe(data =>{
       console.log("data: ", data);
       this.isLoadingResults = false;
+      this.server.accessIsDenied(data[0].rights);
       for (var key in data[0]) {
         this.keyData.push(key)
       }

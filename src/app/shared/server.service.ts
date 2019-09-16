@@ -124,6 +124,13 @@ export class ServerService {
   //   })
   // }
 
+ 
+
+  accessIsDenied(data){
+    if(data == 'false'){
+      return alert('Access is denied \n У вас немає прав для здійснення цієї операції');
+    } 
+  }
 
   private handleError(err) {
     console.log('caught mapping error and rethrowing', err);
