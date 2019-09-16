@@ -3,7 +3,7 @@ var Shared = require('../models/shared');
 
 
 //-------------------------------------------------------------------------------------------------------------
-//отримати запис з вказаної виставки по вказаному полю
+//отримати запис з вказаної таблиці по вказаному полю
 
 exports.getAll = function(req, res) {
     var data = [
@@ -20,6 +20,20 @@ exports.getAll = function(req, res) {
 
 
 //-------------------------------------------------------------------------------------------------------------
+// отримати права доступу по логіну
+exports.getRights = function(login, cb){
+    SQLvis.getRowOnCondFromTable(login, 'name', 'usersaccount', function(err, doc){
+        if (err) {
+			console.log(err);
+			//return cb(err);
+        }
+        else {
+            console.log('rights: ',doc[0].insupdvisitors);
+			//return cb(doc[0].insupdvisitors); 
+		}
+		return cb(err, doc[0].insupdvisitors);
+    })
+}
 
 
 

@@ -37,8 +37,8 @@ export class ServerService {
     console.log('this.exhib: ',this.exhib); 
   }
 
-  getAuth(){
-    return `login=${localStorage.getItem('user')}&password=${localStorage.getItem('password')}&rights=${localStorage.getItem('access rights')}`
+  getAuth(){ //дані для аутентифікації
+    return `login=${localStorage.getItem('user')}&password=${localStorage.getItem('password')}`
   }
 
   getAll(prop, id?, q1?, q2?, q3?, q4?){ //універсальний метод де prop - назва роута на сервері, id?, q1, ... - параметри запиту
