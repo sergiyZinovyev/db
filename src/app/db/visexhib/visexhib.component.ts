@@ -30,17 +30,14 @@ export class VisexhibComponent implements OnInit, OnDestroy {
   nameBut: string = "Зареєстровані відвідувачі";
 
   displayedColumns: string[] = [
-    //'id',
-    //'id_exhibition',
     'id_visitor', 
     'date_vis', 
-    //'date_reg',
     'namepovne',
     'cellphone',
     'email',
     'visited',
-    //'registered',
-    'fake_id'
+    'fake_id',
+    'realname'
   ];
   keyData = [];
   dataSource = new MatTableDataSource();
@@ -76,24 +73,36 @@ export class VisexhibComponent implements OnInit, OnDestroy {
     this.dataSource.sort = this.sort;
   }
 
+  translate(word){
+    let translate = word;
+    switch (word) {
+      case 'realname':
+        translate = 'Зареєстрував';
+        break;
+      case 'id_visitor':
+        translate = 'ID відвідувача';
+        break;
+      case 'date_vis':
+        translate = 'Дата візиту';
+        break;
+      case 'namepovne':
+        translate = "Ім'я";
+        break;
+      case 'cellphone':
+        translate = 'Моб. телефон';
+        break;
+      case 'visited':
+        translate = 'К-ть візитів';
+        break;
+      default:
+        break;
+    }
+    return translate;
+  }
+
   getExhibName(){
     return this.server.exhib.name;
   }
-
-  // checkVis(id, cb){
-  //   let get = this.server.getCheckViv(id, this.server.exhib.id).subscribe(data =>{
-  //     console.log("checkVis: ", data);
-  //     if(data[0]){
-  //       get.unsubscribe()
-  //       return cb(true)
-  //     }
-  //     else{
-  //       get.unsubscribe()
-  //       return cb(false)
-  //     }
-      
-  //   }) 
-  // }
 
   getBd(idExhib, cond?){
     this.isLoadingResults = true;
@@ -125,7 +134,7 @@ export class VisexhibComponent implements OnInit, OnDestroy {
           visited: data[i].visited, 
           date_vis: this.dateFormat(data[i].date_vis),
           date_reg: this.dateFormat(data[i].date_reg),
-          reg_user: data[i].reg_user,
+          realname: data[i].realname,
 
           cellphone: data[i].cellphone,
           city: data[i].city, 
@@ -239,7 +248,8 @@ export class VisexhibComponent implements OnInit, OnDestroy {
       'cellphone',
       'email',
       'visited',
-      'fake_id'
+      'fake_id',
+      'realname'
     ];
     this.getBd(this.server.exhib.id, 1);
     this.name = 'Відвідали';
