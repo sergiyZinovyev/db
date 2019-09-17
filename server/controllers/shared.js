@@ -20,7 +20,7 @@ exports.getAll = function(req, res) {
 
 
 //-------------------------------------------------------------------------------------------------------------
-// отримати права доступу по логіну
+// отримати запис з usersaccount по логіну
 exports.getRights = function(login, cb){
     SQLvis.getRowOnCondFromTable(login, 'name', 'usersaccount', function(err, doc){
         if (err) {
@@ -28,10 +28,10 @@ exports.getRights = function(login, cb){
 			//return cb(err);
         }
         else {
-            console.log('rights: ',doc[0].insupdvisitors);
+            console.log('user data: ',doc);
 			//return cb(doc[0].insupdvisitors); 
 		}
-		return cb(err, doc[0].insupdvisitors);
+		return cb(err, doc[0]);
     })
 }
 

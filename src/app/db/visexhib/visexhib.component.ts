@@ -56,6 +56,7 @@ export class VisexhibComponent implements OnInit, OnDestroy {
     date_vis: new FormControl(''),
     date_reg: new FormControl(''),
     fake_id: new FormControl(''),
+    //ins_user: new FormControl(this.server.frontURL.searchParams.get('id')),
   });
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
@@ -124,6 +125,7 @@ export class VisexhibComponent implements OnInit, OnDestroy {
           visited: data[i].visited, 
           date_vis: this.dateFormat(data[i].date_vis),
           date_reg: this.dateFormat(data[i].date_reg),
+          reg_user: data[i].reg_user,
 
           cellphone: data[i].cellphone,
           city: data[i].city, 

@@ -70,17 +70,18 @@ exports.createExhibition_vis = function(dataVisitor, cb){
     visited, 
     date_vis, 
     date_reg,
-    fake_id
+    fake_id,
+    reg_user
     ) 
-    VALUES (?,?,?,?,?,?,?)`;
+    VALUES (?,?,?,?,?,?,?,?)`;
   db.get().query(sql, dataVisitor, function(err, data) {
     cb(err, data)
   })
 }
 
-//редагування запису відвідування виставки у таблиці Exhibition_vis
+//редагування запису відвідування виставки у таблиці Exhibition_vis 
 exports.editExhibition_vis = function(dataVisitor, cb){
-  let sql = `UPDATE exhibition_vis SET visited=?, registered=?, date_vis=?, date_reg=? WHERE (id_visitor=? AND id_exhibition=?)`;
+  let sql = `UPDATE exhibition_vis SET visited=?, registered=?, date_vis=?, date_reg=?, reg_user=? WHERE (id_visitor=? AND id_exhibition=?)`;
   db.get().query(sql, dataVisitor, function(err, data) {
     cb(err, data)
   })

@@ -1,5 +1,6 @@
 var SQL = require('../models/sql-exhib');
 var Shared = require('../models/shared');
+var ControllersShared = require('../controllers/shared');
 
 
 //-------------------------------------------------------------------------------------------------------------
@@ -56,31 +57,46 @@ exports.checkViv = function(req, res) {
 
 
 //-------------------------------------------------------------------------------------------------------------
-//додавання запису в exhibition_vis
+//додавання запису в exhibition_vis 
 
-exports.createInExhibition_vis = function(req, res) { 
+exports.createInExhibition_vis = function(req, res) {
     let date_vis;
     let date_reg;
+    let reg_user;
     if(req.body.visited){date_vis = Shared.curentDate(req.body.date_vis)}
     else date_vis = '';
     if(req.body.registered){date_reg = Shared.curentDate(req.body.date_reg)}
     else date_reg = '';
-    var visitorData = [
-        req.body.id_exhibition,
-        req.body.id_visitor,
-        req.body.registered,
-        req.body.visited,
-        date_vis,
-        date_reg,
-        req.body.fake_id
-    ]; 
-    SQL.createExhibition_vis(visitorData, function(err, doc){
+    ControllersShared.getRights(req.query.login, function(err, doc){
+        console.log('doc: ', doc);
         if (err) {
-            console.log(err);
+            console.log('err: ',err);
             return res.sendStatus(500);
         }
-        res.send(doc);
-    });     
+        if(!doc){
+            reg_user = 99;
+        }
+        else reg_user = doc.id;
+
+        let visitorData = [
+            req.body.id_exhibition,
+            req.body.id_visitor,
+            req.body.registered,
+            req.body.visited,
+            date_vis,
+            date_reg,
+            req.body.fake_id,
+            reg_user,
+        ]; 
+        SQL.createExhibition_vis(visitorData, function(err, doc){
+            if (err) {
+                console.log(err);
+                return res.sendStatus(500);
+            }
+            res.send(doc);
+        });
+        
+    })     
 };
 
 
@@ -90,6 +106,7 @@ exports.createInExhibition_vis = function(req, res) {
 exports.editExhibition_vis = function(req, res) {
     let date_vis;
     let date_reg;
+    let reg_user;
     if(req.body.vis){
         date_vis = Shared.curentDate();
         if(req.body.date_reg){
@@ -105,20 +122,32 @@ exports.editExhibition_vis = function(req, res) {
         else { date_vis = '' }
         date_reg = Shared.curentDate();
     }
-    var visitorData = [
-        req.body.visited,
-        req.body.registered,
-        date_vis,
-        date_reg,
-        req.body.id_visitor,
-        req.body.id_exhibition,
-    ];
-    console.log('editExhibition_vis data: ',visitorData)
-    SQL.editExhibition_vis(visitorData, function(err, doc){
+    ControllersShared.getRights(req.query.login, function(err, doc){
+        console.log('doc: ', doc);
         if (err) {
-            console.log(err);
+            console.log('err: ',err);
             return res.sendStatus(500);
         }
-        res.send(doc);
-    });     
+        if(!doc){
+            reg_user = 99;
+        }
+        else reg_user = doc.id;
+        var visitorData = [
+            req.body.visited,
+            req.body.registered,
+            date_vis,
+            date_reg,
+            reg_user,
+            req.body.id_visitor,
+            req.body.id_exhibition,
+        ];
+        console.log('editExhibition_vis data: ',visitorData)
+        SQL.editExhibition_vis(visitorData, function(err, doc){
+            if (err) {
+                console.log(err);
+                return res.sendStatus(500);
+            }
+            res.send(doc);
+        });
+    })     
 };

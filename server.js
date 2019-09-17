@@ -121,7 +121,7 @@ app.post("/email", cors(), urlencodedParser, emailController.sendEmail);
 //додавання запису в exhibition_vis
 app.post("/createInExhibition_vis", urlencodedParser, visitorsExhibController.createInExhibition_vis);
 
-//отримати запис з  exhibition_vis про відвідувача вказаної виставки 
+//отримати запис з  exhibition_vis про відвідувача вказаної виставки  
 app.get("/checkViv", visitorsExhibController.checkViv);
 
 //----------------------------------------
