@@ -236,6 +236,7 @@ export class VisitorComponent implements OnInit {
     }
     let post = this.server.post(dataDel, "delete").subscribe(data =>{
       console.log("data: ", data);
+      if(data[0]){this.server.accessIsDenied(data[0].rights);}
       if(data){
         console.log("unsubscribe");
         this.getData.emit(this.getTableName());
@@ -245,7 +246,7 @@ export class VisitorComponent implements OnInit {
   }
 
   getExhib(nameTable){
-    //створити форму зі всіх виставок
+    //створити форму зі всіх виставок 
     this.exhibForm = new FormGroup({});
     this.server.get(nameTable).subscribe(data =>{
       this.exhib = new Array;

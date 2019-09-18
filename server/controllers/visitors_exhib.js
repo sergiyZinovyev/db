@@ -25,7 +25,9 @@ exports.visexhib = function(req, res) {
         req.params.id,
         req.params.id,
         req.params.id,
-        req.params.id  
+        req.params.id,
+        req.params.id,
+        req.params.id,  
     ];
     console.log(condition);
 	SQL.visexhib(data, condition, function(err, doc) {

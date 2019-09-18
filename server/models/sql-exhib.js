@@ -3,99 +3,116 @@ const db = require('../db');
 //отримання відвідувачів виставки
 exports.visexhib = function(data, condition, cb){
   // let sql = `SELECT *
-  //   FROM (
-  //     (
-      
-  //     SELECT *
+  // FROM
+  //   (SELECT *
   //     FROM (
   //       (
         
   //       SELECT *
-  //       FROM exhibition_vis
-  //       LEFT OUTER JOIN visitors_create ON exhibition_vis.id_visitor = visitors_create.regnum 
-  //       WHERE id_exhibition =? ${condition}
+  //       FROM (
+  //         (
+          
+  //         SELECT *
+  //         FROM exhibition_vis
+  //         LEFT OUTER JOIN visitors_create ON exhibition_vis.id_visitor = visitors_create.regnum 
+  //         WHERE id_exhibition =? ${condition}
+  //         )
+  //         UNION ALL (
+          
+  //         SELECT *
+  //         FROM exhibition_vis
+  //         LEFT OUTER JOIN visitors ON exhibition_vis.id_visitor = visitors.regnum
+  //         WHERE id_exhibition =? ${condition}
+  //         )
+  //         ) AS v_table
+  //       WHERE namepovne IS NOT NULL
   //       )
-  //       UNION ALL (
+  //       UNION (
         
   //       SELECT *
-  //       FROM exhibition_vis
-  //       LEFT OUTER JOIN visitors ON exhibition_vis.id_visitor = visitors.regnum
-  //       WHERE id_exhibition =? ${condition}
-  //       )
-  //       ) AS v_table
-  //     WHERE namepovne IS NOT NULL
-  //     )
-  //     UNION (
-      
-  //     SELECT *
-  //     FROM (
-  //     (
-      
-  //       SELECT *
-  //       FROM exhibition_vis
-  //       LEFT OUTER JOIN visitors_create ON exhibition_vis.id_visitor = visitors_create.regnum
-  //       WHERE id_exhibition =? ${condition}
-  //       )
-  //       UNION ALL (
+  //       FROM (
+  //       (
         
-  //       SELECT *
-  //       FROM exhibition_vis
-  //       LEFT OUTER JOIN visitors ON exhibition_vis.id_visitor = visitors.regnum
-  //       WHERE id_exhibition =? ${condition}
+  //         SELECT *
+  //         FROM exhibition_vis
+  //         LEFT OUTER JOIN visitors_create ON exhibition_vis.id_visitor = visitors_create.regnum
+  //         WHERE id_exhibition =? ${condition}
+  //         )
+  //         UNION ALL (
+          
+  //         SELECT *
+  //         FROM exhibition_vis
+  //         LEFT OUTER JOIN visitors ON exhibition_vis.id_visitor = visitors.regnum
+  //         WHERE id_exhibition =? ${condition}
+  //         )
+  //         ) AS v_table
+  //       WHERE namepovne IS NULL
   //       )
-  //       ) AS v_table
-  //     WHERE namepovne IS NULL
-  //     )
-  //     ) AS r_table
-  //   GROUP BY id`;
+  //       ) AS r_table
+  //     GROUP BY id) AS exhib
+  //   LEFT OUTER JOIN
+  //   (SELECT id, realname FROM usersaccount) AS users
+  //     ON exhib.reg_user = users.id`
+
   let sql = `SELECT *
   FROM
     (SELECT *
-      FROM (
-        (
-        
+    FROM (
+      (
         SELECT *
         FROM (
           (
-          
-          SELECT *
-          FROM exhibition_vis
-          LEFT OUTER JOIN visitors_create ON exhibition_vis.id_visitor = visitors_create.regnum 
-          WHERE id_exhibition =? ${condition}
+            SELECT *
+            FROM exhibition_vis
+            LEFT OUTER JOIN visitors_edit ON exhibition_vis.id_visitor = visitors_edit.regnum 
+            WHERE id_exhibition =? ${condition}
           )
-          UNION ALL (
-          
-          SELECT *
-          FROM exhibition_vis
-          LEFT OUTER JOIN visitors ON exhibition_vis.id_visitor = visitors.regnum
-          WHERE id_exhibition =? ${condition}
+          UNION ALL
+          (
+            SELECT *
+            FROM exhibition_vis
+            LEFT OUTER JOIN visitors_create ON exhibition_vis.id_visitor = visitors_create.regnum 
+            WHERE id_exhibition =? ${condition}
           )
-          ) AS v_table
+          UNION ALL
+          (
+            SELECT *
+            FROM exhibition_vis
+            LEFT OUTER JOIN visitors ON exhibition_vis.id_visitor = visitors.regnum
+            WHERE id_exhibition =? ${condition}
+          )
+        ) AS v_table
         WHERE namepovne IS NOT NULL
-        )
-        UNION (
-        
+      )
+      UNION 
+      (
         SELECT *
         FROM (
-        (
-        
-          SELECT *
-          FROM exhibition_vis
-          LEFT OUTER JOIN visitors_create ON exhibition_vis.id_visitor = visitors_create.regnum
-          WHERE id_exhibition =? ${condition}
+          (
+            SELECT *
+            FROM exhibition_vis
+            LEFT OUTER JOIN visitors_edit ON exhibition_vis.id_visitor = visitors_edit.regnum 
+            WHERE id_exhibition =? ${condition}
           )
-          UNION ALL (
-          
-          SELECT *
-          FROM exhibition_vis
-          LEFT OUTER JOIN visitors ON exhibition_vis.id_visitor = visitors.regnum
-          WHERE id_exhibition =? ${condition}
+          UNION ALL
+          (
+            SELECT *
+            FROM exhibition_vis
+            LEFT OUTER JOIN visitors_create ON exhibition_vis.id_visitor = visitors_create.regnum
+            WHERE id_exhibition =? ${condition}
           )
-          ) AS v_table
+          UNION ALL 
+          (
+            SELECT *
+            FROM exhibition_vis
+            LEFT OUTER JOIN visitors ON exhibition_vis.id_visitor = visitors.regnum
+            WHERE id_exhibition =? ${condition}
+          )
+        ) AS v_table
         WHERE namepovne IS NULL
-        )
-        ) AS r_table
-      GROUP BY id) AS exhib
+      )
+    ) AS r_table
+    GROUP BY id) AS exhib
     LEFT OUTER JOIN
     (SELECT id, realname FROM usersaccount) AS users
       ON exhib.reg_user = users.id`

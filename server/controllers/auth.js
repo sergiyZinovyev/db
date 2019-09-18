@@ -79,8 +79,7 @@ exports.checkAuth = function(req, res, next){
         }
         else {
             console.log('rights cb: ', doc.insupdvisitors);
-            //if(doc.insupdvisitors == 0){
-            if(![1,2,3,4].includes(doc.insupdvisitors)){  
+            if(![1,2,3,4,5].includes(doc.insupdvisitors)){  
                 console.log('у вас немає прав доступу: ', doc.insupdvisitors);
                 return res.send([{
                     "rights": "false",

@@ -22,7 +22,7 @@ import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms'
   ],
 })
 
-export class VisexhibComponent implements OnInit, OnDestroy {
+export class VisexhibComponent implements OnInit, OnDestroy { 
   
   i=10000;
   name: string = "Відвідали";

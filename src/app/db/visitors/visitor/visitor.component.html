@@ -149,10 +149,10 @@
     
 </form>
 <span class="pl-3 pr-5">Запис створено {{this.element.datawnesenny}}. Остання модифікація була зроблена {{this.element.datelastcor}}</span>
-<button *ngIf='tableName == "База відвідувачів"'class='ml-2' mat-raised-button (click)='submit()'>редагувати</button>
+<button *ngIf='["База відвідувачів","Відвідали"].includes(tableName)'class='ml-2' mat-raised-button (click)='submit()'>редагувати</button>
 <button *ngIf='tableName == "Заявки на внесення"' class='ml-2' mat-raised-button (click)='submit()'>прийняти заявку</button>
 <button *ngIf='tableName == "Заявки на зміну"' class='ml-2' mat-raised-button (click)='submit()'>прийняти заявку</button>
-<button class='ml-2' mat-raised-button (click)='delete()'>видалити</button>
+<button *ngIf='["База відвідувачів","Заявки на внесення","Заявки на зміну"].includes(tableName)' class='ml-2' mat-raised-button (click)='delete()'>видалити</button>
 <ng-container *ngIf = 'worningCheck'>
-    <div class="alert alert-warning mt-1" role="alert">{{worningCheck}}</div>
-</ng-container>
+    <div class="alert alert-warning mt-1" role="alert">{{worningCheck}}</div> 
+</ng-container> 

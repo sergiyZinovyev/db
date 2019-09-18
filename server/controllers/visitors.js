@@ -1,5 +1,6 @@
 var Visitors = require('../models/sql-visitors');
 var Shared = require('../models/shared');
+var ControllersShared = require('../controllers/shared');
 
 
 exports.all = function(req, res) {
@@ -683,13 +684,30 @@ exports.getSpecCond = function(req, res) {
 //-------------------------------------------------------------------------------------------------------------
 
 exports.delete = function(req, res) {
-    Visitors.delete(req.body.tableName, req.body.regnum, function(err, doc){
+    ControllersShared.getRights(req.query.login, function(err, doc){
         if (err) {
-            console.log(err);
+            console.log('err: ',err);
             return res.sendStatus(500);
         }
-        res.send(doc);
-    });   
+        else {
+            console.log('rights cb: ', doc.insupdvisitors);
+            if(![3,4,5].includes(doc.insupdvisitors)){  
+                console.log('у вас немає прав доступу: ', doc.insupdvisitors);
+                return res.send([{
+                    "rights": "false",
+                }]);
+            }
+            else{
+                Visitors.delete(req.body.tableName, req.body.regnum, function(err, doc){
+                    if (err) {
+                        console.log(err);
+                        return res.sendStatus(500);
+                    }
+                    res.send(doc);
+                });
+            }
+        }
+    })   
 };
 
 //-------------------------------------------------------------------------------------------------------------
