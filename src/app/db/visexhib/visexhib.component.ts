@@ -1,4 +1,5 @@
 import {Component, OnInit, ViewChild, OnDestroy} from '@angular/core';
+import {SelectionModel} from '@angular/cdk/collections';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatSort} from '@angular/material/sort';
@@ -37,10 +38,13 @@ export class VisexhibComponent implements OnInit, OnDestroy {
     'email',
     'visited',
     'fake_id',
-    'realname'
+    'realname',
+    "select",
   ];
+
   keyData = [];
   dataSource = new MatTableDataSource();
+  selection = new SelectionModel(true, []);
   expandedElement;
 
   isLoadingResults = true;
@@ -249,7 +253,8 @@ export class VisexhibComponent implements OnInit, OnDestroy {
       'email',
       'visited',
       'fake_id',
-      'realname'
+      'realname',
+      "select",
     ];
     this.getBd(this.server.exhib.id, 1);
     this.name = 'Відвідали';
@@ -325,5 +330,46 @@ export class VisexhibComponent implements OnInit, OnDestroy {
     } 
   }
   
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    //console.log("isAllSelected()");
+    return numSelected === numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  masterToggle($event) {
+    if ($event.checked) {
+      this.onCompleteRow(this.dataSource);
+    }
+    this.isAllSelected() ?
+      this.selection.clear() :
+      this.dataSource.data.forEach(row => this.selection.select(row));
+  }
+
+  /** The label for the checkbox on the passed row */
+  checkboxLabel(row?): string {
+    if (!row) {
+      //console.log("checkboxLabel(row?) row is empty");
+      return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
+    }
+    //console.log("checkboxLabel(row?)", row.position);
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
+  }
+
+  selectRow($event, dataSource) {
+    //console.log($event.checked);
+     if ($event.checked) {
+       console.log(dataSource.id_visitor);
+     }
+   }
+
+  onCompleteRow(dataSource) {
+    dataSource.data.forEach(element => {
+      console.log(element.id_visitor);
+    });
+  }
+
   ngOnDestroy(){}
 }
