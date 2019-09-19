@@ -219,6 +219,8 @@ export class VisexhibComponent implements OnInit, OnDestroy {
   }
 
   butGetReg(){
+    this.selection.clear();
+    this.arrOfCheckId = [];
     this.displayedColumns = [
       'id_visitor', 
       'date_reg',
@@ -233,6 +235,8 @@ export class VisexhibComponent implements OnInit, OnDestroy {
   }
 
   butGetCreateTable(){
+    this.selection.clear();
+    this.arrOfCheckId = [];
     this.displayedColumns = [
       'id_visitor', 
       'date_reg',
@@ -247,6 +251,8 @@ export class VisexhibComponent implements OnInit, OnDestroy {
   }
 
   butGetVis(){
+    this.selection.clear();
+    this.arrOfCheckId = [];
     this.displayedColumns = [
       'id_visitor', 
       'date_vis', 
@@ -384,22 +390,26 @@ export class VisexhibComponent implements OnInit, OnDestroy {
   }
 
   delVis(){
-    console.log('del is work');
-    let dataDel = {
-      id_exhibition: this.server.exhib.id,
-      id_visitor: this.arrOfCheckId.join(', '), 
-    }
-    let post = this.server.post(dataDel, "editExhibition_vis_visited_cancel").subscribe(data =>{
-      console.log("data: ", data);
-      if(data[0]){this.server.accessIsDenied(data[0].rights);}
-      this.selection.clear();
-      this.arrOfCheckId = [];
-      this.butGetVis();
-      if(data){
-        console.log("unsubscribe");
-        return post.unsubscribe();
+    if(!this.arrOfCheckId[0]){return alert('Ви не обрали жодного елемента для видалення')}
+    let isConfirm = confirm("Ви намагаєтеся видалити записи.\nУВАГА! Відновлення буде неможливе!\nБажаєте продовжити?");
+    if(isConfirm){
+      let dataDel = {
+        id_exhibition: this.server.exhib.id,
+        id_visitor: this.arrOfCheckId.join(', '), 
       }
-    });
+      let post = this.server.post(dataDel, "editExhibition_vis_visited_cancel").subscribe(data =>{
+        console.log("data: ", data);
+        if(data[0]){this.server.accessIsDenied(data[0].rights);}
+        // this.selection.clear();
+        // this.arrOfCheckId = [];
+        this.butGetVis();
+        if(data){
+          console.log("unsubscribe");
+          return post.unsubscribe();
+        }
+      });
+    }
+    else return
   }
 
   ngOnDestroy(){}
