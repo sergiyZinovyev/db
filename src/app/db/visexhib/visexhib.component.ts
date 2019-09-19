@@ -30,6 +30,8 @@ export class VisexhibComponent implements OnInit, OnDestroy {
   headerColor = 'rgb(45, 128, 253)';
   nameBut: string = "Зареєстровані відвідувачі";
 
+  arrOfCheckId = [];
+
   displayedColumns: string[] = [
     'id_visitor', 
     'date_vis', 
@@ -280,6 +282,7 @@ export class VisexhibComponent implements OnInit, OnDestroy {
 
   addId(){
     if(this.visitorsIds.valid){
+      this.selection.clear();
       console.log(this.visitorsIds.get('id_visitor').value);
       //this.visitorsIds.patchValue({date_vis: new Date});
       //console.log(this.visitorsIds.value);
@@ -291,11 +294,12 @@ export class VisexhibComponent implements OnInit, OnDestroy {
           // перевіряємо id на наявність в базі 
           this.dbvisex.checkId(this.visitorsIds.get('id_visitor').value, cb2=>{
             console.log('cb2: ', cb2);
-            if(cb2[0]){ //якщо є то відразу заносимо його з бази 
+            if(cb2[0]){ //якщо є то відразу заносимо його з бази
               this.server.post(this.visitorsIds.value, 'createInExhibition_vis').subscribe(data =>{ 
                 console.log("data: ", data); 
                 this.visitorsIds.patchValue({id_visitor: ''});
-                this.getBd(this.server.exhib.id);
+                this.butGetVis();
+                //this.getBd(this.server.exhib.id);
               })
             }
             else{ //якщо нема 
@@ -323,7 +327,8 @@ export class VisexhibComponent implements OnInit, OnDestroy {
             console.log("data: ", data);
             this.visitorsIds.patchValue({id_visitor: ''});
             this.visitorsIds.patchValue({visited: '1'});
-            this.getBd(this.server.exhib.id);
+            //this.getBd(this.server.exhib.id);
+            this.butGetVis();
           })
         }
       });
@@ -334,7 +339,6 @@ export class VisexhibComponent implements OnInit, OnDestroy {
   isAllSelected() {
     const numSelected = this.selection.selected.length;
     const numRows = this.dataSource.data.length;
-    //console.log("isAllSelected()");
     return numSelected === numRows;
   }
 
@@ -343,31 +347,58 @@ export class VisexhibComponent implements OnInit, OnDestroy {
     if ($event.checked) {
       this.onCompleteRow(this.dataSource);
     }
-    this.isAllSelected() ?
-      this.selection.clear() :
-      this.dataSource.data.forEach(row => this.selection.select(row));
+    if(this.isAllSelected()){
+      this.selection.clear();
+      this.arrOfCheckId = [];
+      console.log(this.arrOfCheckId);
+    } else  this.dataSource.data.forEach(row => this.selection.select(row));  
   }
 
-  /** The label for the checkbox on the passed row */
+  /** The label for the checkbox on the passed row */  
   checkboxLabel(row?): string {
     if (!row) {
-      //console.log("checkboxLabel(row?) row is empty");
       return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
     }
-    //console.log("checkboxLabel(row?)", row.position);
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
   }
 
   selectRow($event, dataSource) {
-    //console.log($event.checked);
-     if ($event.checked) {
-       console.log(dataSource.id_visitor);
-     }
+    if ($event.checked) {
+      if(!this.arrOfCheckId.includes(dataSource.id_visitor)){
+        this.arrOfCheckId.push(dataSource.id_visitor);
+      }
+    }
+    else {
+      this.arrOfCheckId.splice(this.checkArrIdVal(this.arrOfCheckId, dataSource.id_visitor), 1);
+    }
+    console.log(this.arrOfCheckId);
    }
 
   onCompleteRow(dataSource) {
     dataSource.data.forEach(element => {
-      console.log(element.id_visitor);
+      if(!this.arrOfCheckId.includes(element.id_visitor)){
+        this.arrOfCheckId.push(element.id_visitor);
+      }
+    });
+    console.log(this.arrOfCheckId);
+  }
+
+  delVis(){
+    console.log('del is work');
+    let dataDel = {
+      id_exhibition: this.server.exhib.id,
+      id_visitor: this.arrOfCheckId.join(', '), 
+    }
+    let post = this.server.post(dataDel, "editExhibition_vis_visited_cancel").subscribe(data =>{
+      console.log("data: ", data);
+      if(data[0]){this.server.accessIsDenied(data[0].rights);}
+      this.selection.clear();
+      this.arrOfCheckId = [];
+      this.butGetVis();
+      if(data){
+        console.log("unsubscribe");
+        return post.unsubscribe();
+      }
     });
   }
 

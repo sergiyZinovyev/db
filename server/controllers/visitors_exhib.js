@@ -102,7 +102,7 @@ exports.createInExhibition_vis = function(req, res) {
 };
 
 
-//------------------------------------------------------------------------------------------------------------- 
+//-------------------------------------------------------------------------------------------------------------  
 //редагування запису в exhibition_vis
 
 exports.editExhibition_vis = function(req, res) {
@@ -152,4 +152,38 @@ exports.editExhibition_vis = function(req, res) {
             res.send(doc);
         });
     })     
+};
+
+//-------------------------------------------------------------------------------------------------------------  
+//редагування запису відвідування виставки у таблиці Exhibition_vis відміна відвідування
+
+exports.editExhibition_vis_visited_cancel = function(req, res) {
+    ControllersShared.getRights(req.query.login, function(err, doc){
+        if (err) {
+            console.log('err: ',err);
+            return res.sendStatus(500);
+        }
+        else {
+            console.log('rights cb: ', doc.insupdvisitors);
+            if(![4,5].includes(doc.insupdvisitors)){  
+                console.log('у вас немає прав доступу: ', doc.insupdvisitors);
+                return res.send([{
+                    "rights": "false",
+                }]);
+            }
+            else{
+                let id_exhibition = [req.body.id_exhibition];
+                let id_visitor = req.body.id_visitor;
+                console.log('req.id_exhibition: ',req.body.id_exhibition);
+                console.log('id_visitors: ',req.body.id_visitor);
+                SQL.editExhibition_vis_visited_cancel(id_exhibition, id_visitor, function(err, doc2){
+                    if (err) {
+                        console.log(err);
+                        return res.sendStatus(500);
+                    }
+                    res.send(doc2);
+                });
+            }
+        }
+    })   
 };

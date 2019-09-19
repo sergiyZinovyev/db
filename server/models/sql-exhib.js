@@ -154,3 +154,11 @@ exports.editExhibition_vis = function(dataVisitor, cb){
     cb(err, data)
   })
 }
+
+//редагування запису відвідування виставки у таблиці Exhibition_vis відміна відвідування
+exports.editExhibition_vis_visited_cancel = function(id_exhibition, id_visitor,  cb){
+  let sql = `UPDATE exhibition_vis SET visited=0 WHERE (id_visitor IN (${id_visitor}) AND id_exhibition=?)`;
+  db.get().query(sql, id_exhibition, function(err, data) {
+    cb(err, data)
+  })
+}

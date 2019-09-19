@@ -73,6 +73,9 @@ app.get("/visexhib/:id", authController.checkAuth, visitorsExhibController.visex
 //редагування запису в exhibition_vis
 app.post("/editExhibition_vis", authController.checkAuth, urlencodedParser, visitorsExhibController.editExhibition_vis);
 
+//редагування запису відвідування виставки у таблиці Exhibition_vis відміна відвідування
+app.post("/editExhibition_vis_visited_cancel", authController.checkAuth, urlencodedParser, visitorsExhibController.editExhibition_vis_visited_cancel);
+
 //----------------------------------------
 
 

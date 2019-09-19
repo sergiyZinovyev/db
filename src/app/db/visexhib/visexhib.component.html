@@ -14,6 +14,10 @@
                     </button>
                 </form>
                 <mat-divider [vertical]="true"></mat-divider>
+                <button mat-icon-button aria-label="Example icon-button with a heart icon" class="but-color" (click)='delVis()'>
+                    <mat-icon>add_circle_outline</mat-icon>
+                </button>
+                <mat-divider [vertical]="true"></mat-divider>
             </ng-container>
             <button mat-icon-button [style.color]="headerColor" aria-label="Example icon-button with a heart icon" [matMenuTriggerFor]="menu">
                 <mat-icon>add_box</mat-icon>
