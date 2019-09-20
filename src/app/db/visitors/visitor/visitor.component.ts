@@ -157,7 +157,7 @@ export class VisitorComponent implements OnInit {
   editUser(){
     //this.user.setUserData(this.loginForm.value); 
     //this.isLoadingResults = true;
-    this.loginForm.patchValue({potvid: this.server.getStringExhibForm(this.exhibForm.value)}) //змінюємо поле з виставками
+    this.loginForm.patchValue({potvid: this.server.getStringExhibForm(this.exhibForm.value)}) //змінюємо поле з виставками 
     //перевіряємо чи змінилася форма
     // if(this.checkFormChange()){
     //   console.log('дані не змінилися')
@@ -178,9 +178,18 @@ export class VisitorComponent implements OnInit {
     //if(!this.myRequest){return console.log('Err: myRequest is undefined')};
     let myRequest: string;
     if(this.tableName == 'Заявки на внесення'){
+      //створюємо новий запис в visitors на основі заявки з visitors_create
       myRequest = "createInVisitorsEdit"
-    } else myRequest = "editPro";
-
+    } 
+    if(this.tableName == 'Заявки на зміну' || this.tableName == 'База відвідувачів') {
+      //редагуємо запис у відповідній таблиці
+      myRequest = "editPro";
+    }
+    if(this.tableName == 'Відвідали') {
+      //редагуємо запис у відповідній таблиці
+      // ... щось робимо ....
+      //myRequest = "editPro";
+    }
     let post = this.server.post(this.loginForm.value, myRequest).subscribe(data =>{
       console.log('this.loginForm.value: ',this.loginForm.value);
       console.log("dataServer: ", data);
@@ -192,6 +201,7 @@ export class VisitorComponent implements OnInit {
         }
         else{
           this.worningCheck = '';
+          //якщо зроблені необхідні зміни то видаляємо запис з таблиці-заявки
           if(this.tableName == 'Заявки на зміну' || this.tableName == 'Заявки на внесення') {this.delete()}
           else {this.getData.emit(this.getTableName())}
         }
@@ -230,19 +240,25 @@ export class VisitorComponent implements OnInit {
   }
 
   delete(){
-    let dataDel = {
-      tableName: this.getTableName(),
-      regnum: this.loginForm.value.regnum 
-    }
-    let post = this.server.post(dataDel, "delete").subscribe(data =>{
-      console.log("data: ", data);
-      if(data[0]){this.server.accessIsDenied(data[0].rights);}
-      if(data){
-        console.log("unsubscribe");
-        this.getData.emit(this.getTableName());
-        return post.unsubscribe();
+    let isConfirm = confirm("Ви намагаєтеся видалити записи.\nУВАГА! Відновлення буде неможливе!\nБажаєте продовжити?");
+    if(isConfirm){
+      let dataDel = {
+        tableName: this.getTableName(),
+        regnum: this.loginForm.value.regnum 
       }
-    });
+      let post = this.server.post(dataDel, "delete").subscribe(data =>{
+        console.log("data: ", data);
+        if(data[0]){
+          // перевіряємо права користувача, видаємо повідомлення, якщо немає прав
+          if(this.server.accessIsDenied(data[0].rights)) return post.unsubscribe();
+        }
+        if(data){
+          console.log("unsubscribe");
+          this.getData.emit(this.getTableName());
+          return post.unsubscribe();
+        }
+      });
+    }
   }
 
   getExhib(nameTable){
@@ -295,7 +311,7 @@ export class VisitorComponent implements OnInit {
           }
           else{
             //обираємо метод (редагування чи внесення нового)
-            this.editUser();
+            this.editUser(); //редагуємо
           }
 
         } 

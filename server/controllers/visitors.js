@@ -132,7 +132,7 @@ exports.file = function(req, res) {
 };
 
 //-------------------------------------------------------------------------------------------------------------
-//порівняти з наступним методом та обєднати методи /метод враховує чи були змінені емаіл та целфон/
+//створює новий запис/порівняти з наступним методом та обєднати методи /метод враховує чи були змінені емаіл та целфон/
 exports.editRequest = function(req, res) {
     var visitorData = [
         req.body.regnum,
@@ -283,7 +283,7 @@ exports.editRequest = function(req, res) {
 };
 
 //-------------------------------------------------------------------------------------------------------------
-// на відміну від попереднього вираховує регнам /потрібен для створення запису в таблиці visitors_create/
+//потрібен виключно для створення запису в таблиці visitors_create
 exports.createCpecTable = function(req, res) {
     //отримуємо всі regnum  з таблиць visitors та visitors_create 
     Visitors.regnVisAndReq(function(err, doc){
@@ -354,7 +354,7 @@ exports.createCpecTable = function(req, res) {
                             if (doc4[0] == undefined || doc4[0].cellphone == ''){
                                  //створюємо новий запис в табл.
                                 console.log('start creating'); 
-                                Visitors.create(visitorData, req.body.table, function(err3, doc3){
+                                Visitors.create(visitorData, 'visitors_create', function(err3, doc3){
                                     if (err3) {
                                         console.log(err3);
                                         return res.sendStatus(500);
@@ -682,7 +682,7 @@ exports.getSpecCond = function(req, res) {
 // };
 
 //-------------------------------------------------------------------------------------------------------------
-
+// обмежити права на деякі таблиці для групи 3
 exports.delete = function(req, res) {
     ControllersShared.getRights(req.query.login, function(err, doc){
         if (err) {

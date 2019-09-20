@@ -25,6 +25,7 @@ import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms'
 
 export class VisexhibComponent implements OnInit, OnDestroy { 
   
+  exhib_id = this.server.exhib.id;
   i=10000;
   name: string = "Відвідали";
   headerColor = 'rgb(45, 128, 253)';
@@ -116,7 +117,11 @@ export class VisexhibComponent implements OnInit, OnDestroy {
     let get = this.server.getVisExhib(idExhib, cond).subscribe(data =>{
       console.log("data: ", data);
       this.isLoadingResults = false;
-      this.server.accessIsDenied(data[0].rights);
+      if(data[0].rights){
+        // перевіряємо права користувача, видаємо повідомлення, якщо немає прав
+        if(this.server.accessIsDenied(data[0].rights)) return get.unsubscribe();
+      }
+      //this.server.accessIsDenied(data[0].rights);
       for (var key in data[0]) {
         this.keyData.push(key)
       }
