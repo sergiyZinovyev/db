@@ -221,7 +221,7 @@ exports.editPro = function(dataVisitor, table, cb){
   })
 }
 
-//отримання запису по вказаній умові з двох таблиць
+//отримання запису по вказаній умові з трьох таблиць
 exports.getEmail = function(dataVisitor, fild, cb){
   let sql = `(SELECT * FROM visitors WHERE ${fild} LIKE ?) UNION (SELECT * FROM visitors_create WHERE ${fild} LIKE ?) UNION (SELECT * FROM visitors_edit WHERE ${fild} LIKE ?)`;
   db.get().query(sql, dataVisitor, function(err, data) {

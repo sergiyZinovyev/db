@@ -122,7 +122,7 @@ app.post("/get_spec_cond", cors(), urlencodedParser, visitorsController.getSpecC
 app.post("/email", cors(), urlencodedParser, emailController.sendEmail);
 
 
-//-----------exhibition_vis---------------
+//-----------exhibition_vis--------------- 
 
 //додавання запису в exhibition_vis
 app.post("/createInExhibition_vis", urlencodedParser, visitorsExhibController.createInExhibition_vis);

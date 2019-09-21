@@ -465,9 +465,10 @@ exports.createNewVis = function(req, res) {
 //     });   
 // };
 
+
 //-------------------------------------------------------------------------------------------------------------
 //Редагування запису
-exports.editPro = function(req, res) {
+let editProIn = function(req, res) {
     var visitorData = [
         req.body.email,
         req.body.prizv,
@@ -612,8 +613,15 @@ exports.editPro = function(req, res) {
     }   
 };
 
-//------------------------------------------------------------------------------------------------------------- 
 
+
+//-------------------------------------------------------------------------------------------------------------
+//Редагування запису
+exports.editPro = function(req, res) {
+    editProIn(req, res);
+}
+
+//-------------------------------------------------------------------------------------------------------------
 exports.getSpecCond = function(req, res) {
     var fild = req.body.condition;
     var visitorData = [
@@ -682,35 +690,36 @@ exports.getSpecCond = function(req, res) {
 // };
 
 //-------------------------------------------------------------------------------------------------------------
-// 
-let deleteIn = function(req, res) {
+// перевіряє права на видалення та видаляє 
+// має отримати req який має містити [req.query.login, req.body.regnum] та назву таблиці з якої робимо видалення
+let deleteIn = function(req, tableName, cb) {
     ControllersShared.getRights(req.query.login, function(err, doc){
         if (err) {
             console.log('err: ',err);
-            return res.sendStatus(500);
+            return cb(err, null);
         }
         else {
             console.log('rights cb: ', doc.insupdvisitors);
             if(![3,4,5].includes(doc.insupdvisitors)){  
                 console.log('у вас немає прав доступу: ', doc.insupdvisitors);
-                return res.send([{
+                return cb(err, [{
                     "rights": "false",
                 }]);
             }
             else{
-                if(['visitors', 'exhibition_vis'].includes(req.body.tableName) && [3].includes(doc.insupdvisitors)){
+                if(['visitors', 'exhibition_vis'].includes(tableName) && [3].includes(doc.insupdvisitors)){
                     console.log('у вас немає прав доступу: ', doc.insupdvisitors);
-                    return res.send([{
+                    return cb(err, [{
                         "rights": "false",
                     }]); 
                 }
                 else{
-                    Visitors.delete(req.body.tableName, req.body.regnum, function(err, doc){
+                    Visitors.delete(tableName, req.body.regnum, function(err, doc){
                         if (err) {
                             console.log(err);
-                            return res.sendStatus(500);
+                            return cb(err, null);
                         }
-                        res.send(doc);
+                        cb(err, doc);
                     });
                 }    
             }
@@ -720,17 +729,24 @@ let deleteIn = function(req, res) {
 
 //-------------------------------------------------------------------------------------------------------------
 exports.delete = function(req, res){
-    deleteIn(req, res);
+    deleteIn(req, req.body.tableName, function (err, doc) {
+        if (err) {
+            console.log(err);
+            return res.sendStatus(500);
+        }
+        res.send(doc); 
+    });
 }
 
 //-------------------------------------------------------------------------------------------------------------
 exports.editPro2 = function(req, res){
+    //визначаємо в яких таблицях є такий регнам
     ControllersShared.getTablesOnRegnum(req.body.regnum, function (err, tables) {
         if (err) {
             console.log(err);
             return res.sendStatus(500);
         }
-        
+        //визначаємо права доступу
         ControllersShared.getRights(req.query.login, function(err, rights){
             if (err) {
                 console.log('err: ',err);
@@ -743,11 +759,41 @@ exports.editPro2 = function(req, res){
                 }]);
                 console.log(tables);
                 console.log('rights cb: ', rights.insupdvisitors);
+                //якщо повний доступ
+                if([3,4,5].includes(rights.insupdvisitors)){
+                    //якщо запис є в visitors_edit
+                    if(tables.includes('visitors_edit')){
+                        console.log('запис є в visitors_edit');
+                    }
+                    //якщо запис є в visitors_create
+                    else if(tables.includes('visitors_create')){
+                        console.log('запис є в visitors_create');
+                    }
+                    //якщо запис тільки в visitors
+                    else {
+                        console.log('запис тільки в visitors');
+                    }
+                }
+                //якщо обмежений доступ
+                if([0,1,2].includes(rights.insupdvisitors)){
+                    //якщо запис є в visitors_edit
+                    if(tables.includes('visitors_edit')){
+                        console.log('запис є в visitors_edit');
+                    }
+                    //якщо запис є в visitors_create
+                    else if(tables.includes('visitors_create')){
+                        console.log('запис є в visitors_create');
+                    }
+                    //якщо запис тільки в visitors
+                    else {
+                        console.log('запис тільки в visitors');
+                    }
+                }
             }
         });
     });
 }
-//-------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------- 
 // пошук в трьох таблицях по емейлу або телефону
 
 // exports.getRowOnCond = function(req, res) {
