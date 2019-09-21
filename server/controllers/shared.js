@@ -35,5 +35,48 @@ exports.getRights = function(login, cb){
     })
 }
 
+//-------------------------------------------------------------------------------------------------------------
+// отримати таблиці в яких присутній заданий regnum (на виході отримуємо масив з імен таблиць)
+exports.getTablesOnRegnum = function(regnum, cb){
+	let table = [];
+    SQLvis.getRowOnCondFromTable(regnum, 'regnum', 'visitors', function(err, doc){
+        if (err) {
+			console.log(err);
+			return cb(err, table);
+        }
+        else {
+			console.log('data: ',doc);
+			if(doc[0]){
+				table.push('visitors');
+			}
+			SQLvis.getRowOnCondFromTable(regnum, 'regnum', 'visitors_create', function(err, doc){
+				if (err) {
+					console.log(err);
+					return cb(err, table);
+				}
+				else {
+					console.log('data: ',doc);
+					if(doc[0]){
+						table.push('visitors_create');
+					}
+					SQLvis.getRowOnCondFromTable(regnum, 'regnum', 'visitors_edit', function(err, doc){
+						if (err) {
+							console.log(err);
+							return cb(err, table);
+						}
+						else {
+							console.log('data: ',doc);
+							if(doc[0]){
+								table.push('visitors_edit');
+							}
+							
+							return cb(err, table);
+						}
+					})
+				}
+			})
+		}
+    })
+}
 
 

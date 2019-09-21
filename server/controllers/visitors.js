@@ -682,8 +682,8 @@ exports.getSpecCond = function(req, res) {
 // };
 
 //-------------------------------------------------------------------------------------------------------------
-// обмежити права на деякі таблиці для групи 3
-exports.delete = function(req, res) {
+// 
+let deleteIn = function(req, res) {
     ControllersShared.getRights(req.query.login, function(err, doc){
         if (err) {
             console.log('err: ',err);
@@ -698,18 +698,55 @@ exports.delete = function(req, res) {
                 }]);
             }
             else{
-                Visitors.delete(req.body.tableName, req.body.regnum, function(err, doc){
-                    if (err) {
-                        console.log(err);
-                        return res.sendStatus(500);
-                    }
-                    res.send(doc);
-                });
+                if(['visitors', 'exhibition_vis'].includes(req.body.tableName) && [3].includes(doc.insupdvisitors)){
+                    console.log('у вас немає прав доступу: ', doc.insupdvisitors);
+                    return res.send([{
+                        "rights": "false",
+                    }]); 
+                }
+                else{
+                    Visitors.delete(req.body.tableName, req.body.regnum, function(err, doc){
+                        if (err) {
+                            console.log(err);
+                            return res.sendStatus(500);
+                        }
+                        res.send(doc);
+                    });
+                }    
             }
         }
     })   
 };
 
+//-------------------------------------------------------------------------------------------------------------
+exports.delete = function(req, res){
+    deleteIn(req, res);
+}
+
+//-------------------------------------------------------------------------------------------------------------
+exports.editPro2 = function(req, res){
+    ControllersShared.getTablesOnRegnum(req.body.regnum, function (err, tables) {
+        if (err) {
+            console.log(err);
+            return res.sendStatus(500);
+        }
+        
+        ControllersShared.getRights(req.query.login, function(err, rights){
+            if (err) {
+                console.log('err: ',err);
+                return res.sendStatus(500);
+            }
+            else {
+                res.send([{
+                    "tables": tables,
+                    "rights": rights.insupdvisitors
+                }]);
+                console.log(tables);
+                console.log('rights cb: ', rights.insupdvisitors);
+            }
+        });
+    });
+}
 //-------------------------------------------------------------------------------------------------------------
 // пошук в трьох таблицях по емейлу або телефону
 

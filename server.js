@@ -109,6 +109,9 @@ app.post("/createInVisitorsCreate", urlencodedParser, visitorsController.createC
 //редагування запису / !!! незахищений роут використовується в формах реєстрації юзерів, потрібно зробити нові роути для юзерів, а ці захистити !!!
 app.post("/editPro", urlencodedParser, visitorsController.editPro)
 
+//редагування запису / !!! в розробці !!!
+app.post("/editPro2", urlencodedParser, visitorsController.editPro2)
+
 //отримання запису по електронній адресі або мобільному з 3 таблиць
 app.post("/get", cors(), urlencodedParser, visitorsController.getRowOnCond2);
 

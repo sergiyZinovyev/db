@@ -189,6 +189,8 @@ export class VisitorComponent implements OnInit {
       //редагуємо запис у відповідній таблиці
       // ... щось робимо ....
       //myRequest = "editPro";
+      myRequest = "editPro2";
+      //alert('func is complete');
     }
     let post = this.server.post(this.loginForm.value, myRequest).subscribe(data =>{
       console.log('this.loginForm.value: ',this.loginForm.value);
