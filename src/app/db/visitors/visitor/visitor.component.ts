@@ -198,12 +198,14 @@ export class VisitorComponent implements OnInit {
       
       if(data){
         if(data[0]){
-          console.log('такий мейл вже існує');
-          this.worningCheck = 'Такий емейл або мобільний телефон вже використовується! Внесіть будь ласка інший';
+          if(data[0].found){
+            console.log('такий мейл вже існує');
+            this.worningCheck = 'Такий емейл або мобільний телефон вже використовується! Внесіть будь ласка інший';
+          }
         }
         else{
           this.worningCheck = '';
-          //якщо зроблені необхідні зміни то видаляємо запис з таблиці-заявки
+          //якщо зроблені необхідні зміни то видаляємо запис з таблиці-заявки 
           if(this.tableName == 'Заявки на зміну' || this.tableName == 'Заявки на внесення') {this.delete()}
           else {this.getData.emit(this.getTableName())}
         }

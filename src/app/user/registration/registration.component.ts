@@ -317,8 +317,10 @@ export class RegistrationComponent implements OnInit, OnDestroy {
           if(data){
             this.isLoadingResults = false;
             if(data[0]){
-              console.log('такий мейл вже існує');
-              this.worningCheck = 'Такий емейл або мобільний телефон вже використовується! Внесіть будь ласка інший';
+              if(data[0].found){
+                console.log('такий мейл вже існує');
+                this.worningCheck = 'Такий емейл або мобільний телефон вже використовується! Внесіть будь ласка інший';
+              }
             }
             else{
               this.worningCheck = '';
