@@ -13,6 +13,7 @@ exports.all = function(req, res) {
 	});
 };
 
+//-------------------------------------------------------------------------------------------------------------
 exports.checkIdVisitor = function(req, res) {
     Visitors.getRowOnCondFromTable([req.query.id], 'regnum', 'visitors_create', function(err, doc){
         if (err) {
@@ -285,158 +286,171 @@ exports.file = function(req, res) {
 //створює новий запис/порівняти з наступним методом та обєднати методи /метод враховує чи були змінені емаіл та целфон/(отримує на вхід req та table)
 //метод едентичний до editPro, спробувати об'єднати
 let editRequestIn = function(req, table, cb) {
-    var visitorData = [
-        req.body.regnum,
-        req.body.email,
-        req.body.prizv,
-        req.body.city,
-        req.body.cellphone,
-        req.body.potvid,
-        req.body.name,
-        req.body.countryid,
-        req.body.regionid,
-        req.body.m_robotu,
-        req.body.pobatkovi,
-        req.body.posada,
-        req.body.sferadij,
-        Visitors.curentDate(req.body.datawnesenny),
-        99, // поправити
-        req.body.prizv+' '+req.body.name+' '+req.body.pobatkovi,
-        req.body.postindeks,
-        req.body.address,
-        req.body.postaddreses,
-        req.body.telephon,
-        req.body.gender,
-        req.body.type,
-        req.body.kompeten,
-        Visitors.curentDate(),
-        req.body.rating
-    ];
+    let reg_user;
+    ControllersShared.getRights(req.query.login, function(err, doc){
+        console.log('doc: ', doc);
+        if (err) {
+            console.log('err: ',err);
+            return res.sendStatus(500);
+        }
+        if(!doc){
+            reg_user = 99;
+        }
+        else reg_user = doc.id;
 
-    console.log('req.body.checkEmail: ',req.body.checkEmail);
-    console.log('req.body.checkPhone: ',req.body.checkPhone);
+        var visitorData = [
+            req.body.regnum,
+            req.body.email,
+            req.body.prizv,
+            req.body.city,
+            req.body.cellphone,
+            req.body.potvid,
+            req.body.name,
+            req.body.countryid,
+            req.body.regionid,
+            req.body.m_robotu,
+            req.body.pobatkovi,
+            req.body.posada,
+            req.body.sferadij,
+            Visitors.curentDate(req.body.datawnesenny),
+            reg_user,
+            req.body.prizv+' '+req.body.name+' '+req.body.pobatkovi,
+            req.body.postindeks,
+            req.body.address,
+            req.body.postaddreses,
+            req.body.telephon,
+            req.body.gender,
+            req.body.type,
+            req.body.kompeten,
+            Visitors.curentDate(),
+            req.body.rating
+        ];
 
-    if (req.body.checkEmail == false){
-        if(req.body.checkPhone == false){
-            //створюємо новий запис
-            console.log('start creating'); 
-            Visitors.create(visitorData, table, function(err4, doc4){
-                if (err4) {
-                    console.log('err4: ',err4);
+        console.log('req.body.checkEmail: ',req.body.checkEmail);
+        console.log('req.body.checkPhone: ',req.body.checkPhone);
+
+        if (req.body.checkEmail == false){
+            if(req.body.checkPhone == false){
+                //створюємо новий запис
+                console.log('start creating'); 
+                Visitors.create(visitorData, table, function(err4, doc4){
+                    if (err4) {
+                        console.log('err4: ',err4);
+                        return cb(err4, doc4);
+                    }
                     return cb(err4, doc4);
-                }
-                return cb(err4, doc4);
-            });
+                });
+            }
+            else{
+                //перевірка чи не зайнятий cellphone
+                var fild2 = 'cellphone';
+                var visitorData3 = [
+                    req.body[fild2],
+                    req.body[fild2],
+                    req.body[fild2]
+                ];
+                Visitors.getEmail(visitorData3, fild2, function(err4, doc4){
+                    if (err4) {
+                        console.log('err4: ',err4);
+                        return cb(err4, doc4);
+                    }
+                    console.log('check result on cellphone: ', doc4);
+                    if (doc4){
+                        if (doc4[0] == undefined || doc4[0].cellphone == ''){
+                            //створюємо новий запис в табл
+                            console.log('start creating'); 
+                            Visitors.create(visitorData, table, function(err3, doc3){
+                                if (err3) {
+                                    console.log(err3);
+                                    return cb(err3, doc3);
+                                }
+                                return cb(err3, doc3);
+                            });
+                        }
+                        else{
+                            console.log('phone found: ', doc4);
+                            return cb(err4, [{
+                                "found": "phone",
+                            }]);
+                        }
+                    }
+                }); 
+            }
         }
         else{
-            //перевірка чи не зайнятий cellphone
-            var fild2 = 'cellphone';
-            var visitorData3 = [
-                req.body[fild2],
-                req.body[fild2],
-                req.body[fild2]
+            //перевірка чи не зайнятий email
+            var fild = 'email';
+            var visitorData2 = [
+                req.body[fild],
+                req.body[fild],
+                req.body[fild]
             ];
-            Visitors.getEmail(visitorData3, fild2, function(err4, doc4){
-                if (err4) {
-                    console.log('err4: ',err4);
-                    return cb(err4, doc4);
+            Visitors.getEmail(visitorData2, fild, function(err2, doc2){
+                if (err2) {
+                    console.log(err2);
+                    return cb(err2, doc2);
                 }
-                console.log('check result on cellphone: ', doc4);
-                if (doc4){
-                    if (doc4[0] == undefined || doc4[0].cellphone == ''){
-                        //створюємо новий запис в табл
-                        console.log('start creating'); 
-                        Visitors.create(visitorData, table, function(err3, doc3){
-                            if (err3) {
-                                console.log(err3);
-                                return cb(err3, doc3);
-                            }
-                            return cb(err3, doc3);
-                        });
+                console.log('check result on email: ', doc2);
+                if (doc2){
+                    if (doc2[0] == undefined || doc2[0].email == ''){
+                        if(req.body.checkPhone == false){
+                            //створюємо новий запис в табл
+                            console.log('start creating'); 
+                            Visitors.create(visitorData, table, function(err4, doc4){
+                                if (err4) {
+                                    console.log(err4);
+                                    return cb(err4, doc4);
+                                }
+                                return cb(err4, doc4);
+                            });
+                        }
+                        else{
+                            //перевірка чи не зайнятий cellphone
+                            var fild2 = 'cellphone';
+                            var visitorData3 = [
+                                req.body[fild2],
+                                req.body[fild2],
+                                req.body[fild2]
+                            ];
+                            Visitors.getEmail(visitorData3, fild2, function(err4, doc4){
+                                if (err4) {
+                                    console.log(err4);
+                                    return cb(err4, doc4);
+                                }
+                                console.log('check result on cellphone: ', doc4);
+                                if (doc4){
+                                    if (doc4[0] == undefined || doc4[0].cellphone == ''){
+                                        //створюємо новий запис в табл
+                                        console.log('start creating'); 
+                                        Visitors.create(visitorData, table, function(err3, doc3){
+                                            if (err3) {
+                                                console.log(err3);
+                                                return cb(err3, doc3);
+                                            }
+                                            return cb(err3, doc3);
+                                        });
+                                    }
+                                    else{
+                                        console.log('phone found: ', doc4);
+                                        return cb(err4, [{
+                                            "found": "phone",
+                                        }]);
+                                    }
+                                }
+                            });
+                        }
+                        
                     }
                     else{
-                        console.log('phone found: ', doc4);
-                        return cb(err4, [{
-                            "found": "phone",
+                        console.log('email found: ', doc2);
+                        return cb(err2, [{
+                            "found": "email",
                         }]);
                     }
                 }
-            }); 
+            });
         }
-    }
-    else{
-        //перевірка чи не зайнятий email
-        var fild = 'email';
-        var visitorData2 = [
-            req.body[fild],
-            req.body[fild],
-            req.body[fild]
-        ];
-        Visitors.getEmail(visitorData2, fild, function(err2, doc2){
-            if (err2) {
-                console.log(err2);
-                return cb(err2, doc2);
-            }
-            console.log('check result on email: ', doc2);
-            if (doc2){
-                if (doc2[0] == undefined || doc2[0].email == ''){
-                    if(req.body.checkPhone == false){
-                        //створюємо новий запис в табл
-                        console.log('start creating'); 
-                        Visitors.create(visitorData, table, function(err4, doc4){
-                            if (err4) {
-                                console.log(err4);
-                                return cb(err4, doc4);
-                            }
-                            return cb(err4, doc4);
-                        });
-                    }
-                    else{
-                        //перевірка чи не зайнятий cellphone
-                        var fild2 = 'cellphone';
-                        var visitorData3 = [
-                            req.body[fild2],
-                            req.body[fild2],
-                            req.body[fild2]
-                        ];
-                        Visitors.getEmail(visitorData3, fild2, function(err4, doc4){
-                            if (err4) {
-                                console.log(err4);
-                                return cb(err4, doc4);
-                            }
-                            console.log('check result on cellphone: ', doc4);
-                            if (doc4){
-                                if (doc4[0] == undefined || doc4[0].cellphone == ''){
-                                    //створюємо новий запис в табл
-                                    console.log('start creating'); 
-                                    Visitors.create(visitorData, table, function(err3, doc3){
-                                        if (err3) {
-                                            console.log(err3);
-                                            return cb(err3, doc3);
-                                        }
-                                        return cb(err3, doc3);
-                                    });
-                                }
-                                else{
-                                    console.log('phone found: ', doc4);
-                                    return cb(err4, [{
-                                        "found": "phone",
-                                    }]);
-                                }
-                            }
-                        });
-                    }
-                    
-                }
-                else{
-                    console.log('email found: ', doc2);
-                    return cb(err2, [{
-                        "found": "email",
-                    }]);
-                }
-            }
-        });
-    } 
+    }) 
 };
 //-------------------------------------------------------------------------------------------------------------
 //створити новий запис в таблиці visitors/visitors_edit (regnum відомий)
@@ -546,103 +560,117 @@ exports.editRequest = function(req, res) {
 //     });
 // };
 
-//потрібен виключно для створення запису в таблиці visitors_create
+//потрібен  створення запису в таблиці visitors_create, visitors /присвоюється новий regnum
 let createCpecTableIn = function(req, table, cb) {
-    //отримуємо всі regnum  з таблиць visitors та visitors_create 
-    Visitors.regnVisAndReq(function(err, doc){
+    
+    let reg_user;
+    ControllersShared.getRights(req.query.login, function(err, doc){
+        console.log('doc: ', doc);
         if (err) {
-			console.log(err);
-			return res.sendStatus(500);
+            console.log('err: ',err);
+            return res.sendStatus(500);
         }
-        var visitorData = [
-            Visitors.nextRegnum(doc), //визначаємо наступний після найбільшого regnum
-            req.body.email,
-            req.body.prizv,
-            req.body.city,
-            req.body.cellphone,
-            req.body.potvid,
-            req.body.name,
-            req.body.countryid,
-            req.body.regionid,
-            req.body.m_robotu,
-            req.body.pobatkovi,
-            req.body.posada,
-            req.body.sferadij,
-            Visitors.curentDate(),
-            99, //поправити
-            req.body.prizv+' '+req.body.name+' '+req.body.pobatkovi,
-            req.body.postindeks,
-            req.body.address,
-            req.body.postaddreses,
-            req.body.telephon,
-            req.body.gender,
-            req.body.type,
-            req.body.kompeten,
-            Visitors.curentDate(),
-            req.body.rating
-        ];
-
-        //перевірка на email
-        if (req.body.email == ''){
-
+        if(!doc){
+            reg_user = 99;
         }
-        var fild = 'email';
-        var visitorData2 = [
-            req.body[fild],
-            req.body[fild],
-            req.body[fild]
-        ];
-        Visitors.getEmail(visitorData2, fild, function(err2, doc2){
-            if (err2) {
-                console.log('err2: ',err2);
-                return cb(err2, doc2);
+        else reg_user = doc.id;
+
+        //отримуємо всі regnum  з таблиць visitors та visitors_create
+        Visitors.regnVisAndReq(function(err, doc){
+            if (err) {
+                console.log(err);
+                return res.sendStatus(500);
             }
-            console.log('check result on email: ', doc2);
-            if (doc2){
-                if (doc2[0] == undefined || doc2[0].email == ''){
-                    //перевірка на cellphone
-                    var fild2 = 'cellphone';
-                    var visitorData3 = [
-                        req.body[fild2],
-                        req.body[fild2],
-                        req.body[fild2]
-                    ];
-                    Visitors.getEmail(visitorData3, fild2, function(err4, doc4){
-                        if (err4) {
-                            console.log('err4: ',err4);
-                            return cb(err4, doc4);
-                        }
-                        console.log('check result on cellphone: ', doc4);
-                        if (doc4){
-                            if (doc4[0] == undefined || doc4[0].cellphone == ''){
-                                 //створюємо новий запис в табл.
-                                console.log('start creating'); 
-                                Visitors.create(visitorData, table, function(err3, doc3){
-                                    if (err3) {
-                                        console.log(err3);
+            var visitorData = [
+                Visitors.nextRegnum(doc), //визначаємо наступний після найбільшого regnum
+                req.body.email,
+                req.body.prizv,
+                req.body.city,
+                req.body.cellphone,
+                req.body.potvid,
+                req.body.name,
+                req.body.countryid,
+                req.body.regionid,
+                req.body.m_robotu,
+                req.body.pobatkovi,
+                req.body.posada,
+                req.body.sferadij,
+                Visitors.curentDate(),
+                reg_user,
+                req.body.prizv+' '+req.body.name+' '+req.body.pobatkovi,
+                req.body.postindeks,
+                req.body.address,
+                req.body.postaddreses,
+                req.body.telephon,
+                req.body.gender,
+                req.body.type,
+                req.body.kompeten,
+                Visitors.curentDate(),
+                req.body.rating
+            ];
+
+            //перевірка на email
+            if (req.body.email == ''){
+
+            }
+            var fild = 'email';
+            var visitorData2 = [
+                req.body[fild],
+                req.body[fild],
+                req.body[fild]
+            ];
+            Visitors.getEmail(visitorData2, fild, function(err2, doc2){
+                if (err2) {
+                    console.log('err2: ',err2);
+                    return cb(err2, doc2);
+                }
+                console.log('check result on email: ', doc2);
+                if (doc2){
+                    if (doc2[0] == undefined || doc2[0].email == ''){
+                        //перевірка на cellphone
+                        var fild2 = 'cellphone';
+                        var visitorData3 = [
+                            req.body[fild2],
+                            req.body[fild2],
+                            req.body[fild2]
+                        ];
+                        Visitors.getEmail(visitorData3, fild2, function(err4, doc4){
+                            if (err4) {
+                                console.log('err4: ',err4);
+                                return cb(err4, doc4);
+                            }
+                            console.log('check result on cellphone: ', doc4);
+                            if (doc4){
+                                if (doc4[0] == undefined || doc4[0].cellphone == ''){
+                                    //створюємо новий запис в табл.
+                                    console.log('start creating'); 
+                                    Visitors.create(visitorData, table, function(err3, doc3){
+                                        if (err3) {
+                                            console.log(err3);
+                                            return cb(err3, doc3);
+                                        }
                                         return cb(err3, doc3);
-                                    }
-                                    return cb(err3, doc3);
-                                });
+                                    });
+                                }
+                                else{
+                                    console.log('phone found: ', doc4);
+                                    return cb(err4, [{
+                                        "found": "phone",
+                                    }]);
+                                }
                             }
-                            else{
-                                console.log('phone found: ', doc4);
-                                return cb(err4, [{
-                                    "found": "phone",
-                                }]);
-                            }
-                        }
-                    });
+                        });
+                    }
+                    else{
+                        console.log('email found: ', doc2);
+                        return cb(err2, [{
+                            "found": "email",
+                        }]);
+                    }
                 }
-                else{
-                    console.log('email found: ', doc2);
-                    return cb(err2, [{
-                        "found": "email",
-                    }]);
-                }
-            }
+            });
         });
-    });
+    })
 };
 
 //-------------------------------------------------------------------------------------------------------------
@@ -895,154 +923,167 @@ exports.createNewVis = function(req, res) {
 //Редагування запису
 //   !!! винести в окремий файл !!!
 let editProIn = function(req, table, cb) {
-    var visitorData = [
-        req.body.email,
-        req.body.prizv,
-        req.body.city,
-        req.body.cellphone,
-        req.body.potvid,
-        req.body.name,
-        req.body.countryid,
-        req.body.regionid,
-        req.body.m_robotu,
-        req.body.pobatkovi,
-        req.body.posada,
-        req.body.sferadij,
-        Visitors.curentDate(req.body.datawnesenny),
-        99, // !!! поправити на людину яка внесла
-        req.body.prizv+' '+req.body.name+' '+req.body.pobatkovi,
-        req.body.postindeks,
-        req.body.address,
-        req.body.postaddreses,
-        req.body.telephon,
-        req.body.gender,
-        req.body.type,
-        req.body.kompeten,
-        Visitors.curentDate(),
-        req.body.rating,
-        req.body.regnum
-    ];
-    if (req.body.checkEmail == false){//якщо поле не змінювалося то пропускаємо перевірку на співпадіння
-        if(req.body.checkPhone == false){
-            //створюємо новий запис
-            console.log('start creating'); 
-            Visitors.editPro(visitorData, table, function(err4, doc4){
-                if (err4) {
-                    console.log('err4: ',err4);
+    let reg_user;
+    ControllersShared.getRights(req.query.login, function(err, doc){
+        console.log('doc: ', doc);
+        if (err) {
+            console.log('err: ',err);
+            return res.sendStatus(500);
+        }
+        if(!doc){
+            reg_user = 99;
+        }
+        else reg_user = doc.id;
+
+        var visitorData = [
+            req.body.email,
+            req.body.prizv,
+            req.body.city,
+            req.body.cellphone,
+            req.body.potvid,
+            req.body.name,
+            req.body.countryid,
+            req.body.regionid,
+            req.body.m_robotu,
+            req.body.pobatkovi,
+            req.body.posada,
+            req.body.sferadij,
+            Visitors.curentDate(req.body.datawnesenny),
+            reg_user,
+            req.body.prizv+' '+req.body.name+' '+req.body.pobatkovi,
+            req.body.postindeks,
+            req.body.address,
+            req.body.postaddreses,
+            req.body.telephon,
+            req.body.gender,
+            req.body.type,
+            req.body.kompeten,
+            Visitors.curentDate(),
+            req.body.rating,
+            req.body.regnum
+        ];
+        if (req.body.checkEmail == false){//якщо поле не змінювалося то пропускаємо перевірку на співпадіння
+            if(req.body.checkPhone == false){
+                //створюємо новий запис
+                console.log('start creating'); 
+                Visitors.editPro(visitorData, table, function(err4, doc4){
+                    if (err4) {
+                        console.log('err4: ',err4);
+                        return cb(err4, doc4);
+                    }
                     return cb(err4, doc4);
-                }
-                return cb(err4, doc4);
-            });
+                });
+            }
+            else{
+                //перевірка чи не зайнятий cellphone
+                var fild2 = 'cellphone';
+                var visitorData3 = [
+                    req.body[fild2],
+                    req.body[fild2],
+                    req.body[fild2]
+                ];
+                Visitors.getEmail(visitorData3, fild2, function(err4, doc4){
+                    if (err4) {
+                        console.log(err4);
+                        return cb(err4, doc4);
+                    }
+                    console.log('check result on cellphone: ', doc4);
+                    if (doc4){
+                        if (doc4[0] == undefined || doc4[0].cellphone == ''){
+                            //створюємо новий запис в табл
+                            console.log('start creating'); 
+                            Visitors.editPro(visitorData, table, function(err3, doc3){
+                                if (err3) {
+                                    console.log(err3);
+                                    return cb(err3, doc3);
+                                }
+                                return cb(err3, doc3);
+                            });
+                        }
+                        else{
+                            console.log('phone found: ', doc4);
+                            return cb(err4, [{
+                                "found": "phone",
+                            }]);
+                        }
+                    }
+                }); 
+            }
         }
         else{
-            //перевірка чи не зайнятий cellphone
-            var fild2 = 'cellphone';
-            var visitorData3 = [
-                req.body[fild2],
-                req.body[fild2],
-                req.body[fild2]
+            //перевірка чи не зайнятий email
+            var fild = 'email';
+            var visitorData2 = [
+                req.body[fild],
+                req.body[fild],
+                req.body[fild]
             ];
-            Visitors.getEmail(visitorData3, fild2, function(err4, doc4){
-                if (err4) {
-                    console.log(err4);
-                    return cb(err4, doc4);
+            Visitors.getEmail(visitorData2, fild, function(err2, doc2){
+                if (err2) {
+                    console.log(err2);
+                    return cb(err2, doc2);
                 }
-                console.log('check result on cellphone: ', doc4);
-                if (doc4){
-                    if (doc4[0] == undefined || doc4[0].cellphone == ''){
-                        //створюємо новий запис в табл
-                        console.log('start creating'); 
-                        Visitors.editPro(visitorData, table, function(err3, doc3){
-                            if (err3) {
-                                console.log(err3);
-                                return cb(err3, doc3);
-                            }
-                            return cb(err3, doc3);
-                        });
+                console.log('check result on email: ', doc2);
+                if (doc2){
+                    if (doc2[0] == undefined || doc2[0].email == ''){
+                        if(req.body.checkPhone == false){
+                            //створюємо новий запис в табл
+                            console.log('start creating'); 
+                            Visitors.editPro(visitorData, table, function(err4, doc4){
+                                if (err4) {
+                                    console.log(err4);
+                                    return cb(err4, doc4);
+                                }
+                                return cb(err4, doc4);
+                            });
+                        }
+                        else{
+                            //перевірка чи не зайнятий cellphone
+                            var fild2 = 'cellphone';
+                            var visitorData3 = [
+                                req.body[fild2],
+                                req.body[fild2],
+                                req.body[fild2]
+                            ];
+                            Visitors.getEmail(visitorData3, fild2, function(err4, doc4){
+                                if (err4) {
+                                    console.log(err4);
+                                    return cb(err4, doc4);
+                                }
+                                console.log('check result on cellphone: ', doc4);
+                                if (doc4){
+                                    if (doc4[0] == undefined || doc4[0].cellphone == ''){
+                                        //створюємо новий запис в табл
+                                        console.log('start creating'); 
+                                        Visitors.editPro(visitorData, table, function(err3, doc3){
+                                            if (err3) {
+                                                console.log(err3);
+                                                return cb(err3, doc3);
+                                            }
+                                            return cb(err3, doc3);
+                                        });
+                                    }
+                                    else{
+                                        console.log('phone found: ', doc4);
+                                        return cb(err4, [{
+                                            "found": "phone",
+                                        }]);
+                                    }
+                                }
+                            });
+                        }
+                        
                     }
                     else{
-                        console.log('phone found: ', doc4);
-                        return cb(err4, [{
-                            "found": "phone",
+                        console.log('email found: ', doc2);
+                        return cb(err2, [{
+                            "found": "email",
                         }]);
                     }
                 }
-            }); 
+            });
         }
-    }
-    else{
-        //перевірка чи не зайнятий email
-        var fild = 'email';
-        var visitorData2 = [
-            req.body[fild],
-            req.body[fild],
-            req.body[fild]
-        ];
-        Visitors.getEmail(visitorData2, fild, function(err2, doc2){
-            if (err2) {
-                console.log(err2);
-                return cb(err2, doc2);
-            }
-            console.log('check result on email: ', doc2);
-            if (doc2){
-                if (doc2[0] == undefined || doc2[0].email == ''){
-                    if(req.body.checkPhone == false){
-                        //створюємо новий запис в табл
-                        console.log('start creating'); 
-                        Visitors.editPro(visitorData, table, function(err4, doc4){
-                            if (err4) {
-                                console.log(err4);
-                                return cb(err4, doc4);
-                            }
-                            return cb(err4, doc4);
-                        });
-                    }
-                    else{
-                        //перевірка чи не зайнятий cellphone
-                        var fild2 = 'cellphone';
-                        var visitorData3 = [
-                            req.body[fild2],
-                            req.body[fild2],
-                            req.body[fild2]
-                        ];
-                        Visitors.getEmail(visitorData3, fild2, function(err4, doc4){
-                            if (err4) {
-                                console.log(err4);
-                                return cb(err4, doc4);
-                            }
-                            console.log('check result on cellphone: ', doc4);
-                            if (doc4){
-                                if (doc4[0] == undefined || doc4[0].cellphone == ''){
-                                    //створюємо новий запис в табл
-                                    console.log('start creating'); 
-                                    Visitors.editPro(visitorData, table, function(err3, doc3){
-                                        if (err3) {
-                                            console.log(err3);
-                                            return cb(err3, doc3);
-                                        }
-                                        return cb(err3, doc3);
-                                    });
-                                }
-                                else{
-                                    console.log('phone found: ', doc4);
-                                    return cb(err4, [{
-                                        "found": "phone",
-                                    }]);
-                                }
-                            }
-                        });
-                    }
-                    
-                }
-                else{
-                    console.log('email found: ', doc2);
-                    return cb(err2, [{
-                        "found": "email",
-                    }]);
-                }
-            }
-        });
-    }   
+    })   
 };
 
 //-------------------------------------------------------------------------------------------------------------
