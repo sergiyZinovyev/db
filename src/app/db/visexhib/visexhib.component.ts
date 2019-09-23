@@ -27,11 +27,14 @@ export class VisexhibComponent implements OnInit, OnDestroy {
   
   typeOfReg: string = 'Повна';
   types: string[] = ['Повна', 'Часткова', 'Вільна'];
+  disabled: boolean = false;
+  
 
   exhib_id = this.server.exhib.id;
   i=10000;
   name: string = "Відвідали";
   headerColor = 'rgb(45, 128, 253)';
+  disabledColor = 'rgb(150, 150, 150)';
   nameBut: string = "Зареєстровані відвідувачі";
 
   arrOfCheckId = [];
@@ -77,10 +80,17 @@ export class VisexhibComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.getDisabled();
+    console.log('test: ', this.disabled);
     console.log('this.server.exhib.id: ',this.server.exhib.id);
     this.dataSource.paginator = this.paginator;
     this.getBd(this.server.exhib.id, 1);
     this.dataSource.sort = this.sort;
+  }
+
+  getDisabled() {
+    if([4, 5].includes(Number(localStorage.getItem('access rights')))) return this.disabled = false;
+    else return this.disabled = true;
   }
 
   translate(word){

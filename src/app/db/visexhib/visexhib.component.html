@@ -14,17 +14,23 @@
                     </button>
                 </form>
                 <mat-divider [vertical]="true"></mat-divider>
-                <button mat-icon-button matTooltip="Видалити обрані записи" aria-label="Example icon-button with a heart icon" [style.color]="headerColor" (click)='delVis()'>
+                <button 
+                    mat-icon-button 
+                    matTooltip="Видалити обрані записи" 
+                    aria-label="Example icon-button with a heart icon" 
+                    [style.color]="disabled ? disabledColor : headerColor" 
+                    (click)='delVis()'
+                    [disabled]='disabled'>
                     <mat-icon>delete</mat-icon>
                 </button>
                 <mat-divider [vertical]="true"></mat-divider>
                 <button 
                     mat-icon-button 
-                    [style.color]="headerColor" 
+                    [style.color]="disabled ? disabledColor : headerColor" 
                     matTooltip="Змінити тип реєстрації відвідувачів" 
                     aria-label="Example icon-button with a heart icon" 
                     [matMenuTriggerFor]="menu3"
-                    (click)='setTypeOfReg()'>
+                    [disabled]='disabled'>
                     <mat-icon>settings</mat-icon>
                 </button>
                     <mat-menu #menu3="matMenu" xPosition="after" yPosition="below">
