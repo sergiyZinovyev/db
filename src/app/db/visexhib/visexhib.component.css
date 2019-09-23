@@ -124,3 +124,10 @@ td.mat-cell {
  .name-exhib{
   color: dimgrey;
  }
+
+ .example-radio-group {
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+  font-size: 12px;
+}

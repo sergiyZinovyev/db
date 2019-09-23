@@ -265,8 +265,10 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       if(data){
         this.isLoadingResults = false;
         if(data[0]){
-          console.log('такий мейл вже існує');
-          this.worningCheck = 'Такий емейл або мобільний телефон вже використовується! Внесіть будьласка інший';
+          if(data[0].found){
+            console.log('такий мейл вже існує');
+            this.worningCheck = 'Такий емейл або мобільний телефон вже використовується! Внесіть будь ласка інший';
+          }
         }
         else{
           this.worningCheck = '';
@@ -309,8 +311,8 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         }
         else{this.loginForm.patchValue({checkPhone: false})}
 
-        if(!this.myRequest){return console.log('Err: myRequest is undefined')};
-        let post = this.server.post(this.loginForm.value, this.myRequest).subscribe(data =>{
+        //if(!this.myRequest){return console.log('Err: myRequest is undefined')};
+        let post = this.server.post(this.loginForm.value, "editPro2").subscribe(data =>{
           console.log('this.loginForm.value: ',this.loginForm.value);
           console.log("dataServer: ", data);
           

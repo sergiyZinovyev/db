@@ -25,6 +25,9 @@ import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms'
 
 export class VisexhibComponent implements OnInit, OnDestroy { 
   
+  typeOfReg: string = 'Повна';
+  types: string[] = ['Повна', 'Часткова', 'Вільна'];
+
   exhib_id = this.server.exhib.id;
   i=10000;
   name: string = "Відвідали";
@@ -416,6 +419,11 @@ export class VisexhibComponent implements OnInit, OnDestroy {
     }
     else return
   }
+
+  setTypeOfReg(){
+    return alert("Ви не маєте права змінювати тип реєстрації");
+  }
+    
 
   ngOnDestroy(){}
 }

@@ -175,24 +175,24 @@ export class VisitorComponent implements OnInit {
       this.loginForm.patchValue({checkPhone: true})
     } else{this.loginForm.patchValue({checkPhone: false})}
 
-    //if(!this.myRequest){return console.log('Err: myRequest is undefined')};
-    let myRequest: string;
-    if(this.tableName == 'Заявки на внесення'){
-      //створюємо новий запис в visitors на основі заявки з visitors_create
-      myRequest = "createInVisitorsEdit"
-    } 
-    if(this.tableName == 'Заявки на зміну' || this.tableName == 'База відвідувачів') {
-      //редагуємо запис у відповідній таблиці
-      myRequest = "editPro";
-    }
-    if(this.tableName == 'Відвідали') {
-      //редагуємо запис у відповідній таблиці
-      // ... щось робимо ....
-      //myRequest = "editPro";
-      myRequest = "editPro2";
-      //alert('func is complete');
-    }
-    let post = this.server.post(this.loginForm.value, myRequest).subscribe(data =>{
+    // //if(!this.myRequest){return console.log('Err: myRequest is undefined')};
+    // let myRequest: string;
+    // if(this.tableName == 'Заявки на внесення'){
+    //   //створюємо новий запис в visitors на основі заявки з visitors_create
+    //   myRequest = "createInVisitorsEdit"
+    // } 
+    // if(this.tableName == 'Заявки на зміну' || this.tableName == 'База відвідувачів') {
+    //   //редагуємо запис у відповідній таблиці
+    //   myRequest = "editPro";
+    // }
+    // if(this.tableName == 'Відвідали') {
+    //   //редагуємо запис у відповідній таблиці
+    //   // ... щось робимо ....
+    //   //myRequest = "editPro";
+    //   myRequest = "editPro2";
+    //   //alert('func is complete');
+    // }
+    let post = this.server.post(this.loginForm.value, "editPro2").subscribe(data =>{
       console.log('this.loginForm.value: ',this.loginForm.value);
       console.log("dataServer: ", data);
       
@@ -206,8 +206,8 @@ export class VisitorComponent implements OnInit {
         else{
           this.worningCheck = '';
           //якщо зроблені необхідні зміни то видаляємо запис з таблиці-заявки 
-          if(this.tableName == 'Заявки на зміну' || this.tableName == 'Заявки на внесення') {this.delete()}
-          else {this.getData.emit(this.getTableName())}
+         // if(this.tableName == 'Заявки на зміну' || this.tableName == 'Заявки на внесення') {this.delete()}
+          this.getData.emit(this.getTableName())
         }
         console.log("unsubscribe");
         return post.unsubscribe();

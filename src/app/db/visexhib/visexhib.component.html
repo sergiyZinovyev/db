@@ -9,17 +9,37 @@
             <ng-container *ngIf='name == "Відвідали"')>
                 <form [formGroup]="visitorsIds" (ngSubmit)="addId()" class="d-flex align-items-center mx-1">
                     <input type="text" class="my-form" formControlName="id_visitor" autofocus>
-                    <button mat-icon-button aria-label="Example icon-button with a heart icon" class="but-color">
+                    <button mat-icon-button matTooltip="Додати відвідувача" aria-label="Example icon-button with a heart icon" class="but-color">
                         <mat-icon>add_circle_outline</mat-icon>
                     </button>
                 </form>
                 <mat-divider [vertical]="true"></mat-divider>
-                <button mat-icon-button aria-label="Example icon-button with a heart icon" [style.color]="headerColor" (click)='delVis()'>
+                <button mat-icon-button matTooltip="Видалити обрані записи" aria-label="Example icon-button with a heart icon" [style.color]="headerColor" (click)='delVis()'>
                     <mat-icon>delete</mat-icon>
                 </button>
                 <mat-divider [vertical]="true"></mat-divider>
+                <button 
+                    mat-icon-button 
+                    [style.color]="headerColor" 
+                    matTooltip="Змінити тип реєстрації відвідувачів" 
+                    aria-label="Example icon-button with a heart icon" 
+                    [matMenuTriggerFor]="menu3"
+                    (click)='setTypeOfReg()'>
+                    <mat-icon>settings</mat-icon>
+                </button>
+                    <mat-menu #menu3="matMenu" xPosition="after" yPosition="below">
+                        <mat-radio-group
+                            aria-labelledby="example-radio-group-label"
+                            class="example-radio-group"
+                            [(ngModel)]="typeOfReg">
+                            <mat-radio-button class="example-radio-button" *ngFor="let type of types" [value]="type">
+                                {{type}}
+                            </mat-radio-button>
+                        </mat-radio-group>
+                    </mat-menu>
+                <mat-divider [vertical]="true"></mat-divider>
             </ng-container>
-            <button mat-icon-button [style.color]="headerColor" aria-label="Example icon-button with a heart icon" [matMenuTriggerFor]="menu">
+            <button mat-icon-button [style.color]="headerColor" matTooltip="Додати поля" aria-label="Example icon-button with a heart icon" [matMenuTriggerFor]="menu">
                 <mat-icon>add_box</mat-icon>
             </button>
                 <mat-menu #menu="matMenu" xPosition="after" yPosition="below">
@@ -27,7 +47,7 @@
                         <button mat-menu-item (click)='addColumn(item)'>{{translate(item)}}</button>
                     </ng-container>
                 </mat-menu>
-            <button mat-icon-button [style.color]="headerColor" aria-label="Example icon-button with a heart icon" [matMenuTriggerFor]="menu2">
+            <button mat-icon-button [style.color]="headerColor" matTooltip="Видалити поля" aria-label="Example icon-button with a heart icon" [matMenuTriggerFor]="menu2">
                 <mat-icon>indeterminate_check_box</mat-icon>
             </button>
                 <mat-menu #menu2="matMenu" xPosition="after" yPosition="below">
@@ -36,7 +56,7 @@
                     </ng-container>
                 </mat-menu>
                 
-            <button mat-icon-button [style.color]="headerColor" aria-label="Example icon-button with a heart icon" [matMenuTriggerFor]="menu3">
+            <button mat-icon-button [style.color]="headerColor" matTooltip="Обрати інші таблиці" aria-label="Example icon-button with a heart icon" [matMenuTriggerFor]="menu3">
                 <mat-icon>date_range</mat-icon>
             </button>
                 <mat-menu #menu3="matMenu" xPosition="after" yPosition="below">
