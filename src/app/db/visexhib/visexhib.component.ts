@@ -80,6 +80,7 @@ export class VisexhibComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    //let getType = this.server.getAll("getAll", this.server.exhib.id, 'typeOfReg', 'exhibitions').subscribe();
     this.getDisabled();
     console.log('test: ', this.disabled);
     console.log('this.server.exhib.id: ',this.server.exhib.id);
@@ -430,8 +431,19 @@ export class VisexhibComponent implements OnInit, OnDestroy {
     else return
   }
 
-  setTypeOfReg(){
-    return alert("Ви не маєте права змінювати тип реєстрації");
+  setTypeOfReg(value){
+    console.log("function setTypeOfReg() is work");
+    this.typeOfReg = value;
+    let data = {
+      typeOfReg: value,
+      id_exhibition: this.server.exhib.id
+    }
+    let post = this.server.post(data, "editExhibition_typeOfReg").subscribe(data =>{
+      console.log("data: ", data);
+      console.log(this.typeOfReg);
+      console.log("unsubscribe");
+      return post.unsubscribe();  
+    }); 
   }
     
 

@@ -187,3 +187,38 @@ exports.editExhibition_vis_visited_cancel = function(req, res) {
         }
     })   
 };
+
+//-------------------------------------------------------------------------------------------------------------  
+//редагування запису тип реєстрації у таблиці Exhibition(в req має прийти значення типу та id виставки)
+
+exports.editExhibition_typeOfReg = function(req, res) {
+    ControllersShared.getRights(req.query.login, function(err, doc){
+        if (err) {
+            console.log('err: ',err);
+            return res.sendStatus(500);
+        }
+        else {
+            console.log('rights cb: ', doc.insupdvisitors);
+            if(![4,5].includes(doc.insupdvisitors)){  
+                console.log('у вас немає прав доступу: ', doc.insupdvisitors);
+                return res.send([{
+                    "rights": "false",
+                }]);
+            }
+            else{
+                let reqdata = [
+                    req.body.typeOfReg,
+                    req.body.id_exhibition
+                ];
+                
+                SQL.editExhibition_typeOfReg(reqdata, function(err, doc2){
+                    if (err) {
+                        console.log(err);
+                        return res.sendStatus(500);
+                    }
+                    res.send(doc2);
+                });
+            }
+        }
+    })   
+};

@@ -162,3 +162,11 @@ exports.editExhibition_vis_visited_cancel = function(id_exhibition, id_visitor, 
     cb(err, data)
   })
 }
+
+//редагування запису тип реєстрації у таблиці Exhibition(в reqdata має прийти значення типу та id виставки)
+exports.editExhibition_typeOfReg = function(reqdata,  cb){
+  let sql = `UPDATE exhibitions SET typeOfReg=? WHERE numexhib=?`;
+  db.get().query(sql, reqdata, function(err, data) {
+    cb(err, data)
+  })
+}

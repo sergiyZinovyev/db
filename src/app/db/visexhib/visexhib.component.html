@@ -37,8 +37,13 @@
                         <mat-radio-group
                             aria-labelledby="example-radio-group-label"
                             class="example-radio-group"
-                            [(ngModel)]="typeOfReg">
-                            <mat-radio-button class="example-radio-button" *ngFor="let type of types" [value]="type">
+                            [(ngModel)]="typeOfReg"
+                            >
+                            <mat-radio-button 
+                                class="example-radio-button" 
+                                *ngFor="let type of types" 
+                                [value]="type"
+                                (click) = 'setTypeOfReg(type)'>
                                 {{type}}
                             </mat-radio-button>
                         </mat-radio-group>

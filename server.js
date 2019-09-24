@@ -76,6 +76,9 @@ app.post("/editExhibition_vis", authController.checkAuth, urlencodedParser, visi
 //редагування запису відвідування виставки у таблиці Exhibition_vis відміна відвідування
 app.post("/editExhibition_vis_visited_cancel", authController.checkAuth, urlencodedParser, visitorsExhibController.editExhibition_vis_visited_cancel);
 
+//редагування запису тип реєстрації у таблиці Exhibition(в req.body має прийти значення типу та id виставки)
+app.post("/editExhibition_typeOfReg", authController.checkAuth, urlencodedParser, visitorsExhibController.editExhibition_typeOfReg);
+
 //----------------------------------------
 
 
@@ -133,7 +136,7 @@ app.get("/checkViv", visitorsExhibController.checkViv);
 //----------------------------------------
 
 
-//отримати запис з вказаної виставки по вказаному полю
+//отримати запис з вказаної таблиці по вказаному полю
 app.get("/getAll", sharedController.getAll);
 
 
