@@ -80,11 +80,16 @@ export class VisexhibComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    //let getType = this.server.getAll("getAll", this.server.exhib.id, 'typeOfReg', 'exhibitions').subscribe();
+    // отримуємо з бази значення типу реєстрації
+    let getType = this.server.getAll("getAll", this.server.exhib.id, 'numexhib', 'exhibitions').subscribe(data=>{
+      console.log('typeOfReg: ', data);
+      this.typeOfReg = data[0].typeOfReg;
+      getType.unsubscribe();
+    });
+    // визначвємо неактивні кнопки в залежності від прав доступу
     this.getDisabled();
-    console.log('test: ', this.disabled);
-    console.log('this.server.exhib.id: ',this.server.exhib.id);
     this.dataSource.paginator = this.paginator;
+    // отримуємо список зареєстрованих відвідувачів
     this.getBd(this.server.exhib.id, 1);
     this.dataSource.sort = this.sort;
   }
@@ -304,6 +309,16 @@ export class VisexhibComponent implements OnInit, OnDestroy {
     }
   }
 
+  addVisitor(value, method){
+    //додати нового відвідувача
+    let post = this.server.post(value, method).subscribe(data =>{ 
+      console.log("data: ", data); 
+      this.visitorsIds.patchValue({id_visitor: ''});
+      //this.visitorsIds.patchValue({visited: '1'});
+      this.butGetVis();
+      post.unsubscribe();
+    })
+  }
 
   addId(){
     if(this.visitorsIds.valid){
@@ -320,12 +335,13 @@ export class VisexhibComponent implements OnInit, OnDestroy {
           this.dbvisex.checkId(this.visitorsIds.get('id_visitor').value, cb2=>{
             console.log('cb2: ', cb2);
             if(cb2[0]){ //якщо є то відразу заносимо його з бази
-              this.server.post(this.visitorsIds.value, 'createInExhibition_vis').subscribe(data =>{ 
-                console.log("data: ", data); 
-                this.visitorsIds.patchValue({id_visitor: ''});
-                this.butGetVis();
-                //this.getBd(this.server.exhib.id);
-              })
+              this.addVisitor(this.visitorsIds.value, 'createInExhibition_vis');
+              // this.server.post(this.visitorsIds.value, 'createInExhibition_vis').subscribe(data =>{ 
+              //   console.log("data: ", data); 
+              //   this.visitorsIds.patchValue({id_visitor: ''});
+              //   this.butGetVis();
+              //   //this.getBd(this.server.exhib.id);
+              // })
             }
             else{ //якщо нема 
               alert('потрібно зареєструватися');
@@ -343,18 +359,19 @@ export class VisexhibComponent implements OnInit, OnDestroy {
           });
         }
         else { //якщо є то редагуємо запис (додаємо відмітку visited та час)
-          this.visitorsIds.patchValue({visited: cb[0].visited + 1});
-          cb[0].visited = cb[0].visited + 1;
+          //this.visitorsIds.patchValue({visited: cb[0].visited + 1}); 
+          cb[0].visited = cb[0].visited + 1; //збільшуємо кількість візитів на 1
           cb[0].vis = 1;
           console.log('user already exist');
-          console.log('edit data: ', this.visitorsIds.value);
-          this.server.post(cb[0], 'editExhibition_vis').subscribe(data =>{
-            console.log("data: ", data);
-            this.visitorsIds.patchValue({id_visitor: ''});
-            this.visitorsIds.patchValue({visited: '1'});
-            //this.getBd(this.server.exhib.id);
-            this.butGetVis();
-          })
+          //console.log('edit data: ', this.visitorsIds.value);
+          this.addVisitor(cb[0], 'editExhibition_vis');
+          // this.server.post(cb[0], 'editExhibition_vis').subscribe(data =>{
+          //   console.log("data: ", data);
+          //   this.visitorsIds.patchValue({id_visitor: ''});
+          //   //this.visitorsIds.patchValue({visited: '1'});
+          //   //this.getBd(this.server.exhib.id);
+          //   this.butGetVis();
+          // })
         }
       });
     } 

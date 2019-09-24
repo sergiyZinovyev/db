@@ -3,7 +3,7 @@ var Shared = require('../models/shared');
 
 
 //-------------------------------------------------------------------------------------------------------------
-//отримати запис з вказаної таблиці по вказаному полю
+//отримати запис з вказаної таблиці по вказаному полю 
 
 exports.getAll = function(req, res) {
     var data = [
@@ -14,6 +14,8 @@ exports.getAll = function(req, res) {
 			console.log(err);
 			return res.sendStatus(500); 
 		}
+		console.log('req: '+req.query.id+", "+req.query.q1+", "+req.query.q2);
+		console.log('typeOfReg: ', doc);
 		res.send(doc);
 	});
 };
