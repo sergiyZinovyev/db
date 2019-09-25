@@ -49,9 +49,9 @@ export class VisexhibComponent implements OnInit, OnDestroy {
     'fake_id',
     'realname',
     "select",
-  ];
+  ]; // назви полів, які будуть виведені на екран
 
-  keyData = [];
+  keyData = []; //назви полів які отримані з бази але не виведені на екран
   dataSource = new MatTableDataSource();
   selection = new SelectionModel(true, []);
   expandedElement;
@@ -133,6 +133,7 @@ export class VisexhibComponent implements OnInit, OnDestroy {
   getBd(idExhib, cond?){
     this.isLoadingResults = true;
     this.keyData = []; 
+    //отримуємо з бази дані про зареєстрованих відвідувачів вказаної виставки
     let get = this.server.getVisExhib(idExhib, cond).subscribe(data =>{
       console.log("data: ", data);
       this.isLoadingResults = false;
@@ -140,19 +141,17 @@ export class VisexhibComponent implements OnInit, OnDestroy {
         // перевіряємо права користувача, видаємо повідомлення, якщо немає прав
         if(this.server.accessIsDenied(data[0].rights)) return get.unsubscribe();
       }
-      //this.server.accessIsDenied(data[0].rights);
       for (var key in data[0]) {
+        // перебираємо всі назви ключів першого обєкта, та записуємо в масив, щоб визначити назви колонок
         this.keyData.push(key)
       }
-      //console.log("this.keyData1: ", this.keyData);
 
       for (let i=0; i<this.displayedColumns.length; i++){
+        //видаляємо з назв колонок ті які мають бути виведені на екрані
         this.keyData.splice(this.checkArrIdVal(this.keyData, this.displayedColumns[i]), 1)
-        //console.log("this.keyData2: ", this.keyData);
       }
 
-      //console.log("this.keyData2: ", this.keyData);
-      let viewData = [];
+      let viewData = []; // створюємо новий масив з отриманх даних
       for(let i=0; i>=0; i++){
         if(!data[i]){break};
         viewData.push({
@@ -330,7 +329,7 @@ export class VisexhibComponent implements OnInit, OnDestroy {
       //перевіряємо чи є в таблиці реєстрації відвідувач з таким id 
       this.dbvisex.checkVis(this.visitorsIds.get('id_visitor').value, cb=>{
         if(!cb[0]){ //якщо нема
-          alert('відвідувач ще не реєструвався');
+          // alert('відвідувач ще не реєструвався');
           // перевіряємо id на наявність в базі 
           this.dbvisex.checkId(this.visitorsIds.get('id_visitor').value, cb2=>{
             console.log('cb2: ', cb2);
@@ -343,18 +342,33 @@ export class VisexhibComponent implements OnInit, OnDestroy {
               //   //this.getBd(this.server.exhib.id);
               // })
             }
-            else{ //якщо нема 
-              alert('потрібно зареєструватися');
-              this.server.setFrontURL(window.location);
-              this.server.frontURL.searchParams.set('idex', String(this.server.exhib.id));
-              this.server.frontURL.searchParams.set('exhibreg', '1');
-              this.server.frontURL.searchParams.set('fakeid', String(this.visitorsIds.get('id_visitor').value));
-              //alert('переходимо до реєстрації');
-              //this.db.setNavDB('dashboard');
-              
-              this.router.navigate(['user/login']);
-              //this.getBd(this.server.exhib.id);
-              
+            else{ //якщо нема
+              //перевіряємо тип реєстрації
+              if(this.typeOfReg == 'Вільна'){
+                let result = confirm('Відвідувач ще не реєструвався.\n\nБудемо реєструвати?');
+                if(result){
+                  // реєструємо нового відвідувача з присвоюванням йому додатково fake_id
+                  this.server.setFrontURL(window.location);
+                  this.server.frontURL.searchParams.set('idex', String(this.server.exhib.id));
+                  this.server.frontURL.searchParams.set('exhibreg', '1');
+                  this.server.frontURL.searchParams.set('fakeid', String(this.visitorsIds.get('id_visitor').value));
+                  this.router.navigate(['user/login']);
+                }
+                else{
+                  this.visitorsIds.patchValue({fake_id: String(this.visitorsIds.get('id_visitor').value)});
+                  this.visitorsIds.patchValue({id_visitor: null});
+                  this.addVisitor(this.visitorsIds.value, 'createInExhibition_vis');
+                }
+              }
+              else{
+                // реєструємо нового відвідувача з присвоюванням йому додатково fake_id
+                alert('Відвідувач ще не реєструвався.\n\nПотрібно зареєструватися.');
+                this.server.setFrontURL(window.location);
+                this.server.frontURL.searchParams.set('idex', String(this.server.exhib.id));
+                this.server.frontURL.searchParams.set('exhibreg', '1');
+                this.server.frontURL.searchParams.set('fakeid', String(this.visitorsIds.get('id_visitor').value));
+                this.router.navigate(['user/login']);
+              }  
             }
           });
         }
