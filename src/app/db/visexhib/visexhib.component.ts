@@ -99,32 +99,32 @@ export class VisexhibComponent implements OnInit, OnDestroy {
     else return this.disabled = true;
   }
 
-  translate(word){
-    let translate = word;
-    switch (word) {
-      case 'realname':
-        translate = 'Зареєстрував';
-        break;
-      case 'id_visitor':
-        translate = 'ID відвідувача';
-        break;
-      case 'date_vis':
-        translate = 'Дата візиту';
-        break;
-      case 'namepovne':
-        translate = "Ім'я";
-        break;
-      case 'cellphone':
-        translate = 'Моб. телефон';
-        break;
-      case 'visited':
-        translate = 'К-ть візитів';
-        break;
-      default:
-        break;
-    }
-    return translate;
-  }
+  // translate(word){
+  //   let translate = word;
+  //   switch (word) {
+  //     case 'realname':
+  //       translate = 'Зареєстрував';
+  //       break;
+  //     case 'id_visitor':
+  //       translate = 'ID відвідувача';
+  //       break;
+  //     case 'date_vis':
+  //       translate = 'Дата візиту';
+  //       break;
+  //     case 'namepovne':
+  //       translate = "Ім'я";
+  //       break;
+  //     case 'cellphone':
+  //       translate = 'Моб. телефон';
+  //       break;
+  //     case 'visited':
+  //       translate = 'К-ть візитів';
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  //   return translate;
+  // }
 
   getExhibName(){
     return this.server.exhib.name;

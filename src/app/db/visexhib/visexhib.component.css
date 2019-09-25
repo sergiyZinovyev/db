@@ -19,6 +19,10 @@ td.mat-cell {
    height: 40px;
    /* padding: 10px !important; */
   }
+
+  tr.mat-row {
+    height: 15px !important;
+  }
  
   table {
     /* row spacing / margin */
@@ -28,15 +32,15 @@ td.mat-cell {
  
  
  tr.example-detail-row {
-   height: 0;
+   height: 0px !important;
  }
  
  tr.example-element-row:not(.example-expanded-row):hover {
-   background: #f5f5f5;
+   background: #919191;
  }
  
  tr.example-element-row:not(.example-expanded-row):active {
-   background: #efefef;
+   background: #919191;
  }
  
  .example-element-row td {
