@@ -49,6 +49,7 @@ export class VisitorsComponent implements OnInit {
   ];
   keyData = [];
   dataSource = new MatTableDataSource();
+  viewData;
   expandedElement;
 
   isLoadingResults = true;
@@ -85,10 +86,10 @@ export class VisitorsComponent implements OnInit {
       }
 
       //console.log("this.keyData2: ", this.keyData);
-      let viewData = [];
+      this.viewData = [];
       for(let i=0; i>=0; i++){
         if(!data[i]){break};
-        viewData.push({
+        this.viewData.push({
           cellphone: data[i].cellphone,
           city: data[i].city, 
           email: data[i].email, 
@@ -117,9 +118,31 @@ export class VisitorsComponent implements OnInit {
         })
         this.i = i+1;
       }
-      this.dataSource.data = viewData;
-      console.log("viewData: ", viewData);
+      this.dataSource.data = this.viewData;
+      console.log("viewData: ", this.viewData);
     });
+  }
+
+  applyFilter(filterValue, param) {
+    let type = typeof(this.viewData[0][param]);
+    console.log('type of param: ', type);
+    if(!filterValue){
+      this.dataSource.data = this.viewData;
+      return
+    }
+    if(type == 'number'){
+      this.dataSource.data = this.viewData.filter( item => {
+        return item[param] == filterValue;
+        //return String(item[param]).toLowerCase().includes(String(filterValue).toLowerCase());
+      })
+    }
+    else{
+      this.dataSource.data = this.viewData.filter( item => {
+        //return item[param] == filterValue;
+        return String(item[param]).toLowerCase().includes(String(filterValue).toLowerCase());
+      })
+    }
+    
   }
 
   checkArrIdVal(array, val):number {
