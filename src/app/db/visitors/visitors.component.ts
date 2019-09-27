@@ -123,23 +123,25 @@ export class VisitorsComponent implements OnInit {
     });
   }
 
-  applyFilter(filterValue, param) {
-    let type = typeof(this.viewData[0][param]);
-    console.log('type of param: ', type);
+  // фільтрує за вказаним значенням (data: масив об'єктів для фільтрації, filterValue: значення для фільтру, fild: поле для пошуку)
+  applyFilter(data: {}[], filterValue: any, fild: string): void {
+    //визначаємо тип даних в полі для пошуку
+    let type = typeof(data[0][fild]);
     if(!filterValue){
-      this.dataSource.data = this.viewData;
+      //якщо поле для пошуку пусте то повертаємо всі дані
+      this.dataSource.data = data;
       return
     }
     if(type == 'number'){
-      this.dataSource.data = this.viewData.filter( item => {
-        return item[param] == filterValue;
-        //return String(item[param]).toLowerCase().includes(String(filterValue).toLowerCase());
+      // якщо тип даних number тоді..
+      this.dataSource.data = data.filter( item => {
+        return item[fild] == filterValue;
       })
     }
     else{
-      this.dataSource.data = this.viewData.filter( item => {
-        //return item[param] == filterValue;
-        return String(item[param]).toLowerCase().includes(String(filterValue).toLowerCase());
+      // якщо тип даних number тоді..
+      this.dataSource.data = data.filter( item => {
+        return String(item[fild]).toLowerCase().includes(String(filterValue).toLowerCase());
       })
     }
     

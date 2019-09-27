@@ -7,10 +7,10 @@
         <mat-spinner></mat-spinner>
     </div>
     <mat-form-field>
-        <input matInput (keyup)="applyFilter($event.target.value, 'city')" placeholder="city">
+        <input matInput (keyup)="applyFilter(viewData, $event.target.value, 'city')" placeholder="city">
     </mat-form-field>
     <mat-form-field>
-        <input matInput (keyup)="applyFilter($event.target.value, 'type')" placeholder="type">
+        <input matInput (keyup)="applyFilter(viewData, $event.target.value, 'type')" placeholder="type">
     </mat-form-field>
     <div class="d-flex justify-content-between sticky">
         <span class="ml-5 my-2" [style.color]="headerColor"><strong>{{name}}</strong></span>
