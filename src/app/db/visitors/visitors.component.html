@@ -6,12 +6,6 @@
     <div class="example-loading-shade" *ngIf="isLoadingResults"> 
         <mat-spinner></mat-spinner>
     </div>
-    <mat-form-field>
-        <input matInput (keyup)="applyFilter(viewData, $event.target.value, 'city')" placeholder="city">
-    </mat-form-field>
-    <mat-form-field>
-        <input matInput (keyup)="applyFilter(viewData, $event.target.value, 'type')" placeholder="type">
-    </mat-form-field>
     <div class="d-flex justify-content-between sticky">
         <span class="ml-5 my-2" [style.color]="headerColor"><strong>{{name}}</strong></span>
         <div>
@@ -51,8 +45,16 @@
         matSort
         class="mat-elevation-z8 border">
 
+        <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns2" >
+            <th mat-header-cell *matHeaderCellDef [style.background-color]="headerColor">
+                <div class="filtr">
+                    <input (keyup)="applyFilter($event.target.value, column.slice(2))">
+                </div>
+            </th>
+        </ng-container>
+
         <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns" >
-            <th mat-header-cell *matHeaderCellDef mat-sort-header [style.background-color]="headerColor"> {{column}} </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header [style.background-color]="headerColor">{{column}}</th>       
             <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
         </ng-container>
 
@@ -70,6 +72,7 @@
         </ng-container> 
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: false" class="sticky2"></tr>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns2; sticky: false" class="sticky2"></tr>
         <tr mat-row *matRowDef="let element; columns: displayedColumns;"
             class="example-element-row"
             [class.example-expanded-row]="expandedElement === element"

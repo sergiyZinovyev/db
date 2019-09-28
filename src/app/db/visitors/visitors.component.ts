@@ -4,6 +4,7 @@ import {MatTableDataSource} from '@angular/material/table';
 import {MatSort} from '@angular/material/sort';
 import { Router } from '@angular/router';
 import { ServerService } from '../../shared/server.service';
+import { ModulesService } from '../../shared/modules.service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 
 export interface BDVisitors {
@@ -47,9 +48,23 @@ export class VisitorsComponent implements OnInit {
     'type',
     'datawnesenny'
   ];
+  displayedColumns2: string[] = [
+    'x_regnum', 
+    'x_namepovne', 
+    'x_email', 
+    'x_cellphone', 
+    'x_city', 
+    'x_gender',
+    'x_sferadij',
+    'x_posada',
+    'x_m_robotu',
+    'x_type',
+    'x_datawnesenny'
+  ];
   keyData = [];
   dataSource = new MatTableDataSource();
-  viewData;
+  viewData; //дані для таблиць отримані з БД
+  //filtrData: {}[] = []; // дані для фільтрації viewData
   expandedElement;
 
   isLoadingResults = true;
@@ -59,6 +74,7 @@ export class VisitorsComponent implements OnInit {
 
   constructor(
     private server: ServerService,
+    private module: ModulesService,
     private router: Router,
   ) { }
 
@@ -81,7 +97,7 @@ export class VisitorsComponent implements OnInit {
       //console.log("this.keyData1: ", this.keyData);
 
       for (let i=0; i<this.displayedColumns.length; i++){
-        this.keyData.splice(this.checkArrIdVal(this.keyData, this.displayedColumns[i]), 1)
+        this.keyData.splice(this.module.checkArrIdVal(this.keyData, this.displayedColumns[i]), 1)
         //console.log("this.keyData2: ", this.keyData);
       }
 
@@ -123,8 +139,10 @@ export class VisitorsComponent implements OnInit {
     });
   }
 
+  lastFilrResalt;
   // фільтрує за вказаним значенням (data: масив об'єктів для фільтрації, filterValue: значення для фільтру, fild: поле для пошуку)
-  applyFilter(data: {}[], filterValue: any, fild: string): void {
+  applyFilter(filterValue: any, fild: string): void {
+    let data = this.viewData
     //визначаємо тип даних в полі для пошуку
     let type = typeof(data[0][fild]);
     if(!filterValue){
@@ -139,30 +157,46 @@ export class VisitorsComponent implements OnInit {
       })
     }
     else{
-      // якщо тип даних number тоді..
+      // якщо тип даних інший тоді..
       this.dataSource.data = data.filter( item => {
         return String(item[fild]).toLowerCase().includes(String(filterValue).toLowerCase());
       })
     }
+    this.lastFilrResalt = this.dataSource.data
     
   }
 
-  checkArrIdVal(array, val):number {
-    for (let i: number = 0; i < array.length; i++){
-      if (array[i] === val){
-        return i;
-      }
-    }
-  }
+  // addFiltrData(filterValue: any, fild: string){
+  //   console.log('--------------------------------------------------------');
+  //   console.log('start this.filtrData: ', this.filtrData);
+  //   let i = this.module.checkArrOfObjIdVal(this.filtrData, fild)
+  //   console.log('i: ', i);
+  //   if(i >= 0){
+  //     console.log('поле існує під номером '+i);
+  //     this.filtrData[i] = {
+  //       fild: fild,
+  //       filterValue: filterValue
+  //     }
+  //   }
+  //   else{
+  //     console.log('поле не існує!');
+  //     this.filtrData.push({
+  //       fild: fild,
+  //       filterValue: filterValue
+  //     })
+  //   }
+  //   return console.log('finish this.filtrData: ', this.filtrData);
+  // }
+
 
   addColumn(item: string) {
     this.displayedColumns.push(item);
-    this.keyData.splice(this.checkArrIdVal(this.keyData, item), 1)
+    this.keyData.splice(this.module.checkArrIdVal(this.keyData, item), 1)
   }
 
   removeColumn(item: string) {
     console.log(this.displayedColumns);
-    this.displayedColumns.splice(this.checkArrIdVal(this.displayedColumns, item), 1)
+    this.displayedColumns.splice(this.module.checkArrIdVal(this.displayedColumns, item), 1)
     this.keyData.push(item);
     console.log(this.displayedColumns);
   }
