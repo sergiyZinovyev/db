@@ -6,7 +6,7 @@ import { ServerService } from './server.service';
 })
 export class DbService {
 
-  navDB = {
+  navDB = { //компоненти db (true - відображувати, false - не відображувати)
     dashboard: true,
     visitors: false,
     companies: false,
@@ -18,6 +18,7 @@ export class DbService {
     private server: ServerService,
   ) { }
 
+  //керує відображенням компонент в db
   setNavDB(keyArg){
     console.log('keyArg: ', keyArg);
     for (let key in this.navDB) {
@@ -31,36 +32,6 @@ export class DbService {
     console.log('navDB: ', this.navDB);
   }
     
-  // checkVis(id, cb){
-  //   let get = this.server.getCheckViv(id, this.server.exhib.id).subscribe(data =>{ 
-  //     console.log("checkVis: ", data);
-  //     if(data[0]){
-  //       get.unsubscribe()
-  //       return cb(data)
-  //     }
-  //     else{
-  //       get.unsubscribe()
-  //       return cb(data)
-  //     }
-      
-  //   })
-  // }
-
-  // checkVis(id, cb){
-  //   let get = this.server.getCheckViv(id, this.server.exhib.id).subscribe(data =>{ 
-  //     console.log("checkVis: ", data);
-  //       get.unsubscribe();
-  //       return cb(data)     
-  //   })
-  // }
-
-  // checkId(id, cb){
-  //   let get = this.server.getAll('checkIdVisitor',id).subscribe(data =>{ 
-  //     console.log("checkIdVisitor: ", data);
-  //       get.unsubscribe();
-  //       return cb(data)     
-  //   })
-  // }
 
 }
 

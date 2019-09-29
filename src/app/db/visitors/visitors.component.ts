@@ -48,24 +48,11 @@ export class VisitorsComponent implements OnInit {
     'type',
     'datawnesenny'
   ];
-  // displayedColumns2: string[] = [
-  //   'x_regnum', 
-  //   'x_namepovne', 
-  //   'x_email', 
-  //   'x_cellphone', 
-  //   'x_city', 
-  //   'x_gender',
-  //   'x_sferadij',
-  //   'x_posada',
-  //   'x_m_robotu',
-  //   'x_type',
-  //   'x_datawnesenny'
-  // ];
-
-  displayedColumns2 = this.module.addText(this.displayedColumns, 'f_'); //рядок з фільтрами
+  displayedColumns2 = this.module.addText(this.displayedColumns, 'f_'); //рядок таблиці з фільтрами
   keyData = [];
   dataSource = new MatTableDataSource();
   viewData; //дані для таблиць отримані з БД
+  filterData: {filterValue: any, fild: string}[] = [] // дані для фільтрації viewData
   
   expandedElement;
 
@@ -124,8 +111,8 @@ export class VisitorsComponent implements OnInit {
           posada: data[i].posada,
           type: data[i].type,
           kompeten: data[i].kompeten, 
-          datawnesenny: this.dateFormat(data[i].datawnesenny),
-          datelastcor: this.dateFormat(data[i].datelastcor),
+          datawnesenny: this.module.dateFormat(data[i].datawnesenny),
+          datelastcor: this.module.dateFormat(data[i].datelastcor),
           ins_user: data[i].ins_user,
           countryid: data[i].countryid,
           postindeks: data[i].postindeks,
@@ -141,106 +128,16 @@ export class VisitorsComponent implements OnInit {
     });
   }
 
-  // lastFilrResalt;
-  // // фільтрує за вказаним значенням (data: масив об'єктів для фільтрації, filterValue: значення для фільтру, fild: поле для пошуку)
-  // applyFilter(filterValue: any, fild: string): void {
-  //   let data = this.viewData
-  //   //визначаємо тип даних в полі для пошуку
-  //   let type = typeof(data[0][fild]);
-  //   if(!filterValue){
-  //     //якщо поле для пошуку пусте то повертаємо всі дані
-  //     this.dataSource.data = data;
-  //     this.lastFilrResalt = this.dataSource.data
-  //     return this.lastFilrResalt
-  //   }
-  //   if(type == 'number'){
-  //     // якщо тип даних number тоді..
-  //     this.dataSource.data = data.filter( item => {
-  //       return item[fild] == filterValue;
-  //     })
-  //   }
-  //   else{
-  //     // якщо тип даних інший тоді..
-  //     this.dataSource.data = data.filter( item => {
-  //       return String(item[fild]).toLowerCase().includes(String(filterValue).toLowerCase());
-  //     })
-  //   }
-  //   this.lastFilrResalt = this.dataSource.data
-  //   return this.lastFilrResalt
-  // }
-
-  // фільтрує за вказаним значенням (data: масив об'єктів для фільтрації, filterValue: значення для фільтру, fild: поле для пошуку)
-  filter(data, filterValue: any, fild: string) {
-    //let data = this.viewData
-    //визначаємо тип даних в полі для пошуку
-    let type = typeof(data[0][fild]);
-    if(!filterValue){
-      //якщо поле для пошуку пусте то повертаємо всі дані
-      return data
-    }
-    if(type == 'number'){
-      // якщо тип даних number тоді..
-      data = data.filter( item => {
-        return item[fild] == filterValue;
-      })
-    }
-    else{
-      // якщо тип даних інший тоді..
-      data = data.filter( item => {
-        return String(item[fild]).toLowerCase().includes(String(filterValue).toLowerCase());
-      })
-    }
-    return data
-  }
-
-  filterData = [
-    // {
-    //   fild: 'city',
-    //   filterValue: 'Львів'
-    // },
-    // {
-    //   fild: 'sferadij',
-    //   filterValue: 'Стоматологія'
-    // },
-    // {
-    //   fild: 'type',
-    //   filterValue: 'лікар'
-    // },
-    // {
-    //   fild: 'gender',
-    //   filterValue: 'female'
-    // },
-  ]; // дані для фільтрації viewData
-
-  // керує фільтрацією
+  // керує фільтрацією (filterValue - значення фільтру, fild - поле фільтру)
+  // повертає новий this.dataSource.data
   filterController(filterValue, fild){
     let data = this.viewData;
-    this.addFiltrData(filterValue, fild);
-    for (let i = 0; i < this.filterData.length; i++) {
-      data = this.filter(data, this.filterData[i].filterValue, this.filterData[i].fild) 
+    let filterData = this.module.addFiltrData(this.filterData, filterValue, fild);
+    for (let i = 0; i < filterData.length; i++) {
+      data = this.module.filter(data, filterData[i].filterValue, filterData[i].fild) 
     }
     this.dataSource.data = data;
   }
-
-  addFiltrData(value: any, fildName: string){
-    console.log('--------------------------------------------------------');
-    console.log('start this.filtrData: ', this.filterData);
-    let i = this.module.checkArrOfObjIdVal(this.filterData, fildName)
-    console.log('i: ', i);
-    if(i >= 0){
-      console.log('поле існує під номером '+i);
-      this.filterData[i].filterValue = value
-    }
-    else{
-      console.log('поле не існує!');
-      this.filterData.push({
-        fild: fildName,
-        filterValue: value 
-      })
-    }
-    return console.log('finish this.filtrData: ', this.filterData);
-  }
-
 
   addColumn(item: string) {
     this.displayedColumns.push(item);
@@ -288,21 +185,6 @@ export class VisitorsComponent implements OnInit {
       default:
         break;
     }
-  }
-
-  dateFormat(d){
-    if(d){
-      var now = new Date(d);
-      var curr_date = ('0' + now.getDate()).slice(-2)
-      var curr_month = ('0' + (now.getMonth() + 1)).slice(-2);
-      var curr_year = now.getFullYear();
-      var curr_hour = ('0' + now.getHours()).slice(-2);
-      var curr_minute = ('0' + now.getMinutes()).slice(-2);
-      var curr_second = ('0' + now.getSeconds()).slice(-2);
-      var formated_date = curr_year + "-" + curr_month + "-" + curr_date + " " + curr_hour + ":" + curr_minute + ":" + curr_second;
-    }
-    else {return new Date()};
-    return formated_date;
   }
   
 
