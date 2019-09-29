@@ -6,17 +6,18 @@
  }
 
  th.mat-header-cell{
-   text-align: center !important;
+   /* text-align: center !important; */
    /* background-color: rgb(0, 102, 116); */
    color: white;
    font-weight: bold;
-   padding-left: 10px;
+   padding-left: 5px;
+   padding-right: 5px;
    
   /* padding-left: 10px; */
  }
  
  tr.mat-header-row{
-  height: 40px;
+  height: 25px;
   /* padding: 10px !important; */
  }
 
@@ -94,7 +95,7 @@ tr.example-element-row:not(.example-expanded-row):active {
 
 .sticky {
   position: sticky;
-  top: 45px;
+  top: 46px;
   left: 0;
   bottom: 0px;
   right: 0;
@@ -104,14 +105,36 @@ tr.example-element-row:not(.example-expanded-row):active {
 
 .sticky2 {
   position: sticky;
-  top: 85px;
+  top: 86px;
   left: 0;
   bottom: 0px;
   right: 0;
   z-index: 101;
 }
 
+.sticky3 {
+  position: sticky;
+  top: 111px;
+  left: 0;
+  bottom: 0px;
+  right: 0;
+  z-index: 101;
+  height: 20px;
+}
+
 .filtr{
-  max-width: 100% !important;
+  width: 100% !important;
+  font-size: 12px;
+  border-radius: 5px;
+  padding-left: 5px;
+  background-color: rgba(255, 255, 255, 0.356);
   /* text-align: center; */
+ 
+}
+
+.filtr2{
+  text-align: left !important;
+  margin-left: 0px !important;
+   padding-bottom: 5px;
+ 
 }

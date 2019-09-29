@@ -48,23 +48,25 @@ export class VisitorsComponent implements OnInit {
     'type',
     'datawnesenny'
   ];
-  displayedColumns2: string[] = [
-    'x_regnum', 
-    'x_namepovne', 
-    'x_email', 
-    'x_cellphone', 
-    'x_city', 
-    'x_gender',
-    'x_sferadij',
-    'x_posada',
-    'x_m_robotu',
-    'x_type',
-    'x_datawnesenny'
-  ];
+  // displayedColumns2: string[] = [
+  //   'x_regnum', 
+  //   'x_namepovne', 
+  //   'x_email', 
+  //   'x_cellphone', 
+  //   'x_city', 
+  //   'x_gender',
+  //   'x_sferadij',
+  //   'x_posada',
+  //   'x_m_robotu',
+  //   'x_type',
+  //   'x_datawnesenny'
+  // ];
+
+  displayedColumns2 = this.module.addText(this.displayedColumns, 'f_'); //рядок з фільтрами
   keyData = [];
   dataSource = new MatTableDataSource();
   viewData; //дані для таблиць отримані з БД
-  //filtrData: {}[] = []; // дані для фільтрації viewData
+  
   expandedElement;
 
   isLoadingResults = true;
@@ -139,64 +141,117 @@ export class VisitorsComponent implements OnInit {
     });
   }
 
-  lastFilrResalt;
+  // lastFilrResalt;
+  // // фільтрує за вказаним значенням (data: масив об'єктів для фільтрації, filterValue: значення для фільтру, fild: поле для пошуку)
+  // applyFilter(filterValue: any, fild: string): void {
+  //   let data = this.viewData
+  //   //визначаємо тип даних в полі для пошуку
+  //   let type = typeof(data[0][fild]);
+  //   if(!filterValue){
+  //     //якщо поле для пошуку пусте то повертаємо всі дані
+  //     this.dataSource.data = data;
+  //     this.lastFilrResalt = this.dataSource.data
+  //     return this.lastFilrResalt
+  //   }
+  //   if(type == 'number'){
+  //     // якщо тип даних number тоді..
+  //     this.dataSource.data = data.filter( item => {
+  //       return item[fild] == filterValue;
+  //     })
+  //   }
+  //   else{
+  //     // якщо тип даних інший тоді..
+  //     this.dataSource.data = data.filter( item => {
+  //       return String(item[fild]).toLowerCase().includes(String(filterValue).toLowerCase());
+  //     })
+  //   }
+  //   this.lastFilrResalt = this.dataSource.data
+  //   return this.lastFilrResalt
+  // }
+
   // фільтрує за вказаним значенням (data: масив об'єктів для фільтрації, filterValue: значення для фільтру, fild: поле для пошуку)
-  applyFilter(filterValue: any, fild: string): void {
-    let data = this.viewData
+  filter(data, filterValue: any, fild: string) {
+    //let data = this.viewData
     //визначаємо тип даних в полі для пошуку
     let type = typeof(data[0][fild]);
     if(!filterValue){
       //якщо поле для пошуку пусте то повертаємо всі дані
-      this.dataSource.data = data;
-      return
+      return data
     }
     if(type == 'number'){
       // якщо тип даних number тоді..
-      this.dataSource.data = data.filter( item => {
+      data = data.filter( item => {
         return item[fild] == filterValue;
       })
     }
     else{
       // якщо тип даних інший тоді..
-      this.dataSource.data = data.filter( item => {
+      data = data.filter( item => {
         return String(item[fild]).toLowerCase().includes(String(filterValue).toLowerCase());
       })
     }
-    this.lastFilrResalt = this.dataSource.data
-    
+    return data
   }
 
-  // addFiltrData(filterValue: any, fild: string){
-  //   console.log('--------------------------------------------------------');
-  //   console.log('start this.filtrData: ', this.filtrData);
-  //   let i = this.module.checkArrOfObjIdVal(this.filtrData, fild)
-  //   console.log('i: ', i);
-  //   if(i >= 0){
-  //     console.log('поле існує під номером '+i);
-  //     this.filtrData[i] = {
-  //       fild: fild,
-  //       filterValue: filterValue
-  //     }
-  //   }
-  //   else{
-  //     console.log('поле не існує!');
-  //     this.filtrData.push({
-  //       fild: fild,
-  //       filterValue: filterValue
-  //     })
-  //   }
-  //   return console.log('finish this.filtrData: ', this.filtrData);
-  // }
+  filterData = [
+    // {
+    //   fild: 'city',
+    //   filterValue: 'Львів'
+    // },
+    // {
+    //   fild: 'sferadij',
+    //   filterValue: 'Стоматологія'
+    // },
+    // {
+    //   fild: 'type',
+    //   filterValue: 'лікар'
+    // },
+    // {
+    //   fild: 'gender',
+    //   filterValue: 'female'
+    // },
+  ]; // дані для фільтрації viewData
+
+  // керує фільтрацією
+  filterController(filterValue, fild){
+    let data = this.viewData;
+    this.addFiltrData(filterValue, fild);
+    for (let i = 0; i < this.filterData.length; i++) {
+      data = this.filter(data, this.filterData[i].filterValue, this.filterData[i].fild) 
+    }
+    this.dataSource.data = data;
+  }
+
+  addFiltrData(value: any, fildName: string){
+    console.log('--------------------------------------------------------');
+    console.log('start this.filtrData: ', this.filterData);
+    let i = this.module.checkArrOfObjIdVal(this.filterData, fildName)
+    console.log('i: ', i);
+    if(i >= 0){
+      console.log('поле існує під номером '+i);
+      this.filterData[i].filterValue = value
+    }
+    else{
+      console.log('поле не існує!');
+      this.filterData.push({
+        fild: fildName,
+        filterValue: value 
+      })
+    }
+    return console.log('finish this.filtrData: ', this.filterData);
+  }
 
 
   addColumn(item: string) {
     this.displayedColumns.push(item);
+    this.displayedColumns2 = this.module.addText(this.displayedColumns, 'f_');
     this.keyData.splice(this.module.checkArrIdVal(this.keyData, item), 1)
   }
 
   removeColumn(item: string) {
     console.log(this.displayedColumns);
-    this.displayedColumns.splice(this.module.checkArrIdVal(this.displayedColumns, item), 1)
+    this.displayedColumns.splice(this.module.checkArrIdVal(this.displayedColumns, item), 1);
+    this.displayedColumns2 = this.module.addText(this.displayedColumns, 'f_');
     this.keyData.push(item);
     console.log(this.displayedColumns);
   }

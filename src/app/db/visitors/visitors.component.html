@@ -45,10 +45,10 @@
         matSort
         class="mat-elevation-z8 border">
 
-        <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns2" >
-            <th mat-header-cell *matHeaderCellDef [style.background-color]="headerColor">
-                <div class="filtr">
-                    <input (keyup)="applyFilter($event.target.value, column.slice(2))">
+        <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns2">
+            <th mat-header-cell *matHeaderCellDef [style.background-color]="headerColor" class="filtr2">
+                <div class="">
+                    <input (keyup)="filterController($event.target.value, column.slice(2))" class="filtr">
                 </div>
             </th>
         </ng-container>
@@ -72,7 +72,7 @@
         </ng-container> 
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: false" class="sticky2"></tr>
-        <tr mat-header-row *matHeaderRowDef="displayedColumns2; sticky: false" class="sticky2"></tr>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns2; sticky: false" class="sticky3"></tr>
         <tr mat-row *matRowDef="let element; columns: displayedColumns;"
             class="example-element-row"
             [class.example-expanded-row]="expandedElement === element"

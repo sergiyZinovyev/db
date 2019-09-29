@@ -23,11 +23,18 @@ export class ModulesService {
       console.log('array: ', array);
       console.log('array[i]: ', array[i]);
       console.log('val: ', val);
-      if (array[i].fild = val){
+      if (array[i].fild == val){
         console.log('icheckArrOfObjIdVal: ', i)
         return i;
       }
     }
+  }
+
+  // Додає текст до початку строки кожному елементу масива(value: масив строк, text: який треба додати)
+  addText(arr: string[], text: string): string[]{
+    return arr = arr.map( item => {
+      return text+item;
+    })
   }
   
 }
