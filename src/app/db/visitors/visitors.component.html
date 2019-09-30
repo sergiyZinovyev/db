@@ -38,7 +38,7 @@
                 </mat-menu>
         </div>
     </div>
- 
+  
     <table mat-table
         [dataSource]="dataSource" 
         multiTemplateDataRows
@@ -52,10 +52,26 @@
                 </div>
             </th>
         </ng-container>
-
+         
         <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns" >
             <th mat-header-cell *matHeaderCellDef mat-sort-header [style.background-color]="headerColor">{{column}}</th>       
-            <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
+            <td mat-cell *matCellDef="let element">
+                <ng-container *ngIf='column != "potvid"'>
+                    {{element[column]}} 
+                </ng-container>
+                <ng-container *ngIf='column == "potvid"'>
+                    <mat-expansion-panel 
+                    class="reg-form3" 
+                    hideToggle
+                    [class.active]="selected"  
+                    [expanded]="expanded">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title class="potvid-header">виставки</mat-panel-title>
+                        </mat-expansion-panel-header>
+                        тут будуть відвідані виставки
+                    </mat-expansion-panel>
+                </ng-container>
+            </td>
         </ng-container>
 
         <ng-container matColumnDef="expandedDetail">
