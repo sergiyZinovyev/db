@@ -52,23 +52,28 @@
                 </div>
             </th>
         </ng-container>
-         
+          
         <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns" >
             <th mat-header-cell *matHeaderCellDef mat-sort-header [style.background-color]="headerColor">{{column}}</th>       
-            <td mat-cell *matCellDef="let element">
+            <td mat-cell *matCellDef="let element" >
                 <ng-container *ngIf='column != "potvid"'>
                     {{element[column]}} 
                 </ng-container>
                 <ng-container *ngIf='column == "potvid"'>
-                    <mat-expansion-panel 
+                    <mat-expansion-panel
+                    #potvid 
                     class="reg-form3" 
-                    hideToggle
                     [class.active]="selected"  
-                    [expanded]="expanded">
+                    (mouseenter)='potvid.open()'
+                    (mouseleave)='potvid.close()'>
                         <mat-expansion-panel-header>
                             <mat-panel-title class="potvid-header">виставки</mat-panel-title>
                         </mat-expansion-panel-header>
-                        тут будуть відвідані виставки
+                        <ng-container *ngIf='potvid.expanded'>
+                            <ng-container *ngFor='let exhib of element[column].split(", ")'>
+                                <li *ngIf='exhib !=""'class="potvid-header">{{exhib}}</li>
+                            </ng-container>
+                        </ng-container>
                     </mat-expansion-panel>
                 </ng-container>
             </td>

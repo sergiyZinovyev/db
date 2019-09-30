@@ -41,18 +41,18 @@ export class VisitorsComponent implements OnInit {
     'email', 
     'cellphone', 
     'city', 
-    'gender',
     'sferadij',
     'posada',
     'm_robotu',
     'type',
+    'potvid',
     'datawnesenny'
   ];
   displayedColumns2 = this.module.addText(this.displayedColumns, 'f_'); //рядок таблиці з фільтрами
   keyData = [];
   dataSource = new MatTableDataSource();
   viewData; //дані для таблиць отримані з БД
-  filterData: {filterValue: any, fild: string}[] = [] // дані для фільтрації viewData
+  filterData: {filterValue: any, fild: string}[] = [] // дані для фільтрації viewData 
   
   expandedElement;
 
@@ -187,6 +187,12 @@ export class VisitorsComponent implements OnInit {
     }
   }
   
+  getArrPotvid(string){
+    console.log('ArrPotvid: ',string.split(', '));
+    return string.split(', ');
+  }
+
+
 
 }
 

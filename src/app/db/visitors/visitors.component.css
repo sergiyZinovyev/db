@@ -140,7 +140,6 @@ tr.example-element-row:not(.example-expanded-row):active {
 }
 
 .reg-form3{
-  font-size: 8px;
   /* border-radius: 5px; */
   background-color: rgba(255, 255, 255, 0);
   border: none;
@@ -148,5 +147,5 @@ tr.example-element-row:not(.example-expanded-row):active {
 }
 
 .potvid-header{
-  font-size: 10px !important;
+  font-size: 12px !important;
 }
