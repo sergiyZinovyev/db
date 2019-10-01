@@ -45,6 +45,7 @@
         matSort
         class="mat-elevation-z8 border">
 
+        <!-- філтр -->
         <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns2">
             <th mat-header-cell *matHeaderCellDef [style.background-color]="headerColor" class="filtr2">
                 <div class="">
@@ -52,7 +53,8 @@
                 </div>
             </th>
         </ng-container>
-          
+
+        <!-- елементи таблиці -->
         <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns" >
             <th mat-header-cell *matHeaderCellDef mat-sort-header [style.background-color]="headerColor">{{column}}</th>       
             <td mat-cell *matCellDef="let element" >
@@ -64,8 +66,8 @@
                     #potvid 
                     class="reg-form3" 
                     [class.active]="selected"  
-                    (mouseenter)='potvid.open()'
-                    (mouseleave)='potvid.close()'>
+                    (mouseenter)='setIntrvl(potvid)'
+                    (mouseleave)='clearIntrvl(potvid)'>
                         <mat-expansion-panel-header>
                             <mat-panel-title class="potvid-header">виставки</mat-panel-title>
                         </mat-expansion-panel-header>

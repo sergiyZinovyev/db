@@ -58,6 +58,8 @@ export class VisitorsComponent implements OnInit {
 
   isLoadingResults = true;
 
+  myTimeOut; // id таймаута для відміни таймаута
+
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
@@ -187,11 +189,15 @@ export class VisitorsComponent implements OnInit {
     }
   }
   
-  getArrPotvid(string){
-    console.log('ArrPotvid: ',string.split(', '));
-    return string.split(', ');
+// встановлює таймаут на розгортання (приймає id елемента)
+  setIntrvl(potvid){
+    this.myTimeOut=setTimeout(() => potvid.open(),200);
   }
-
+// згортає елемент та відміняє таймаут (приймає id елемента)
+  clearIntrvl(potvid){
+    potvid.close();
+    clearTimeout(this.myTimeOut);
+  }
 
 
 }
