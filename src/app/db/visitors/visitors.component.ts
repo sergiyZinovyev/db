@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { ServerService } from '../../shared/server.service';
 import { ModulesService } from '../../shared/modules.service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
+import {FormControl} from '@angular/forms';
 
 export interface BDVisitors {
   cellphone: string;
@@ -52,7 +53,7 @@ export class VisitorsComponent implements OnInit {
   keyData = [];
   dataSource = new MatTableDataSource();
   viewData; //дані для таблиць отримані з БД
-  filterData: {filterValue: any, fild: string}[] = [] // дані для фільтрації viewData 
+  filterData: {filterValue: any, fild: string}[] = [] // дані для фільтрації viewData  
   
   expandedElement;
 
@@ -60,6 +61,10 @@ export class VisitorsComponent implements OnInit {
 
   myTimeOut; // id таймаута для відміни таймаута
 
+  toppings = new FormControl();
+
+  toppingList: string[] = ['ЕлітЕкспо', 'БудЕКСПО', 'ГалМед', 'Деревообробка', 'ТурЕКСПО', 'Дентал'];
+  
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
@@ -75,6 +80,9 @@ export class VisitorsComponent implements OnInit {
     this.dataSource.sort = this.sort;
   }
 
+  func(){
+    console.log('filtr work: ', this.toppings.value);
+  }
   getBd(nameTable){
     this.isLoadingResults = true;
     this.keyData = []; 

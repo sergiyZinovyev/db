@@ -124,8 +124,12 @@ tr.example-element-row:not(.example-expanded-row):active {
 
 .filtr{
   width: 100% !important;
+  border: 2px inset rgb(206, 206, 206);
   font-size: 12px;
+  font-weight: normal;
   border-radius: 5px;
+  padding-top: 1px;
+  padding-bottom: 1px;
   padding-left: 5px;
   background-color: rgba(255, 255, 255, 0.356);
   /* text-align: center; */
