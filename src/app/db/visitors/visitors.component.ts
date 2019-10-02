@@ -61,9 +61,9 @@ export class VisitorsComponent implements OnInit {
 
   myTimeOut; // id таймаута для відміни таймаута
 
-  toppings = new FormControl();
+  exhibs = new FormControl();
 
-  toppingList: string[] = ['ЕлітЕкспо', 'БудЕКСПО', 'ГалМед', 'Деревообробка', 'ТурЕКСПО', 'Дентал'];
+  exhibsList: string[] = ['ЕлітЕкспо', 'БудЕКСПО', 'ГалМед', 'Деревообробка', 'ТурЕКСПО', 'Дентал'];
   
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
@@ -80,9 +80,16 @@ export class VisitorsComponent implements OnInit {
     this.dataSource.sort = this.sort;
   }
 
-  func(){
-    console.log('filtr work: ', this.toppings.value);
+  getArrOfFilter(){
+    setTimeout(() =>{
+        //console.log('filtr work: ', this.exhibs.value);
+        return this.exhibs.value
+      },
+      10
+    )
+    
   }
+
   getBd(nameTable){
     this.isLoadingResults = true;
     this.keyData = []; 
@@ -141,6 +148,7 @@ export class VisitorsComponent implements OnInit {
   // керує фільтрацією (filterValue - значення фільтру, fild - поле фільтру)
   // повертає новий this.dataSource.data
   filterController(filterValue, fild){
+    console.log('filterController/filterValue: ',filterValue);
     let data = this.viewData;
     let filterData = this.module.addFiltrData(this.filterData, filterValue, fild);
     for (let i = 0; i < filterData.length; i++) {

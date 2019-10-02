@@ -48,24 +48,29 @@
         <!-- філтр -->
         <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns2">
             <th mat-header-cell *matHeaderCellDef [style.background-color]="headerColor" class="filtr2">
+
+                <!-- filter input -->
                 <ng-container *ngIf='column != "f_potvid"'>
                     <div class="">
                         <input (keyup)="filterController($event.target.value, column.slice(2))" class="filtr">
                     </div>
                 </ng-container>
+
+                <!-- filter select -->
                 <ng-container *ngIf='column == "f_potvid"'>
-                    <mat-select [formControl]="toppings" multiple class="filtr">
+                    <mat-select [formControl]="exhibs" multiple class="filtr">
                         <mat-select-trigger>
-                            {{toppings.value ? toppings.value[0] : ''}}
-                            <span *ngIf="toppings.value?.length > 1" class="example-additional-selection">
-                                (+{{toppings.value.length - 1}} {{toppings.value?.length === 2 ? 'інший' : 'інші'}})
+                            {{exhibs.value ? exhibs.value[0] : ''}}
+                            <span *ngIf="exhibs.value?.length > 1" class="example-additional-selection">
+                                (+{{exhibs.value.length - 1}} {{exhibs.value?.length === 2 ? 'інший' : 'інші'}})
                             </span>
                         </mat-select-trigger>
-                        <mat-option *ngFor="let topping of toppingList" [value]="topping">
-                            <div (mouseleave)='func()'>{{topping}}</div>
+                        <mat-option *ngFor="let exhib of exhibsList" [value]="exhib">
+                            <div (mouseleave)="filterController(exhibs.value, column.slice(2))">{{exhib}}</div>
                         </mat-option>
                     </mat-select>    
                 </ng-container>
+
             </th>
         </ng-container>
 

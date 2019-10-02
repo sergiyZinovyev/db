@@ -54,9 +54,20 @@ export class ModulesService {
     }
     else{
       // якщо тип даних інший тоді..
-      data = data.filter( item => {
-        return String(item[fild]).toLowerCase().includes(String(filterValue).toLowerCase());
-      })
+      if (Array.isArray(filterValue)){
+        console.log('value is array: ', filterValue);
+        for(let val of filterValue){
+          data = data.filter( item => {
+            return String(item[fild]).toLowerCase().includes(String(val).toLowerCase());
+          })
+        }
+      }
+      else{
+        data = data.filter( item => {
+          return String(item[fild]).toLowerCase().includes(String(filterValue).toLowerCase());
+        })
+      }
+      
     }
     return data
   }
@@ -77,6 +88,8 @@ export class ModulesService {
         filterValue: value 
       })
     }
+
+    console.log('filterData:', filterData);
     return filterData;
   }
 
