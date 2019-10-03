@@ -16,6 +16,8 @@ export class ModulesService {
     }
   }
 
+// ----------------------------------------------------------------------------------------------------------
+
   // знаходить номер елемента в масиві об'єктів по значенню заданої властивості об'єкта, повертає номер
   checkArrOfObjIdVal(array: any, val: any):number {
     if(!array){
@@ -29,12 +31,16 @@ export class ModulesService {
     }
   }
 
+// ----------------------------------------------------------------------------------------------------------
+
   // Додає текст до початку строки кожному елементу масива(value: масив строк, text: який треба додати)
   addText(arr: string[], text: string): string[]{
     return arr = arr.map( item => {
       return text+item;
     })
   }
+
+// ----------------------------------------------------------------------------------------------------------
 
   // фільтрує за вказаним значенням (data: масив об'єктів для фільтрації, filterValue: значення для фільтру, fild: поле фільтрації)
   // повертає новий масив
@@ -54,14 +60,27 @@ export class ModulesService {
     }
     else{
       // якщо тип даних інший тоді..
+      // якщо значення для фільтру є масивом....
       if (Array.isArray(filterValue)){
         console.log('value is array: ', filterValue);
-        for(let val of filterValue){
+        
           data = data.filter( item => {
-            return String(item[fild]).toLowerCase().includes(String(val).toLowerCase());
+            let flag: boolean = true;
+            for(let val of filterValue){
+              // перебираємо всі елементи масива
+              // якщо елемент масива включений в item[fild] тоді відразу закінчуємо цикл з результатом true
+              if(String(item[fild]).toLowerCase().includes(String(val).toLowerCase())){
+                flag = true;
+                break;
+              }
+              // інакше результат false та продовжуємо цикл
+              else {flag = false}
+            }
+            return flag
           })
-        }
+        
       }
+      // інакше працюємо з ним як зі строкою
       else{
         data = data.filter( item => {
           return String(item[fild]).toLowerCase().includes(String(filterValue).toLowerCase());
@@ -71,6 +90,8 @@ export class ModulesService {
     }
     return data
   }
+  
+// ----------------------------------------------------------------------------------------------------------
 
   // керуємо масивом даних для фільтрації (filterData - масив даних, value - нове значення, fildName - поле для фільтрації)
   // повертає новий масив даних
@@ -92,6 +113,8 @@ export class ModulesService {
     console.log('filterData:', filterData);
     return filterData;
   }
+  
+// ----------------------------------------------------------------------------------------------------------
 
   // форматування дати
   dateFormat(d){

@@ -58,15 +58,15 @@
 
                 <!-- filter select -->
                 <ng-container *ngIf='column == "f_potvid"'>
-                    <mat-select [formControl]="exhibs" multiple class="filtr">
+                    <mat-select [formControl]="exhibs" multiple class="filtr" (selectionChange)="filterController(exhibs.value, column.slice(2))">
                         <mat-select-trigger>
                             {{exhibs.value ? exhibs.value[0] : ''}}
                             <span *ngIf="exhibs.value?.length > 1" class="example-additional-selection">
                                 (+{{exhibs.value.length - 1}} {{exhibs.value?.length === 2 ? 'інший' : 'інші'}})
                             </span>
                         </mat-select-trigger>
-                        <mat-option *ngFor="let exhib of exhibsList" [value]="exhib">
-                            <div (mouseleave)="filterController(exhibs.value, column.slice(2))">{{exhib}}</div>
+                        <mat-option *ngFor="let exhib of exhibsList" [value]="exhib" >
+                            {{exhib}}
                         </mat-option>
                     </mat-select>    
                 </ng-container>

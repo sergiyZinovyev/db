@@ -215,6 +215,9 @@ export class VisitorsComponent implements OnInit {
     clearTimeout(this.myTimeOut);
   }
 
+  test(){
+    console.log('change is work')
+  }
 
 }
 
