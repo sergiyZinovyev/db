@@ -1,3 +1,5 @@
+
+ 
  td.mat-cell {
    /* row border */
    border-left: 1px solid rgb(212, 212, 212);
@@ -152,4 +154,8 @@ tr.example-element-row:not(.example-expanded-row):active {
 
 .potvid-header{
   font-size: 12px !important;
+}
+
+.myPanelClass{
+  margin: 25px 0px;
 }
