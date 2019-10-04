@@ -207,7 +207,7 @@ export class VisitorsComponent implements OnInit {
   
 // встановлює таймаут на розгортання (приймає id елемента)
   setIntrvl(potvid){
-    this.myTimeOut=setTimeout(() => potvid.open(),200);
+    this.myTimeOut=setTimeout(() => potvid.open(),400);
   }
 // згортає елемент та відміняє таймаут (приймає id елемента)
   clearIntrvl(potvid){

@@ -16,6 +16,7 @@ export class StartComponent implements OnInit {
 
   ngOnInit() {
     console.log('window.location: ',window.location);
+
     this.server.setFrontURL(window.location);
     this.getCurrURL()
   }
@@ -23,11 +24,13 @@ export class StartComponent implements OnInit {
   getCurrURL(){
     console.log(this.server.frontURL);
     console.log(this.server.frontURL.searchParams.get('exhib'));
-    if (this.server.frontURL.searchParams.get('exhib') == null){
+    if (this.server.frontURL.searchParams.get('exhib') == null){ 
       return this.router.navigate(['auth']);
     }
     else{
-      return this.router.navigate(['user/login']);
+      return this.router.navigate(['user/login']); 
     }
   }
+
+  
 }

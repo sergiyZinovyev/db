@@ -17,7 +17,8 @@ export class ServerService {
   frontURL: URL;
   apiUrl = 'http://localhost:7001'; //dev host
   //apiUrl = 'http://192.168.5.107:7001'; //prod host
-  //apiUrl = 'http://fort-op.galexpo.lviv.ua:7001'; //www host
+  //apiUrl = 'http://31.41.221.156:7001'; //www host
+
 
   constructor(
     private http: HttpClient

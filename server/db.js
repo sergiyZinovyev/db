@@ -14,6 +14,10 @@ const connection = mysql.createPool({
 
 });
 
+//www db test
+
+// });
+
 
 exports.get = function() {
 	return connection;

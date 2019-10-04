@@ -29,7 +29,7 @@ export class DbvisexService {
       id_exhibition: this.server.frontURL.searchParams.get('idex'),
       id_visitor: '',
       registered: '1',
-      visited: '',
+      visited: '0', // змінено на '0'
       date_vis: '',
       date_reg: '',
       fake_id: ''

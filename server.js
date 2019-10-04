@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const path = require('path');
 //const passport = require('passport');
 //const session = require('express-session');
 //const RedisStore = require('connect-redis')(session);
@@ -12,7 +13,7 @@ const visitorsController = require('./server/controllers/visitors');
 const visitorsExhibController = require('./server/controllers/visitors_exhib');
 const emailController = require('./server/controllers/email');
 const pdfController = require('./server/controllers/pdf');
-const authController = require('./server/controllers/auth');
+const authController = require('./server/controllers/auth'); 
 const sharedController = require('./server/controllers/shared');
 //const Visitors = require('./server/models/sql-visitors');
 
@@ -22,6 +23,7 @@ const urlencodedParser = bodyParser.urlencoded({extended: false});
 const app = express();
 const host = 'localhost'; //dev host
 //const host = '192.168.5.107'; //prod host
+//const host = '31.41.221.156'; //www host test
 const port = 7001;
 app.listen(port, host, function () {
   console.log(`Server listens http://${host}:${port}`);
