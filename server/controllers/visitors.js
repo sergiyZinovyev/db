@@ -1237,9 +1237,9 @@ exports.editPro2 = function(req, res){
                 //     "rights": rights.insupdvisitors
                 // }]);
                 console.log(tables);
-                console.log('rights cb: ', rights.insupdvisitors);
+                //console.log('rights cb: ', rights.insupdvisitors);
                 //якщо повний доступ
-                if([3,4,5].includes(rights.insupdvisitors)){
+                if(rights && [3,4,5].includes(rights.insupdvisitors)){
                     //якщо запис є в visitors_edit
                     if(tables.includes('visitors_edit')){
                         console.log('запис є в visitors_edit');
@@ -1313,7 +1313,8 @@ exports.editPro2 = function(req, res){
                     }
                 }
                 //якщо обмежений доступ
-                if([0,1,2].includes(rights.insupdvisitors)){
+                //if([0,1,2].includes(rights.insupdvisitors)){
+                else{
                     //якщо запис є в visitors_edit
                     if(tables.includes('visitors_edit')){
                         console.log('запис є в visitors_edit, обмежений доступ');

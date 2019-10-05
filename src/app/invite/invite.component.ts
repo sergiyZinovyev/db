@@ -106,7 +106,7 @@ export class InviteComponent implements OnInit, OnDestroy{
  
   // saveBlobAsPDF() {
   //   var msg=this.invitePDF;
-  //   var blob = new File([msg], "hello2.pdf", {"type": "application/octet-stream"});
+  //   var blob = new File([msg], "hello2.pdf", {"type": "application/octet-stream"}); 
   //   var a: any = document.createElement("a");
   //   a.href = URL.createObjectURL(blob);
   
@@ -142,7 +142,7 @@ export class InviteComponent implements OnInit, OnDestroy{
   }
 
   getImg(){
-    return `../../img/${this.server.frontURL.searchParams.get('idex')}.png`
+    return `${this.server.frontURL.searchParams.get('idex')}.png`
     //return `${this.server.apiUrl}/img/${this.server.frontURL.searchParams.get('exhib')}.png`
     //return this.sanitizer.bypassSecurityTrustUrl('data:application/octet-stream;base64,' + btoa(`${this.server.apiUrl}/img/${this.server.frontURL.searchParams.get('exhib')}.png`));
   }

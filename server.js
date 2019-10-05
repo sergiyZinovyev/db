@@ -21,9 +21,9 @@ const urlencodedParser = bodyParser.urlencoded({extended: false});
 
 //back-end server
 const app = express();
-const host = 'localhost'; //dev host
+//const host = 'localhost'; //dev host
 //const host = '192.168.5.107'; //prod host
-//const host = '31.41.221.156'; //www host test
+const host = '31.41.221.156'; //www host test
 const port = 7001;
 app.listen(port, host, function () {
   console.log(`Server listens http://${host}:${port}`);

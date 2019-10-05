@@ -30,11 +30,11 @@
             <mat-card-title>ЗАПРОШЕННЯ</mat-card-title>
             <mat-card-subtitle></mat-card-subtitle>
         </mat-card-header> 
-        <!-- <div mat-card-image class="example-header-image2" [style.background-image]="'bud.png'"></div> -->
+        <!-- <div mat-card-image class="example-header-image2" [style.background-image]="'bud.png'"></div> --> 
         <!-- <div mat-card-image class="example-header-image2"></div>  -->
-        <img class="ml-n3" [src]="getImg()">
+        <img mat-card-image class="" [src]="getImg()">
         <mat-card-content>
-            <p>Шановний(а) <strong>{{prizv}} {{name}} {{pobatkovi}}</strong>, Ви отримали персональне запрошення на виставку.</p>
+            <p>Шановний(а) <strong>{{prizv }} {{name }} {{pobatkovi}}</strong>, Ви отримали персональне запрошення на виставку.</p>
             <p>Покажіть цей код на вході:</p>
             <p>
                 <ngx-barcode [bc-value]='regnum' [bc-display-value]=true [bc-height]=70 [bc-font-size]=14 [bc-format]='bcFormat'></ngx-barcode>

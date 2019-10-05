@@ -61,11 +61,11 @@ export class VisexhibComponent implements OnInit, OnDestroy {
   visitorsIds = new FormGroup({
     id_exhibition: new FormControl(this.server.exhib.id),
     id_visitor: new FormControl('', [Validators.required]),
-    registered: new FormControl(''),
+    registered: new FormControl('0'),
     visited: new FormControl('1'),
     date_vis: new FormControl(''),
     date_reg: new FormControl(''),
-    fake_id: new FormControl(''),
+    fake_id: new FormControl('0'),
     //ins_user: new FormControl(this.server.frontURL.searchParams.get('id')),
   });
 

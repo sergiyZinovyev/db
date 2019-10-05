@@ -30,7 +30,12 @@ exports.getRights = function(login, cb){
 			return cb(err);
         }
         else {
-            console.log('user data: ',doc);
+			console.log('user data: ',doc);
+			// if(!doc[0]){
+			// 	//doc[0].insupdvisitors=0;
+			// 	doc.push({insupdvisitors: 0});
+			// }
+			// console.log('user rights: ',doc[0].insupdvisitors);
 			//return cb(doc[0].insupdvisitors); 
 		}
 		return cb(err, doc[0]);

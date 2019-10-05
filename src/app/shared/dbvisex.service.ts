@@ -25,6 +25,7 @@ export class DbvisexService {
   ) { }
 
   addVisEx(){
+    console.log('idex: ', this.server.frontURL.searchParams.get('idex')); 
     let visitorsIds = {
       id_exhibition: this.server.frontURL.searchParams.get('idex'),
       id_visitor: '',
@@ -32,7 +33,7 @@ export class DbvisexService {
       visited: '0', // змінено на '0'
       date_vis: '',
       date_reg: '',
-      fake_id: ''
+      fake_id: '0'
     };
     let get=this.server.post(this.user.userLogData, "get").subscribe(data =>{ //отримуємо нові дані з бази
       console.log("data: ", data);
@@ -91,7 +92,7 @@ export class DbvisexService {
             //інакше вносимо нового
             else{
               visitorsIds.id_visitor = data[0].regnum;
-              visitorsIds.registered = '';
+              visitorsIds.registered = '0';
               visitorsIds.visited = '1';
               visitorsIds.fake_id = this.server.frontURL.searchParams.get('fakeid');
               console.log('visitorsIds data: ',visitorsIds);
