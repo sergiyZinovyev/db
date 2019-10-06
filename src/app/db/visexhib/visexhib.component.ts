@@ -63,8 +63,8 @@ export class VisexhibComponent implements OnInit, OnDestroy {
     id_visitor: new FormControl('', [Validators.required]),
     registered: new FormControl('0'),
     visited: new FormControl('1'),
-    date_vis: new FormControl(''),
-    date_reg: new FormControl(''),
+    date_vis: new FormControl(undefined),
+    date_reg: new FormControl(undefined),
     fake_id: new FormControl('0'),
     //ins_user: new FormControl(this.server.frontURL.searchParams.get('id')),
   });

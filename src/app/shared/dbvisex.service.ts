@@ -31,8 +31,8 @@ export class DbvisexService {
       id_visitor: '',
       registered: '1',
       visited: '0', // змінено на '0'
-      date_vis: '',
-      date_reg: '',
+      date_vis: undefined,
+      date_reg: undefined,
       fake_id: '0'
     };
     let get=this.server.post(this.user.userLogData, "get").subscribe(data =>{ //отримуємо нові дані з бази

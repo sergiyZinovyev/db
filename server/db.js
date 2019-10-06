@@ -10,14 +10,14 @@ const mysql = require("mysql2");
 //   });
 
 //dev db
-// const connection = mysql.createPool({
-
-// });
-
-//www db test
 const connection = mysql.createPool({
 
 });
+
+//www db test
+// const connection = mysql.createPool({
+
+// });
 
 
 exports.get = function() {

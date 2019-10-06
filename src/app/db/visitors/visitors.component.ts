@@ -89,6 +89,8 @@ export class VisitorsComponent implements OnInit {
     )
     
   }
+                                                                                                                      
+
 
   getBd(nameTable){
     this.isLoadingResults = true;
