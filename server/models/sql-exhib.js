@@ -112,7 +112,7 @@ exports.visexhib = function(data, condition, cb){
         WHERE namepovne IS NULL
       )
     ) AS r_table
-    GROUP BY id) AS exhib
+    GROUP BY id_vis) AS exhib
     LEFT OUTER JOIN
     (SELECT id, realname FROM usersaccount) AS users
       ON exhib.reg_user = users.id`
@@ -157,7 +157,7 @@ exports.editExhibition_vis = function(dataVisitor, cb){
 
 //редагування запису відвідування виставки у таблиці Exhibition_vis відміна відвідування
 exports.editExhibition_vis_visited_cancel = function(id_exhibition, id_visitor,  cb){
-  let sql = `UPDATE exhibition_vis SET visited=0 WHERE (id_visitor IN (${id_visitor}) AND id_exhibition=?)`;
+  let sql = `UPDATE exhibition_vis SET visited=0 WHERE id_vis IN (${id_visitor})`;
   db.get().query(sql, id_exhibition, function(err, data) {
     cb(err, data)
   })

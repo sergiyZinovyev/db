@@ -15,9 +15,9 @@ export class ServerService {
     name: ''
   }; 
   frontURL: URL;
-  //apiUrl = 'http://localhost:7001'; //dev host
-  //apiUrl = 'http://192.168.5.107:7001'; //prod host
-  apiUrl = 'http://31.41.221.156:7001'; //www host test
+  //apiUrl = 'http://localhost:7001'; //dev host 
+  apiUrl = 'http://192.168.5.107:7001'; //prod host
+  //apiUrl = 'http://31.41.221.156:7001'; //www host test
 
 
   constructor(

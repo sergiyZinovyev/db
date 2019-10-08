@@ -53,6 +53,7 @@ export class VisitorsComponent implements OnInit {
   keyData = [];
   dataSource = new MatTableDataSource();
   viewData; //дані для таблиць отримані з БД
+  
   filterData: {filterValue: any, fild: string}[] = [] // дані для фільтрації viewData  
   
   expandedElement;

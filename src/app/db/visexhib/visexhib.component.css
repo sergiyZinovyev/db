@@ -16,7 +16,7 @@ td.mat-cell {
   }
   
   tr.mat-header-row{
-   height: 40px;
+   height: 25px;
    /* padding: 10px !important; */
   }
 
@@ -97,23 +97,23 @@ td.mat-cell {
  }
  
  .sticky {
-   position: sticky;
-   top: 45px;
-   left: 0;
-   bottom: 0px;
-   right: 0;
-   background-color: white;
-   z-index: 102;
- }
- 
- .sticky2 {
-   position: sticky;
-   top: 85px;
-   left: 0;
-   bottom: 0px;
-   right: 0;
-   z-index: 101;
- }
+  position: sticky;
+  top: 46px;
+  left: 0;
+  bottom: 0px;
+  right: 0;
+  background-color: white;
+  z-index: 102;
+}
+
+.sticky2 {
+  position: sticky;
+  top: 86px;
+  left: 0;
+  bottom: 0px;
+  right: 0;
+  z-index: 101;
+}
 
  .my-form{
    margin-top: 3px;
@@ -134,4 +134,50 @@ td.mat-cell {
   flex-direction: column;
   margin: 10px;
   font-size: 12px;
+}
+
+.sticky3 {
+  position: sticky;
+  top: 111px;
+  left: 0;
+  bottom: 0px;
+  right: 0;
+  z-index: 101;
+  height: 20px;
+}
+ 
+.filtr{
+  width: 100% !important;
+  border: 2px inset rgb(206, 206, 206);
+  font-size: 12px;
+  font-weight: normal;
+  border-radius: 5px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-left: 5px;
+  background-color: rgba(255, 255, 255, 0.356);
+  /* text-align: center; */
+ 
+}
+
+.filtr2{
+  text-align: left !important;
+  margin-left: 0px !important;
+   padding-bottom: 5px;
+ 
+}
+
+.reg-form3{
+  /* border-radius: 5px; */
+  background-color: rgba(255, 255, 255, 0);
+  border: none;
+  box-shadow: none;
+}
+
+.potvid-header{
+  font-size: 12px !important;
+}
+
+.myPanelClass{
+  margin: 25px 0px;
 }

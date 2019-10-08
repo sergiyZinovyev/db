@@ -86,6 +86,42 @@
         matSort
         class="mat-elevation-z8 border">
 
+        <!-- філтр -->
+        <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns2">
+            <th mat-header-cell *matHeaderCellDef [style.background-color]="headerColor" class="filtr2">
+
+                <!-- filter input -->
+                <ng-container *ngIf='column != "f_potvid"'>
+                    <div class="">
+                        <input (keyup)="filterController($event.target.value, column.slice(2))" class="filtr">
+                    </div>
+                </ng-container>
+
+                <!-- filter select -->
+                <ng-container *ngIf='column == "f_potvid"'>
+                    <mat-select 
+                        #exhib
+                        [formControl]="exhibs" 
+                        [disableOptionCentering]="true" 
+                        panelClass="myPanelClass" 
+                        multiple 
+                        class="filtr"
+                        (selectionChange)="filterController(exhibs.value, column.slice(2))">
+                        <mat-select-trigger>
+                            {{exhibs.value ? exhibs.value[0] : ''}}
+                            <span *ngIf="exhibs.value?.length > 1" class="example-additional-selection">
+                                (+{{exhibs.value.length - 1}} {{exhibs.value?.length === 2 ? 'інший' : 'інші'}})
+                            </span>
+                        </mat-select-trigger>
+                        <mat-option *ngFor="let exhib of exhibsList" [value]="exhib" class="">
+                            {{exhib}}
+                        </mat-option>
+                    </mat-select>    
+                </ng-container>
+
+            </th>
+        </ng-container>
+
         <!-- основні колонки -->
         <ng-container *ngFor="let column of displayedColumns">
             <ng-container *ngIf='column != "select"'>
@@ -133,6 +169,7 @@
         </ng-container>
  
         <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: false" class="sticky2"></tr>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns2; sticky: false" class="sticky3"></tr>
         <tr mat-row *matRowDef="let element; columns: displayedColumns;"
             class="example-element-row"
             [class.example-expanded-row]="expandedElement === element"

@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { ServerService } from '../../shared/server.service';
 import { DbService} from '../../shared/db.service';
 import { DbvisexService} from '../../shared/dbvisex.service';
+import { ModulesService } from '../../shared/modules.service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms';
 
@@ -26,9 +27,11 @@ import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms'
 export class VisexhibComponent implements OnInit, OnDestroy { 
   
   typeOfReg: string = 'Повна';
-  types: string[] = ['Повна', 'Часткова', 'Вільна'];
+  types: string[] = ['Повна', 'Часткова', 'Вільна', 'Без реєстрації'];
   disabled: boolean = false;
   
+  filterData: {filterValue: any, fild: string}[] = [] // дані для фільтрації viewData;  
+  viewData; //дані для таблиць отримані з БД;
 
   exhib_id = this.server.exhib.id;
   i=10000;
@@ -50,6 +53,8 @@ export class VisexhibComponent implements OnInit, OnDestroy {
     'realname',
     "select",
   ]; // назви полів, які будуть виведені на екран
+
+  displayedColumns2 = this.module.addText(this.displayedColumns, 'f_'); //рядок таблиці з фільтрами
 
   keyData = []; //назви полів які отримані з бази але не виведені на екран
   dataSource = new MatTableDataSource();
@@ -77,9 +82,11 @@ export class VisexhibComponent implements OnInit, OnDestroy {
     private db: DbService,
     private dbvisex: DbvisexService,
     private router: Router,
+    private module: ModulesService
   ) { }
 
   ngOnInit() {
+    console.log('this.keyDataXX: ',this.keyData);
     // отримуємо з бази значення типу реєстрації
     let getType = this.server.getAll("getAll", this.server.exhib.id, 'numexhib', 'exhibitions').subscribe(data=>{
       console.log('typeOfReg: ', data);
@@ -92,6 +99,18 @@ export class VisexhibComponent implements OnInit, OnDestroy {
     // отримуємо список зареєстрованих відвідувачів
     this.getBd(this.server.exhib.id, 1);
     this.dataSource.sort = this.sort;
+  }
+
+  // керує фільтрацією (filterValue - значення фільтру, fild - поле фільтру)
+  // повертає новий this.dataSource.data
+  filterController(filterValue, fild){
+    console.log('filterController/filterValue: ',filterValue);
+    let data = this.viewData;
+    let filterData = this.module.addFiltrData(this.filterData, filterValue, fild);
+    for (let i = 0; i < filterData.length; i++) {
+      data = this.module.filter(data, filterData[i].filterValue, filterData[i].fild) 
+    }
+    this.dataSource.data = data;
   }
 
   getDisabled() {
@@ -132,7 +151,8 @@ export class VisexhibComponent implements OnInit, OnDestroy {
 
   getBd(idExhib, cond?){
     this.isLoadingResults = true;
-    this.keyData = []; 
+    this.keyData = [];
+    console.log('this.keyDataX: ',this.keyData);
     //отримуємо з бази дані про зареєстрованих відвідувачів вказаної виставки
     let get = this.server.getVisExhib(idExhib, cond).subscribe(data =>{
       console.log("data: ", data);
@@ -141,9 +161,12 @@ export class VisexhibComponent implements OnInit, OnDestroy {
         // перевіряємо права користувача, видаємо повідомлення, якщо немає прав
         if(this.server.accessIsDenied(data[0].rights)) return get.unsubscribe();
       }
+      //console.log('this.keyData0: ',this.keyDataX);
       for (var key in data[0]) {
         // перебираємо всі назви ключів першого обєкта, та записуємо в масив, щоб визначити назви колонок
-        this.keyData.push(key)
+        //console.log('this.keyData1: ',this.keyDataX);
+        this.keyData.push(key);
+        //console.log('this.keyData2: ',this.keyDataX);
       }
 
       for (let i=0; i<this.displayedColumns.length; i++){
@@ -151,10 +174,11 @@ export class VisexhibComponent implements OnInit, OnDestroy {
         this.keyData.splice(this.checkArrIdVal(this.keyData, this.displayedColumns[i]), 1)
       }
 
-      let viewData = []; // створюємо новий масив з отриманх даних
+      this.viewData = []; // створюємо новий масив з отриманх даних
       for(let i=0; i>=0; i++){
         if(!data[i]){break};
-        viewData.push({
+        this.viewData.push({
+          id_vis: data[i].id_vis,
           id: data[i].id,
           id_exhibition: data[i].id_exhibition,
           fake_id: data[i].fake_id,
@@ -193,8 +217,8 @@ export class VisexhibComponent implements OnInit, OnDestroy {
         })
         this.i = i+1;
       }
-      this.dataSource.data = viewData.sort(this.compareNumeric);
-      console.log("viewData: ", viewData);
+      this.dataSource.data = this.viewData.sort(this.compareNumeric);
+      console.log("viewData: ", this.viewData);
       get.unsubscribe();
     });
   }
@@ -231,12 +255,15 @@ export class VisexhibComponent implements OnInit, OnDestroy {
 
   addColumn(item: string) {
     this.displayedColumns.push(item);
+    this.displayedColumns2 = this.module.addText(this.displayedColumns, 'f_');
     this.keyData.splice(this.checkArrIdVal(this.keyData, item), 1)
+    console.log('this.keyData: ',this.keyData);
   }
 
   removeColumn(item: string) {
     console.log(this.displayedColumns);
-    this.displayedColumns.splice(this.checkArrIdVal(this.displayedColumns, item), 1)
+    this.displayedColumns.splice(this.checkArrIdVal(this.displayedColumns, item), 1);
+    this.displayedColumns2 = this.module.addText(this.displayedColumns, 'f_');
     this.keyData.push(item);
     console.log(this.displayedColumns);
   }
@@ -360,6 +387,12 @@ export class VisexhibComponent implements OnInit, OnDestroy {
                   this.addVisitor(this.visitorsIds.value, 'createInExhibition_vis');
                 }
               }
+              if(this.typeOfReg == 'Без реєстрації'){
+                //alert('Без реєстрації');  
+                this.visitorsIds.patchValue({fake_id: String(this.visitorsIds.get('id_visitor').value)});
+                this.visitorsIds.patchValue({id_visitor: null});
+                this.addVisitor(this.visitorsIds.value, 'createInExhibition_vis');
+              }
               else{
                 // реєструємо нового відвідувача з присвоюванням йому додатково fake_id
                 alert('Відвідувач ще не реєструвався.\n\nПотрібно зареєструватися.');
@@ -420,20 +453,20 @@ export class VisexhibComponent implements OnInit, OnDestroy {
 
   selectRow($event, dataSource) {
     if ($event.checked) {
-      if(!this.arrOfCheckId.includes(dataSource.id_visitor)){
-        this.arrOfCheckId.push(dataSource.id_visitor);
+      if(!this.arrOfCheckId.includes(dataSource.id_vis)){
+        this.arrOfCheckId.push(dataSource.id_vis);
       }
     }
     else {
-      this.arrOfCheckId.splice(this.checkArrIdVal(this.arrOfCheckId, dataSource.id_visitor), 1);
+      this.arrOfCheckId.splice(this.checkArrIdVal(this.arrOfCheckId, dataSource.id_vis), 1);
     }
     console.log(this.arrOfCheckId);
    }
 
   onCompleteRow(dataSource) {
     dataSource.data.forEach(element => {
-      if(!this.arrOfCheckId.includes(element.id_visitor)){
-        this.arrOfCheckId.push(element.id_visitor);
+      if(!this.arrOfCheckId.includes(element.id_vis)){
+        this.arrOfCheckId.push(element.id_vis);
       }
     });
     console.log(this.arrOfCheckId);
