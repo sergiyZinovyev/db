@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ServerService } from './server.service';
+import { ServerService } from '../shared/server.service';
 import { UserService } from '../shared/user.service';
 import { DbService } from '../shared/db.service';
 import { Alert } from 'selenium-webdriver';
@@ -9,14 +9,7 @@ import { Alert } from 'selenium-webdriver';
 })
 export class DbvisexService {
 
-  // visitorsIds = {
-  //   id_exhibition: this.server.frontURL.searchParams.get('idex'),
-  //   id_visitor: '',
-  //   registered: '1',
-  //   visited: '',
-  //   date_vis: '',
-  //   date_reg: '',
-  // }
+  dataVisex;
 
   constructor(
     private server: ServerService,
@@ -131,5 +124,23 @@ export class DbvisexService {
     })
   }
 
+  // отримання даних про відвідувачів виставки
+  getExhibVis(idExhib, cond){
+    console.log('this.dataVisex0: ',this.dataVisex);
+    this.server.getVisExhib(idExhib, cond).subscribe(data =>{
+      this.dataVisex = data;
+      console.log('this.dataVisex: ',this.dataVisex);
+    })
+  }
+
+  returnGetExhibVis(idExhib, cond, t){
+    setInterval(() => {
+      console.log('this.dataVisex0: ',this.dataVisex);
+    this.server.getVisExhib(idExhib, cond).subscribe(data =>{
+      this.dataVisex = data;
+      console.log('this.dataVisex: ',this.dataVisex);
+    })
+    }, t)
+  }
 
 }

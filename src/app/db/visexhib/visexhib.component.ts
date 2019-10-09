@@ -58,7 +58,7 @@ export class VisexhibComponent implements OnInit, OnDestroy {
 
   keyData = []; //назви полів які отримані з бази але не виведені на екран
   dataSource = new MatTableDataSource();
-  selection = new SelectionModel(true, []);
+  selection = new SelectionModel(true, []); // данні для вибірки
   expandedElement;
 
   isLoadingResults = true;
@@ -86,6 +86,9 @@ export class VisexhibComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    //this.server.getExhibVis(this.server.exhib.id, 1);
+    //setInterval(this.dbvisex.getExhibVis, 10000, this.server.exhib.id, 1)
+    this.dbvisex.returnGetExhibVis(this.server.exhib.id, 1, 10000);
     console.log('this.keyDataXX: ',this.keyData);
     // отримуємо з бази значення типу реєстрації
     let getType = this.server.getAll("getAll", this.server.exhib.id, 'numexhib', 'exhibitions').subscribe(data=>{
@@ -163,7 +166,7 @@ export class VisexhibComponent implements OnInit, OnDestroy {
       }
       //console.log('this.keyData0: ',this.keyDataX);
       for (var key in data[0]) {
-        // перебираємо всі назви ключів першого обєкта, та записуємо в масив, щоб визначити назви колонок
+        // перебираємо всі назви ключів першого обєкта, та записуємо в масив, щоб визначити назви колонок 
         //console.log('this.keyData1: ',this.keyDataX);
         this.keyData.push(key);
         //console.log('this.keyData2: ',this.keyDataX);
@@ -174,7 +177,7 @@ export class VisexhibComponent implements OnInit, OnDestroy {
         this.keyData.splice(this.checkArrIdVal(this.keyData, this.displayedColumns[i]), 1)
       }
 
-      this.viewData = []; // створюємо новий масив з отриманх даних
+      this.viewData = []; // створюємо новий масив з отриманх даних 
       for(let i=0; i>=0; i++){
         if(!data[i]){break};
         this.viewData.push({
@@ -222,6 +225,50 @@ export class VisexhibComponent implements OnInit, OnDestroy {
       get.unsubscribe();
     });
   }
+
+  pushRow(data){
+    this.viewData.push({
+      id_vis: '',
+      id: '',
+      id_exhibition: data.id_exhibition,
+      fake_id: data.fake_id,
+      id_visitor: data.id_visitor,
+      registered: '', 
+      visited: '1', 
+      date_vis: this.dateFormat(new Date()),
+      date_reg: '',
+      realname: localStorage.getItem('user'),
+
+      cellphone: '',
+      city: '', 
+      email: '', 
+      prizv: '', 
+      regnum: '',
+      potvid: '',
+      name: '',
+      namepovne: '',
+      postaddreses: '',
+      pobatkovi: '',
+      gender: '',
+      m_robotu: '',
+      sferadij: '',
+      posada: '',
+      type: '',
+      kompeten: '', 
+      datawnesenny: '',
+      datelastcor: '',
+      ins_user: '',
+      countryid: '',
+      postindeks: '',
+      regionid: '',
+      address: '',
+      telephon: '',
+      rating: ''
+    })
+
+    this.dataSource.data = this.viewData.sort(this.compareNumeric);
+  }
+
 
   compareNumeric(a, b) {
     if (a.date_vis < b.date_vis) return 1;
@@ -339,9 +386,11 @@ export class VisexhibComponent implements OnInit, OnDestroy {
     //додати нового відвідувача
     let post = this.server.post(value, method).subscribe(data =>{ 
       console.log("data: ", data); 
-      this.visitorsIds.patchValue({id_visitor: ''});
-      //this.visitorsIds.patchValue({visited: '1'});
-      this.butGetVis();
+      this.visitorsIds.patchValue({id_visitor: null});
+      this.visitorsIds.patchValue({fake_id: null});
+      //this.visitorsIds.patchValue({visited: '1'});  
+      //this.butGetVis();
+      this.pushRow(value);
       post.unsubscribe();
     })
   }
@@ -350,6 +399,7 @@ export class VisexhibComponent implements OnInit, OnDestroy {
     if(this.visitorsIds.valid){
       this.selection.clear();
       console.log(this.visitorsIds.get('id_visitor').value);
+      console.log(this.visitorsIds.value);
       //this.visitorsIds.patchValue({date_vis: new Date});
       //console.log(this.visitorsIds.value);
 

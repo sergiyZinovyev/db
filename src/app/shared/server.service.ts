@@ -15,15 +15,17 @@ export class ServerService {
     name: ''
   }; 
   frontURL: URL;
-  //apiUrl = 'http://localhost:7001'; //dev host 
+  //apiUrl = 'http://localhost:7001'; //dev host  
   apiUrl = 'http://192.168.5.107:7001'; //prod host
   //apiUrl = 'http://31.41.221.156:7001'; //www host test
 
+  dataVisex;
 
   constructor(
     private http: HttpClient
   ) { }
 
+  
   setFrontURL(url){
     if (this.frontURL){return console.log('url not change - ', this.frontURL)}
     this.frontURL = new URL(url);

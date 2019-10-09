@@ -36,6 +36,8 @@ export class DbService {
     this.server.getVisitors('visitors').subscribe(data =>{})
   }
 
+ 
+
 }
 
 
