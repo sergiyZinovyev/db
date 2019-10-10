@@ -34,7 +34,7 @@ export class VisexhibComponent implements OnInit, OnDestroy {
   viewData; //дані для таблиць отримані з БД;
 
   exhib_id = this.server.exhib.id;
-  i=10000;
+  i=15;
   name: string = "Відвідали";
   headerColor = 'rgb(45, 128, 253)';
   disabledColor = 'rgb(150, 150, 150)';
@@ -86,9 +86,7 @@ export class VisexhibComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    //this.server.getExhibVis(this.server.exhib.id, 1);
-    //setInterval(this.dbvisex.getExhibVis, 10000, this.server.exhib.id, 1)
-    this.dbvisex.returnGetExhibVis(this.server.exhib.id, 1, 10000);
+    //this.dbvisex.returnGetExhibVis(this.server.exhib.id, 1, 10000);
     console.log('this.keyDataXX: ',this.keyData);
     // отримуємо з бази значення типу реєстрації
     let getType = this.server.getAll("getAll", this.server.exhib.id, 'numexhib', 'exhibitions').subscribe(data=>{
@@ -120,33 +118,6 @@ export class VisexhibComponent implements OnInit, OnDestroy {
     if([4, 5].includes(Number(localStorage.getItem('access rights')))) return this.disabled = false;
     else return this.disabled = true;
   }
-
-  // translate(word){
-  //   let translate = word;
-  //   switch (word) {
-  //     case 'realname':
-  //       translate = 'Зареєстрував';
-  //       break;
-  //     case 'id_visitor':
-  //       translate = 'ID відвідувача';
-  //       break;
-  //     case 'date_vis':
-  //       translate = 'Дата візиту';
-  //       break;
-  //     case 'namepovne':
-  //       translate = "Ім'я";
-  //       break;
-  //     case 'cellphone':
-  //       translate = 'Моб. телефон';
-  //       break;
-  //     case 'visited':
-  //       translate = 'К-ть візитів';
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  //   return translate;
-  // }
 
   getExhibName(){
     return this.server.exhib.name;
@@ -226,7 +197,90 @@ export class VisexhibComponent implements OnInit, OnDestroy {
     });
   }
 
+  // тимчасові дані з сервіса
+  getTemporaryBd(){
+    //this.isLoadingResults = true;
+    this.keyData = [];
+    console.log('this.keyDataX: ',this.keyData);
+    //отримуємо з бази дані про зареєстрованих відвідувачів вказаної виставки
+    let data = this.dbvisex.dataVisex;
+    
+      console.log("data: ", data);
+      //this.isLoadingResults = false;
+      if(data[0].rights){
+        // перевіряємо права користувача, видаємо повідомлення, якщо немає прав
+        if(this.server.accessIsDenied(data[0].rights)) return;
+      }
+      //console.log('this.keyData0: ',this.keyDataX);
+      for (var key in data[0]) {
+        // перебираємо всі назви ключів першого обєкта, та записуємо в масив, щоб визначити назви колонок 
+        //console.log('this.keyData1: ',this.keyDataX);
+        this.keyData.push(key);
+        //console.log('this.keyData2: ',this.keyDataX);
+      }
+
+      for (let i=0; i<this.displayedColumns.length; i++){
+        //видаляємо з назв колонок ті які мають бути виведені на екрані
+        this.keyData.splice(this.checkArrIdVal(this.keyData, this.displayedColumns[i]), 1)
+      }
+      console.log('startFor');
+      this.viewData = []; // створюємо новий масив з отриманх даних 
+      
+      for(let i=0; i>=0; i++){
+        if(!data[i]){break};
+        this.viewData.push({
+          id_vis: data[i].id_vis,
+          id: data[i].id,
+          id_exhibition: data[i].id_exhibition,
+          fake_id: data[i].fake_id,
+          id_visitor: data[i].id_visitor,
+          registered: data[i].registered, 
+          visited: data[i].visited, 
+          date_vis: this.dateFormat(data[i].date_vis),
+          date_reg: this.dateFormat(data[i].date_reg),
+          realname: data[i].realname,
+
+          cellphone: data[i].cellphone,
+          city: data[i].city, 
+          email: data[i].email, 
+          prizv: data[i].prizv, 
+          regnum: data[i].regnum,
+          potvid: data[i].potvid,
+          name: data[i].name,
+          namepovne: data[i].namepovne,
+          postaddreses: data[i].postaddreses,
+          pobatkovi: data[i].pobatkovi,
+          gender: data[i].gender,
+          m_robotu: data[i].m_robotu,
+          sferadij: data[i].sferadij,
+          posada: data[i].posada,
+          type: data[i].type,
+          kompeten: data[i].kompeten, 
+          datawnesenny: this.dateFormat(data[i].datawnesenny),
+          datelastcor: this.dateFormat(data[i].datelastcor),
+          ins_user: data[i].ins_user,
+          countryid: data[i].countryid,
+          postindeks: data[i].postindeks,
+          regionid: data[i].regionid,
+          address: data[i].address,
+          telephon: data[i].telephon,
+          rating: data[i].rating
+        })
+        this.i = i+1;
+      }
+      console.log('finishFor');
+
+      console.log('start');
+      console.log("viewData1: ", this.viewData);
+      //this.dataSource.data = this.viewData;
+      console.log('finish');
+      
+      //this.isLoadingResults = false;
+ 
+  }
+
   pushRow(data){
+    this.getTemporaryBd();
     this.viewData.push({
       id_vis: '',
       id: '',
@@ -266,7 +320,11 @@ export class VisexhibComponent implements OnInit, OnDestroy {
       rating: ''
     })
 
+    console.log('start2');
+    console.log("viewData2: ", this.viewData);
     this.dataSource.data = this.viewData.sort(this.compareNumeric);
+    console.log('finish2');
+    //console.log("this.dataSource.data: ", this.dataSource.data);
   }
 
 
@@ -389,8 +447,8 @@ export class VisexhibComponent implements OnInit, OnDestroy {
       this.visitorsIds.patchValue({id_visitor: null});
       this.visitorsIds.patchValue({fake_id: null});
       //this.visitorsIds.patchValue({visited: '1'});  
-      //this.butGetVis();
-      this.pushRow(value);
+      this.butGetVis();
+      //this.pushRow(value);
       post.unsubscribe();
     })
   }
@@ -561,5 +619,8 @@ export class VisexhibComponent implements OnInit, OnDestroy {
   }
     
 
-  ngOnDestroy(){}
+  ngOnDestroy(){
+    //this.dbvisex.stopFunction();
+    console.log('visehib is destroy');
+  }
 }

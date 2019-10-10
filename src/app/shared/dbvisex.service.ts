@@ -10,6 +10,7 @@ import { Alert } from 'selenium-webdriver';
 export class DbvisexService {
 
   dataVisex;
+  timerId;
 
   constructor(
     private server: ServerService,
@@ -133,14 +134,16 @@ export class DbvisexService {
     })
   }
 
+  // повторювати функцію
   returnGetExhibVis(idExhib, cond, t){
-    setInterval(() => {
-      console.log('this.dataVisex0: ',this.dataVisex);
-    this.server.getVisExhib(idExhib, cond).subscribe(data =>{
-      this.dataVisex = data;
-      console.log('this.dataVisex: ',this.dataVisex);
-    })
-    }, t)
+    this.timerId = setInterval(() => this.getExhibVis(idExhib, cond), t)
+  }
+
+  // зупинити повтор та очистити дані
+  stopFunction(){
+    clearTimeout(this.timerId);
+    this.dataVisex = [];
+    console.log('function - '+this.timerId+' is stop')
   }
 
 }
