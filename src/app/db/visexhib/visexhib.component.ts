@@ -125,22 +125,28 @@ export class VisexhibComponent implements OnInit, OnDestroy {
 
   getBd(idExhib, cond?){
     this.isLoadingResults = true;
-    this.keyData = [];
+    
     console.log('this.keyDataX: ',this.keyData);
     //отримуємо з бази дані про зареєстрованих відвідувачів вказаної виставки
     let get = this.server.getVisExhib(idExhib, cond).subscribe(data =>{
       console.log("data: ", data);
       this.isLoadingResults = false;
+
+      // якщо даних нема то обнуляємо this.dataSource.data
+      if(!data[0]){
+        this.dataSource.data = [];
+        return;
+      }
+
+      this.keyData = [];
       if(data[0].rights){
         // перевіряємо права користувача, видаємо повідомлення, якщо немає прав
         if(this.server.accessIsDenied(data[0].rights)) return get.unsubscribe();
       }
-      //console.log('this.keyData0: ',this.keyDataX);
+
       for (var key in data[0]) {
         // перебираємо всі назви ключів першого обєкта, та записуємо в масив, щоб визначити назви колонок 
-        //console.log('this.keyData1: ',this.keyDataX);
         this.keyData.push(key);
-        //console.log('this.keyData2: ',this.keyDataX);
       }
 
       for (let i=0; i<this.displayedColumns.length; i++){
@@ -279,6 +285,7 @@ export class VisexhibComponent implements OnInit, OnDestroy {
  
   }
 
+  // додає новий рядок (не з бази)
   pushRow(data){
     this.getTemporaryBd();
     this.viewData.push({
@@ -324,7 +331,6 @@ export class VisexhibComponent implements OnInit, OnDestroy {
     console.log("viewData2: ", this.viewData);
     this.dataSource.data = this.viewData.sort(this.compareNumeric);
     console.log('finish2');
-    //console.log("this.dataSource.data: ", this.dataSource.data);
   }
 
 
@@ -384,6 +390,7 @@ export class VisexhibComponent implements OnInit, OnDestroy {
       'email',
       'registered',  
     ];
+    this.displayedColumns2 = this.module.addText(this.displayedColumns, 'f_'); //рядок таблиці з фільтрами
     this.getBd(this.server.exhib.id, 2);
     this.name = 'Зареєструвалися на';
     this.getHeaderColor()
@@ -400,6 +407,7 @@ export class VisexhibComponent implements OnInit, OnDestroy {
       'email',
       'registered', 
     ];
+    this.displayedColumns2 = this.module.addText(this.displayedColumns, 'f_'); //рядок таблиці з фільтрами
     this.getBd(this.server.exhib.id, 3);
     this.name = 'Ще не відвідали';
     this.getHeaderColor()
@@ -419,6 +427,7 @@ export class VisexhibComponent implements OnInit, OnDestroy {
       'realname',
       "select",
     ];
+    this.displayedColumns2 = this.module.addText(this.displayedColumns, 'f_'); //рядок таблиці з фільтрами
     this.getBd(this.server.exhib.id, 1);
     this.name = 'Відвідали';
     this.getHeaderColor()

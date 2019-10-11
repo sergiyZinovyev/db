@@ -100,13 +100,13 @@
             <th mat-header-cell *matHeaderCellDef [style.background-color]="headerColor" class="filtr2">
 
                 <!-- filter input -->
-                <ng-container *ngIf='column != "f_potvid"'>
+                <ng-container *ngIf='column != "f_select"'>
                     <div class="">
                         <input (keyup)="filterController($event.target.value, column.slice(2))" class="filtr">
                     </div>
                 </ng-container>
 
-                <!-- filter select -->
+                <!-- filter select ...тут не працює...!!! -->
                 <ng-container *ngIf='column == "f_potvid"'>
                     <mat-select 
                         #exhib
