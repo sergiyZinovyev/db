@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
+const https = require('https');
+const fs = require('fs');
 //const passport = require('passport');
 //const session = require('express-session');
 //const RedisStore = require('connect-redis')(session);
@@ -21,20 +23,34 @@ const urlencodedParser = bodyParser.urlencoded({extended: false});
 
 //back-end server
 const app = express();
-const host = 'localhost'; //dev host
-//const host = '192.168.5.107'; //prod host
+//const host = 'localhost'; //dev host
+//const host = '192.168.5.107'; //prod host ge
 //const host = '31.41.221.156'; //www host test
+const host = 'visitors.galexpo.com.ua'; //prod host 
 const port = 7001;
-app.listen(port, host, function () {
-  console.log(`Server listens http://${host}:${port}`);
+https.createServer({
+  key: fs.readFileSync('./server/cert/key.pem'),
+  cert: fs.readFileSync('./server/cert/cert.pem')
+}, app).listen(port, host, function () {
+  console.log(`Server listens https://${host}:${port}`);
 });
+// app.listen(port, host, function () {
+//   console.log(`Server listens http://${host}:${port}`);
+// });
 
 //front-end server
 const ang = express();
 const port2 = 4201;
-ang.listen(port2, host, function () {
-  console.log(`Server2 listens http://${host}:${port2}`);
+https.createServer({
+  key: fs.readFileSync('./server/cert/key.pem'),
+  cert: fs.readFileSync('./server/cert/cert.pem')
+}, ang).listen(port2, host, function () {
+  console.log(`Server2 listens https://${host}:${port2}`);
 });
+
+// ang.listen(port2, host, function () {
+//   console.log(`Server2 listens http://${host}:${port2}`);
+// });
 ang.use(express.static(__dirname + "/dist/db"));
 ang.use("/", function(request, response){
   response.sendFile(path.join(__dirname+'/dist/db/index.html')); 
