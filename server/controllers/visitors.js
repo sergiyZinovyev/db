@@ -4,7 +4,10 @@ var ControllersShared = require('../controllers/shared');
 
 
 exports.all = function(req, res) {
-	Visitors.all(req.params.id, function(err, doc) {
+    let table;
+    if(!req.params.id){table = 'visitors'}
+    else table = req.params.id;
+	Visitors.all(table, function(err, doc) {
 		if (err) {
 			console.log(err);
 			return res.sendStatus(500);

@@ -71,6 +71,8 @@ import { VisexhibsComponent } from './db/visexhibs/visexhibs.component';
 import { VisexhibComponent } from './db/visexhib/visexhib.component';
 import { TranslatePipe } from './translate.pipe';
 
+import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
+
 
 
 
@@ -148,9 +150,11 @@ import { TranslatePipe } from './translate.pipe';
     ScrollingModule,
     FormsModule,
     HttpClientModule,
-    NgxBarcodeModule
+    NgxBarcodeModule,
+    RecaptchaModule,
+    RecaptchaFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule { } 

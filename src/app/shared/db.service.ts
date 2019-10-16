@@ -33,7 +33,7 @@ export class DbService {
   }
    
   getAllVisitors(){
-    this.server.getVisitors('visitors').subscribe(data =>{})
+    this.server.getVisitors().subscribe(data =>{})
   }
 
  

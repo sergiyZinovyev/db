@@ -1,10 +1,24 @@
 var nodemailer = require('nodemailer');
 var fs = require('fs');
 
-var transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
+let testEmailAccount = nodemailer.createTestAccount();
 
+var transporter = nodemailer.createTransport({
+    // service: 'gmail',
+    // auth: {
+    //     user: 'thrion1@gmail.com',
+    //     pass: 'grthrangel666'
+    // }
+    host: 'smtp.galexpo.com.ua',
+    port: 587,
+    secure: false, //disable SSL    
+    requireTLS: true, //Force TLS
+    tls: {
+        rejectUnauthorized: false
+    },
+    auth: {
+        user: 'galexpo',
+        pass: 'sscvsskl'
     }
 });
 
@@ -32,7 +46,7 @@ exports.sendEmail = function(req, res){
     transporter.sendMail(mailOptions, function (err, info) {
         if(err){
             console.log(err);
-            res.send(err)
+            //res.send(err)
         }   
         else{
             //console.log(info);

@@ -25,7 +25,7 @@ const urlencodedParser = bodyParser.urlencoded({extended: false});
 const app = express();
 //const host = 'localhost'; //dev host
 //const host = '192.168.5.107'; //prod host ge
-//const host = '31.41.221.156'; //www host test
+//const host = '31.41.221.156'; //www host test 
 const host = 'visitors.galexpo.com.ua'; //prod host 
 const port = 7001;
 https.createServer({
@@ -71,8 +71,8 @@ app.post("/users", authController.users);
 
 // *** захищені роути *** 
 
-//отримати всі записи з вказаної таблиці  
-app.get("/visitors/:id", authController.checkAuth, visitorsController.all);
+//отримати всі записи з вказаної таблиці   
+app.get("/visitors", authController.checkAuth, visitorsController.all);
 
 //додавання запису в основну базу
 app.post("/createVis", authController.checkAuth, urlencodedParser, visitorsController.createNewVis);

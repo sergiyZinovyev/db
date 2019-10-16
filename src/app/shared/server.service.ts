@@ -16,9 +16,9 @@ export class ServerService {
   }; 
   frontURL: URL;
   //apiUrl = 'http://localhost:7001'; //dev host  
-  apiUrl = 'http://192.168.5.107:7001'; //prod host ge
+  //apiUrl = 'http://192.168.5.107:7001'; //prod host ge
   //apiUrl = 'http://31.41.221.156:7001'; //www host test
-  //apiUrl = 'https://visitors.galexpo.com.ua:7001'; //prod host
+  apiUrl = 'https://visitors.galexpo.com.ua:7001'; //prod host
 
   dataVisex;
 
@@ -65,8 +65,8 @@ export class ServerService {
     return this.http.get(`${this.apiUrl}/visexhib/${prop}?${this.getAuth()}&cond=${cond}`)
   }
 
-  getVisitors(prop){
-    return this.http.get(`${this.apiUrl}/visitors/${prop}?${this.getAuth()}`)
+  getVisitors(){
+    return this.http.get(`${this.apiUrl}/visitors?${this.getAuth()}`)
   }
 
 
