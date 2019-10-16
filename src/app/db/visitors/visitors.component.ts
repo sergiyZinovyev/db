@@ -1,4 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
+import {SelectionModel} from '@angular/cdk/collections';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatSort} from '@angular/material/sort';
@@ -37,6 +38,7 @@ export class VisitorsComponent implements OnInit {
   nameBut: string = "Заявки на внесення";
 
   displayedColumns: string[] = [
+    //'select',
     'regnum', 
     'namepovne', 
     'email', 
@@ -47,7 +49,8 @@ export class VisitorsComponent implements OnInit {
     'm_robotu',
     'type',
     'potvid',
-    'datawnesenny'
+    'datawnesenny',
+    'select',
   ];
   displayedColumns2 = this.module.addText(this.displayedColumns, 'f_'); //рядок таблиці з фільтрами
   keyData = [];
@@ -65,6 +68,9 @@ export class VisitorsComponent implements OnInit {
   exhibs = new FormControl();
 
   exhibsList: string[] = ['ЕлітЕкспо', 'БудЕКСПО', 'ГалМед', 'Деревообробка', 'ТурЕКСПО', 'Дентал'];
+
+  selection = new SelectionModel(true, []); // данні для вибірки
+  arrOfCheckId = [];
   
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
@@ -217,6 +223,54 @@ export class VisitorsComponent implements OnInit {
     potvid.close();
     clearTimeout(this.myTimeOut);
   }
+
+    /** Whether the number of selected elements matches the total number of rows. */
+    isAllSelected() {
+      const numSelected = this.selection.selected.length;
+      const numRows = this.dataSource.data.length;
+      return numSelected === numRows;
+    }
+  
+    /** Selects all rows if they are not all selected; otherwise clear selection. */
+    masterToggle($event) {
+      if ($event.checked) {
+        this.onCompleteRow(this.dataSource);
+      }
+      if(this.isAllSelected()){
+        this.selection.clear();
+        this.arrOfCheckId = [];
+        console.log(this.arrOfCheckId);
+      } else  this.dataSource.data.forEach(row => this.selection.select(row));  
+    }
+  
+    /** The label for the checkbox on the passed row */  
+    checkboxLabel(row?): string {
+      if (!row) {
+        return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
+      }
+      return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
+    }
+  
+    selectRow($event, dataSource) {
+      if ($event.checked) {
+        if(!this.arrOfCheckId.includes(dataSource.regnum)){
+          this.arrOfCheckId.push(dataSource.regnum);
+        }
+      }
+      else {
+        this.arrOfCheckId.splice(this.module.checkArrIdVal(this.arrOfCheckId, dataSource.regnum), 1);
+      }
+      console.log(this.arrOfCheckId);
+     }
+  
+    onCompleteRow(dataSource) {
+      dataSource.data.forEach(element => {
+        if(!this.arrOfCheckId.includes(element.regnum)){
+          this.arrOfCheckId.push(element.regnum);
+        }
+      });
+      console.log(this.arrOfCheckId);
+    }
 
   
 

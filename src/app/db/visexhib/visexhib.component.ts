@@ -151,7 +151,7 @@ export class VisexhibComponent implements OnInit, OnDestroy {
 
       for (let i=0; i<this.displayedColumns.length; i++){
         //видаляємо з назв колонок ті які мають бути виведені на екрані
-        this.keyData.splice(this.checkArrIdVal(this.keyData, this.displayedColumns[i]), 1)
+        this.keyData.splice(this.module.checkArrIdVal(this.keyData, this.displayedColumns[i]), 1)
       }
 
       this.viewData = []; // створюємо новий масив з отриманх даних 
@@ -227,7 +227,7 @@ export class VisexhibComponent implements OnInit, OnDestroy {
 
       for (let i=0; i<this.displayedColumns.length; i++){
         //видаляємо з назв колонок ті які мають бути виведені на екрані
-        this.keyData.splice(this.checkArrIdVal(this.keyData, this.displayedColumns[i]), 1)
+        this.keyData.splice(this.module.checkArrIdVal(this.keyData, this.displayedColumns[i]), 1)
       }
       console.log('startFor');
       this.viewData = []; // створюємо новий масив з отриманх даних 
@@ -341,13 +341,13 @@ export class VisexhibComponent implements OnInit, OnDestroy {
   }
   
 
-  checkArrIdVal(array, val):number {
-    for (let i: number = 0; i < array.length; i++){
-      if (array[i] === val){
-        return i;
-      }
-    }
-  }
+  // checkArrIdVal(array, val):number {
+  //   for (let i: number = 0; i < array.length; i++){
+  //     if (array[i] === val){
+  //       return i;
+  //     }
+  //   }
+  // }
 
   dateFormat(d){
     if(d){
@@ -367,13 +367,13 @@ export class VisexhibComponent implements OnInit, OnDestroy {
   addColumn(item: string) {
     this.displayedColumns.push(item);
     this.displayedColumns2 = this.module.addText(this.displayedColumns, 'f_');
-    this.keyData.splice(this.checkArrIdVal(this.keyData, item), 1)
+    this.keyData.splice(this.module.checkArrIdVal(this.keyData, item), 1)
     console.log('this.keyData: ',this.keyData);
   }
 
   removeColumn(item: string) {
     console.log(this.displayedColumns);
-    this.displayedColumns.splice(this.checkArrIdVal(this.displayedColumns, item), 1);
+    this.displayedColumns.splice(this.module.checkArrIdVal(this.displayedColumns, item), 1);
     this.displayedColumns2 = this.module.addText(this.displayedColumns, 'f_');
     this.keyData.push(item);
     console.log(this.displayedColumns);
@@ -560,7 +560,7 @@ export class VisexhibComponent implements OnInit, OnDestroy {
     } else  this.dataSource.data.forEach(row => this.selection.select(row));  
   }
 
-  /** The label for the checkbox on the passed row */  
+  /** The label for the checkbox on the passed row */   
   checkboxLabel(row?): string {
     if (!row) {
       return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
@@ -575,7 +575,7 @@ export class VisexhibComponent implements OnInit, OnDestroy {
       }
     }
     else {
-      this.arrOfCheckId.splice(this.checkArrIdVal(this.arrOfCheckId, dataSource.id_vis), 1);
+      this.arrOfCheckId.splice(this.module.checkArrIdVal(this.arrOfCheckId, dataSource.id_vis), 1);
     }
     console.log(this.arrOfCheckId);
    }

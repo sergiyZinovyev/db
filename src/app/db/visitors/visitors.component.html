@@ -50,7 +50,7 @@
             <th mat-header-cell *matHeaderCellDef [style.background-color]="headerColor" class="filtr2">
 
                 <!-- filter input -->
-                <ng-container *ngIf='column != "f_potvid"'>
+                <ng-container *ngIf='column != "f_potvid" && column != "f_select"'>
                     <div class="">
                         <input (keyup)="filterController($event.target.value, column.slice(2))" class="filtr">
                     </div>
@@ -82,32 +82,37 @@
         </ng-container>
 
         <!-- елементи таблиці -->
-        <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns" >
-            <th mat-header-cell *matHeaderCellDef mat-sort-header [style.background-color]="headerColor">{{column}}</th>       
-            <td mat-cell *matCellDef="let element" >
-                <ng-container *ngIf='column != "potvid"'>
-                    {{element[column]}} 
-                </ng-container>
-                <ng-container *ngIf='column == "potvid"'>
-                    <mat-expansion-panel
-                    #potvid 
-                    class="reg-form3" 
-                    [class.active]="selected"  
-                    (mouseenter)='setIntrvl(potvid)'
-                    (mouseleave)='clearIntrvl(potvid)'>
-                        <mat-expansion-panel-header>
-                            <mat-panel-title class="potvid-header">виставки</mat-panel-title>
-                        </mat-expansion-panel-header>
-                        <ng-container *ngIf='potvid.expanded'>
-                            <ng-container *ngFor='let exhib of element[column].split(", ")'>
-                                <li *ngIf='exhib !=""'class="potvid-header">{{exhib}}</li>
-                            </ng-container>
+        <ng-container *ngFor="let column of displayedColumns" >
+            <ng-container *ngIf='column != "select"'> 
+                <ng-container matColumnDef="{{column}}" >
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header [style.background-color]="headerColor">{{column}}</th>       
+                    <td mat-cell *matCellDef="let element" >
+                        <ng-container *ngIf='column != "potvid"'>
+                            {{element[column]}} 
                         </ng-container>
-                    </mat-expansion-panel>
+                        <ng-container *ngIf='column == "potvid"'>
+                            <mat-expansion-panel
+                            #potvid 
+                            class="reg-form3" 
+                            [class.active]="selected"  
+                            (mouseenter)='setIntrvl(potvid)'
+                            (mouseleave)='clearIntrvl(potvid)'>
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title class="potvid-header">виставки</mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <ng-container *ngIf='potvid.expanded'>
+                                    <ng-container *ngFor='let exhib of element[column].split(", ")'>
+                                        <li *ngIf='exhib !=""'class="potvid-header">{{exhib}}</li>
+                                    </ng-container>
+                                </ng-container>
+                            </mat-expansion-panel>
+                        </ng-container>
+                    </td>
                 </ng-container>
-            </td>
+            </ng-container>    
         </ng-container>
 
+        <!-- деталі -->
         <ng-container matColumnDef="expandedDetail">
             <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
             <div class="example-element-detail"
@@ -119,7 +124,29 @@
                 </div>
             </div>
             </td>
-        </ng-container> 
+        </ng-container>
+        
+        <!-- додаткові колонки -->
+        <ng-container matColumnDef="select">
+            <th mat-header-cell *matHeaderCellDef [style.background-color]="headerColor" class="pt-2">
+              <mat-checkbox (change)="$event ? masterToggle($event) : null"
+                            [checked]="selection.hasValue() && isAllSelected()"
+                            [indeterminate]="selection.hasValue() && !isAllSelected()"
+                            [aria-label]="checkboxLabel()"
+                            color="primary">
+              </mat-checkbox>
+            </th>
+            <td mat-cell *matCellDef="let row" class="">
+              <mat-checkbox (click)="$event.stopPropagation();"
+                            (change)="$event ? selectRow($event, row) : null"
+                            (change)="$event ? selection.toggle(row) : null"
+                            [checked]="selection.isSelected(row)"
+                            [aria-label]="checkboxLabel(row)"
+                            color="primary"
+                            class="align-middle">
+              </mat-checkbox>
+            </td>
+        </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: false" class="sticky2"></tr>
         <tr mat-header-row *matHeaderRowDef="displayedColumns2; sticky: false" class="sticky3"></tr>
