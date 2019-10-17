@@ -337,7 +337,8 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     }); 
   }
 
-  submit(){
+  submit(capcha){
+    console.log(`Resolved captcha with response: ${capcha}`);
     this.worningCheck = '';
     if(this.loginForm.get('prizv').valid &&
        this.loginForm.get('city').valid &&
@@ -380,6 +381,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   invite(){
     this.router.navigate(['invite'])
   }
+
 
 
   // getStringExhibForm(){

@@ -65,8 +65,8 @@ export class ServerService {
     return this.http.get(`${this.apiUrl}/visexhib/${prop}?${this.getAuth()}&cond=${cond}`)
   }
 
-  getVisitors(){
-    return this.http.get(`${this.apiUrl}/visitors?${this.getAuth()}`)
+  getVisitors(prop){
+    return this.http.get(`${this.apiUrl}/visitors/${prop}?${this.getAuth()}`)
   }
 
 

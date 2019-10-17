@@ -1,7 +1,7 @@
 <div class="d-flex align-items-center justify-content-center">
     <div class="max-width container-fluid">
         
-        <form class="example-form back2" [formGroup]="loginForm" (ngSubmit)="submit()">
+        <form class="example-form back2" [formGroup]="loginForm">
             <div class="example-loading-shade" *ngIf="isLoadingResults">
                 <mat-spinner></mat-spinner>
             </div>
@@ -53,7 +53,7 @@
                                 <mat-option value=2>Польща</mat-option>
                                 <mat-option value=3>Німеччина</mat-option>
                             </mat-select>
-                            <mat-error *ngIf="!loginForm.get('countryid').valid">
+                            <mat-error *ngIf="!loginForm.get('countryid').valid"> 
                                 {{'Будь ласка введіть країну'}}
                             </mat-error> 
                         </mat-form-field>
@@ -164,7 +164,14 @@
                 </mat-expansion-panel>  
             </div>
 
-            <button mat-raised-button color="accent" class="btn-lg btn-block py-2 my-btn"><strong class="pr-2">{{'Отримати запрошення'}}</strong><mat-icon>local_activity</mat-icon></button>
+            <re-captcha 
+                #captchaRef="reCaptcha"
+                size="invisible" 
+                (resolved)="$event && submit($event)" 
+                siteKey="6Lcp7r0UAAAAAPd5sDUsXBnLWdXvHiLLXavjJINt">
+            </re-captcha>
+
+            <button mat-raised-button (click)="captchaRef.execute()" color="accent" class="btn-lg btn-block py-2 my-btn"><strong class="pr-2">{{'Отримати запрошення'}}</strong><mat-icon>local_activity</mat-icon></button>
             <!-- <ng-container *ngIf = 'edit'>
                 <button mat-raised-button color="accent" class="btn-lg btn-block py-2 my-btn" (click)='invite()'>{{'Отримати запрошення'}}</button>
             </ng-container> -->

@@ -17,8 +17,7 @@ var transporter = nodemailer.createTransport({
         rejectUnauthorized: false
     },
     auth: {
-        user: 'galexpo',
-        pass: 'sscvsskl'
+        
     }
 });
 
@@ -33,7 +32,7 @@ exports.sendEmail = function(req, res){
 
     //console.log(req.body);
     const mailOptions = {
-        from: 'sender@email.com', // sender address
+        from: 'send@galexpo.lviv.ua', // sender address
         to: req.body.email, // list of receivers
         subject: 'Запрошення на виставку', // Subject line
         attachments: [

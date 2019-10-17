@@ -102,14 +102,20 @@ export class VisitorsComponent implements OnInit {
   getBd(nameTable){
     this.isLoadingResults = true;
     this.keyData = []; 
-    this.server.getVisitors().subscribe(data =>{
+    this.server.getVisitors(nameTable).subscribe(data =>{
       console.log("data: ", data);
       this.isLoadingResults = false;
+
+      if(!data[0]){
+        this.dataSource.data = [];
+        return;
+      }
+
       this.server.accessIsDenied(data[0].rights);
       for (var key in data[0]) {
         this.keyData.push(key)
       }
-      //console.log("this.keyData1: ", this.keyData);
+      //console.log("this.keyData1: ", this.keyData); 
 
       for (let i=0; i<this.displayedColumns.length; i++){
         this.keyData.splice(this.module.checkArrIdVal(this.keyData, this.displayedColumns[i]), 1)

@@ -19,7 +19,6 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 })
 export class LoginComponent implements OnInit {
 
-  capcha: string;
   matcher = new MyErrorStateMatcher();
   warning = '';
 
@@ -46,21 +45,22 @@ export class LoginComponent implements OnInit {
   })
 
 
-  login() {
+  login(capcha) {
     this.warning = 'Заповніть хоча б одне поле';
     if(this.loginForm.value.email == 'db@db'){
         return this.router.navigate(['auth']);
       }
-    if(!this.capcha){
-      this.warning = 'reCapcha is undefined';
-      return
-    }
+    console.log(`Resolved captcha with response: ${capcha}`);
+    // if(!capcha){
+    //   this.warning = 'reCapcha is undefined';
+    //   return
+    // }
     if(this.loginForm.get('email').valid || this.loginForm.get('cellphone').valid){
       this.warning = '';
       this.user.setUserLogData(this.loginForm.value);
       let get=this.server.post(this.loginForm.value, "get").subscribe(data =>{
         console.log("data login: ", data);
-        //if(data == ''){this.router.navigate(['user/registration']);} 
+        //if(data == ''){this.router.navigate(['user/registration']);}  
         if(data[0]){
           this.user.setUserData(data);
           this.router.navigate(['user/registration']);
@@ -75,9 +75,5 @@ export class LoginComponent implements OnInit {
     }
   }
   
-  resolved(captchaResponse: string) {
-    this.capcha = captchaResponse;
-    console.log(`Resolved captcha with response: ${captchaResponse}`);
-  }
 
 }

@@ -1,6 +1,6 @@
 <div class="d-flex align-items-center justify-content-center mt-4">
     <div class="max-width">
-        <form class="example-form back2" [formGroup]="loginForm" (ngSubmit)="login()">
+        <form class="example-form back2" [formGroup]="loginForm">
             <div class="discr" >Введіть електронну пошту та/або мобільний телефон</div>
             <mat-form-field class="form-group example-full-width">
                 <input type="email" matInput placeholder="{{'Електронна пошта'}}" formControlName="email">
@@ -23,10 +23,23 @@
                     {{'Будь ласка введіть мобільний телефон у вказаному форматі'}}
                 </mat-error>
             </mat-form-field>
-
-            <re-captcha (resolved)="resolved($event)" siteKey="6Lcp7r0UAAAAAPd5sDUsXBnLWdXvHiLLXavjJINt"></re-captcha>
+ 
+            <re-captcha 
+                #captchaRef="reCaptcha"
+                size="invisible" 
+                (resolved)="$event && login($event)" 
+                siteKey="6Lcp7r0UAAAAAPd5sDUsXBnLWdXvHiLLXavjJINt">
+            </re-captcha> 
             
-            <button mat-stroked-button color="accent" class="btn-lg btn-block py-2 mt-5"><strong class="pr-2">{{'Отримати запрошення'}}</strong><mat-icon>local_activity</mat-icon></button>
+            <button 
+                mat-stroked-button 
+                (click)="captchaRef.execute() && captchaRef.reset()" 
+                color="accent" 
+                class="btn-lg btn-block py-2 mt-5">
+                <strong class="pr-2">{{'Отримати запрошення'}}</strong>
+                <mat-icon>local_activity</mat-icon>
+            </button>
+            
             <div *ngIf="warning" class="warning">
                 {{warning}}
             </div>
