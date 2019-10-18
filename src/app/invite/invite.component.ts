@@ -82,11 +82,19 @@ export class InviteComponent implements OnInit, OnDestroy{
       margin:       0,
       filename:     'invite.pdf',
       image:        { type: 'jpeg', quality: 1 },
-      html2canvas:  { scale: 2 },
+      html2canvas:  { 
+        scale: 2,
+        windowWidth: element.scrollWidth,
+        windowHeight: element.scrollHeight,
+        width: 800,
+        height: 1000,
+      },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
-    return html2pdf().set(opt).from(element).save();
+    let worker = html2pdf().set(opt).from(element);
+    return worker.save()
   }
+
 
   getPDFAndSend(){
     let element = document.getElementById('element-to-print'); 
@@ -98,7 +106,7 @@ export class InviteComponent implements OnInit, OnDestroy{
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
     return html2pdf().set(opt).from(element).outputPdf('datauristring').then(data => {
-      //console.log('PDFdata: ',data); 
+      //console.log('PDFdata: ',data);  
       //this.invitePDF = data;
       this.sendEmail(data);
     });
