@@ -73,7 +73,7 @@ import { TranslatePipe } from './translate.pipe';
 
 import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
 
-
+import { html2pdf } from 'html2pdf.js';
 
 
 
@@ -152,7 +152,8 @@ import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
     HttpClientModule,
     NgxBarcodeModule,
     RecaptchaModule,
-    RecaptchaFormsModule
+    RecaptchaFormsModule,
+    //html2pdf
   ],
   providers: [],
   bootstrap: [AppComponent]

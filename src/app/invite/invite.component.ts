@@ -39,11 +39,17 @@ export class InviteComponent implements OnInit, OnDestroy{
   ) { }
 
   ngOnInit() {
+
     this.dbsisex.addVisEx();
     if(this.server.frontURL.searchParams.has('exhibreg')){
       //this.db.setNavDB('visexhib');
-      this.router.navigate(['db']);
+      return this.router.navigate(['db']);
     }
+
+    setTimeout(() => {
+      this.getPDFAndSend()
+    }, 3000);
+
 
     console.log('this.user.userLogData: ',this.user.userLogData);
     let get=this.server.post(this.user.userLogData, "get").subscribe(data =>{ //отримуємо нові дані з бази
@@ -66,6 +72,8 @@ export class InviteComponent implements OnInit, OnDestroy{
       }
     });
 
+    
+
   }
 
   onLogin(){
@@ -79,20 +87,26 @@ export class InviteComponent implements OnInit, OnDestroy{
   getPDF(){
     let element = document.getElementById('element-to-print');
     let opt = {
-      margin:       0,
+      margin:       [0, 0],
       filename:     'invite.pdf',
       image:        { type: 'jpeg', quality: 1 },
       html2canvas:  { 
         scale: 2,
-        windowWidth: element.scrollWidth,
-        windowHeight: element.scrollHeight,
-        width: 800,
-        height: 1000,
+        imageTimeout: 0,
+        //windowWidth: element.scrollWidth,
+        //windowHeight: 1200,
+        //x: 550,
+        //y: 100,
+        //scrollX: 550,
+        //scrollY: 200,
+        // width: 800,
+        //height: 1200,
       },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
     let worker = html2pdf().set(opt).from(element);
     return worker.save()
+    //html2pdf(element);
   }
 
 
