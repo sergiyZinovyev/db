@@ -171,9 +171,14 @@
                 siteKey="6Lcp7r0UAAAAAPd5sDUsXBnLWdXvHiLLXavjJINt">
             </re-captcha>
 
-            <button mat-raised-button (click)="captchaRef.execute()" color="accent" class="btn-lg btn-block py-2 my-btn"><strong class="pr-2">{{'Отримати запрошення'}}</strong><mat-icon>local_activity</mat-icon></button>
+            <button mat-raised-button 
+                (click)="captchaRef.execute()"
+                (mouseleave)="captchaRef.reset()"
+                color="accent" 
+                class="btn-lg btn-block py-2 my-btn">
+                <strong class="pr-2">{{'Отримати запрошення'}}</strong><mat-icon>local_activity</mat-icon></button>
             <!-- <ng-container *ngIf = 'edit'>
-                <button mat-raised-button color="accent" class="btn-lg btn-block py-2 my-btn" (click)='invite()'>{{'Отримати запрошення'}}</button>
+                <button mat-raised-button color="accent" class="btn-lg btn-block py-2 my-btn" (click)='invite()'>{{'Отримати запрошення'}}</button> 
             </ng-container> -->
             <ng-container *ngIf = 'worningCheck'>
                 <div class="alert alert-warning" role="alert">{{worningCheck}}</div>

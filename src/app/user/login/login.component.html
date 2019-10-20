@@ -34,12 +34,22 @@
             
             <button 
                 mat-stroked-button 
-                (click)="captchaRef.execute() && captchaRef.reset()" 
+                (click)="captchaRef.execute()"
+                (mouseleave)="captchaRef.reset()"
                 color="accent" 
                 class="btn-lg btn-block py-2 mt-5">
                 <strong class="pr-2">{{'Отримати запрошення'}}</strong>
                 <mat-icon>local_activity</mat-icon>
             </button>
+
+            <!-- <button 
+                mat-stroked-button 
+                (click)="captchaRef.reset()" 
+                color="primary" 
+                class="btn-lg btn-block py-2 mt-5">
+                <strong class="pr-2">{{'Отримати запрошення'}}</strong>
+                <mat-icon>reset</mat-icon>
+            </button> -->
             
             <div *ngIf="warning" class="warning">
                 {{warning}}

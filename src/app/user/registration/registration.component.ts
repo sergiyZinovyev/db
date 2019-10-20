@@ -366,7 +366,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
             if(this.edit){
               this.editUser();
             }
-            else{this.addUser()}
+            else{this.addUser()} 
           }
 
         } 

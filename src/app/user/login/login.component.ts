@@ -20,6 +20,8 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 })
 export class LoginComponent implements OnInit {
 
+  myCaptha;
+
   matcher = new MyErrorStateMatcher();
   warning = '';
 
@@ -47,13 +49,21 @@ export class LoginComponent implements OnInit {
 
 
   login(capcha) {
+    // let capcha = capcha_f;
+    // if(!capcha_f){
+    //   if(!this.myCaptha){return console.log('reCaptcha is udefined')}
+    //   else capcha = this.myCaptha;
+    // }
+
+    // this.myCaptha = capcha;
+    console.log(`login is work whith token: ${capcha}`);
     this.warning = 'Заповніть хоча б одне поле';
     if(this.loginForm.value.email == 'db@db'){
         return this.router.navigate(['auth']);
       }
     console.log(`Resolved captcha with response: ${capcha}`);
     // if(!capcha){
-    //   this.warning = 'reCapcha is undefined';
+    //   this.warning = 'reCapcha is undefined'; 
     //   return
     // }
     if(this.loginForm.get('email').valid || this.loginForm.get('cellphone').valid){

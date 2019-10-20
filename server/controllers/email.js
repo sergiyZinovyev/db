@@ -17,7 +17,7 @@ var transporter = nodemailer.createTransport({
         rejectUnauthorized: false
     },
     auth: {
-  
+     
     }
 });
 
@@ -40,7 +40,10 @@ exports.sendEmail = function(req, res){
                 path: req.body.file
             }
         ],
-        html: `<p>Шановний(а) <strong>${req.body.prizv} ${req.body.name} ${req.body.pobatkovi}</strong>, у вкладенні Ви отримали персональне запрошення на виставку.</p><p>З повагою ПрАТ "Гал-Експо"</p>`// plain text body
+        html: `<p>Шановний(а) <strong>${req.body.prizv} ${req.body.name} ${req.body.pobatkovi}</strong>, у вкладенні Ви отримали персональне запрошення на виставку.</p>
+                <p>Якщо Ви не змогли зберегти чи отримати на пошту повне запрошення зі штрихкодом то покажіть цей код на реєстрації:</p>
+                <p><strong>${req.body.regnum}</strong></p>
+                <p>З повагою ПрАТ "Гал-Експо"</p>`// plain text body
     };
     transporter.sendMail(mailOptions, function (err, info) {
         if(err){

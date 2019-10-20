@@ -104,8 +104,9 @@ export class InviteComponent implements OnInit, OnDestroy{
       },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
-    let worker = html2pdf().set(opt).from(element);
-    return worker.save()
+    //let worker = html2pdf().set(opt).from(element);
+    let worker = html2pdf(element, opt);
+    //return worker.save()
     //html2pdf(element);
   }
 
@@ -116,12 +117,19 @@ export class InviteComponent implements OnInit, OnDestroy{
       margin:       0,
       filename:     'invite.pdf',
       image:        { type: 'jpeg', quality: 1 },
-      html2canvas:  { scale: 2 },
+      html2canvas:  { 
+        scale: 2,
+        imageTimeout: 0,
+      },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
-    return html2pdf().set(opt).from(element).outputPdf('datauristring').then(data => {
-      //console.log('PDFdata: ',data);  
-      //this.invitePDF = data;
+
+    // return html2pdf().set(opt).from(element).outputPdf('datauristring').then(data => {
+    //   //console.log('PDFdata: ',data);  
+    //   //this.invitePDF = data;
+    //   this.sendEmail(data);
+    // });
+    return html2pdf(element, opt).outputPdf('datauristring').then(data => {
       this.sendEmail(data);
     });
   }
