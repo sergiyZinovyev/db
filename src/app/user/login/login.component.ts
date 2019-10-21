@@ -44,7 +44,8 @@ export class LoginComponent implements OnInit {
 
   loginForm = this.fb.group({
     email: ['', [Validators.email, Validators.required]],
-    cellphone: ['', [Validators.pattern('380[0-9]{9}'), Validators.required]]
+    cellphone: ['', [Validators.pattern('380[0-9]{9}'), Validators.required]],
+    captcha: ['']
   })
 
 
@@ -69,6 +70,7 @@ export class LoginComponent implements OnInit {
     if(this.loginForm.get('email').valid || this.loginForm.get('cellphone').valid){
       this.warning = '';
       this.user.setUserLogData(this.loginForm.value);
+      this.loginForm.patchValue({captcha: capcha})
       let get=this.server.post(this.loginForm.value, "get").subscribe(data =>{
         console.log("data login: ", data);
         //if(data == ''){this.router.navigate(['user/registration']);}  

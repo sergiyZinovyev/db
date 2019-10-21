@@ -17,6 +17,8 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
   subUserData;
 
+  captcha;
+
   submitButtonText: string = '';
   edit: boolean = false;
   editData;
@@ -84,6 +86,8 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     checkEmail: [false, []],
     checkPhone: [false, []],
 
+    captcha: [''],
+
     email: [this.user.userLogData.email, [Validators.email]],
     prizv: ['', [Validators.required]],
     city: ['', [Validators.required]],
@@ -138,6 +142,8 @@ export class RegistrationComponent implements OnInit, OnDestroy {
           table: ['', []],
           checkEmail: [false, []],
           checkPhone: [false, []],
+
+          captcha: [''],
 
           email: [value[0].email, [Validators.email]],
           prizv: [value[0].prizv, [Validators.required]],
@@ -255,7 +261,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       regnum: this.loginForm.get('regnum').value
     });
     this.isLoadingResults = true;
-    this.loginForm.patchValue({potvid: this.server.getStringExhibForm(this.exhibForm.value)}) //змінюємо поле з виставками
+    this.loginForm.patchValue({potvid: this.server.getStringExhibForm(this.exhibForm.value)}) //змінюємо поле з виставками 
     this.loginForm.patchValue({table: 'visitors_create'}) //змінюємо поле з таблицею в яку вносити дані
     console.log('this.loginForm.value - after: ',this.loginForm.value);
     let post = this.server.post(this.loginForm.value, "createInVisitorsCreate").subscribe(data =>{
@@ -339,6 +345,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
   submit(capcha){
     console.log(`Resolved captcha with response: ${capcha}`);
+    this.captcha = capcha;
     this.worningCheck = '';
     if(this.loginForm.get('prizv').valid &&
        this.loginForm.get('city').valid &&
@@ -462,6 +469,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(){
     console.log('destroy reg');
+    this.loginForm.patchValue({captcha: this.captcha})
     this.user.setUserLogData(this.loginForm.value);
     //this.user.setUserData(this.loginForm.value);
     this.subUserData.unsubscribe();

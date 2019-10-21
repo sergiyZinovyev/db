@@ -1,3 +1,5 @@
+//var bodyParser = require('body-parser');
+var request = require('request');
 var Visitors = require('../models/sql-visitors');
 var Shared = require('../controllers/shared');
 //const jwt = require('jsonwebtoken');
@@ -18,6 +20,48 @@ const JWT_Secret = 'secret_key_ge';
 //         }
 //     })
 // }
+
+
+//-------------------------------------------------------------------------------------------------------------
+//перевірка google reCaptcha2
+exports.reCaptcha2 = function(req, res, next) {
+    console.log("reCaptcha2 REPORT: req.body.captcha=", req.body.captcha);
+    console.log("reCaptcha2 REPORT: req.connection.remoteAddress=", req.connection.remoteAddress);
+    // g-recaptcha-response is the key that browser will generate upon form submit.
+    // if its blank or null means user has not selected the captcha, so return the error.
+    if(req.body.captcha === undefined || req.body.captcha === '' || req.body.captcha === null) {
+        return res.json({"responseCode" : 1,"responseDesc" : "Please select captcha"});
+    }
+    // Put your secret key here.
+    var secretKey = "6Lcp7r0UAAAAAMe-wyEqNCs8eGtE6UP8W1swBxxb";
+    // req.connection.remoteAddress will provide IP address of connected user.
+    var verificationUrl = "https://www.google.com/recaptcha/api/siteverify?secret=" + secretKey + "&response=" + req.body.captcha + "&remoteip=" + req.connection.remoteAddress;
+    // Hitting GET request to the URL, Google will respond with success or error scenario.
+    request(verificationUrl,function(error,response,body) {
+        body = JSON.parse(body);
+        console.log("reCaptcha2 REPORT: body=", body);
+        // Success will be true or false depending upon captcha validation.
+        if(body.success !== undefined && !body.success) {
+            console.log("reCaptcha2 REPORT: Failed captcha verification");
+            return res.send([
+                {
+                    "responseCode": 1,
+                    "responseDesc": "Failed captcha verification"
+                },
+            ]);
+        }
+        // res.json({"responseCode" : 0,"responseDesc" : "Sucess"});
+        // res.send([
+        //     {
+        //         "responseCode": 0,
+        //         "responseDesc": "Sucess"
+        //     },
+        // ]);
+        console.log("reCaptcha2 REPORT: responseDesc: Sucess");
+        return next();
+    });
+}
+
 
 
 //-------------------------------------------------------------------------------------------------------------

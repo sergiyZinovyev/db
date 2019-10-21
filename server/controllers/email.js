@@ -6,8 +6,7 @@ let testEmailAccount = nodemailer.createTestAccount();
 var transporter = nodemailer.createTransport({
     // service: 'gmail',
     // auth: {
-    //     user: 'thrion1@gmail.com',
-    //     pass: 'grthrangel666'
+    //    
     // }
     host: 'smtp.galexpo.com.ua',
     port: 587,
@@ -17,7 +16,8 @@ var transporter = nodemailer.createTransport({
         rejectUnauthorized: false
     },
     auth: {
-     
+        
+
     }
 });
 
