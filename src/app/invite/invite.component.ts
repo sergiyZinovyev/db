@@ -72,8 +72,6 @@ export class InviteComponent implements OnInit, OnDestroy{
       }
     });
 
-    
-
   }
 
   onLogin(){

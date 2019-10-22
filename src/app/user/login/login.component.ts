@@ -71,7 +71,7 @@ export class LoginComponent implements OnInit {
       this.warning = '';
       this.user.setUserLogData(this.loginForm.value);
       this.loginForm.patchValue({captcha: capcha})
-      let get=this.server.post(this.loginForm.value, "get").subscribe(data =>{
+      let get=this.server.post(this.loginForm.value, "get2").subscribe(data =>{
         console.log("data login: ", data);
         //if(data == ''){this.router.navigate(['user/registration']);}  
         if(data[0]){

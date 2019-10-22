@@ -16,7 +16,7 @@ var transporter = nodemailer.createTransport({
         rejectUnauthorized: false
     },
     auth: {
-        
+       
 
     }
 });
@@ -24,7 +24,7 @@ var transporter = nodemailer.createTransport({
 exports.sendEmail = function(req, res){
     //console.log(req.body.file);
     //res.send(req.body);
-    //fs.createWriteStream('server/img/file.pdf').write(req.body.file.buffer);
+    //fs.createWriteStream('server/img/file.pdf').write(req.body.file.buffer);  
     // var base64Data = req.body.file.replace(/^data:image\/png;base64,/, "");
     // fs.writeFile('server/img/file.pdf', base64Data, 'base64', function(err) {
     // console.log(err);

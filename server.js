@@ -134,7 +134,10 @@ app.post("/editPro", urlencodedParser, visitorsController.editPro)
 app.post("/editPro2", urlencodedParser, visitorsController.editPro2)
 
 //отримання запису по електронній адресі або мобільному з 3 таблиць
-app.post("/get", cors(), urlencodedParser, authController.reCaptcha2, visitorsController.getRowOnCond2);
+app.post("/get", cors(), urlencodedParser, visitorsController.getRowOnCond2);
+
+//отримання запису по електронній адресі або мобільному з 3 таблиць authController.reCaptcha2
+app.post("/get2", cors(), urlencodedParser, authController.reCaptcha2, visitorsController.getRowOnCond2);
 
 //отримання запису по вказаній умові
 app.post("/get_spec_cond", cors(), urlencodedParser, visitorsController.getSpecCond);
