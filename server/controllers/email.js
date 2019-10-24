@@ -11,7 +11,7 @@ var transporter = nodemailer.createTransport({
     host: 'smtp.galexpo.com.ua',
     port: 587,
     secure: false, //disable SSL    
-    requireTLS: true, //Force TLS
+    requireTLS: true, //Force TLS 
     tls: {
         rejectUnauthorized: false
     },

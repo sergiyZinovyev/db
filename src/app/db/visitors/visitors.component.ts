@@ -38,24 +38,19 @@ export class VisitorsComponent implements OnInit {
   nameBut: string = "Заявки на внесення";
 
   displayedColumns: string[] = [
-    //'select',
     'regnum', 
     'namepovne', 
     'email', 
     'cellphone', 
-    'city', 
     'sferadij',
-    'posada',
-    'm_robotu',
-    'type',
+    'regionid',
     'potvid',
-    'datawnesenny',
     'select',
   ];
   displayedColumns2 = this.module.addText(this.displayedColumns, 'f_'); //рядок таблиці з фільтрами
   keyData = [];
   dataSource = new MatTableDataSource();
-  viewData; //дані для таблиць отримані з БД
+  viewData; //дані для таблиць отримані з БД 
   
   filterData: {filterValue: any, fild: string}[] = [] // дані для фільтрації viewData  
   
@@ -155,10 +150,17 @@ export class VisitorsComponent implements OnInit {
         })
         this.i = i+1;
       }
-      this.dataSource.data = this.viewData;
+      this.dataSource.data = this.viewData.sort(this.compareNumeric);;
       console.log("viewData: ", this.viewData);
     });
   }
+
+  compareNumeric(a, b) {
+    if (a.regnum < b.regnum) return 1;
+    if (a.regnum == b.regnum) return 0;
+    if (a.regnum > b.regnum) return -1;
+  }
+
 
   // керує фільтрацією (filterValue - значення фільтру, fild - поле фільтру)
   // повертає новий this.dataSource.data

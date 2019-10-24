@@ -36,6 +36,98 @@ export class DictionaryService {
       id: 'm_robotu',
       ukr: 'місце роботи'
     },
+    {
+      id: 'regnum',
+      ukr: 'ID відвідувача'
+    },
+    {
+      id: 'email',
+      ukr: 'електронна пошта'
+    },
+    {
+      id: 'city',
+      ukr: 'місто'
+    },
+    {
+      id: 'sferadij',
+      ukr: 'сфера діяльності'
+    },
+    {
+      id: 'posada',
+      ukr: 'посада'
+    },
+    {
+      id: 'type',
+      ukr: 'рівень'
+    },
+    {
+      id: 'potvid',
+      ukr: 'потенційне відвідування'
+    },
+    {
+      id: 'datawnesenny',
+      ukr: 'дата внесення'
+    },
+    {
+      id: 'select',
+      ukr: 'обрати'
+    },
+    {
+      id: 'prizv',
+      ukr: 'прізвище'
+    },
+    {
+      id: 'countryid',
+      ukr: 'країна'
+    },
+    {
+      id: 'postindeks',
+      ukr: 'поштовий індекс'
+    },
+    {
+      id: 'regionid',
+      ukr: 'регіон'
+    },
+    {
+      id: 'address',
+      ukr: 'поштова адреса'
+    },
+    {
+      id: 'postaddreses',
+      ukr: 'повна адреса'
+    },
+    {
+      id: 'telephon',
+      ukr: 'телефон'
+    },
+    {
+      id: 'pobatkovi',
+      ukr: 'по батькові'
+    },
+    {
+      id: 'gender',
+      ukr: 'стать'
+    },
+    {
+      id: 'kompeten',
+      ukr: 'компетенція'
+    },
+    {
+      id: 'datelastcor',
+      ukr: 'останнє редагування'
+    },
+    {
+      id: 'rating',
+      ukr: 'рейтинг'
+    },
+    {
+      id: 'ins_user',
+      ukr: 'вніс дані'
+    },
+    {
+      id: 'xxxxxxxxx',
+      ukr: 'xxxxxxxxxx'
+    },
 
   ]
 
