@@ -83,6 +83,9 @@ app.post("/delete", authController.checkAuth, urlencodedParser, visitorsControll
 //отримати запис з таблиць visitors, visitors_create по id
 app.get("/checkIdVisitor", authController.checkAuth, visitorsController.checkIdVisitor);
 
+//отримання запису по електронній адресі або мобільному з 3 таблиць
+app.post("/get3", cors(), urlencodedParser, authController.checkAuth, visitorsController.getRowOnCond2);
+
 //-----------exhibition_vis---------------
 
 //отримати всі записи про відвідувачів з вказаної виставки 

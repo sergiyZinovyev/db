@@ -204,134 +204,134 @@ export class VisexhibComponent implements OnInit, OnDestroy {
   }
 
   // тимчасові дані з сервіса
-  getTemporaryBd(){
-    //this.isLoadingResults = true;
-    this.keyData = [];
-    console.log('this.keyDataX: ',this.keyData);
-    //отримуємо з бази дані про зареєстрованих відвідувачів вказаної виставки
-    let data = this.dbvisex.dataVisex;
+  // getTemporaryBd(){
+  //   //this.isLoadingResults = true;
+  //   this.keyData = [];
+  //   console.log('this.keyDataX: ',this.keyData);
+  //   //отримуємо з бази дані про зареєстрованих відвідувачів вказаної виставки
+  //   let data = this.dbvisex.dataVisex;
     
-      console.log("data: ", data);
-      //this.isLoadingResults = false;
-      if(data[0].rights){
-        // перевіряємо права користувача, видаємо повідомлення, якщо немає прав
-        if(this.server.accessIsDenied(data[0].rights)) return;
-      }
-      //console.log('this.keyData0: ',this.keyDataX);
-      for (var key in data[0]) {
-        // перебираємо всі назви ключів першого обєкта, та записуємо в масив, щоб визначити назви колонок 
-        //console.log('this.keyData1: ',this.keyDataX);
-        this.keyData.push(key);
-        //console.log('this.keyData2: ',this.keyDataX);
-      }
+  //     console.log("data: ", data);
+  //     //this.isLoadingResults = false;
+  //     if(data[0].rights){
+  //       // перевіряємо права користувача, видаємо повідомлення, якщо немає прав
+  //       if(this.server.accessIsDenied(data[0].rights)) return;
+  //     }
+  //     //console.log('this.keyData0: ',this.keyDataX);
+  //     for (var key in data[0]) {
+  //       // перебираємо всі назви ключів першого обєкта, та записуємо в масив, щоб визначити назви колонок 
+  //       //console.log('this.keyData1: ',this.keyDataX);
+  //       this.keyData.push(key);
+  //       //console.log('this.keyData2: ',this.keyDataX);
+  //     }
 
-      for (let i=0; i<this.displayedColumns.length; i++){
-        //видаляємо з назв колонок ті які мають бути виведені на екрані
-        this.keyData.splice(this.module.checkArrIdVal(this.keyData, this.displayedColumns[i]), 1)
-      }
-      console.log('startFor');
-      this.viewData = []; // створюємо новий масив з отриманх даних 
+  //     for (let i=0; i<this.displayedColumns.length; i++){
+  //       //видаляємо з назв колонок ті які мають бути виведені на екрані
+  //       this.keyData.splice(this.module.checkArrIdVal(this.keyData, this.displayedColumns[i]), 1)
+  //     }
+  //     console.log('startFor');
+  //     this.viewData = []; // створюємо новий масив з отриманх даних 
       
-      for(let i=0; i>=0; i++){
-        if(!data[i]){break};
-        this.viewData.push({
-          id_vis: data[i].id_vis,
-          id: data[i].id,
-          id_exhibition: data[i].id_exhibition,
-          fake_id: data[i].fake_id,
-          id_visitor: data[i].id_visitor,
-          registered: data[i].registered, 
-          visited: data[i].visited, 
-          date_vis: this.dateFormat(data[i].date_vis),
-          date_reg: this.dateFormat(data[i].date_reg),
-          realname: data[i].realname,
+  //     for(let i=0; i>=0; i++){
+  //       if(!data[i]){break};
+  //       this.viewData.push({
+  //         id_vis: data[i].id_vis,
+  //         id: data[i].id,
+  //         id_exhibition: data[i].id_exhibition,
+  //         fake_id: data[i].fake_id,
+  //         id_visitor: data[i].id_visitor,
+  //         registered: data[i].registered, 
+  //         visited: data[i].visited, 
+  //         date_vis: this.dateFormat(data[i].date_vis),
+  //         date_reg: this.dateFormat(data[i].date_reg),
+  //         realname: data[i].realname,
 
-          cellphone: data[i].cellphone,
-          city: data[i].city, 
-          email: data[i].email, 
-          prizv: data[i].prizv, 
-          regnum: data[i].regnum,
-          potvid: data[i].potvid,
-          name: data[i].name,
-          namepovne: data[i].namepovne,
-          postaddreses: data[i].postaddreses,
-          pobatkovi: data[i].pobatkovi,
-          gender: data[i].gender,
-          m_robotu: data[i].m_robotu,
-          sferadij: data[i].sferadij,
-          posada: data[i].posada,
-          type: data[i].type,
-          kompeten: data[i].kompeten, 
-          datawnesenny: this.dateFormat(data[i].datawnesenny),
-          datelastcor: this.dateFormat(data[i].datelastcor),
-          ins_user: data[i].ins_user,
-          countryid: data[i].countryid,
-          postindeks: data[i].postindeks,
-          regionid: data[i].regionid,
-          address: data[i].address,
-          telephon: data[i].telephon,
-          rating: data[i].rating
-        })
-        this.i = i+1;
-      }
-      console.log('finishFor');
+  //         cellphone: data[i].cellphone,
+  //         city: data[i].city, 
+  //         email: data[i].email, 
+  //         prizv: data[i].prizv, 
+  //         regnum: data[i].regnum,
+  //         potvid: data[i].potvid,
+  //         name: data[i].name,
+  //         namepovne: data[i].namepovne,
+  //         postaddreses: data[i].postaddreses,
+  //         pobatkovi: data[i].pobatkovi,
+  //         gender: data[i].gender,
+  //         m_robotu: data[i].m_robotu,
+  //         sferadij: data[i].sferadij,
+  //         posada: data[i].posada,
+  //         type: data[i].type,
+  //         kompeten: data[i].kompeten, 
+  //         datawnesenny: this.dateFormat(data[i].datawnesenny),
+  //         datelastcor: this.dateFormat(data[i].datelastcor),
+  //         ins_user: data[i].ins_user,
+  //         countryid: data[i].countryid,
+  //         postindeks: data[i].postindeks,
+  //         regionid: data[i].regionid,
+  //         address: data[i].address,
+  //         telephon: data[i].telephon,
+  //         rating: data[i].rating
+  //       })
+  //       this.i = i+1;
+  //     }
+  //     console.log('finishFor');
 
-      console.log('start');
-      console.log("viewData1: ", this.viewData);
-      //this.dataSource.data = this.viewData;
-      console.log('finish');
+  //     console.log('start');
+  //     console.log("viewData1: ", this.viewData);
+  //     //this.dataSource.data = this.viewData;
+  //     console.log('finish');
       
-      //this.isLoadingResults = false;
+  //     //this.isLoadingResults = false;
  
-  }
+  // }
 
-  // додає новий рядок (не з бази)
-  pushRow(data){
-    this.getTemporaryBd();
-    this.viewData.push({
-      id_vis: '',
-      id: '',
-      id_exhibition: data.id_exhibition,
-      fake_id: data.fake_id,
-      id_visitor: data.id_visitor,
-      registered: '', 
-      visited: '1', 
-      date_vis: this.dateFormat(new Date()),
-      date_reg: '',
-      realname: localStorage.getItem('user'),
+  // // додає новий рядок (не з бази)
+  // pushRow(data){
+  //   this.getTemporaryBd();
+  //   this.viewData.push({
+  //     id_vis: '',
+  //     id: '',
+  //     id_exhibition: data.id_exhibition,
+  //     fake_id: data.fake_id,
+  //     id_visitor: data.id_visitor,
+  //     registered: '', 
+  //     visited: '1', 
+  //     date_vis: this.dateFormat(new Date()),
+  //     date_reg: '',
+  //     realname: localStorage.getItem('user'),
 
-      cellphone: '',
-      city: '', 
-      email: '', 
-      prizv: '', 
-      regnum: '',
-      potvid: '',
-      name: '',
-      namepovne: '',
-      postaddreses: '',
-      pobatkovi: '',
-      gender: '',
-      m_robotu: '',
-      sferadij: '',
-      posada: '',
-      type: '',
-      kompeten: '', 
-      datawnesenny: '',
-      datelastcor: '',
-      ins_user: '',
-      countryid: '',
-      postindeks: '',
-      regionid: '',
-      address: '',
-      telephon: '',
-      rating: ''
-    })
+  //     cellphone: '',
+  //     city: '', 
+  //     email: '', 
+  //     prizv: '', 
+  //     regnum: '',
+  //     potvid: '',
+  //     name: '',
+  //     namepovne: '',
+  //     postaddreses: '',
+  //     pobatkovi: '',
+  //     gender: '',
+  //     m_robotu: '',
+  //     sferadij: '',
+  //     posada: '',
+  //     type: '',
+  //     kompeten: '', 
+  //     datawnesenny: '',
+  //     datelastcor: '',
+  //     ins_user: '',
+  //     countryid: '',
+  //     postindeks: '',
+  //     regionid: '',
+  //     address: '',
+  //     telephon: '',
+  //     rating: ''
+  //   })
 
-    console.log('start2');
-    console.log("viewData2: ", this.viewData);
-    this.dataSource.data = this.viewData.sort(this.compareNumeric);
-    console.log('finish2');
-  }
+  //   console.log('start2');
+  //   console.log("viewData2: ", this.viewData);
+  //   this.dataSource.data = this.viewData.sort(this.compareNumeric);
+  //   console.log('finish2');
+  // }
 
 
   compareNumeric(a, b) {

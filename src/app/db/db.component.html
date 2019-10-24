@@ -1,8 +1,16 @@
 <div class="back">
     <div class="back2">
         <nav class="navbar navbar-dark bg-dark justify-content-between text-info py-1 pr-1 shadow-sm fixed-top">
-            <div>
-                <span class="baza">BAZA 2.0</span>
+            
+            <div class="d-flex">
+                <div class='d-flex align-items-center'>
+                    <div>
+                        <div class="baza">BAZA 2.0</div>
+                        <div class="baza-v">v0.5.17</div>
+                    </div>
+                    
+                </div>
+                
                 <button mat-icon-button [matMenuTriggerFor]="menu" class="mx-2 font-weight-bold"><mat-icon>menu</mat-icon></button>
                 <mat-menu #menu="matMenu">
                     <button mat-menu-item (click)='getItemMenu("dashboard")'>Головна</button>

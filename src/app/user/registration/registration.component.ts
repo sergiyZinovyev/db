@@ -13,6 +13,8 @@ import { Router } from '@angular/router';
 })
 export class RegistrationComponent implements OnInit, OnDestroy {
   
+  visibleCaptcha: boolean = true; //визначає чи застосовувати рекапчу
+
   myExhib = ['ТурЕКСПО'];
 
   subUserData;
@@ -127,6 +129,11 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    if(this.server.frontURL.searchParams.has('exhibreg')){
+      //параметр 'exhibreg' задається під час реєстрації на виставці і свідчить про те що перехід відбувся звідти
+      //в такому разі рекапчу не застосовуємо
+      this.visibleCaptcha = false;
+    }
     this.getMyExhib();
     this.getRegion('region');
     //this.submitButtonText = this.createText;
@@ -343,7 +350,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     }); 
   }
 
-  submit(capcha){
+  submit(capcha?){
     console.log(`Resolved captcha with response: ${capcha}`);
     this.captcha = capcha;
     this.worningCheck = '';

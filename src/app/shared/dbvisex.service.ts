@@ -29,7 +29,7 @@ export class DbvisexService {
       date_reg: undefined,
       fake_id: '0'
     };
-    let get=this.server.post(this.user.userLogData, "get").subscribe(data =>{ //отримуємо нові дані з бази
+    let get=this.server.post(this.user.userLogData, "get").subscribe(data =>{ //отримуємо нові дані з бази 
       console.log("data: ", data);
       if (data == null){
         console.log("visitor is not exist")

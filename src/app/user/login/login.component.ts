@@ -22,6 +22,8 @@ export class LoginComponent implements OnInit {
 
   myCaptha;
 
+  visibleCaptcha: boolean = true; //визначає чи застосовувати рекапчу
+
   matcher = new MyErrorStateMatcher();
   warning = '';
 
@@ -35,6 +37,11 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     console.log('window.location: ',window.location);
     this.server.setFrontURL(window.location);
+    if(this.server.frontURL.searchParams.has('exhibreg')){
+      //параметр 'exhibreg' задається під час реєстрації на виставці і свідчить про те що перехід відбувся звідти
+      //в такому разі рекапчу не застосовуємо
+      this.visibleCaptcha = false;
+    }
   }
 
   getCurrURL(){
@@ -49,7 +56,7 @@ export class LoginComponent implements OnInit {
   })
 
 
-  login(capcha) {
+  login(capcha?) {
     // let capcha = capcha_f;
     // if(!capcha_f){
     //   if(!this.myCaptha){return console.log('reCaptcha is udefined')}
@@ -71,18 +78,36 @@ export class LoginComponent implements OnInit {
       this.warning = '';
       this.user.setUserLogData(this.loginForm.value);
       this.loginForm.patchValue({captcha: capcha})
-      let get=this.server.post(this.loginForm.value, "get2").subscribe(data =>{
-        console.log("data login: ", data);
-        //if(data == ''){this.router.navigate(['user/registration']);}  
-        if(data[0]){
-          this.user.setUserData(data);
-          this.router.navigate(['user/registration']);
-        }
-        if(data){
-          console.log("unsubscribe")
-          return get.unsubscribe();
-        }
-      });
+      //обираємо який метод get застосувати get2 - з рекапчею чи get3 - без рекапчі але з аутентифікацією
+      if(this.visibleCaptcha){
+        let get=this.server.post(this.loginForm.value, "get2").subscribe(data =>{
+          console.log("data login: ", data);
+          //if(data == ''){this.router.navigate(['user/registration']);}  
+          if(data[0]){
+            this.user.setUserData(data);
+            this.router.navigate(['user/registration']);
+          }
+          if(data){
+            console.log("unsubscribe")
+            return get.unsubscribe();
+          }
+        });
+      }
+      else{
+        let get=this.server.post(this.loginForm.value, "get3").subscribe(data =>{
+          console.log("data login: ", data);
+          //if(data == ''){this.router.navigate(['user/registration']);}  
+          if(data[0]){
+            this.user.setUserData(data);
+            this.router.navigate(['user/registration']);
+          }
+          if(data){
+            console.log("unsubscribe")
+            return get.unsubscribe();
+          }
+        });
+      }
+      
       
       return this.router.navigate(['user/registration']);
     }
