@@ -35,6 +35,22 @@ exports.all = function(id, cb){
   })
 }
 
+//отримання всіх записів з visitors
+exports.getVisitors = function(cb){
+  let sql = `SELECT * 
+	FROM
+	(SELECT * FROM visitors) AS vis 
+	LEFT OUTER JOIN 
+	(SELECT id, realname FROM usersaccount) AS users 
+		ON vis.ins_user = users.id 
+	LEFT OUTER JOIN 
+	(SELECT countryid, regionid, teretory FROM region) AS reg 
+		ON vis.countryid = reg.countryid AND reg.regionid=0 `;
+  db.get().query(sql, function(err, data) {
+    cb(err, data)
+  })
+}
+
 //отримання відвідувачів виставки
 // exports.visexhib = function(data, cb){
 //   let sql = `SELECT *

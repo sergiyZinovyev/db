@@ -121,7 +121,7 @@ exports.visexhib = function(data, condition, cb){
   })
 }
 
-//отримання відвідувача виставки
+//отримання відвідувача виставки 
 exports.checkViv = function(data, cb){
   let sql = `SELECT * FROM exhibition_vis WHERE (id_visitor=? AND id_exhibition=?)`;
   db.get().query(sql, data, function(err, data) {
