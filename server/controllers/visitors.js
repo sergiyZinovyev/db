@@ -28,6 +28,21 @@ exports.all = function(req, res) {
     }     
 };
 
+
+//-------------------------------------------------------------------------------------------------------------
+// отримати візіторів
+exports.getVisitors = function(req, res) {
+    let table;
+    table = req.params.id;
+    Visitors.getVisitors(table, function(err, doc) {
+        if (err) {
+            console.log(err);
+            return res.sendStatus(500);
+        }
+        res.send(doc);
+    });    
+};
+
 //-------------------------------------------------------------------------------------------------------------
 exports.checkIdVisitor = function(req, res) {
     Visitors.getRowOnCondFromTable([req.query.id], 'regnum', 'visitors_create', function(err, doc){

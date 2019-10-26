@@ -36,16 +36,30 @@ exports.all = function(id, cb){
 }
 
 //отримання всіх записів з visitors
-exports.getVisitors = function(cb){
+exports.getVisitors = function(id, cb){
   let sql = `SELECT * 
-	FROM
-	(SELECT * FROM visitors) AS vis 
-	LEFT OUTER JOIN 
-	(SELECT id, realname FROM usersaccount) AS users 
-		ON vis.ins_user = users.id 
-	LEFT OUTER JOIN 
-	(SELECT countryid, regionid, teretory FROM region) AS reg 
-		ON vis.countryid = reg.countryid AND reg.regionid=0 `;
+  FROM
+  (SELECT * FROM ${id}) AS vis 
+  LEFT OUTER JOIN 
+    (SELECT id AS userid, realname FROM usersaccount) AS users 
+    ON vis.ins_user = users.userid 
+  LEFT OUTER JOIN 
+    (SELECT countryid AS reg_countryid, regionid AS reg_regionid, teretory AS country FROM region) AS reg 
+    ON vis.countryid = reg.reg_countryid AND reg.reg_regionid=0
+  LEFT OUTER JOIN 
+    (SELECT countryid AS reg2_countryid, regionid AS reg2_regionid, teretory AS region, cityid FROM region) AS reg2 
+    ON vis.regionid = reg2.reg2_regionid AND reg2.reg2_countryid=vis.countryid AND cityid=0
+  LEFT OUTER JOIN 
+    (SELECT id_visitor, GROUP_CONCAT(DISTINCT nameexhibkor SEPARATOR ', ') AS visited_exhib
+      FROM (SELECT id_visitor, nameexhibkor
+      FROM(SELECT *
+          FROM
+          (SELECT * FROM exhibition_vis) AS vis_exhib 
+          LEFT OUTER JOIN 
+          (SELECT numexhib, nameexhibkor FROM exhibitions) AS exhib 
+              ON vis_exhib.id_exhibition = exhib.numexhib) AS exhib_2) AS exhib_3
+      GROUP BY id_visitor) AS exhib_vis 
+    ON vis.regnum = exhib_vis.id_visitor`;
   db.get().query(sql, function(err, data) {
     cb(err, data)
   })

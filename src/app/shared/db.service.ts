@@ -32,10 +32,7 @@ export class DbService {
     console.log('navDB: ', this.navDB);
   }
    
-  // getAllVisitors(){
-  //   this.server.getVisitors().subscribe(data =>{}) 
-  // }
-
+ 
  
 
 }

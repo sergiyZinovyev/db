@@ -58,7 +58,7 @@ export class ServerService {
     return this.http.get(`${this.apiUrl}/db/${prop}?${this.getAuth()}`)
   }
 
-  getCheckViv(idVis, exhib){ //перевірка чи зареєстрований відвідувач
+  getCheckViv(idVis, exhib){ //перевірка чи зареєстрований відвідувач  
     return this.http.get(`${this.apiUrl}/checkViv/?${this.getAuth()}&idVis=${idVis}&exhib=${exhib}`)
   }
 

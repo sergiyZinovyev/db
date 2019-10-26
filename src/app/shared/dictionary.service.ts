@@ -78,6 +78,10 @@ export class DictionaryService {
     },
     {
       id: 'countryid',
+      ukr: 'ID країни'
+    },
+    {
+      id: 'country',
       ukr: 'країна'
     },
     {
@@ -86,6 +90,10 @@ export class DictionaryService {
     },
     {
       id: 'regionid',
+      ukr: 'ID регіону'
+    },
+    {
+      id: 'region',
       ukr: 'регіон'
     },
     {
@@ -122,13 +130,16 @@ export class DictionaryService {
     },
     {
       id: 'ins_user',
-      ukr: 'вніс дані'
+      ukr: 'ID користувача'
+    },
+    {
+      id: 'visited_exhib',
+      ukr: 'відвідані виставки'
     },
     {
       id: 'xxxxxxxxx',
       ukr: 'xxxxxxxxxx'
     },
-
   ]
 
 

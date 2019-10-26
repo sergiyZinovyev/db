@@ -43,7 +43,7 @@ export class VisitorsComponent implements OnInit {
     'email', 
     'cellphone', 
     'sferadij',
-    'regionid',
+    'region',
     'potvid',
     'select',
   ];
@@ -58,7 +58,7 @@ export class VisitorsComponent implements OnInit {
 
   isLoadingResults = true;
 
-  myTimeOut; // id таймаута для відміни таймаута
+  myTimeOut; // id таймаута для відміни таймаута 
 
   exhibs = new FormControl();
 
@@ -141,18 +141,44 @@ export class VisitorsComponent implements OnInit {
           datawnesenny: this.module.dateFormat(data[i].datawnesenny),
           datelastcor: this.module.dateFormat(data[i].datelastcor),
           ins_user: data[i].ins_user,
+          realname: data[i].realname,
           countryid: data[i].countryid,
+          country: data[i].country,
           postindeks: data[i].postindeks,
           regionid: data[i].regionid,
+          region: data[i].region,
           address: data[i].address,
           telephon: data[i].telephon,
-          rating: data[i].rating
+          rating: data[i].rating,
+          visited_exhib: data[i].visited_exhib,
         })
         this.i = i+1;
       }
       this.dataSource.data = this.viewData.sort(this.compareNumeric);;
       console.log("viewData: ", this.viewData);
     });
+  }
+
+  editBD(action){
+    switch (action) {
+      case 'delete':{
+          // some code
+        }
+        break;
+
+      case 'edit':{
+           // some code
+        }
+        break;
+
+      case 'create':{
+          // some code
+       }
+       break;  
+      
+      default:
+        break;
+    }
   }
 
   compareNumeric(a, b) {
@@ -163,7 +189,7 @@ export class VisitorsComponent implements OnInit {
 
 
   // керує фільтрацією (filterValue - значення фільтру, fild - поле фільтру)
-  // повертає новий this.dataSource.data
+  // повертає новий this.dataSource.data 
   filterController(filterValue, fild){
     console.log('filterController/filterValue: ',filterValue);
     let data = this.viewData;

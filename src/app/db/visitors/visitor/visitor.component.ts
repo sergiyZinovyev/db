@@ -106,7 +106,7 @@ export class VisitorComponent implements OnInit {
 
     this.myEmail = this.element.email;
     this.myCellphone = this.element.cellphone;
-    //збираємо форму з виставками
+    //збираємо форму з виставками 
     this.getExhib('exhibitions_dict');
   }
   
