@@ -9,7 +9,19 @@
     <div class="d-flex justify-content-between sticky">
         <span class="ml-5 my-2" [style.color]="headerColor"><strong>{{name}}</strong></span>
         <div>
-            <button mat-icon-button [style.color]="headerColor" aria-label="Example icon-button with a heart icon" [matMenuTriggerFor]="menu">
+            <button 
+                mat-icon-button 
+                matTooltip="Оновити дані" 
+                aria-label="Example icon-button with a heart icon" 
+                [style.color]="headerColor" 
+                (click)='editElementDataSource(viewData, 1)'>
+                <mat-icon>refresh</mat-icon>
+            </button>
+            <button 
+                mat-icon-button 
+                [style.color]="headerColor" 
+                aria-label="Example icon-button with a heart icon" 
+                [matMenuTriggerFor]="menu">
                 <mat-icon>add_box</mat-icon>
             </button>
                 <mat-menu #menu="matMenu" xPosition="after" yPosition="below">
@@ -119,7 +131,7 @@
                 [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
                 <div class="example-element-description">
                     <ng-container *ngIf='element == expandedElement'>
-                    <app-visitor [element]='element' [tableName]='name' (getData)="getBd($event)"></app-visitor>
+                    <app-visitor [element]='element' [tableName]='name' (getData)="editDataSource($event)"></app-visitor>
                     </ng-container>
                 </div>
             </div>

@@ -73,7 +73,7 @@ app.post("/users", authController.users);
 
 // *** захищені роути *** 
 
-//отримати всі записи  про візіторсів з вказаної таблиці   
+//отримати всі записи  про візіторсів з вказаної таблиці    
 app.get("/visitors/:id", authController.checkAuth, visitorsController.getVisitors);
 
 //додавання запису в основну базу

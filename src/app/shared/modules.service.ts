@@ -18,7 +18,7 @@ export class ModulesService {
 
 // ----------------------------------------------------------------------------------------------------------
 
-  // знаходить номер елемента в масиві об'єктів по значенню заданої властивості об'єкта, повертає номер
+  // знаходить номер елемента в масиві об'єктів по значенню заданої властивості(fild) об'єкта, повертає номер
   checkArrOfObjIdVal(array: any, val: any):number {
     if(!array){
       console.log('array is undefined');
@@ -30,6 +30,28 @@ export class ModulesService {
       }
     }
   }
+
+// ----------------------------------------------------------------------------------------------------------
+
+  // знаходить номер елемента в масиві об'єктів по значенню заданої властивості об'єкта(fild), повертає номер
+  checkArrOfObjIdValField(array: any, field: any, val: any):number {
+    if(!array){
+      console.log('array is undefined');
+      return;
+    }
+    if(!array[0][field]){
+      console.log(`field - ${field} in array is undefined`);
+      return;
+    }
+    for (let i: number = 0; i < array.length; i++){
+      if (array[i][field] == val){
+        console.log('id of array: ', i);
+        return i;
+      }
+    }
+    console.log(`value - ${val} in field - ${field} in array is undefined`);
+    return;
+  }  
 
 // ----------------------------------------------------------------------------------------------------------
 

@@ -154,20 +154,21 @@ export class VisitorsComponent implements OnInit {
         })
         this.i = i+1;
       }
-      this.dataSource.data = this.viewData.sort(this.compareNumeric);;
+      this.dataSource.data = this.viewData.sort(this.compareNumeric);
+      //this.dataSource.data = this.viewData;
       console.log("viewData: ", this.viewData);
     });
   }
 
-  editBD(action){
-    switch (action) {
+  editDataSource(action){
+    switch (action[0]) {
       case 'delete':{
-          // some code
+          this.deleteElementDataSource(this.viewData, action[1]);
         }
         break;
 
       case 'edit':{
-           // some code
+          this.editElementDataSource(this.viewData, action[1]);
         }
         break;
 
@@ -185,6 +186,33 @@ export class VisitorsComponent implements OnInit {
     if (a.regnum < b.regnum) return 1;
     if (a.regnum == b.regnum) return 0;
     if (a.regnum > b.regnum) return -1;
+  }
+
+  deleteElementDataSource(dataSource, val){
+    console.log('dataSource: ', dataSource);
+    console.log('val: ', val);
+    //визначаємо номер елемента масива
+    let id = this.module.checkArrOfObjIdValField(dataSource, 'regnum', val);
+    if(id >= 0){
+      dataSource.splice(id, 1);
+    }    
+    console.log('dataSource2: ', dataSource);
+    this.dataSource.data = this.viewData;
+  }
+
+  editElementDataSource(dataSource, val){
+    console.log('editElementDataSource is work!');
+    console.log('dataSource: ', dataSource);
+    console.log('val: ', val);
+    let id = this.module.checkArrOfObjIdValField(dataSource, 'regnum', val);
+    let get = this.server.getAll('checkIdVisitor', val).subscribe(data =>{ 
+      console.log("checkIdVisitor: ", data[0]);
+      if(id >= 0){
+        dataSource.splice(id, 1, data[0]);
+      } 
+      this.dataSource.data = this.viewData;
+      get.unsubscribe();  
+    })
   }
 
 

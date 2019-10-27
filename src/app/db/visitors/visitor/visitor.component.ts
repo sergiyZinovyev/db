@@ -207,7 +207,7 @@ export class VisitorComponent implements OnInit {
           this.worningCheck = '';
           //якщо зроблені необхідні зміни то видаляємо запис з таблиці-заявки 
          // if(this.tableName == 'Заявки на зміну' || this.tableName == 'Заявки на внесення') {this.delete()}
-          this.getData.emit(this.getTableName())
+          this.getData.emit(['edit', this.element.regnum])
         }
         console.log("unsubscribe");
         return post.unsubscribe();
@@ -258,7 +258,7 @@ export class VisitorComponent implements OnInit {
         }
         if(data){
           console.log("unsubscribe");
-          this.getData.emit(this.getTableName());
+          this.getData.emit(['delete', this.element.regnum]);
           return post.unsubscribe();
         }
       });
