@@ -15,7 +15,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   
   visibleCaptcha: boolean = true; //визначає чи застосовувати рекапчу
 
-  myExhib = ['ТурЕКСПО'];
+  myExhib = [];
 
   subUserData;
 
@@ -134,14 +134,15 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       //в такому разі рекапчу не застосовуємо
       this.visibleCaptcha = false;
     }
-    this.getMyExhib();
+    
     this.getRegion('region');
     //this.submitButtonText = this.createText;
     this.subUserData = this.user.userData.subscribe({
       next: (value) => {
         console.log('reg - user.userData: ',value);
-        
-        this.getExhib('exhibitions_dict');
+        this.getMyExhib(data => {
+          this.getExhib('exhibitions_dict', data);
+        })
         // this.exhibForm = this.server.getExhib('exhibitions_dict', this.getArrFromPotvid(), this.myExhib)[0];
         // this.exhib = this.server.getExhib('exhibitions_dict', this.getArrFromPotvid(), this.myExhib)[1];
         this.loginForm = this.fb.group({
@@ -208,7 +209,10 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     })
     // this.exhibForm = this.server.getExhib('exhibitions_dict', this.getArrFromPotvid(), this.myExhib)[0]; 
     // this.exhib = this.server.getExhib('exhibitions_dict', this.getArrFromPotvid(), this.myExhib)[1];
-    this.getExhib('exhibitions_dict');
+    this.getMyExhib(data => {
+      this.getExhib('exhibitions_dict', data);
+    })
+    //this.getExhib('exhibitions_dict');
   }
 
   getIndexArrOfRequest(arr: any, myKey: string): number{
@@ -235,7 +239,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     })
   }
   
-  getExhib(nameTable){
+  getExhib(nameTable, exhibFromCB){
     this.exhibForm = new FormGroup({});
     this.server.get(nameTable).subscribe(data =>{
       this.exhib = new Array;
@@ -248,12 +252,12 @@ export class RegistrationComponent implements OnInit, OnDestroy {
           name: data[i].name,
           kod: data[i].kod
         })
-        if(this.getArrFromPotvid().find(currentValue => currentValue == data[i].name) || this.myExhib.find(currentValue => currentValue == data[i].name)){value = true}
+        if(this.getArrFromPotvid().find(currentValue => currentValue == data[i].name) || exhibFromCB.find(currentValue2 => currentValue2 == data[i].name)){value = true}
         this.exhibForm.addControl(data[i].name, new FormControl(value, Validators.required))
       }
       console.log(this.exhib);
       // this.exhibForm.valueChanges.subscribe(v => {
-      //   this.loginForm.patchValue({potvid: this.server.getStringExhibForm(this.exhibForm.value)}) //змінюємо поле з виставками в загальній формі
+      //   this.loginForm.patchValue({potvid: this.server.getStringExhibForm(this.exhibForm.value)}) //змінюємо поле з виставками в загальній формі 
       // });
     })
   }
@@ -439,37 +443,40 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     return flag;
   }
 
-  getMyExhib(){
+  getMyExhib(cb){
+    let exhibFromBD;
     this.user.getIdExDect(this.server.frontURL.searchParams.get('idex'), data=>{
+      console.log('exhib_dict', data);
       //повертаємо з бази id виставки
       switch (data) {
         case 13:
-          this.myExhib = ['ТурЕКСПО', 'Готельний та рестор. бізнес', 'Континент розваг'];
+          exhibFromBD = ['ТурЕКСПО', 'Готельний та рестор. бізнес', 'Континент розваг'];
           break;
         case 2:
-          this.myExhib = ['БудЕКСПО', 'Вікна-двері-дах', 'Опалення', 'Опалення на твердому паливі', 'Альтернативна енергетика'];
+          exhibFromBD = ['БудЕКСПО', 'Вікна-двері-дах', 'Опалення', 'Опалення на твердому паливі', 'Альтернативна енергетика'];
           break;
         case 8:
-          this.myExhib = ['ГалМЕД'];
+          exhibFromBD = ['ГалМЕД'];
           break;
         case 7:
-          this.myExhib = ['Дентал-УКРАЇНА'];
+          exhibFromBD = ['Дентал-УКРАЇНА'];
           break;
         case 3:
-          this.myExhib = ['Деревообробка'];
+          exhibFromBD = ['Деревообробка'];
           break;
         case 17:
-          this.myExhib = ['ЕлітЕКСПО'];
+          exhibFromBD = ['ЕлітЕКСПО'];
           break;
         case 11:
-          this.myExhib = ['ЄвроАГРО'];
+          exhibFromBD = ['ЄвроАГРО'];
           break;
         case 22:
-          this.myExhib = ['Дитячий світ'];
+          exhibFromBD = ['Дитячий світ'];
           break;
         default:
           break;
       }
+      return cb(exhibFromBD);
     });
   }
 

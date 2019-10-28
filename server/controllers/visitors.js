@@ -43,7 +43,7 @@ exports.getVisitors = function(req, res) {
     });    
 };
 
-//-------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------- 
 exports.checkIdVisitor = function(req, res) {
     Visitors.getRowOnCondFromTable([req.query.id], 'regnum', 'visitors_create', function(err, doc){
         if (err) {

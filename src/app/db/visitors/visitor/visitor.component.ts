@@ -206,7 +206,7 @@ export class VisitorComponent implements OnInit {
         else{
           this.worningCheck = '';
           //якщо зроблені необхідні зміни то видаляємо запис з таблиці-заявки 
-         // if(this.tableName == 'Заявки на зміну' || this.tableName == 'Заявки на внесення') {this.delete()}
+         // if(this.tableName == 'Заявки на зміну' || this.tableName == 'Заявки на внесення') {this.delete()}  
           this.getData.emit(['edit', this.element.regnum])
         }
         console.log("unsubscribe");
