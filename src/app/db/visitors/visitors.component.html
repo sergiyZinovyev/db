@@ -1,11 +1,32 @@
 
-<!-- <div class="example-loading-shade">
+<!-- <div class="example-loading-shade"> 
     <mat-spinner></mat-spinner>
 </div> -->
+<div class="add-item" *ngIf="isAddingItem">
+    <div class="back-add-item-element overflow-auto">
+        <div class="panel-add-item-element d-flex justify-content-between align-items-center sticky-top">
+            <div class="header-panel-add-item-element"><strong>Додати нового відвідвідувача</strong></div>
+            <button 
+                mat-icon-button 
+                matTooltip="Закрити" 
+                aria-label="Example icon-button with a heart icon" 
+                (click)='addNewVisitor()'>
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+        <div class="add-item-element overflow-auto">
+            <app-visitor [element]='' [tableName]='name' (getData)="editDataSource($event)"></app-visitor>
+        </div>
+        
+    </div> 
+</div>
+
+
 <div class="mat-elevation-z8 container-fluid">
     <div class="example-loading-shade" *ngIf="isLoadingResults"> 
         <mat-spinner></mat-spinner>
     </div>
+    
     <div class="d-flex justify-content-between sticky">
         <span class="ml-5 my-2" [style.color]="headerColor"><strong>{{name}}</strong></span>
         <div>
@@ -14,9 +35,19 @@
                 matTooltip="Оновити дані" 
                 aria-label="Example icon-button with a heart icon" 
                 [style.color]="headerColor" 
-                (click)='editElementDataSource(viewData, 1)'>
+                (click)='refreshDataSourse()'>
                 <mat-icon>refresh</mat-icon>
             </button>
+            <ng-container *ngIf='myTable=="visitors"'>
+                <button 
+                    mat-icon-button 
+                    matTooltip="Додати відвідувача" 
+                    aria-label="Example icon-button with a heart icon" 
+                    [style.color]="headerColor" 
+                    (click)='addNewVisitor()'>
+                    <mat-icon>person_add</mat-icon>
+                </button>
+            </ng-container>
             <button 
                 mat-icon-button 
                 [style.color]="headerColor" 

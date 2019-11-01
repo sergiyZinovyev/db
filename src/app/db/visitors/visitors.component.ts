@@ -37,6 +37,8 @@ export class VisitorsComponent implements OnInit {
   headerColor = 'rgb(45, 128, 253)';
   nameBut: string = "Заявки на внесення";
 
+  myTable: string = 'visitors';
+
   displayedColumns: string[] = [
     'regnum', 
     'namepovne', 
@@ -57,6 +59,7 @@ export class VisitorsComponent implements OnInit {
   expandedElement;
 
   isLoadingResults = true;
+  isAddingItem = false;
 
   myTimeOut; // id таймаута для відміни таймаута 
 
@@ -173,7 +176,7 @@ export class VisitorsComponent implements OnInit {
         break;
 
       case 'create':{
-          // some code
+          this.createElementDataSource(this.viewData, action[1]);
        }
        break;  
       
@@ -205,7 +208,7 @@ export class VisitorsComponent implements OnInit {
     console.log('dataSource: ', dataSource);
     console.log('val: ', val);
     let id = this.module.checkArrOfObjIdValField(dataSource, 'regnum', val);
-    let get = this.server.getAll('checkIdVisitor', val).subscribe(data =>{ 
+    let get = this.server.getVisitors(this.myTable, val).subscribe(data =>{ 
       console.log("checkIdVisitor: ", data[0]);
       if(id >= 0){
         dataSource.splice(id, 1, data[0]);
@@ -215,6 +218,26 @@ export class VisitorsComponent implements OnInit {
     })
   }
 
+  createElementDataSource(dataSource, val){
+    // console.log('editElementDataSource is work!');
+    // console.log('dataSource: ', dataSource);
+    // console.log('val: ', val);
+    // let id = this.module.checkArrOfObjIdValField(dataSource, 'regnum', val);
+    // let get = this.server.getVisitors(this.myTable, val).subscribe(data =>{ 
+    //   console.log("checkIdVisitor: ", data[0]);
+    //   if(id >= 0){
+    //     dataSource.splice(id, 1, data[0]);
+    //   } 
+    //   this.dataSource.data = this.viewData;
+    //   get.unsubscribe();  
+    // })
+    this.addNewVisitor()
+  }
+
+
+  addNewVisitor(){
+    this.isAddingItem = !this.isAddingItem;
+  }
 
   // керує фільтрацією (filterValue - значення фільтру, fild - поле фільтру)
   // повертає новий this.dataSource.data 
@@ -243,21 +266,28 @@ export class VisitorsComponent implements OnInit {
   }
 
   butGetEditTable(){
-    this.getBd('visitors_edit');
+    this.myTable = 'visitors_edit'
+    this.getBd(this.myTable);
     this.name = 'Заявки на зміну';
     this.getHeaderColor()
   }
 
   butGetCreateTable(){
-    this.getBd('visitors_create');
+    this.myTable = 'visitors_create'
+    this.getBd(this.myTable);
     this.name = 'Заявки на внесення';
     this.getHeaderColor()
   }
 
   butGetBd(){
-    this.getBd('visitors');
+    this.myTable = 'visitors'
+    this.getBd(this.myTable);
     this.name = 'База відвідувачів';
     this.getHeaderColor()
+  }
+
+  refreshDataSourse(){
+    this.getBd(this.myTable);
   }
 
   getHeaderColor() {

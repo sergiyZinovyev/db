@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const https = require('https');
 const fs = require('fs');
+const compression = require('compression'); 
 //const passport = require('passport');
 //const session = require('express-session');
 //const RedisStore = require('connect-redis')(session);
@@ -27,8 +28,8 @@ const app = express();
 //const host = '192.168.5.107'; //prod host ge
 //const host = '31.41.221.156'; //www host test 
 const host = 'visitors.galexpo.com.ua'; //prod host 
-const port = 7001; //prod
-//const port = 7002; //dev
+//const port = 7001; //prod
+const port = 7002; //dev
 https.createServer({
   key: fs.readFileSync('./server/cert/key.pem'),
   cert: fs.readFileSync('./server/cert/cert.pem')
@@ -41,8 +42,8 @@ https.createServer({
 
 //front-end server
 const ang = express();
-const port2 = 4201; //prod
-//const port2 = 4202; //dev
+//const port2 = 4201; //prod
+const port2 = 4202; //dev
 https.createServer({
   key: fs.readFileSync('./server/cert/key.pem'),
   cert: fs.readFileSync('./server/cert/cert.pem')
@@ -64,7 +65,7 @@ app.use(cors());
 app.use(bodyParser.json({limit: "50mb"}));
 app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
 
-
+app.use(compression());
 
 //отримати запис з таблиці usersaccount для авторизації
 app.post("/users", authController.users);
@@ -76,8 +77,11 @@ app.post("/users", authController.users);
 //отримати всі записи  про візіторсів з вказаної таблиці    
 app.get("/visitors/:id", authController.checkAuth, visitorsController.getVisitors);
 
+// //додавання запису в основну базу
+// app.post("/createVis", authController.checkAuth, urlencodedParser, visitorsController.createNewVis);
+
 //додавання запису в основну базу
-app.post("/createVis", authController.checkAuth, urlencodedParser, visitorsController.createNewVis);
+app.post("/createNewVisAuth", authController.checkAuth, urlencodedParser, visitorsController.createNewVisAuth);
 
 //видалення запису з обраної таблиці
 app.post("/delete", authController.checkAuth, urlencodedParser, visitorsController.delete);

@@ -70,42 +70,47 @@ export class VisitorComponent implements OnInit {
 
   ngOnInit() {
     this.getRegion('region');
-    this.loginForm = this.fb.group({
-      table: ['visitors', []],
-      checkEmail: [false, []],
-      checkPhone: [false, []],
+    if(this.element){
+      this.loginForm = this.fb.group({
+        table: ['visitors', []],
+        checkEmail: [false, []],
+        checkPhone: [false, []],
 
-      email: [this.element.email, [Validators.email, Validators.required]],
-      prizv: [this.element.prizv, [Validators.required]],
-      city: [this.element.city, [Validators.required]],
-      cellphone: [this.element.cellphone, [Validators.pattern('380[0-9]{9}'), Validators.required]],
-      regnum: [this.element.regnum, []],
-      potvid: [this.element.potvid, []],
-      name: [this.element.name, [Validators.required]],
-      postaddreses: [this.element.postaddreses, []],
-      pobatkovi: [this.element.pobatkovi, []],
-      gender: [this.element.gender, []],
-      m_robotu: [this.element.m_robotu, []],
-      sferadij: [this.element.sferadij, []],
-      posada: [this.element.posada, []],
-      type: [this.element.type, []],
-      kompeten: [this.element.kompeten, []],
-      datawnesenny: [this.element.datawnesenny, []],
-      datelastcor: [this.element.datelastcor, []],
-      ins_user: [this.element.ins_user, []],
-      countryid: [String(this.element.countryid), [Validators.required]],
-      regionid: [String(this.element.regionid), [Validators.required]],
-      namepovne: [this.element.namepovne, []],
-      postindeks: [this.element.postindeks, []],
-      address: [this.element.address, []],
-      telephon: [this.element.telephon, []],
-      rating: [this.element.rating, []],
-    }) 
+        email: [this.element.email, [Validators.email, Validators.required]],
+        prizv: [this.element.prizv, [Validators.required]],
+        city: [this.element.city, [Validators.required]],
+        cellphone: [this.element.cellphone, [Validators.pattern('380[0-9]{9}'), Validators.required]],
+        regnum: [this.element.regnum, []],
+        potvid: [this.element.potvid, []],
+        name: [this.element.name, [Validators.required]],
+        postaddreses: [this.element.postaddreses, []],
+        pobatkovi: [this.element.pobatkovi, []],
+        gender: [this.element.gender, []],
+        m_robotu: [this.element.m_robotu, []],
+        sferadij: [this.element.sferadij, []],
+        posada: [this.element.posada, []],
+        type: [this.element.type, []],
+        kompeten: [this.element.kompeten, []],
+        datawnesenny: [this.element.datawnesenny, []],
+        datelastcor: [this.element.datelastcor, []],
+        ins_user: [this.element.ins_user, []],
+        countryid: [String(this.element.countryid), [Validators.required]],
+        regionid: [String(this.element.regionid), [Validators.required]],
+        namepovne: [this.element.namepovne, []],
+        postindeks: [this.element.postindeks, []],
+        address: [this.element.address, []],
+        telephon: [this.element.telephon, []],
+        rating: [this.element.rating, []],
+      }) 
+    
+    
 
-    this.startLoginForm = this.element;
+      this.startLoginForm = this.element;
 
-    this.myEmail = this.element.email;
-    this.myCellphone = this.element.cellphone;
+      this.myEmail = this.element.email;
+      this.myCellphone = this.element.cellphone;
+
+    }
     //збираємо форму з виставками 
     this.getExhib('exhibitions_dict');
   }
@@ -123,7 +128,7 @@ export class VisitorComponent implements OnInit {
   }
 
   // editUser(){
-  //   let post = this.server.post(this.loginForm.value, "edit").subscribe(data =>{
+  //   let post = this.server.post(this.loginForm.value, "edit").subscribe(data =>{ 
   //     console.log("data: ", data);
   //     if(data){
   //       this.getData.emit(this.getTableName());
@@ -154,7 +159,7 @@ export class VisitorComponent implements OnInit {
     return flag;
   }
 
-  editUser(){
+  editUser(req){
     //this.user.setUserData(this.loginForm.value); 
     //this.isLoadingResults = true;
     this.loginForm.patchValue({potvid: this.server.getStringExhibForm(this.exhibForm.value)}) //змінюємо поле з виставками 
@@ -190,9 +195,9 @@ export class VisitorComponent implements OnInit {
     //   // ... щось робимо ....
     //   //myRequest = "editPro";
     //   myRequest = "editPro2";
-    //   //alert('func is complete');
+    //   //alert('func is complete'); 
     // }
-    let post = this.server.post(this.loginForm.value, "editPro2").subscribe(data =>{
+    let post = this.server.post(this.loginForm.value, req).subscribe(data =>{
       console.log('this.loginForm.value: ',this.loginForm.value);
       console.log("dataServer: ", data);
       
@@ -205,9 +210,15 @@ export class VisitorComponent implements OnInit {
         }
         else{
           this.worningCheck = '';
-          //якщо зроблені необхідні зміни то видаляємо запис з таблиці-заявки 
-         // if(this.tableName == 'Заявки на зміну' || this.tableName == 'Заявки на внесення') {this.delete()}  
-          this.getData.emit(['edit', this.element.regnum])
+          //якщо зроблені необхідні зміни то видаляємо запис з таблиці-заявки  
+          if(this.tableName == 'Заявки на зміну' || this.tableName == 'Заявки на внесення') {this.getData.emit(['delete', this.element.regnum]);}  
+          else {
+            if(this.element){
+              this.getData.emit(['edit', this.element.regnum]);
+            }
+            else this.getData.emit(['create', ''])
+            
+          }
         }
         console.log("unsubscribe");
         return post.unsubscribe();
@@ -215,17 +226,17 @@ export class VisitorComponent implements OnInit {
     });
   }
 
-  addUser() {
-    //ще не використовується і до кінця не реалізований
-    let post = this.server.post(this.loginForm.value, "createVis").subscribe(data =>{
-      console.log("data: ", data);
-      if(data){
-        this.getData.emit(this.getTableName());
-        console.log("unsubscribe")
-        return post.unsubscribe();
-      }
-    });
-  }
+  // addUser() {
+  //   //ще не використовується і до кінця не реалізований
+  //   let post = this.server.post(this.loginForm.value, "createVis").subscribe(data =>{
+  //     console.log("data: ", data);
+  //     if(data){
+  //       this.getData.emit(this.getTableName());
+  //       console.log("unsubscribe")
+  //       return post.unsubscribe();
+  //     }
+  //   });
+  // }
 
   getTableName(): string{
     let table: string;
@@ -253,7 +264,7 @@ export class VisitorComponent implements OnInit {
       let post = this.server.post(dataDel, "delete").subscribe(data =>{
         console.log("data: ", data);
         if(data[0]){
-          // перевіряємо права користувача, видаємо повідомлення, якщо немає прав
+          // перевіряємо права користувача, видаємо повідомлення, якщо немає прав 
           if(this.server.accessIsDenied(data[0].rights)) return post.unsubscribe();
         }
         if(data){
@@ -292,6 +303,7 @@ export class VisitorComponent implements OnInit {
   }
 
   submit(){
+    let myReq;
     this.worningCheck = '';
     //перевіряємо валідність обов'язкових полей
     if(this.loginForm.get('prizv').valid &&
@@ -315,7 +327,11 @@ export class VisitorComponent implements OnInit {
           }
           else{
             //обираємо метод (редагування чи внесення нового)
-            this.editUser(); //редагуємо
+            if(this.element){ //якщо в компонент передані дані
+              myReq = 'editPro2'
+            }
+            else myReq = 'createNewVisAuth'
+            this.editUser(myReq);
           }
 
         } 

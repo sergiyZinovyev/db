@@ -36,7 +36,7 @@ exports.all = function(id, cb){
 }
 
 //отримання всіх записів з visitors
-exports.getVisitors = function(id, cb){
+exports.getVisitors = function(id, condition, cb){
   let sql = `SELECT * 
   FROM
   (SELECT * FROM ${id}) AS vis 
@@ -59,7 +59,7 @@ exports.getVisitors = function(id, cb){
           (SELECT numexhib, nameexhibkor FROM exhibitions) AS exhib 
               ON vis_exhib.id_exhibition = exhib.numexhib) AS exhib_2) AS exhib_3
       GROUP BY id_visitor) AS exhib_vis 
-    ON vis.regnum = exhib_vis.id_visitor`;
+    ON vis.regnum = exhib_vis.id_visitor ${condition}`;
   db.get().query(sql, function(err, data) {
     cb(err, data)
   })

@@ -86,10 +86,54 @@ tr.example-element-row:not(.example-expanded-row):active {
  bottom: 0px;
  right: 0;
  background: rgba(0, 0, 0, 0.15);
- z-index: 100;
+ z-index: 1000;
  display: flex;
  align-items: center;
  justify-content: center;
+}
+
+.add-item {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  bottom: 0px;
+  right: 0;
+  background: rgba(0, 0, 0, 0.63);
+  z-index: 190;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+ }
+
+.back-add-item-element{
+  /* display: flex; */
+  background-color:  rgb(197, 220, 255);
+  margin: 30px;
+  border-radius: 10px;
+  height: 710px;
+  z-index: 200;
+}
+
+.add-item-element{
+  display: flex;
+  /* background-color:  rgb(197, 220, 255); */
+  /* margin: 30px; */
+  padding: 25px;
+  border-radius: 10px;
+  /* z-index: 200; */
+}
+
+.panel-add-item-element{
+  border-radius: 10px 10px 0px 0px;
+  /* height: 40px; */
+  background-color: rgb(54, 133, 252);
+}
+
+.header-panel-add-item-element{
+  color: white;
+  padding-left: 20px;
 }
 
 .pos{

@@ -29,12 +29,17 @@ exports.all = function(req, res) {
 };
 
 
-//-------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------- 
 // отримати візіторів
 exports.getVisitors = function(req, res) {
     let table;
+    let condition;
     table = req.params.id;
-    Visitors.getVisitors(table, function(err, doc) {
+    console.log('req.query.id: ',req.query.id);
+    if(req.query.id > 0){condition = `where regnum=${req.query.id}`}
+    else {condition = ''}
+    console.log('condition: ',condition);
+    Visitors.getVisitors(table, condition, function(err, doc) {
         if (err) {
             console.log(err);
             return res.sendStatus(500);
@@ -717,6 +722,41 @@ exports.createCpecTable = function(req, res) {
 }
 //-------------------------------------------------------------------------------------------------------------
 
+//створити новий запис в таблиці visitors_create або visitors (regnum невідомий)
+exports.createNewVisAuth = function(req, res) {
+    let table;
+    ControllersShared.getRights(req.query.login, function(err, doc){
+        if (err) {
+            console.log('err: ',err);
+            return cb(err, null);
+        }
+        else {
+            console.log('rights cb: ', doc.insupdvisitors);
+            if(![1,2,3,4,5].includes(doc.insupdvisitors)){  
+                console.log('у вас немає прав доступу: ', doc.insupdvisitors);
+                return cb(err, [{
+                    "rights": "false",
+                }]);
+            }
+            if([1,2].includes(doc.insupdvisitors)){
+                table = 'visitors_create';
+            }
+            if([3,4,5].includes(doc.insupdvisitors)){
+                table = 'visitors';
+            }
+            createCpecTableIn(req, table, function(err, doc){
+                if (err) {
+                    console.log(err);
+                    return res.sendStatus(500);
+                }
+                console.log('doc: ', doc);
+                return res.send(doc); 
+            });
+        }
+    })
+}
+
+//-------------------------------------------------------------------------------------------------------------
 exports.createNewVis = function(req, res) {
     var visitorData = [
         req.body.regnum,
@@ -1248,6 +1288,7 @@ exports.delete = function(req, res){
 }
 
 //-------------------------------------------------------------------------------------------------------------
+//робить все!
 exports.editPro2 = function(req, res){
     //визначаємо в яких таблицях є такий регнам
     ControllersShared.getTablesOnRegnum(req.body.regnum, function (err, tables) {
