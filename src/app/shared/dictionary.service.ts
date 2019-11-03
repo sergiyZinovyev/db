@@ -10,7 +10,7 @@ export class DictionaryService {
   dictionary: {id: string, ukr: string}[] = [
     {
       id: 'realname',
-      ukr: 'Зареєстрував'
+      ukr: 'Вніс дані'
     },
     {
       id: 'id_visitor',

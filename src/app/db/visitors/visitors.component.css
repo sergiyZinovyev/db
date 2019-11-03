@@ -112,17 +112,17 @@ tr.example-element-row:not(.example-expanded-row):active {
   background-color:  rgb(197, 220, 255);
   margin: 30px;
   border-radius: 10px;
-  height: 710px;
+  height: 740px;
   z-index: 200;
 }
 
 .add-item-element{
   display: flex;
-  /* background-color:  rgb(197, 220, 255); */
+  /* background-color:  rgb(197, 220, 255); */ 
   /* margin: 30px; */
   padding: 25px;
   border-radius: 10px;
-  /* z-index: 200; */
+  /* z-index: 200; */ 
 }
 
 .panel-add-item-element{

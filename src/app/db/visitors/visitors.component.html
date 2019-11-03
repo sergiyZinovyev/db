@@ -15,7 +15,12 @@
             </button>
         </div>
         <div class="add-item-element overflow-auto">
-            <app-visitor [element]='' [tableName]='name' (getData)="editDataSource($event)"></app-visitor>
+            <app-visitor 
+                [element]='' 
+                [tableName]='name' 
+                (getData)="editDataSource($event)"
+                (isLoading)="setIsLoadingResults($event)">
+            </app-visitor>
         </div>
         
     </div> 
@@ -29,7 +34,17 @@
     
     <div class="d-flex justify-content-between sticky">
         <span class="ml-5 my-2" [style.color]="headerColor"><strong>{{name}}</strong></span>
-        <div>
+        <div class="d-flex">
+
+            <!-- <button 
+                mat-icon-button 
+                matTooltip="тест" 
+                aria-label="Example icon-button with a heart icon" 
+                [style.color]="headerColor" 
+                (click)='saveStringAsFile("test text\ntest text2", "test.txt", "text/plain")'>
+                <mat-icon>build</mat-icon>
+            </button> -->
+
             <button 
                 mat-icon-button 
                 matTooltip="Оновити дані" 
@@ -38,6 +53,21 @@
                 (click)='refreshDataSourse()'>
                 <mat-icon>refresh</mat-icon>
             </button>
+
+            <mat-divider [vertical]="true"></mat-divider>
+
+            <button 
+                mat-icon-button 
+                matTooltip="Видалити обрані записи" 
+                aria-label="Example icon-button with a heart icon" 
+                [style.color]="disabled ? disabledColor : headerColor"
+                [disabled]='disabled'
+                (click)='deleteAllCheckId(myTable, arrOfCheckId)'>
+                <mat-icon>delete</mat-icon>
+            </button>
+
+            <mat-divider [vertical]="true"></mat-divider>
+
             <ng-container *ngIf='myTable=="visitors"'>
                 <button 
                     mat-icon-button 
@@ -48,6 +78,36 @@
                     <mat-icon>person_add</mat-icon>
                 </button>
             </ng-container>
+
+            <mat-divider [vertical]="true"></mat-divider>
+
+            <button 
+                mat-icon-button 
+                matTooltip="Зберегти список в файл" 
+                [style.color]="headerColor" 
+                aria-label="Example icon-button with a heart icon" 
+                [matMenuTriggerFor]="menu4">
+                <mat-icon>save</mat-icon>
+            </button>
+                <mat-menu #menu4="matMenu" xPosition="after" yPosition="below">
+                    <ng-container>
+                        <button 
+                            mat-menu-item 
+                            (click)='saveStringAsFile(getListToFile("cellphone", arrOfCheckId, "regnum", dataSource.data), "cellphone.txt", "text/plain")'>
+                            <mat-icon>phone</mat-icon>
+                            телефони
+                        </button>
+                        <button 
+                            mat-menu-item 
+                            (click)='saveStringAsFile(getListToFile("email", arrOfCheckId, "regnum", dataSource.data), "email.txt", "text/plain")'>
+                            <mat-icon>alternate_email</mat-icon>
+                            електронні адреси
+                        </button> 
+                    </ng-container>
+                </mat-menu>
+
+            <mat-divider [vertical]="true"></mat-divider>
+
             <button 
                 mat-icon-button 
                 [style.color]="headerColor" 
@@ -75,7 +135,7 @@
                 <mat-menu #menu3="matMenu" xPosition="after" yPosition="below">
                     <ng-container>
                         <button mat-menu-item (click)='butGetBd()'>База відвідувачів</button>
-                        <button mat-menu-item (click)='butGetCreateTable()'>Заявки на внесення</button>
+                        <button mat-menu-item (click)='butGetCreateTable()'>Заявки на внесення</button> 
                         <button mat-menu-item (click)='butGetEditTable()'>Заявки на зміну</button>
                     </ng-container>
                 </mat-menu>
@@ -162,7 +222,12 @@
                 [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
                 <div class="example-element-description">
                     <ng-container *ngIf='element == expandedElement'>
-                    <app-visitor [element]='element' [tableName]='name' (getData)="editDataSource($event)"></app-visitor>
+                    <app-visitor 
+                        [element]='element' 
+                        [tableName]='name' 
+                        (getData)="editDataSource($event)"
+                        (isLoading)="setIsLoadingResults($event)">
+                    </app-visitor>
                     </ng-container>
                 </div>
             </div>

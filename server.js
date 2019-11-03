@@ -92,7 +92,7 @@ app.get("/checkIdVisitor", authController.checkAuth, visitorsController.checkIdV
 //отримання запису по електронній адресі або мобільному з 3 таблиць
 app.post("/get3", cors(), urlencodedParser, authController.checkAuth, visitorsController.getRowOnCond2);
 
-//-----------exhibition_vis---------------
+//-----------exhibition_vis--------------- 
 
 //отримати всі записи про відвідувачів з вказаної виставки 
 app.get("/visexhib/:id", authController.checkAuth, visitorsExhibController.visexhib);

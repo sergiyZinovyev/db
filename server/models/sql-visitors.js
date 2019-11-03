@@ -269,7 +269,7 @@ exports.getRowOnCondFromTable = function(dataVisitor, fild, table, cb){
 
 //видалення запису
 exports.delete = function(table, id, cb){
-  let sql = `DELETE FROM ${table} WHERE regnum=${id}`;
+  let sql = `DELETE FROM ${table} WHERE regnum IN (${id})`;
   db.get().query(sql, function(err, data) {
     cb(err, data)
   })

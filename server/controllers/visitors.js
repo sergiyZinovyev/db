@@ -1239,7 +1239,7 @@ exports.getSpecCond = function(req, res) {
 
 //-------------------------------------------------------------------------------------------------------------
 // перевіряє права на видалення та видаляє 
-// має отримати req який має містити [req.query.login, req.body.regnum] та назву таблиці з якої робимо видалення
+// має отримати req який має містити [req.query.login, req.body.regnum] та назву таблиці з якої робимо видалення 
 //   !!! винести в окремий файл !!!
 let deleteIn = function(req, tableName, cb) {
     ControllersShared.getRights(req.query.login, function(err, doc){

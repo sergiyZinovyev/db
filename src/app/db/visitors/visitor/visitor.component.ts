@@ -17,12 +17,13 @@ export class VisitorComponent implements OnInit {
   @Input() element: any;
   @Input() tableName: string;
   @Output() getData = new EventEmitter<any>();
+  @Output() isLoading = new EventEmitter<any>();
 
   loginForm = this.fb.group({
-    email: ['', [Validators.email]],
+    email: ['', [Validators.email, Validators.required]],
     prizv: ['', [Validators.required]],
     city: ['', [Validators.required]],
-    cellphone: ['', [Validators.pattern('380[0-9]{9}')]],
+    cellphone: ['', [Validators.pattern('380[0-9]{9}'), Validators.required]],
     regnum: ['', []],
     potvid: ['', []],
     name: ['', [Validators.required]],
@@ -133,7 +134,7 @@ export class VisitorComponent implements OnInit {
   //     if(data){
   //       this.getData.emit(this.getTableName());
   //       console.log("unsubscribe");
-  //       return post.unsubscribe();
+  //       return post.unsubscribe(); 
   //     }
   //   });
   // }
@@ -160,6 +161,7 @@ export class VisitorComponent implements OnInit {
   }
 
   editUser(req){
+    this.isLoading.emit(true);
     //this.user.setUserData(this.loginForm.value); 
     //this.isLoadingResults = true;
     this.loginForm.patchValue({potvid: this.server.getStringExhibForm(this.exhibForm.value)}) //змінюємо поле з виставками 
@@ -207,6 +209,7 @@ export class VisitorComponent implements OnInit {
             console.log('такий мейл вже існує');
             this.worningCheck = 'Такий емейл або мобільний телефон вже використовується! Внесіть будь ласка інший';
           }
+          this.isLoading.emit(false);
         }
         else{
           this.worningCheck = '';
@@ -216,7 +219,7 @@ export class VisitorComponent implements OnInit {
             if(this.element){
               this.getData.emit(['edit', this.element.regnum]);
             }
-            else this.getData.emit(['create', ''])
+            else this.getData.emit(['create', {email: this.loginForm.get('email').value, cellphone: this.loginForm.get('cellphone').value}]);
             
           }
         }

@@ -34,10 +34,13 @@ export class VisitorsComponent implements OnInit {
 
   i = 20;
   name: string = "База відвідувачів";
+  disabledColor = 'rgb(150, 150, 150)';
   headerColor = 'rgb(45, 128, 253)';
   nameBut: string = "Заявки на внесення";
 
-  myTable: string = 'visitors';
+  myTable: string = 'visitors'; //назва таблиці в базі
+
+  disabled: boolean = false;
 
   displayedColumns: string[] = [
     'regnum', 
@@ -80,6 +83,7 @@ export class VisitorsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.getDisabled();
     this.dataSource.paginator = this.paginator;
     this.getBd('visitors');
     this.dataSource.sort = this.sort;
@@ -164,6 +168,7 @@ export class VisitorsComponent implements OnInit {
   }
 
   editDataSource(action){
+    this.isLoadingResults = true;
     switch (action[0]) {
       case 'delete':{
           this.deleteElementDataSource(this.viewData, action[1]);
@@ -194,13 +199,25 @@ export class VisitorsComponent implements OnInit {
   deleteElementDataSource(dataSource, val){
     console.log('dataSource: ', dataSource);
     console.log('val: ', val);
-    //визначаємо номер елемента масива
-    let id = this.module.checkArrOfObjIdValField(dataSource, 'regnum', val);
-    if(id >= 0){
-      dataSource.splice(id, 1);
-    }    
+    if(!Array.isArray(val)){
+      //визначаємо номер елемента масива 
+      let id = this.module.checkArrOfObjIdValField(dataSource, 'regnum', val);
+      if(id >= 0){
+        dataSource.splice(id, 1);
+      }    
+    }
+    else{
+      for (let index = 0; index < val.length; index++) {
+        const element = val[index];
+        let id = this.module.checkArrOfObjIdValField(dataSource, 'regnum', element);
+        if(id >= 0){
+          dataSource.splice(id, 1);
+        }
+      }
+    }
     console.log('dataSource2: ', dataSource);
     this.dataSource.data = this.viewData;
+    this.isLoadingResults = false;
   }
 
   editElementDataSource(dataSource, val){
@@ -214,26 +231,36 @@ export class VisitorsComponent implements OnInit {
         dataSource.splice(id, 1, data[0]);
       } 
       this.dataSource.data = this.viewData;
-      get.unsubscribe();  
+      get.unsubscribe();
+      this.isLoadingResults = false;  
     })
   }
 
-  createElementDataSource(dataSource, val){
+  createElementDataSource(dataSource, dataObj){
     // console.log('editElementDataSource is work!');
     // console.log('dataSource: ', dataSource);
-    // console.log('val: ', val);
-    // let id = this.module.checkArrOfObjIdValField(dataSource, 'regnum', val);
-    // let get = this.server.getVisitors(this.myTable, val).subscribe(data =>{ 
-    //   console.log("checkIdVisitor: ", data[0]);
-    //   if(id >= 0){
-    //     dataSource.splice(id, 1, data[0]);
-    //   } 
-    //   this.dataSource.data = this.viewData;
-    //   get.unsubscribe();  
-    // })
-    this.addNewVisitor()
+    console.log('dataObj: ', dataObj);
+    let get2=this.server.post(dataObj, "get3").subscribe(dataGet3 =>{
+      console.log('data[0].regnum:', dataGet3[0].regnum);
+      let val = dataGet3[0].regnum;
+      //let id = this.module.checkArrOfObjIdValField(dataSource, 'regnum', val);
+      let get = this.server.getVisitors(this.myTable, val).subscribe(data =>{
+        if(data[0]){
+          console.log("checkIdVisitor: ", data[0]);
+          dataSource.splice(0, 0, data[0]);
+          this.dataSource.data = this.viewData;
+        } 
+        get.unsubscribe();  
+      })
+      get2.unsubscribe();
+      this.isLoadingResults = false;
+    })
+    this.addNewVisitor() //закриваємо елемент
   }
 
+  setIsLoadingResults(result){
+    this.isLoadingResults = result;
+  }
 
   addNewVisitor(){
     this.isAddingItem = !this.isAddingItem;
@@ -362,9 +389,77 @@ export class VisitorsComponent implements OnInit {
         }
       });
       console.log(this.arrOfCheckId);
-    }
+    } 
 
-  
+  getListToFile(field, array, regnum, dataSource){
+    console.log('array: ', array);
+    let myString = '';
+    for (let index = 0; index < array.length; index++) {
+      const element = array[index];
+      let f = this.module.findPropValInArrObj(dataSource, regnum, element, field);
+      if(f){myString = myString+f+'\n'} 
+    }
+    return myString;
+  }
+
+  saveStringAsFile(data, filename, type) {
+    //this.isLoadingResults = true;
+    if(!data){
+      this.isLoadingResults = false;
+      return alert('Ви не обрали жодного запису для збереження');
+    }
+    var file = new Blob([data], {type: type});
+    if (window.navigator.msSaveOrOpenBlob) // IE10+
+      window.navigator.msSaveOrOpenBlob(file, filename);
+    else { // Others
+      var a = document.createElement("a"),
+          url = URL.createObjectURL(file);
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function() {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);  
+      }, 0); 
+    }
+    //this.isLoadingResults = false;
+  }
+
+  deleteAllCheckId(table, arrOfId){
+    if(!arrOfId){
+      this.isLoadingResults = false;
+      return alert('Ви не обрали жодного запису для збереження');
+    }
+    let isConfirm = confirm("Ви намагаєтеся видалити записи.\nУВАГА! Відновлення буде неможливе!\nБажаєте продовжити?");
+    if(isConfirm){
+      let dataDel = {
+        tableName: table,
+        regnum: arrOfId.join(', ')
+      }
+      let post = this.server.post(dataDel, "delete").subscribe(data =>{
+        console.log("data: ", data);
+        if(data[0]){
+          // перевіряємо права користувача, видаємо повідомлення, якщо немає прав 
+          if(this.server.accessIsDenied(data[0].rights)) return post.unsubscribe();
+        }
+        if(data){
+          console.log("unsubscribe");
+          // тут треба видалити список локально
+          this.deleteElementDataSource(this.viewData, this.arrOfCheckId);
+          this.selection.clear();
+          this.arrOfCheckId = [];
+          return post.unsubscribe();
+        }
+      });
+    }
+  }
+
+  // визначення активних і неактивних кнопок
+  getDisabled() {
+    if([4, 5].includes(Number(localStorage.getItem('access rights')))) return this.disabled = false;
+    else return this.disabled = true;
+  }
 
 }
 

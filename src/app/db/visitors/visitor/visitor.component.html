@@ -34,7 +34,7 @@
                             <mat-option value='male'>male</mat-option>
                             <mat-option value='female'>female</mat-option>
                         </mat-select>
-                        <!-- <mat-error *ngIf="!loginForm.get('prizv').valid">
+                        <!-- <mat-error *ngIf="!loginForm.get('prizv').valid"> 
                             {{'Please enter'}}
                         </mat-error> -->
                     </mat-form-field>
@@ -155,10 +155,11 @@
     <span class="pl-3 pr-5">Запис створено {{this.element.datawnesenny}}. Остання модифікація була зроблена {{this.element.datelastcor}}</span>
 </ng-container>
 
-<button *ngIf='["База відвідувачів","Відвідали"].includes(tableName)'class='ml-2' mat-raised-button (click)='submit()'>редагувати</button>
+<button *ngIf='["База відвідувачів","Відвідали"].includes(tableName) && element'class='ml-2' mat-raised-button (click)='submit()'>редагувати</button>
+<button *ngIf='!element'class='ml-2' mat-raised-button (click)='submit()'>Внести дані</button>
 <button *ngIf='tableName == "Заявки на внесення"' class='ml-2' mat-raised-button (click)='submit()'>прийняти заявку</button>
 <button *ngIf='tableName == "Заявки на зміну"' class='ml-2' mat-raised-button (click)='submit()'>прийняти заявку</button>
-<button *ngIf='["База відвідувачів","Заявки на внесення","Заявки на зміну"].includes(tableName)' class='ml-2' mat-raised-button (click)='delete()'>видалити</button>
+<button *ngIf='["База відвідувачів","Заявки на внесення","Заявки на зміну"].includes(tableName) && element' class='ml-2' mat-raised-button (click)='delete()'>видалити</button>
 <ng-container *ngIf = 'worningCheck'>
-    <div class="alert alert-warning mt-1" role="alert">{{worningCheck}}</div> 
+    <div class="alert alert-warning mt-1" role="alert">{{worningCheck}}</div>  
 </ng-container> 

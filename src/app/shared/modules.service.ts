@@ -7,7 +7,7 @@ export class ModulesService {
 
   constructor() { }
 
-  // знаходить номер елемента в масиві по його значенню, повертає номер
+// знаходить номер елемента в масиві по його значенню, повертає номер
   checkArrIdVal(array: any[], val: any):number {
     for (let i: number = 0; i < array.length; i++){
       if (array[i] === val){
@@ -15,6 +15,21 @@ export class ModulesService {
       }
     }
   }
+
+// ----------------------------------------------------------------------------------------------------------
+// знаходить значення вказаної властивості обєкту по значенню іншої властивості в масиві обєктів
+// array: any[] масив обєктів, 
+// keyVal: string - назва властивості обєкту по якій шукають, 
+// val: any - значення властивості keyVal,
+// keyVal2: string - назва властивості обєкту значення якої шукають 
+findPropValInArrObj(array: any[], keyVal: string, val: any, keyVal2: string):any {
+  //if (!array[0][keyVal] || !array[0][keyVal2]) return undefined;
+  for (let i: number = 0; i < array.length; i++){
+    if (array[i][keyVal] == val){
+      return array[i][keyVal2];
+    }
+  }
+}
 
 // ----------------------------------------------------------------------------------------------------------
 

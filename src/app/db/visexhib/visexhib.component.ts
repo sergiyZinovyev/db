@@ -30,7 +30,7 @@ export class VisexhibComponent implements OnInit, OnDestroy {
   types: string[] = ['Повна', 'Часткова', 'Вільна', 'Без реєстрації'];
   disabled: boolean = false;
   
-  filterData: {filterValue: any, fild: string}[] = [] // дані для фільтрації viewData;  
+  filterData: {filterValue: any, fild: string}[] = [] // дані для фільтрації viewData;   
   viewData; //дані для таблиць отримані з БД;
 
   exhib_id = this.server.exhib.id;
