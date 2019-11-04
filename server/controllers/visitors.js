@@ -595,7 +595,7 @@ exports.editRequest = function(req, res) {
 //     });
 // };
 
-//потрібен  створення запису в таблиці visitors_create, visitors /присвоюється новий regnum
+//потрібен для створення запису в таблиці visitors_create, visitors /присвоюється новий regnum
 let createCpecTableIn = function(req, table, cb) {
     
     let reg_user;
@@ -749,6 +749,37 @@ exports.createNewVisAuth = function(req, res) {
                     console.log(err);
                     return res.sendStatus(500);
                 }
+                console.log('doc: ', doc);
+                return res.send(doc); 
+            });
+        }
+    })
+}
+
+//-------------------------------------------------------------------------------------------------------------
+//створити n-записів в таблиці visitors (regnum відомий)
+exports.createGroup = function(req, res) {
+    ControllersShared.getRights(req.query.login, function(err, doc){
+        if (err) {
+            console.log('err: ',err);
+            return cb(err, null);
+        }
+        else {
+            console.log('rights cb: ', doc.insupdvisitors);
+            if(![4,5].includes(doc.insupdvisitors)){  
+                console.log('у вас немає прав доступу: ', doc.insupdvisitors);
+                return cb(err, [{
+                    "rights": "false",
+                }]);
+            }
+            console.log('array of data: ', req.body);
+            let dataVisitors;
+            Visitors.createGroup(dataVisitors, function(err, doc){
+                if (err) {
+                    console.log(err);
+                    return res.sendStatus(500);
+                }
+                // видаляємо внесені дані з таблиці visitors_create
                 console.log('doc: ', doc);
                 return res.send(doc); 
             });

@@ -391,6 +391,8 @@ export class VisitorsComponent implements OnInit {
       console.log(this.arrOfCheckId);
     } 
 
+
+  // отримати поле з масиву обєктів у вигляді списку
   getListToFile(field, array, regnum, dataSource){
     console.log('array: ', array);
     let myString = '';
@@ -402,6 +404,7 @@ export class VisitorsComponent implements OnInit {
     return myString;
   }
 
+  // зберегти список/строку у вигляді файла
   saveStringAsFile(data, filename, type) {
     //this.isLoadingResults = true;
     if(!data){
@@ -426,6 +429,7 @@ export class VisitorsComponent implements OnInit {
     //this.isLoadingResults = false;
   }
 
+  //видалити всі обрані записи
   deleteAllCheckId(table, arrOfId){
     if(!arrOfId){
       this.isLoadingResults = false;
@@ -438,6 +442,89 @@ export class VisitorsComponent implements OnInit {
         regnum: arrOfId.join(', ')
       }
       let post = this.server.post(dataDel, "delete").subscribe(data =>{
+        console.log("data: ", data);
+        if(data[0]){
+          // перевіряємо права користувача, видаємо повідомлення, якщо немає прав 
+          if(this.server.accessIsDenied(data[0].rights)) return post.unsubscribe();
+        }
+        if(data){
+          console.log("unsubscribe");
+          // тут треба видалити список локально
+          this.deleteElementDataSource(this.viewData, this.arrOfCheckId);
+          this.selection.clear();
+          this.arrOfCheckId = [];
+          return post.unsubscribe();
+        }
+      });
+    }
+  }
+
+  //прийняти всі обрані заявки на внесення
+  acceptAllCheckedApplicationForCreation(dataSource, arrOfId){
+    if(!arrOfId){
+      this.isLoadingResults = false;
+      return alert('Ви не обрали жодного запису для збереження');
+    }
+    let isConfirm = confirm("Ви намагаєтеся зберегти в базі обрані заявки.\nУВАГА! Повернутися назад буде неможливо!\nБажаєте продовжити?");
+    if(isConfirm){
+      // формуємо дані для відправки
+      let newObjData = {
+        regnum: [], 
+        email: [], 
+        prizv: [], 
+        city: [], 
+        cellphone: [], 
+        potvid: [], 
+        name: [], 
+        countryid: [], 
+        regionid: [], 
+        m_robotu: [], 
+        pobatkovi: [], 
+        posada: [], 
+        sferadij: [], 
+        datawnesenny: [], 
+        ins_user: [], 
+        namepovne: [],
+        postindeks: [],
+        address: [],
+        postaddreses: [],
+        telephon: [],
+        gender: [],
+        type: [],
+        kompeten: [],
+        datelastcor: [],
+        rating: []
+      };
+      for (let index = 0; index < arrOfId.length; index++) {
+        const element = this.module.findOdjInArrObj(dataSource, 'regnum', arrOfId[index]);
+        newObjData.regnum.push(element.regnum); 
+        newObjData.email.push(element.email);
+        newObjData.prizv.push(element.prizv); 
+        newObjData.city.push(element.city);
+        newObjData.cellphone.push(element.cellphone); 
+        newObjData.name.push(element.name);
+        newObjData.countryid.push(element.countryid); 
+        newObjData.regionid.push(element.regionid);
+        newObjData.m_robotu.push(element.m_robotu); 
+        newObjData.pobatkovi.push(element.pobatkovi);
+        newObjData.posada.push(element.posada);
+        newObjData.sferadij.push(element.sferadij);
+        newObjData.datawnesenny.push(element.datawnesenny);
+        newObjData.ins_user.push(element.ins_user);
+        newObjData.namepovne.push(element.namepovne); 
+        newObjData.postindeks.push(element.postindeks);
+        newObjData.address.push(element.address);
+        newObjData.postaddreses.push(element.postaddreses);
+        newObjData.telephon.push(element.telephon); 
+        newObjData.type.push(element.type);
+        newObjData.kompeten.push(element.kompeten); 
+        newObjData.datelastcor.push(element.datelastcor);
+        newObjData.rating.push(element.rating);
+      }
+      
+      let dataAccept = newObjData;
+      return console.log('dataAccept: ', dataAccept);
+      let post = this.server.post(dataAccept, "createGroup").subscribe(data =>{
         console.log("data: ", data);
         if(data[0]){
           // перевіряємо права користувача, видаємо повідомлення, якщо немає прав 

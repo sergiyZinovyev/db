@@ -83,6 +83,9 @@ app.get("/visitors/:id", authController.checkAuth, visitorsController.getVisitor
 //додавання запису в основну базу
 app.post("/createNewVisAuth", authController.checkAuth, urlencodedParser, visitorsController.createNewVisAuth);
 
+//додавання декількох записів в основну базу
+app.post("/createGroup", authController.checkAuth, urlencodedParser, visitorsController.createGroup);
+
 //видалення запису з обраної таблиці
 app.post("/delete", authController.checkAuth, urlencodedParser, visitorsController.delete);
 
@@ -136,10 +139,10 @@ app.post("/createInVisitorsCreate", urlencodedParser, visitorsController.createC
 //редагування запису
 //app.post("/edit", urlencodedParser, visitorsController.edit)
 
-//редагування запису / !!! незахищений роут використовується в формах реєстрації юзерів, потрібно зробити нові роути для юзерів, а ці захистити !!!
+//редагування запису / зараз не використовується
 app.post("/editPro", urlencodedParser, visitorsController.editPro)
 
-//редагування запису / !!! в розробці !!!
+//редагування запису / !!! незахищений роут використовується в формах реєстрації юзерів, потрібно зробити нові роути для юзерів, а ці захистити !!!
 app.post("/editPro2", urlencodedParser, visitorsController.editPro2)
 
 //отримання запису по електронній адресі або мобільному з 3 таблиць

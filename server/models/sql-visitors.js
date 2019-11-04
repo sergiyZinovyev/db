@@ -178,6 +178,42 @@ exports.create = function(dataVisitor, table, cb){
   })
 }
 
+//створення n-записів у таблиці visitors
+// dataVisitors - запис у форматі: '(data1, data2, ...), (data1, data2, ...), (data1, data2, ...), ...'
+exports.createGroup = function(dataVisitors, cb){
+  let sql = `INSERT INTO visitors (
+      regnum, 
+      email, 
+      prizv, 
+      city, 
+      cellphone, 
+      potvid, 
+      name, 
+      countryid, 
+      regionid, 
+      m_robotu, 
+      pobatkovi, 
+      posada, 
+      sferadij, 
+      datawnesenny, 
+      ins_user, 
+      namepovne,
+      postindeks,
+      address,
+      postaddreses,
+      telephon,
+      gender,
+      type,
+      kompeten,
+      datelastcor,
+      rating
+    ) 
+    VALUES ${dataVisitors}`;
+  db.get().query(sql, function(err, data) {
+    cb(err, data)
+  })
+}
+
 //створення нового запису у Exhibition_vis
 // exports.createExhibition_vis = function(dataVisitor, cb){
 //   let sql = `INSERT INTO exhibition_vis (

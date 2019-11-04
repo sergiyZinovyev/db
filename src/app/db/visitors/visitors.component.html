@@ -79,6 +79,17 @@
                 </button>
             </ng-container>
 
+            <ng-container *ngIf='myTable=="visitors_create"'>
+                <button 
+                    mat-icon-button 
+                    matTooltip="Прийняти обрані заявки" 
+                    aria-label="Example icon-button with a heart icon" 
+                    [style.color]="headerColor" 
+                    (click)='acceptAllCheckedApplicationForCreation(dataSource.data, arrOfCheckId)'>
+                    <mat-icon>group_add</mat-icon>
+                </button>
+            </ng-container>
+
             <mat-divider [vertical]="true"></mat-divider>
 
             <button 

@@ -80,7 +80,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   startLoginForm;
 
   spreadsheet;
-  myRequest;
+  //myRequest;
 
   loginForm = this.fb.group({
     condition: ['', []],
@@ -191,15 +191,15 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         switch(value[this.getIndexArrOfRequest(value, 'receivedTable')].receivedTable) {
           case 'visitors':
             this.spreadsheet = 'visitors_edit';
-            this.myRequest = 'createInVisitorsEdit'
+            //this.myRequest = 'createInVisitorsEdit'
             break;
           case 'visitors_create':
             this.spreadsheet = 'visitors_create';
-            this.myRequest = 'editPro';
+            //this.myRequest = 'editPro';
             break;
           case 'visitors_edit':
             this.spreadsheet = 'visitors_edit';
-            this.myRequest = 'editPro';
+            //this.myRequest = 'editPro';
             break; 
         }
 
