@@ -497,33 +497,13 @@ export class VisitorsComponent implements OnInit {
       };
       for (let index = 0; index < arrOfId.length; index++) {
         const element = this.module.findOdjInArrObj(dataSource, 'regnum', arrOfId[index]);
-        newObjData.regnum.push(element.regnum); 
-        newObjData.email.push(element.email);
-        newObjData.prizv.push(element.prizv); 
-        newObjData.city.push(element.city);
-        newObjData.cellphone.push(element.cellphone); 
-        newObjData.name.push(element.name);
-        newObjData.countryid.push(element.countryid); 
-        newObjData.regionid.push(element.regionid);
-        newObjData.m_robotu.push(element.m_robotu); 
-        newObjData.pobatkovi.push(element.pobatkovi);
-        newObjData.posada.push(element.posada);
-        newObjData.sferadij.push(element.sferadij);
-        newObjData.datawnesenny.push(element.datawnesenny);
-        newObjData.ins_user.push(element.ins_user);
-        newObjData.namepovne.push(element.namepovne); 
-        newObjData.postindeks.push(element.postindeks);
-        newObjData.address.push(element.address);
-        newObjData.postaddreses.push(element.postaddreses);
-        newObjData.telephon.push(element.telephon); 
-        newObjData.type.push(element.type);
-        newObjData.kompeten.push(element.kompeten); 
-        newObjData.datelastcor.push(element.datelastcor);
-        newObjData.rating.push(element.rating);
+        for (let key in newObjData){
+          newObjData[key].push(element[key]);
+        }
       }
       
       let dataAccept = newObjData;
-      return console.log('dataAccept: ', dataAccept);
+      console.log('dataAccept: ', dataAccept);
       let post = this.server.post(dataAccept, "createGroup").subscribe(data =>{
         console.log("data: ", data);
         if(data[0]){
@@ -532,10 +512,10 @@ export class VisitorsComponent implements OnInit {
         }
         if(data){
           console.log("unsubscribe");
-          // тут треба видалити список локально
-          this.deleteElementDataSource(this.viewData, this.arrOfCheckId);
-          this.selection.clear();
-          this.arrOfCheckId = [];
+          //тут треба видалити список локально
+          // this.deleteElementDataSource(this.viewData, this.arrOfCheckId);
+          // this.selection.clear();
+          // this.arrOfCheckId = [];
           return post.unsubscribe();
         }
       });

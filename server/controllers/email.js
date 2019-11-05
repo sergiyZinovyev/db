@@ -16,7 +16,8 @@ var transporter = nodemailer.createTransport({
         rejectUnauthorized: false
     },
     auth: {
-       
+        pass: 'sscvsskl',
+        user: 'galexpo'
     }
 });
 

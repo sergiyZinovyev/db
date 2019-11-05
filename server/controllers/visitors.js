@@ -773,16 +773,62 @@ exports.createGroup = function(req, res) {
                 }]);
             }
             console.log('array of data: ', req.body);
-            let dataVisitors;
-            Visitors.createGroup(dataVisitors, function(err, doc){
-                if (err) {
-                    console.log(err);
-                    return res.sendStatus(500);
+            // формуємо строку в потрібному форматі для внесення
+            let dataVisitors = '';
+            let coma = ', ';
+            let coma2 = ', ';
+            let arrToString = '';
+            let quotes = '';
+            let dataDel = '';
+            // for(let key in req.body){
+            //     req.body[key].forEach(element => {
+            //         if (typeof element === 'string'){quotes = '"'}
+            //         else {quotes = ''}
+            //         if (arrToString == ''){coma2 = '';}
+            //         else {coma2 = ', ';}
+            //         arrToString = arrToString + coma2 + quotes + element +quotes;
+            //     });
+            //     if (dataVisitors == ''){coma = '';}
+            //     else {coma = ', ';}
+            //     dataVisitors = dataVisitors + coma + '(' + arrToString + ')';
+            //     arrToString = '';
+
+            //     // формуємо строку в потрібному форматі для видалення
+            //     if (key == 'regnum') {
+            //         dataDel = req.body[key].join(', ');
+            //     }
+            // }
+            for (let index = 0; index < req.body.regnum.length; index++) {
+                for(let key in req.body){
+                    if (typeof req.body[key][index] === 'string'){quotes = '"'}
+                    else {quotes = ''}
+                    if (arrToString == ''){coma2 = '';}
+                    else {coma2 = ', ';}
+                    arrToString = arrToString + coma2 + quotes + req.body[key][index] +quotes; 
                 }
-                // видаляємо внесені дані з таблиці visitors_create
-                console.log('doc: ', doc);
-                return res.send(doc); 
-            });
+                if (dataVisitors == ''){coma = '';}
+                else {coma = ', ';}
+                dataVisitors = dataVisitors + coma + '(' + arrToString + ')'; 
+                arrToString = '';
+                
+            }
+            console.log('dataVisitors: ', dataVisitors);
+            console.log('dataDel: ', dataDel);
+            
+            // Visitors.createGroup(dataVisitors, function(err, doc){
+            //     if (err) {
+            //         console.log(err);
+            //         return res.sendStatus(500);
+            //     }
+            //     // видаляємо внесені дані з таблиці visitors_create
+            //     deleteIn(req, req.body.tableName, function (err, doc2) {
+            //         if (err) {
+            //             console.log(err);
+            //             return res.sendStatus(500);
+            //         }
+            //         res.send(doc2); 
+            //     });
+            // });
         }
     })
 }
