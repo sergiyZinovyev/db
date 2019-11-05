@@ -16,13 +16,7 @@ const mysql = require("mysql2");
 
 //www db prod
 const connection = mysql.createPool({
-	connectionLimit: 100,
-	host: "localhost",
-	user: "galexpo",
-	//database: "visitors", //prod
-	database: "visitors_dev", //dev
-	password: "ufktrcgj",
-	charset: "cp1251"
+	
 });
 
 
