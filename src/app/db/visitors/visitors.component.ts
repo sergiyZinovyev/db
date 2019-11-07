@@ -513,9 +513,9 @@ export class VisitorsComponent implements OnInit {
         if(data){
           console.log("unsubscribe");
           //тут треба видалити список локально
-          // this.deleteElementDataSource(this.viewData, this.arrOfCheckId);
-          // this.selection.clear();
-          // this.arrOfCheckId = [];
+          this.deleteElementDataSource(this.viewData, this.arrOfCheckId);
+          this.selection.clear();
+          this.arrOfCheckId = [];
           return post.unsubscribe();
         }
       });

@@ -757,7 +757,7 @@ exports.createNewVisAuth = function(req, res) {
 }
 
 //-------------------------------------------------------------------------------------------------------------
-//створити n-записів в таблиці visitors (regnum відомий)
+//створити n-записів в таблиці visitors (regnum відомий) та видалити їх з visitors_create
 exports.createGroup = function(req, res) {
     ControllersShared.getRights(req.query.login, function(err, doc){
         if (err) {
@@ -780,24 +780,6 @@ exports.createGroup = function(req, res) {
             let arrToString = '';
             let quotes = '';
             let dataDel = '';
-            // for(let key in req.body){
-            //     req.body[key].forEach(element => {
-            //         if (typeof element === 'string'){quotes = '"'}
-            //         else {quotes = ''}
-            //         if (arrToString == ''){coma2 = '';}
-            //         else {coma2 = ', ';}
-            //         arrToString = arrToString + coma2 + quotes + element +quotes;
-            //     });
-            //     if (dataVisitors == ''){coma = '';}
-            //     else {coma = ', ';}
-            //     dataVisitors = dataVisitors + coma + '(' + arrToString + ')';
-            //     arrToString = '';
-
-            //     // формуємо строку в потрібному форматі для видалення
-            //     if (key == 'regnum') {
-            //         dataDel = req.body[key].join(', ');
-            //     }
-            // }
             for (let index = 0; index < req.body.regnum.length; index++) {
                 for(let key in req.body){
                     if (typeof req.body[key][index] === 'string'){quotes = '"'}
@@ -812,23 +794,24 @@ exports.createGroup = function(req, res) {
                 arrToString = '';
                 
             }
+            req.body.regnum = req.body.regnum.join(', ');
             console.log('dataVisitors: ', dataVisitors);
-            console.log('dataDel: ', dataDel);
+            console.log('req.body.regnum: ', req.body.regnum);
             
-            // Visitors.createGroup(dataVisitors, function(err, doc){
-            //     if (err) {
-            //         console.log(err);
-            //         return res.sendStatus(500);
-            //     }
-            //     // видаляємо внесені дані з таблиці visitors_create
-            //     deleteIn(req, req.body.tableName, function (err, doc2) {
-            //         if (err) {
-            //             console.log(err);
-            //             return res.sendStatus(500);
-            //         }
-            //         res.send(doc2); 
-            //     });
-            // });
+            Visitors.createGroup(dataVisitors, function(err, doc){
+                if (err) {
+                    console.log(err);
+                    return res.sendStatus(500);
+                }
+                // видаляємо внесені дані з таблиці visitors_create
+                deleteIn(req, 'visitors_create', function (err, doc2) {
+                    if (err) {
+                        console.log(err);
+                        return res.sendStatus(500);
+                    }
+                    res.send(doc2); 
+                });
+            });
         }
     })
 }
