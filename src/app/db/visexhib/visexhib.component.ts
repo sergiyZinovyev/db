@@ -517,6 +517,7 @@ export class VisexhibComponent implements OnInit, OnDestroy {
                 this.server.frontURL.searchParams.set('idex', String(this.server.exhib.id));
                 this.server.frontURL.searchParams.set('exhibreg', '1');
                 this.server.frontURL.searchParams.set('fakeid', String(this.visitorsIds.get('id_visitor').value));
+                console.log('fakeid: ', String(this.visitorsIds.get('id_visitor').value));
                 this.router.navigate(['user/login']);
               }  
             }

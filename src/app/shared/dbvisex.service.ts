@@ -83,12 +83,13 @@ export class DbvisexService {
                 get3.unsubscribe()
               })
             }
-            //інакше вносимо нового
+            //інакше вносимо нового  
             else{
               visitorsIds.id_visitor = data[0].regnum;
               visitorsIds.registered = '0';
               visitorsIds.visited = '1';
               visitorsIds.fake_id = this.server.frontURL.searchParams.get('fakeid');
+              console.log("visitorsIds.fake_id: ",this.server.frontURL.searchParams.get('fakeid'));
               console.log('visitorsIds data: ',visitorsIds);
               let postCreate=this.server.post(visitorsIds, 'createInExhibition_vis').subscribe(data5 =>{ 
                 console.log("data: ", data5);

@@ -780,19 +780,23 @@ exports.createGroup = function(req, res) {
             let arrToString = '';
             let quotes = '';
             let dataDel = '';
+            let val;
             for (let index = 0; index < req.body.regnum.length; index++) {
                 for(let key in req.body){
-                    if (typeof req.body[key][index] === 'string'){quotes = '"'}
+                    val = req.body[key][index];
+                    if (typeof val === 'string'){
+                        quotes = "'";
+                        val = val.replace(/'/g, "\\'" );
+                    }
                     else {quotes = ''}
                     if (arrToString == ''){coma2 = '';}
                     else {coma2 = ', ';}
-                    arrToString = arrToString + coma2 + quotes + req.body[key][index] +quotes; 
+                    arrToString = arrToString + coma2 + quotes + val +quotes; 
                 }
                 if (dataVisitors == ''){coma = '';}
                 else {coma = ', ';}
                 dataVisitors = dataVisitors + coma + '(' + arrToString + ')'; 
-                arrToString = '';
-                
+                arrToString = ''; 
             }
             req.body.regnum = req.body.regnum.join(', ');
             console.log('dataVisitors: ', dataVisitors);

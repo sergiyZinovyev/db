@@ -28,8 +28,8 @@ const app = express();
 //const host = '192.168.5.107'; //prod host ge
 //const host = '31.41.221.156'; //www host test 
 const host = 'visitors.galexpo.com.ua'; //prod host 
-const port = 7001; //prod
-//const port = 7002; //dev
+//const port = 7001; //prod
+const port = 7002; //dev
 https.createServer({
   key: fs.readFileSync('./server/cert/key.pem'),
   cert: fs.readFileSync('./server/cert/cert.pem')
@@ -42,8 +42,8 @@ https.createServer({
 
 //front-end server
 const ang = express();
-const port2 = 4201; //prod
-//const port2 = 4202; //dev
+//const port2 = 4201; //prod
+const port2 = 4202; //dev
 https.createServer({
   key: fs.readFileSync('./server/cert/key.pem'),
   cert: fs.readFileSync('./server/cert/cert.pem')
