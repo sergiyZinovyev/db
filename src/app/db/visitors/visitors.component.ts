@@ -460,7 +460,7 @@ export class VisitorsComponent implements OnInit {
   }
 
   //прийняти всі обрані заявки на внесення
-  acceptAllCheckedApplicationForCreation(dataSource, arrOfId){
+  acceptAllCheckedApplicationForCreation(dataSource, arrOfId, severMethod){
     if(!arrOfId){
       this.isLoadingResults = false;
       return alert('Ви не обрали жодного запису для збереження');
@@ -504,7 +504,7 @@ export class VisitorsComponent implements OnInit {
       
       let dataAccept = newObjData;
       console.log('dataAccept: ', dataAccept);
-      let post = this.server.post(dataAccept, "createGroup").subscribe(data =>{
+      let post = this.server.post(dataAccept, severMethod).subscribe(data =>{
         console.log("data: ", data);
         if(data[0]){
           // перевіряємо права користувача, видаємо повідомлення, якщо немає прав 

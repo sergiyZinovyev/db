@@ -231,20 +231,20 @@ exports.createGroup = function(dataVisitors, cb){
 // }
 
 //створення нового запису в таблиці visitors
-exports.createVis = function(dataVisitor, cb){
-  let sql = `INSERT INTO visitors (regnum, email, prizv, city, cellphone, potvid) VALUES (?,?,?,?,?,?)`;
-  db.get().query(sql, dataVisitor, function(err, data) {
-    cb(err, data)
-  })
-}
+// exports.createVis = function(dataVisitor, cb){
+//   let sql = `INSERT INTO visitors (regnum, email, prizv, city, cellphone, potvid) VALUES (?,?,?,?,?,?)`;
+//   db.get().query(sql, dataVisitor, function(err, data) {
+//     cb(err, data)
+//   })
+// }
 
 //редагування запису !!!недороблене!!!
-exports.edit = function(dataVisitor, cb){
-  let sql = `UPDATE visitors SET email=?, prizv=?, city=?, cellphone=? WHERE regnum=?`;
-  db.get().query(sql, dataVisitor, function(err, data) {
-    cb(err, data)
-  })
-}
+// exports.edit = function(dataVisitor, cb){
+//   let sql = `UPDATE visitors SET email=?, prizv=?, city=?, cellphone=? WHERE regnum=?`;
+//   db.get().query(sql, dataVisitor, function(err, data) {
+//     cb(err, data)
+//   })
+// }
 
 //редагування запису відвідування виставки у таблиці Exhibition_vis
 // exports.editExhibition_vis = function(dataVisitor, cb){

@@ -821,6 +821,83 @@ exports.createGroup = function(req, res) {
 }
 
 //-------------------------------------------------------------------------------------------------------------
+//редагувати n-записів в таблиці visitors (regnum відомий) //схожий до попереднього метода. Потрібно обєднати!!!
+exports.updateGroup = function(req, res) {
+    //перевіряємо права
+    ControllersShared.getRights(req.query.login, function(err, doc){
+        if (err) {
+            console.log('err: ',err);
+            return cb(err, null);
+        }
+        else {
+            console.log('rights cb: ', doc.insupdvisitors);
+            if(![4,5].includes(doc.insupdvisitors)){  
+                console.log('у вас немає прав доступу: ', doc.insupdvisitors);
+                return cb(err, [{
+                    "rights": "false",
+                }]);
+            }
+            // тут теба видалити записи які будуть оновлені
+            // формуємо строку в потрібному форматі для видалення
+            req.body.regnum = req.body.regnum.join(', ');
+            deleteIn(req, 'visitors', function (err, doc2) {
+                if (err) {
+                    console.log(err);
+                    return res.sendStatus(500);
+                }
+                // створюємо нові записи на місці видалених
+                // повертаємо req.body.regnum до попереднього вигляду
+                req.body.regnum = req.body.regnum.split(', ');
+                console.log('array of data: ', req.body);
+                // формуємо строку в потрібному форматі для внесення
+                let dataVisitors = '';
+                let coma = ', ';
+                let coma2 = ', ';
+                let arrToString = '';
+                let quotes = '';
+                let val;
+                for (let index = 0; index < req.body.regnum.length; index++) {
+                    for(let key in req.body){
+                        val = req.body[key][index];
+                        if (typeof val === 'string'){
+                            quotes = "'";
+                            val = val.replace(/'/g, "\\'" );
+                        }
+                        else {quotes = ''}
+                        if (arrToString == ''){coma2 = '';}
+                        else {coma2 = ', ';}
+                        arrToString = arrToString + coma2 + quotes + val +quotes; 
+                    }
+                    if (dataVisitors == ''){coma = '';}
+                    else {coma = ', ';}
+                    dataVisitors = dataVisitors + coma + '(' + arrToString + ')'; 
+                    arrToString = ''; 
+                }
+                req.body.regnum = req.body.regnum.join(', ');
+                console.log('dataVisitors: ', dataVisitors);
+                console.log('req.body.regnum: ', req.body.regnum);
+                
+                Visitors.createGroup(dataVisitors, function(err, doc){
+                    if (err) {
+                        console.log(err);
+                        return res.sendStatus(500);
+                    }
+                    // видаляємо внесені дані з таблиці visitors_create
+                    deleteIn(req, 'visitors_edit', function (err, doc2) {
+                        if (err) {
+                            console.log(err);
+                            return res.sendStatus(500);
+                        }
+                        res.send(doc2); 
+                    });
+                });
+            }); 
+        }
+    })
+}
+
+
+//-------------------------------------------------------------------------------------------------------------
 exports.createNewVis = function(req, res) {
     var visitorData = [
         req.body.regnum,

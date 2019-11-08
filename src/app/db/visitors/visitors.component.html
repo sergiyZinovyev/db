@@ -85,7 +85,18 @@
                     matTooltip="Прийняти обрані заявки" 
                     aria-label="Example icon-button with a heart icon" 
                     [style.color]="headerColor" 
-                    (click)='acceptAllCheckedApplicationForCreation(dataSource.data, arrOfCheckId)'>
+                    (click)='acceptAllCheckedApplicationForCreation(dataSource.data, arrOfCheckId, "createGroup")'>
+                    <mat-icon>group_add</mat-icon>
+                </button>
+            </ng-container>
+
+            <ng-container *ngIf='myTable=="visitors_edit"'>
+                <button 
+                    mat-icon-button 
+                    matTooltip="Прийняти обрані заявки" 
+                    aria-label="Example icon-button with a heart icon" 
+                    [style.color]="headerColor" 
+                    (click)='acceptAllCheckedApplicationForCreation(dataSource.data, arrOfCheckId, "updateGroup")'>
                     <mat-icon>group_add</mat-icon>
                 </button>
             </ng-container>

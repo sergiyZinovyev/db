@@ -83,8 +83,11 @@ app.get("/visitors/:id", authController.checkAuth, visitorsController.getVisitor
 //додавання запису в основну базу
 app.post("/createNewVisAuth", authController.checkAuth, urlencodedParser, visitorsController.createNewVisAuth);
 
-//додавання декількох записів в основну базу
+//додавання декількох записів в основну базу з visitors_create
 app.post("/createGroup", authController.checkAuth, urlencodedParser, visitorsController.createGroup);
+
+//додавання декількох записів в основну базу з visitors_edit
+app.post("/updateGroup", authController.checkAuth, urlencodedParser, visitorsController.updateGroup);
 
 //видалення запису з обраної таблиці
 app.post("/delete", authController.checkAuth, urlencodedParser, visitorsController.delete);

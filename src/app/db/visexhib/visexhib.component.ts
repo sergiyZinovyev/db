@@ -491,17 +491,18 @@ export class VisexhibComponent implements OnInit, OnDestroy {
               if(this.typeOfReg == 'Вільна'){
                 let result = confirm('Відвідувач ще не реєструвався.\n\nБудемо реєструвати?');
                 if(result){
-                  // реєструємо нового відвідувача з присвоюванням йому додатково fake_id
+                  console.log('реєструємо нового відвідувача з присвоюванням йому додатково fake_id');
                   this.server.setFrontURL(window.location);
                   this.server.frontURL.searchParams.set('idex', String(this.server.exhib.id));
                   this.server.frontURL.searchParams.set('exhibreg', '1');
                   this.server.frontURL.searchParams.set('fakeid', String(this.visitorsIds.get('id_visitor').value));
-                  this.router.navigate(['user/login']);
+                  return this.router.navigate(['user/login']);
                 }
                 else{
+                  console.log('не реєструємо нового відвідувача');
                   this.visitorsIds.patchValue({fake_id: String(this.visitorsIds.get('id_visitor').value)});
                   this.visitorsIds.patchValue({id_visitor: null});
-                  this.addVisitor(this.visitorsIds.value, 'createInExhibition_vis');
+                  return this.addVisitor(this.visitorsIds.value, 'createInExhibition_vis');
                 }
               }
               if(this.typeOfReg == 'Без реєстрації'){
