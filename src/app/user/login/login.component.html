@@ -25,18 +25,35 @@
                 </mat-error>
             </mat-form-field>
  
-            <ng-container *ngIf = 'visibleCaptcha'>
+            <!-- <ng-container *ngIf = 'visibleCaptcha'> 
                 <re-captcha 
                     #captchaRef="reCaptcha"
                     size="invisible" 
                     (resolved)="$event && login($event)" 
                     siteKey="6Lcp7r0UAAAAAPd5sDUsXBnLWdXvHiLLXavjJINt">
                 </re-captcha> 
-                
                 <button 
                     mat-stroked-button 
                     (click)="captchaRef.execute()"
                     (mouseleave)="captchaRef.reset()"
+                    color="accent" 
+                    class="btn-lg btn-block py-2 mt-5">
+                    <strong class="pr-2">{{'Отримати запрошення'}}</strong>
+                    <mat-icon>local_activity</mat-icon>
+                </button>
+            </ng-container> -->
+
+            <ng-container *ngIf = 'visibleCaptcha'> 
+                <div  class="captcha">
+                    <re-captcha
+                        formControlName="captcha"
+                        siteKey="6Lcp7r0UAAAAAPd5sDUsXBnLWdXvHiLLXavjJINt">
+                    </re-captcha>
+                </div>
+                 
+                <button 
+                    mat-stroked-button 
+                    (click)="login()"
                     color="accent" 
                     class="btn-lg btn-block py-2 mt-5">
                     <strong class="pr-2">{{'Отримати запрошення'}}</strong>

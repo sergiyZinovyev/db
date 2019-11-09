@@ -784,13 +784,19 @@ exports.createGroup = function(req, res) {
             for (let index = 0; index < req.body.regnum.length; index++) {
                 for(let key in req.body){
                     val = req.body[key][index];
-                    if (typeof val === 'string'){
+                    if (typeof val === 'string' && key != 'datawnesenny' && key != 'datelastcor'){
                         quotes = "'";
                         val = val.replace(/'/g, "\\'" );
                     }
                     else {quotes = ''}
+
+                    if (key == 'datawnesenny' || key == 'datelastcor'){
+                        val = Visitors.curentDate(req.body[key][index]);
+                    }
+
                     if (arrToString == ''){coma2 = '';}
                     else {coma2 = ', ';}
+
                     arrToString = arrToString + coma2 + quotes + val +quotes; 
                 }
                 if (dataVisitors == ''){coma = '';}

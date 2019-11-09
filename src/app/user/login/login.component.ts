@@ -1,4 +1,4 @@
-import { Component, OnInit, Injectable} from '@angular/core';
+import { Component, OnInit, Injectable, ViewChild, ContentChild, ElementRef} from '@angular/core';
 import { FormBuilder, Validators, FormControl, FormGroupDirective, NgForm } from '@angular/forms';
 import {ErrorStateMatcher} from '@angular/material/core';
 import { Router } from '@angular/router';
@@ -19,6 +19,8 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
+
+  @ViewChild('captchaRef', {static: true}) captchaRef: ElementRef;
 
   myCaptha;
 
@@ -59,7 +61,7 @@ export class LoginComponent implements OnInit {
   login(capcha?) {
     // let capcha = capcha_f;
     // if(!capcha_f){
-    //   if(!this.myCaptha){return console.log('reCaptcha is udefined')}
+    //   if(!this.myCaptha){return console.log('reCaptcha is udefined')} 
     //   else capcha = this.myCaptha;
     // }
 
@@ -77,9 +79,12 @@ export class LoginComponent implements OnInit {
     if(this.loginForm.get('email').valid || this.loginForm.get('cellphone').valid){
       this.warning = '';
       this.user.setUserLogData(this.loginForm.value);
-      this.loginForm.patchValue({captcha: capcha})
+      //this.loginForm.patchValue({captcha: capcha})
       //обираємо який метод get застосувати get2 - з рекапчею чи get3 - без рекапчі але з аутентифікацією
       if(this.visibleCaptcha){
+        if (!this.loginForm.get('captcha').value){
+          return console.log('recaptca undefined')
+        }
         let get=this.server.post(this.loginForm.value, "get2").subscribe(data =>{
           console.log("data login: ", data);
           //if(data == ''){this.router.navigate(['user/registration']);}  
@@ -108,8 +113,11 @@ export class LoginComponent implements OnInit {
         });
       }
       
-      
+      //console.log('this.captchaRef: ',this.captchaRef.nativeElement.value);
       return this.router.navigate(['user/registration']);
+    }
+    else {
+      //console.log('this.captchaRef: ',this.captchaRef.nativeElement.value);
     }
   }
   
