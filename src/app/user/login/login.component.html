@@ -44,33 +44,33 @@
             </ng-container> -->
 
             <ng-container *ngIf = 'visibleCaptcha'> 
-                <div  class="captcha">
+                <div  class="d-flex justify-content-center align-items-center my-3">
                     <re-captcha
                         formControlName="captcha"
                         siteKey="6Lcp7r0UAAAAAPd5sDUsXBnLWdXvHiLLXavjJINt">
                     </re-captcha>
                 </div>
-                 
-                <button 
-                    mat-stroked-button 
-                    (click)="login()"
-                    color="accent" 
-                    class="btn-lg btn-block py-2 mt-5">
-                    <strong class="pr-2">{{'Отримати запрошення'}}</strong>
-                    <mat-icon>local_activity</mat-icon>
-                </button>
-            </ng-container>
+            </ng-container>  
 
-            <ng-container *ngIf = '!visibleCaptcha'>
+            <button 
+                mat-stroked-button 
+                (click)="login()"
+                color="accent" 
+                class="btn-lg btn-block py-2">
+                <strong class="pr-2">{{'Отримати запрошення'}}</strong>
+                <mat-icon>local_activity</mat-icon>
+            </button>
+            
+
+            <!-- <ng-container *ngIf = '!visibleCaptcha'>
                 <button 
                     mat-stroked-button 
                     (click)="login()"
                     color="accent" 
                     class="btn-lg btn-block py-2 mt-5">
                     <strong class="pr-2">{{'Продовжити'}}</strong>
-                    <!-- <mat-icon>local_activity</mat-icon> -->
                 </button>
-            </ng-container>
+            </ng-container> -->
 
             <!-- <button 
                 mat-stroked-button 

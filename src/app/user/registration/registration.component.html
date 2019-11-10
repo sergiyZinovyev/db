@@ -164,7 +164,7 @@
                 </mat-expansion-panel>  
             </div>
 
-            <ng-container *ngIf = 'visibleCaptcha'>
+            <!-- <ng-container *ngIf = 'visibleCaptcha'>
                 <re-captcha 
                     #captchaRef="reCaptcha"
                     size="invisible" 
@@ -180,18 +180,18 @@
                     class="btn-lg btn-block py-2 my-btn">
                     <strong class="pr-2">{{'Отримати запрошення'}}</strong><mat-icon>local_activity</mat-icon>
                 </button>
-            </ng-container>
+            </ng-container> -->
 
-            <ng-container *ngIf = '!visibleCaptcha'>
+            <!-- <ng-container *ngIf = '!visibleCaptcha'> -->
                 <button 
                     mat-raised-button 
                     (click)="submit()"
                     color="accent" 
                     class="btn-lg btn-block py-2 my-btn">
-                    <strong class="pr-2">{{'Зареєструвати'}}</strong><mat-icon>local_activity</mat-icon>
+                    <strong class="pr-2">{{'Отримати запрошення'}}</strong><mat-icon>local_activity</mat-icon>
                 </button>
-            </ng-container>
-            <!-- <ng-container *ngIf = 'edit'>
+            <!-- </ng-container> -->
+            <!-- <ng-container *ngIf = 'edit'> 
                 <button mat-raised-button color="accent" class="btn-lg btn-block py-2 my-btn" (click)='invite()'>{{'Отримати запрошення'}}</button> 
             </ng-container> -->
             <ng-container *ngIf = 'worningCheck'>
