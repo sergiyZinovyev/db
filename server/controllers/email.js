@@ -4,7 +4,7 @@ var fs = require('fs');
 let testEmailAccount = nodemailer.createTestAccount();
 
 var transporter = nodemailer.createTransport({
-    // service: 'gmail', 
+    // service: 'gmail',
     // auth: {
     //    
     // }
@@ -16,9 +16,7 @@ var transporter = nodemailer.createTransport({
         rejectUnauthorized: false
     },
     auth: {
-   
-        
-        
+  
     }
 });
 

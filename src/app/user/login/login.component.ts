@@ -83,7 +83,7 @@ export class LoginComponent implements OnInit {
       //обираємо який метод get застосувати get2 - з рекапчею чи get3 - без рекапчі але з аутентифікацією
       if(this.visibleCaptcha){
         if (!this.loginForm.get('captcha').value){
-          this.warning = 'Поставте галочку (підтвердіть що ви не робот)';
+          this.warning = 'Підтвердіть що ви не робот';
           return console.log('recaptca undefined')
         }
         let get=this.server.post(this.loginForm.value, "get2").subscribe(data =>{
@@ -91,7 +91,7 @@ export class LoginComponent implements OnInit {
           //if(data == ''){this.router.navigate(['user/registration']);}   
           if(data[0]){
             this.user.setUserData(data);
-            this.router.navigate(['user/registration']);
+            this.router.navigate(['registration']);
           }
           if(data){
             console.log("unsubscribe")
@@ -105,7 +105,7 @@ export class LoginComponent implements OnInit {
           //if(data == ''){this.router.navigate(['user/registration']);}  
           if(data[0]){
             this.user.setUserData(data);
-            this.router.navigate(['user/registration']);
+            this.router.navigate(['registration']);
           }
           if(data){
             console.log("unsubscribe")
@@ -115,7 +115,7 @@ export class LoginComponent implements OnInit {
       }
       
       //console.log('this.captchaRef: ',this.captchaRef.nativeElement.value);
-      return this.router.navigate(['user/registration']);
+      return this.router.navigate(['registration']);
     }
     else {
       //console.log('this.captchaRef: ',this.captchaRef.nativeElement.value);

@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
 })
 export class RegistrationComponent implements OnInit, OnDestroy {
   
-  visibleCaptcha: boolean = true; //визначає чи застосовувати рекапчу
+  visibleCaptcha: boolean = true; //визначає чи застосовувати рекапчу 
 
   myExhib = [];
 
@@ -129,11 +129,11 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    if(this.server.frontURL.searchParams.has('exhibreg')){
-      //параметр 'exhibreg' задається під час реєстрації на виставці і свідчить про те що перехід відбувся звідти
-      //в такому разі рекапчу не застосовуємо
-      this.visibleCaptcha = false;
-    }
+    // if(this.server.frontURL.searchParams.has('exhibreg')){
+    //   //параметр 'exhibreg' задається під час реєстрації на виставці і свідчить про те що перехід відбувся звідти
+    //   //в такому разі рекапчу не застосовуємо
+    //   this.visibleCaptcha = false;
+    // }
     
     this.getRegion('region');
     //this.submitButtonText = this.createText;
@@ -442,10 +442,12 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     console.log('-------------------');
     return flag;
   }
-
+ 
   getMyExhib(cb){
     let exhibFromBD;
+    console.log('idex: ', this.server.frontURL.searchParams.get('idex'));
     this.user.getIdExDect(this.server.frontURL.searchParams.get('idex'), data=>{
+    //this.user.getIdExDect(this.server.idex, data=>{  
       console.log('exhib_dict', data);
       //повертаємо з бази id виставки
       switch (data) {

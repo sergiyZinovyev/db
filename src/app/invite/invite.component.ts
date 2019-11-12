@@ -78,9 +78,9 @@ export class InviteComponent implements OnInit, OnDestroy{
     this.router.navigate(['user/login'])
   }
 
-  onRegestration(){
-    this.router.navigate(['user/registration'])
-  }
+  // onRegestration(){
+  //   this.router.navigate(['user/registration'])
+  // }
 
   getPDF(){
     let element = document.getElementById('element-to-print');
