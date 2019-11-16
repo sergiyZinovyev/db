@@ -54,7 +54,7 @@ exports.getVisitors = function(id, condition, cb){
       FROM (SELECT id_visitor, nameexhibkor
       FROM(SELECT *
           FROM
-          (SELECT * FROM exhibition_vis) AS vis_exhib 
+          (SELECT * FROM exhibition_vis WHERE visited>0) AS vis_exhib 
           LEFT OUTER JOIN 
           (SELECT numexhib, nameexhibkor FROM exhibitions) AS exhib 
               ON vis_exhib.id_exhibition = exhib.numexhib) AS exhib_2) AS exhib_3
@@ -310,4 +310,5 @@ exports.delete = function(table, id, cb){
     cb(err, data)
   })
 }
+
 

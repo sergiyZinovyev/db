@@ -117,7 +117,7 @@ findOdjInArrObj(array: any[], keyVal: string, val: any) {
           data = data.filter( item => {
             let flag: boolean = true;
             for(let val of filterValue){
-              // перебираємо всі елементи масива
+              // перебираємо всі елементи масива 
               // якщо елемент масива включений в item[fild] тоді відразу закінчуємо цикл з результатом true
               if(String(item[fild]).toLowerCase().includes(String(val).toLowerCase())){
                 flag = true;
@@ -166,7 +166,7 @@ findOdjInArrObj(array: any[], keyVal: string, val: any) {
   
 // ----------------------------------------------------------------------------------------------------------
 
-  // форматування дати
+  // форматування дати 
   dateFormat(d){
     if(d){
       var now = new Date(d);

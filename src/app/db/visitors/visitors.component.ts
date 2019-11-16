@@ -36,6 +36,7 @@ export class VisitorsComponent implements OnInit {
   name: string = "База відвідувачів";
   disabledColor = 'rgb(150, 150, 150)';
   headerColor = 'rgb(45, 128, 253)';
+  headerTextColor = 'rgb(0, 255, 255)';
   nameBut: string = "Заявки на внесення";
 
   myTable: string = 'visitors'; //назва таблиці в базі
@@ -58,6 +59,8 @@ export class VisitorsComponent implements OnInit {
   viewData; //дані для таблиць отримані з БД 
   
   filterData: {filterValue: any, fild: string}[] = [] // дані для фільтрації viewData  
+  filterDataMap = [];
+  field = '';
   
   expandedElement;
 
@@ -67,8 +70,9 @@ export class VisitorsComponent implements OnInit {
   myTimeOut; // id таймаута для відміни таймаута 
 
   exhibs = new FormControl();
+  getFileInput: FormControl = new FormControl('');
 
-  exhibsList: string[] = ['ЕлітЕкспо', 'БудЕКСПО', 'ГалМед', 'Деревообробка', 'ТурЕКСПО', 'Дентал'];
+  exhibsList: string[] = ['ЕлітЕкспо', 'БудЕКСПО', 'ГалМед', 'Деревообробка', 'ТурЕКСПО', 'Дентал', 'ЄвроАГРО', 'Опалення', 'Вікна-двері-дах', 'Опалення на твердому паливі', 'Готельний та рестор. бізнес', 'Дитячий світ', 'Альтернативна енергетика', 'Стоматологічний ярмарок'];
 
   selection = new SelectionModel(true, []); // данні для вибірки
   arrOfCheckId = [];
@@ -217,6 +221,8 @@ export class VisitorsComponent implements OnInit {
     }
     console.log('dataSource2: ', dataSource);
     this.dataSource.data = this.viewData;
+    //застосовуємо фільтр, якщо він є 
+    this.filter(this.filterData);
     this.isLoadingResults = false;
   }
 
@@ -231,6 +237,8 @@ export class VisitorsComponent implements OnInit {
         dataSource.splice(id, 1, data[0]);
       } 
       this.dataSource.data = this.viewData;
+      //застосовуємо фільтр, якщо він є
+      this.filter(this.filterData);
       get.unsubscribe();
       this.isLoadingResults = false;  
     })
@@ -249,6 +257,8 @@ export class VisitorsComponent implements OnInit {
           console.log("checkIdVisitor: ", data[0]);
           dataSource.splice(0, 0, data[0]);
           this.dataSource.data = this.viewData;
+          //застосовуємо фільтр, якщо він є
+          this.filter(this.filterData);
         } 
         get.unsubscribe();  
       })
@@ -266,16 +276,48 @@ export class VisitorsComponent implements OnInit {
     this.isAddingItem = !this.isAddingItem;
   }
 
-  // керує фільтрацією (filterValue - значення фільтру, fild - поле фільтру)
+  // керує фільтрацією (filterValue - значення фільтру, fild - поле фільтру) 
   // повертає новий this.dataSource.data 
   filterController(filterValue, fild){
     console.log('filterController/filterValue: ',filterValue);
     let data = this.viewData;
+    // додаємо дані для фільтрації
     let filterData = this.module.addFiltrData(this.filterData, filterValue, fild);
+    this.filterData = filterData;
+    this.filterDataMap = this.filterData.map(item => item.fild);
+    // проходимо по масиву фільтрації та фільтруємо всі вказані поля
     for (let i = 0; i < filterData.length; i++) {
       data = this.module.filter(data, filterData[i].filterValue, filterData[i].fild) 
     }
     this.dataSource.data = data;
+  }
+
+  filter(filterData){
+    console.log('filterData argument of filter(): ', filterData);
+    let data = this.viewData;
+    for (let i = 0; i < filterData.length; i++) {
+      console.log('i=',i);
+      data = this.module.filter(data, filterData[i].filterValue, filterData[i].fild) 
+    }
+    this.dataSource.data = data;
+  }
+
+  // очищуємо фільтр
+  clearFilter(){
+    // обнуляємо дані для фільтрації
+    this.filterData = [];
+    this.filterDataMap = [];
+    // фільтруємо з пустим масивом, щоб повернути все назад
+    this.filter(this.filterData);
+    // проходимо по всіх інпутах з фільтрами окрім select та potvid
+    this.displayedColumns2.forEach(element => {
+      if (element != 'f_select' && element != 'f_potvid'){
+        // очищуємо значення
+        (<HTMLInputElement>document.getElementById(element)).value = '';
+      }
+    });
+    // встановлюємо значення пусто для potvid
+    this.exhibs.setValue('');
   }
 
   addColumn(item: string) {
@@ -512,7 +554,7 @@ export class VisitorsComponent implements OnInit {
         }
         if(data){
           console.log("unsubscribe");
-          //тут треба видалити список локально
+          //тут треба видалити список локально 
           this.deleteElementDataSource(this.viewData, this.arrOfCheckId);
           this.selection.clear();
           this.arrOfCheckId = [];
@@ -527,6 +569,70 @@ export class VisitorsComponent implements OnInit {
     if([4, 5].includes(Number(localStorage.getItem('access rights')))) return this.disabled = false;
     else return this.disabled = true;
   }
+
+  //отримати файл
+  getFile(id){
+    let control = <HTMLInputElement>document.getElementById(id);
+    let files = control.files,
+        len = files.length;
+ 
+    for (let i=0; i < len; i++) {
+        console.log("Filename: " + files[i].name);
+        console.log("Type: " + files[i].type);
+        console.log("Size: " + files[i].size + " bytes");
+    }
+    return files[0];
+  }
+
+  //отримати дані з файлу та повернути у вигляді масива
+  getDataFile(file){
+    return new Promise((resolve, reject) => {
+      let reader = new FileReader();
+      reader.readAsText(file);
+      if (file.type != 'text/plain'){
+        console.error("File could not be read!");
+        reject(reader.error.code);
+      }
+      reader.onload = () => {
+          var contents = reader.result;
+          console.log("Содержимое файла: \n" + contents);
+          resolve(this.getArrFromString(contents)) ;
+      };
+      reader.onerror = () => {
+          console.error("File could not be read!");
+          reject(reader.error.code);
+      };
+    })
+  }
+
+  getArrFromString(str){
+    let re = /\s*\n\s*/;
+    console.log('array: ', str.split(re).filter(Boolean));
+    return str.split(re).filter(Boolean);
+  }
+
+  fieldFiltr(val){
+    this.field = val;
+    //console.log('this.field: ',this.field);
+    return
+  }
+
+  getDataFromFile(id, field){
+    this.getDataFile(this.getFile(id)).then(
+      data => {
+        console.log('subscribe data: ', data);
+        return this.filterController(data, field);
+      },
+      error => {
+        alert("Rejected: " + error); // error - аргумент reject
+      }
+    )
+  }
+
+  deleteRecordFromSelectedField(field){
+    console.log('selected field: ', field);
+  }
+
 
 }
 

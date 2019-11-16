@@ -62,7 +62,7 @@ export class VisitorComponent implements OnInit {
   worningCheck: string;
 
   startLoginForm;
-
+ 
   constructor(
     private server: ServerService,
     private router: Router,

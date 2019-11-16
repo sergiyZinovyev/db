@@ -1,7 +1,4 @@
-
-<!-- <div class="example-loading-shade"> 
-    <mat-spinner></mat-spinner>
-</div> -->
+<!-- форма для додавання нового запису -->
 <div class="add-item" *ngIf="isAddingItem">
     <div class="back-add-item-element overflow-auto">
         <div class="panel-add-item-element d-flex justify-content-between align-items-center sticky-top">
@@ -26,14 +23,18 @@
     </div> 
 </div>
 
-
+<!-- таблиця -->
 <div class="mat-elevation-z8 container-fluid">
+
+    <!-- spinner -->
     <div class="example-loading-shade" *ngIf="isLoadingResults"> 
         <mat-spinner></mat-spinner>
     </div>
     
     <div class="d-flex justify-content-between sticky">
         <span class="ml-5 my-2" [style.color]="headerColor"><strong>{{name}}</strong></span>
+
+        <!-- dashboard -->
         <div class="d-flex">
 
             <!-- <button 
@@ -47,11 +48,31 @@
 
             <button 
                 mat-icon-button 
+                matTooltip="видалити телефони" 
+                aria-label="Example icon-button with a heart icon" 
+                [style.color]="headerColor" 
+                (click)='deleteRecordFromSelectedField("cellphone")'>
+                <mat-icon>phone</mat-icon>
+            </button>
+
+            <button 
+                mat-icon-button 
                 matTooltip="Оновити дані" 
                 aria-label="Example icon-button with a heart icon" 
                 [style.color]="headerColor" 
                 (click)='refreshDataSourse()'>
                 <mat-icon>refresh</mat-icon>
+            </button>
+
+            <mat-divider [vertical]="true"></mat-divider>
+
+            <button 
+                mat-icon-button 
+                matTooltip="очистити фільтр" 
+                aria-label="Example icon-button with a heart icon" 
+                [style.color]="headerColor" 
+                (click)='clearFilter()'>
+                <mat-icon>layers_clear</mat-icon>
             </button>
 
             <mat-divider [vertical]="true"></mat-divider>
@@ -102,6 +123,37 @@
             </ng-container>
 
             <mat-divider [vertical]="true"></mat-divider>
+
+            <button 
+                mat-icon-button 
+                matTooltip="Отримати дані з файлу" 
+                [style.color]="headerColor" 
+                aria-label="Example icon-button with a heart icon" 
+                [matMenuTriggerFor]="menu5">
+                <mat-icon>get_app</mat-icon>
+            </button>
+                <input
+                    type="file" 
+                    id="your-files" 
+                    #fileInput
+                    hidden
+                    (change)='getDataFromFile(fileInput.id, field)'>
+                <mat-menu #menu5="matMenu" xPosition="after" yPosition="below">
+                    <ng-container>
+                        <button 
+                            mat-menu-item 
+                            (click)='fileInput.click(); fieldFiltr("cellphone")'>
+                            <mat-icon>phone</mat-icon>
+                            телефони
+                        </button>
+                        <button 
+                            mat-menu-item 
+                            (click)='fileInput.click(); fieldFiltr("email")'>
+                            <mat-icon>alternate_email</mat-icon>
+                            електронні адреси
+                        </button>
+                    </ng-container>
+                </mat-menu>
 
             <button 
                 mat-icon-button 
@@ -170,14 +222,18 @@
         matSort
         class="mat-elevation-z8 border">
 
-        <!-- філтр --> 
+        <!-- філтр -->  
         <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns2">
             <th mat-header-cell *matHeaderCellDef [style.background-color]="headerColor" class="filtr2">
 
                 <!-- filter input -->
                 <ng-container *ngIf='column != "f_potvid" && column != "f_select"'>
                     <div class="">
-                        <input (keyup)="filterController($event.target.value, column.slice(2))" class="filtr">
+                        <input 
+                            id='{{column}}' 
+                            (keyup)="filterController($event.target.value, column.slice(2))" 
+                            class="filtr" 
+                            [style.background-color]="filterDataMap.includes(column.slice(2))?headerTextColor:''">
                     </div>
                 </ng-container>
 
@@ -190,6 +246,7 @@
                         panelClass="myPanelClass" 
                         multiple 
                         class="filtr"
+                        [style.background-color]="filterDataMap.includes(column.slice(2))?headerTextColor:''"
                         (selectionChange)="filterController(exhibs.value, column.slice(2))">
                         <mat-select-trigger>
                             {{exhibs.value ? exhibs.value[0] : ''}}
@@ -210,7 +267,14 @@
         <ng-container *ngFor="let column of displayedColumns" >
             <ng-container *ngIf='column != "select"'> 
                 <ng-container matColumnDef="{{column}}" >
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header [style.background-color]="headerColor">{{column | translate: 'ukr'}}</th>       
+                    <th 
+                        mat-header-cell 
+                        *matHeaderCellDef 
+                        mat-sort-header 
+                        [style.background-color]="headerColor" 
+                        [style.color]="filterDataMap.includes(column)?headerTextColor:'white'">
+                        {{column | translate: 'ukr'}}
+                    </th>       
                     <td mat-cell *matCellDef="let element" >
                         <ng-container *ngIf='column != "potvid"'>
                             {{element[column]}} 
