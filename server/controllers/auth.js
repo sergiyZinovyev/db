@@ -33,7 +33,7 @@ exports.reCaptcha2 = function(req, res, next) {
         return res.json({"responseCode" : 1,"responseDesc" : "Please select captcha"});
     }
     // Put your secret key here.
-    var secretKey = "6Lcp7r0UAAAAAMe-wyEqNCs8eGtE6UP8W1swBxxb";
+    var secretKey = "";
     // req.connection.remoteAddress will provide IP address of connected user.
     var verificationUrl = "https://www.google.com/recaptcha/api/siteverify?secret=" + secretKey + "&response=" + req.body.captcha + "&remoteip=" + req.connection.remoteAddress;
     // Hitting GET request to the URL, Google will respond with success or error scenario.
