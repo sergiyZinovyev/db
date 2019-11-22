@@ -42,7 +42,7 @@ export class InviteComponent implements OnInit, OnDestroy{
 
     this.dbsisex.addVisEx();
     if(this.server.frontURL.searchParams.has('exhibreg')){
-      //this.db.setNavDB('visexhib');
+      //this.db.setNavDB('visexhib'); 
       return this.router.navigate(['db']);
     }
 

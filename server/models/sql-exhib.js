@@ -139,9 +139,16 @@ exports.createExhibition_vis = function(dataVisitor, cb){
     date_vis, 
     date_reg,
     fake_id,
-    reg_user
+    reg_user,
+    referrer,
+    utm_source,
+    utm_medium,
+    utm_campaign,
+    utm_term,
+    utm_content,
+    new_visitor
     ) 
-    VALUES (?,?,?,?,?,?,?,?)`;
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
   db.get().query(sql, dataVisitor, function(err, data) {
     cb(err, data)
   })

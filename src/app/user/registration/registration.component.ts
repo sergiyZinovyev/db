@@ -390,7 +390,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         } 
         else{
           console.log('заповніть хоча б одне поле')
-          this.worningCheck = 'Для отримання запрошення потрібно вказати або мобільний телефон або електронну пошту';
+          this.worningCheck = 'Для отримання запрошення потрібно вказати або мобільний телефон або електронну пошту'; 
         }   
     }
     else{console.log('error!')} 
@@ -455,13 +455,13 @@ export class RegistrationComponent implements OnInit, OnDestroy {
           exhibFromBD = ['ТурЕКСПО', 'Готельний та рестор. бізнес', 'Континент розваг'];
           break;
         case 2:
-          exhibFromBD = ['БудЕКСПО', 'Вікна-двері-дах', 'Опалення', 'Опалення на твердому паливі', 'Альтернативна енергетика'];
+          exhibFromBD = ['БудЕКСПО', 'Вікна-двері-дах', 'Опалення', 'Альтернативна енергетика'];
           break;
         case 8:
           exhibFromBD = ['ГалМЕД'];
           break;
         case 7:
-          exhibFromBD = ['Дентал-УКРАЇНА'];
+          exhibFromBD = ['Дентал-УКРАЇНА', 'Дентал-Експо'];
           break;
         case 3:
           exhibFromBD = ['Деревообробка'];

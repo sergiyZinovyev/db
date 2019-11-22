@@ -73,7 +73,10 @@ findOdjInArrObj(array: any[], keyVal: string, val: any) {
     }
     for (let i: number = 0; i < array.length; i++){
       if (array[i][field] == val){
-        console.log('id of array: ', i);
+        // console.log('field: ', field);
+        // console.log('val: ', val);
+        // console.log('array[i]: ', array[i]);
+        // console.log('id of array: ', i);
         return i;
       }
     }

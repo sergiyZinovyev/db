@@ -74,6 +74,7 @@ import { TranslatePipe } from './translate.pipe';
 import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
 
 import { html2pdf } from 'html2pdf.js';
+import { EmailComponent } from './email/email.component';
 
 
 
@@ -93,7 +94,8 @@ import { html2pdf } from 'html2pdf.js';
     CompaniesComponent,
     VisexhibsComponent,
     VisexhibComponent,
-    TranslatePipe
+    TranslatePipe,
+    EmailComponent
   ],
   imports: [
     BrowserModule,

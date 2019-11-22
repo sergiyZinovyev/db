@@ -89,7 +89,15 @@ exports.createInExhibition_vis = function(req, res) {
             date_reg,
             req.body.fake_id,
             reg_user,
-        ]; 
+            req.body.referrer_url,
+            req.body.utm_source,
+            req.body.utm_medium,
+            req.body.utm_campaign,
+            req.body.utm_term,
+            req.body.utm_content,
+            req.body.new_visitor,
+        ];
+        console.log('visitorData: ', visitorData); 
         SQL.createExhibition_vis(visitorData, function(err, doc){
             if (err) {
                 console.log(err);

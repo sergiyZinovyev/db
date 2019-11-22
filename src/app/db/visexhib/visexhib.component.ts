@@ -148,6 +148,7 @@ export class VisexhibComponent implements OnInit, OnDestroy {
         // перебираємо всі назви ключів першого обєкта, та записуємо в масив, щоб визначити назви колонок 
         this.keyData.push(key);
       }
+      console.log('this.keyData: ',this.keyData);
 
       for (let i=0; i<this.displayedColumns.length; i++){
         //видаляємо з назв колонок ті які мають бути виведені на екрані
@@ -168,6 +169,13 @@ export class VisexhibComponent implements OnInit, OnDestroy {
           date_vis: this.dateFormat(data[i].date_vis),
           date_reg: this.dateFormat(data[i].date_reg),
           realname: data[i].realname,
+          referrer: data[i].referrer,
+          utm_source: data[i].utm_source,
+          utm_medium: data[i].utm_medium,
+          utm_campaign: data[i].utm_campaign,
+          utm_term: data[i].utm_term,
+          utm_content: data[i].utm_content,
+          new_visitor: data[i].new_visitor,
 
           cellphone: data[i].cellphone,
           city: data[i].city, 
@@ -388,9 +396,15 @@ export class VisexhibComponent implements OnInit, OnDestroy {
       'namepovne',
       'cellphone',
       'email',
-      'registered',  
+      'referrer',
+      'utm_source',
+      'utm_medium',
+      'utm_campaign',
+      'utm_term',
+      'utm_content',
+      'new_visitor',  
     ];
-    this.displayedColumns2 = this.module.addText(this.displayedColumns, 'f_'); //рядок таблиці з фільтрами
+    this.displayedColumns2 = this.module.addText(this.displayedColumns, 'f_'); //рядок таблиці з фільтрами 
     this.getBd(this.server.exhib.id, 2);
     this.name = 'Зареєструвалися на';
     this.getHeaderColor()
@@ -405,7 +419,13 @@ export class VisexhibComponent implements OnInit, OnDestroy {
       'namepovne',
       'cellphone',
       'email',
-      'registered', 
+      'referrer',
+      'utm_source',
+      'utm_medium',
+      'utm_campaign',
+      'utm_term',
+      'utm_content',
+      'new_visitor', 
     ];
     this.displayedColumns2 = this.module.addText(this.displayedColumns, 'f_'); //рядок таблиці з фільтрами
     this.getBd(this.server.exhib.id, 3);

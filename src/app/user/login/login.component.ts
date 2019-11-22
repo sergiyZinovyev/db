@@ -39,8 +39,9 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     console.log('window.location: ',window.location);
     this.server.setFrontURL(window.location);
+    this.user.setReferrer(window.document.referrer);
     if(this.server.frontURL.searchParams.has('exhibreg')){
-      //параметр 'exhibreg' задається під час реєстрації на виставці і свідчить про те що перехід відбувся звідти
+      //параметр 'exhibreg' задається під час реєстрації на виставці і свідчить про те що перехід відбувся звідти  
       //в такому разі рекапчу не застосовуємо
       this.visibleCaptcha = false;
     }

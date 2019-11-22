@@ -1,11 +1,12 @@
 var Visitors = require('../models/sql-visitors');
 var Shared = require('../models/shared');
+var SQLCommon = require('../models/sql-common');
 var ControllersShared = require('../controllers/shared');
 
 
 exports.all = function(req, res) {
     let table;
-    //якщо параметри не задані робимо запит до visitors
+    //якщо параметри не задані робимо запит до visitors 
     if(!req.params.id){
         //table = 'visitors';
         Visitors.getVisitors(function(err, doc) {
@@ -36,8 +37,11 @@ exports.getVisitors = function(req, res) {
     let condition;
     table = req.params.id;
     console.log('req.query.id: ',req.query.id);
-    if(req.query.id > 0){condition = `where regnum=${req.query.id}`}
-    else {condition = ''}
+    if(!req.query.id){
+        console.log('req.query.id = undefined');
+        condition = '';
+    }
+    else{condition = `WHERE regnum IN (${req.query.id})`}
     console.log('condition: ',condition);
     Visitors.getVisitors(table, condition, function(err, doc) {
         if (err) {
@@ -1909,37 +1913,39 @@ exports.getRowOnCond2 = function(req, res) {
 };
 
 //-------------------------------------------------------------------------------------------------------------  
-//редагування запису відвідування виставки у таблиці Exhibition_vis відміна відвідування 
+//редагування(видалення) запису з вказаного поля вказаної таблиці
 
-// exports.editExhibition_vis_visited_cancel = function(req, res) {
-//     ControllersShared.getRights(req.query.login, function(err, doc){
-//         if (err) {
-//             console.log('err: ',err);
-//             return res.sendStatus(500);
-//         }
-//         else {
-//             console.log('rights cb: ', doc.insupdvisitors);
-//             if(![4,5].includes(doc.insupdvisitors)){  
-//                 console.log('у вас немає прав доступу: ', doc.insupdvisitors);
-//                 return res.send([{
-//                     "rights": "false",
-//                 }]);
-//             }
-//             else{
-//                 let id_exhibition = [req.body.id_exhibition];
-//                 let id_visitor = req.body.id_visitor;
-//                 console.log('req.id_exhibition: ',req.body.id_exhibition);
-//                 console.log('id_visitors: ',req.body.id_visitor);
-//                 SQL.editExhibition_vis_visited_cancel(id_exhibition, id_visitor, function(err, doc2){
-//                     if (err) {
-//                         console.log(err);
-//                         return res.sendStatus(500);
-//                     }
-//                     res.send(doc2);
-//                 });
-//             }
-//         }
-//     })   
-// };
+exports.editExhibition_del_rec = function(req, res) {
+    ControllersShared.getRights(req.query.login, function(err, doc){
+        if (err) {
+            console.log('err: ',err);
+            return res.sendStatus(500);
+        }
+        else {
+            console.log('rights cb: ', doc.insupdvisitors);
+            if(![4,5].includes(doc.insupdvisitors)){  
+                console.log('у вас немає прав доступу: ', doc.insupdvisitors);
+                return res.send([{
+                    "rights": "false",
+                }]);
+            }
+            else{
+                let table = req.body.table;
+                let field = req.body.field;
+                let id = req.body.id;
+                let ids = req.body.ids;
+                console.log('req.id_exhibition: ',req.body.id_exhibition);
+                console.log('id_visitors: ',req.body.id_visitor);
+                SQLCommon.editExhibition_del_rec(table, field, id, ids, function(err, doc2){
+                    if (err) {
+                        console.log(err);
+                        return res.sendStatus(500);
+                    }
+                    res.send(doc2);
+                });
+            }
+        }
+    })   
+};
 
 //-------------------------------------------------------------------------------------------------------------

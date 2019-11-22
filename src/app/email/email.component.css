@@ -1,0 +1,15 @@
+.example-container {
+    display: flex;
+    flex-direction: column;
+}
+  
+.example-container > * {
+    width: 100%;
+}
+
+.send-form{
+    border: none;
+    width: 100%;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}

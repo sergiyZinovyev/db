@@ -7,7 +7,7 @@
                 mat-icon-button 
                 matTooltip="Закрити" 
                 aria-label="Example icon-button with a heart icon" 
-                (click)='addNewVisitor()'>
+                (click)='newElement("isAddingItem")'>
                 <mat-icon>close</mat-icon>
             </button>
         </div>
@@ -18,8 +18,26 @@
                 (getData)="editDataSource($event)"
                 (isLoading)="setIsLoadingResults($event)">
             </app-visitor>
+        </div> 
+    </div> 
+</div>
+
+<!-- форма для створення листа -->
+<div class="add-item" *ngIf="isAddingItemSendEmail">
+    <div class="back-add-item-element overflow-auto w-75">
+        <div class="panel-add-item-element d-flex justify-content-between align-items-center sticky-top">
+            <div class="header-panel-add-item-element"><strong>Надіслати лист</strong></div>
+            <button 
+                mat-icon-button 
+                matTooltip="Закрити" 
+                aria-label="Example icon-button with a heart icon" 
+                (click)='newElement("isAddingItemSendEmail")'>
+                <mat-icon>close</mat-icon>
+            </button>
         </div>
-        
+        <div class="p-3 overflow-auto">
+            <app-email></app-email> 
+        </div> 
     </div> 
 </div>
 
@@ -43,17 +61,8 @@
                 aria-label="Example icon-button with a heart icon" 
                 [style.color]="headerColor" 
                 (click)='saveStringAsFile("test text\ntest text2", "test.txt", "text/plain")'>
-                <mat-icon>build</mat-icon>
+                <mat-icon>build</mat-icon> 
             </button> -->
-
-            <button 
-                mat-icon-button 
-                matTooltip="видалити телефони" 
-                aria-label="Example icon-button with a heart icon" 
-                [style.color]="headerColor" 
-                (click)='deleteRecordFromSelectedField("cellphone")'>
-                <mat-icon>phone</mat-icon>
-            </button>
 
             <button 
                 mat-icon-button 
@@ -77,7 +86,7 @@
 
             <mat-divider [vertical]="true"></mat-divider>
 
-            <button 
+            <!-- <button 
                 mat-icon-button 
                 matTooltip="Видалити обрані записи" 
                 aria-label="Example icon-button with a heart icon" 
@@ -85,7 +94,61 @@
                 [disabled]='disabled'
                 (click)='deleteAllCheckId(myTable, arrOfCheckId)'>
                 <mat-icon>delete</mat-icon>
+            </button> -->
+
+            <button 
+                mat-icon-button
+                matTooltip="Видалити обрані записи"
+                [style.color]="disabled ? disabledColor : headerColor"
+                [disabled]='disabled' 
+                aria-label="Example icon-button with a heart icon"
+                [matMenuTriggerFor]="menu6">
+                <mat-icon>delete</mat-icon>
             </button>
+                <mat-menu #menu6="matMenu" xPosition="after" yPosition="below">
+                    <ng-container>
+                        <button 
+                            mat-menu-item 
+                            matTooltip="Видалити все" 
+                            aria-label="Example icon-button with a heart icon" 
+                            [disabled]='disabled'
+                            (click)='deleteAllCheckId(myTable, arrOfCheckId)'>
+                            <mat-icon>person_add_disabled</mat-icon>
+                            Видалити все
+                        </button>
+                        <button 
+                            mat-menu-item 
+                            matTooltip="Видалити телефони" 
+                            aria-label="Example icon-button with a heart icon" 
+                            [disabled]='disabled'
+                            (click)='deleteRecordFromSelectedField("cellphone")'>
+                            <mat-icon>phone</mat-icon>
+                            Видалити телефони
+                        </button>
+                        <button 
+                            mat-menu-item 
+                            matTooltip="Видалити емейли" 
+                            aria-label="Example icon-button with a heart icon" 
+                            [disabled]='disabled'
+                            (click)='deleteRecordFromSelectedField("email")'>
+                            <mat-icon>alternate_email</mat-icon>
+                            Видалити емейли
+                        </button>
+                    </ng-container>
+                </mat-menu>
+
+            <mat-divider [vertical]="true"></mat-divider>
+
+            <ng-container *ngIf='myTable=="visitors"'>
+                <button 
+                    mat-icon-button 
+                    matTooltip="Створити лист" 
+                    aria-label="Example icon-button with a heart icon" 
+                    [style.color]="headerColor" 
+                    (click)='newElement("isAddingItemSendEmail")'>
+                    <mat-icon>email</mat-icon>
+                </button>
+            </ng-container>    
 
             <mat-divider [vertical]="true"></mat-divider>
 
@@ -95,7 +158,7 @@
                     matTooltip="Додати відвідувача" 
                     aria-label="Example icon-button with a heart icon" 
                     [style.color]="headerColor" 
-                    (click)='addNewVisitor()'>
+                    (click)='newElement("isAddingItem")'>
                     <mat-icon>person_add</mat-icon>
                 </button>
             </ng-container>

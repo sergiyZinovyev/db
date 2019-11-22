@@ -11,6 +11,8 @@ import {ServerService} from './server.service'
 export class UserService {
 
   userData = new Subject();
+
+  referrer: string;
   
   userLogData = {
     email: '',
@@ -25,6 +27,11 @@ export class UserService {
   constructor(
     private server: ServerService
   ) { }
+
+  setReferrer(siteURL){
+    this.referrer = siteURL;
+    console.log('referrer: ', this.referrer);
+  }
 
   setUserData(data){
     console.log('next userData: ', data);

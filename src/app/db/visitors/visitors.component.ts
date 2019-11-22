@@ -8,6 +8,7 @@ import { ServerService } from '../../shared/server.service';
 import { ModulesService } from '../../shared/modules.service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {FormControl} from '@angular/forms';
+import { Subscribable } from 'rxjs';
 
 export interface BDVisitors {
   cellphone: string;
@@ -66,6 +67,7 @@ export class VisitorsComponent implements OnInit {
 
   isLoadingResults = true;
   isAddingItem = false;
+  isAddingItemSendEmail = false;
 
   myTimeOut; // id таймаута для відміни таймаута 
 
@@ -227,15 +229,29 @@ export class VisitorsComponent implements OnInit {
   }
 
   editElementDataSource(dataSource, val){
+    //let saveFilterData = this.filterData; //зберігаємо дані фільтру перед видаленням
+    //this.clearFilter(); //очищуємо фітьтр
     console.log('editElementDataSource is work!');
     console.log('dataSource: ', dataSource);
     console.log('val: ', val);
-    let id = this.module.checkArrOfObjIdValField(dataSource, 'regnum', val);
-    let get = this.server.getVisitors(this.myTable, val).subscribe(data =>{ 
-      console.log("checkIdVisitor: ", data[0]);
-      if(id >= 0){
-        dataSource.splice(id, 1, data[0]);
-      } 
+    let id: Number;
+    let get = this.server.getVisitors(this.myTable, val).subscribe(data =>{
+      console.log("checkIdVisitor: ", data);
+      if (!Array.isArray(val)){
+        id = this.module.checkArrOfObjIdValField(dataSource, 'regnum', data[0].regnum);
+        if(id >= 0){
+          dataSource.splice(id, 1, data[0]);
+        } 
+      }
+      //якщо обробляється масив...
+      else{
+        for(let key in data){
+          id = this.module.checkArrOfObjIdValField(dataSource, 'regnum', data[key].regnum);
+          if(id >= 0){
+            dataSource.splice(id, 1, data[key]);
+          } 
+        }
+      }
       this.dataSource.data = this.viewData;
       //застосовуємо фільтр, якщо він є
       this.filter(this.filterData);
@@ -265,15 +281,16 @@ export class VisitorsComponent implements OnInit {
       get2.unsubscribe();
       this.isLoadingResults = false;
     })
-    this.addNewVisitor() //закриваємо елемент
+    this.newElement('isAddingItem') //закриваємо елемент
   }
 
   setIsLoadingResults(result){
     this.isLoadingResults = result;
   }
 
-  addNewVisitor(){
-    this.isAddingItem = !this.isAddingItem;
+  newElement(element: string){
+    console.log('element: ',element);
+    this[element] = !this[element];
   }
 
   // керує фільтрацією (filterValue - значення фільтру, fild - поле фільтру) 
@@ -296,7 +313,7 @@ export class VisitorsComponent implements OnInit {
     console.log('filterData argument of filter(): ', filterData);
     let data = this.viewData;
     for (let i = 0; i < filterData.length; i++) {
-      console.log('i=',i);
+      //console.log('i=',i);
       data = this.module.filter(data, filterData[i].filterValue, filterData[i].fild) 
     }
     this.dataSource.data = data;
@@ -356,7 +373,11 @@ export class VisitorsComponent implements OnInit {
   }
 
   refreshDataSourse(){
+    this.selection.clear();
+    this.arrOfCheckId = [];
+    this.clearFilter();
     this.getBd(this.myTable);
+
   }
 
   getHeaderColor() {
@@ -473,9 +494,9 @@ export class VisitorsComponent implements OnInit {
 
   //видалити всі обрані записи
   deleteAllCheckId(table, arrOfId){
-    if(!arrOfId){
+    if(arrOfId.length == 0){
       this.isLoadingResults = false;
-      return alert('Ви не обрали жодного запису для збереження');
+      return alert('Ви не обрали жодного запису для видалення');
     }
     let isConfirm = confirm("Ви намагаєтеся видалити записи.\nУВАГА! Відновлення буде неможливе!\nБажаєте продовжити?");
     if(isConfirm){
@@ -595,7 +616,7 @@ export class VisitorsComponent implements OnInit {
       }
       reader.onload = () => {
           var contents = reader.result;
-          console.log("Содержимое файла: \n" + contents);
+          console.log("Вміст файла: \n" + contents);
           resolve(this.getArrFromString(contents)) ;
       };
       reader.onerror = () => {
@@ -629,8 +650,34 @@ export class VisitorsComponent implements OnInit {
     )
   }
 
-  deleteRecordFromSelectedField(field){
-    console.log('selected field: ', field);
+  deleteRecordFromSelectedField(field: string){
+    if(this.arrOfCheckId.length == 0){
+        return alert('Ви не обрали жодного запису');
+      }
+    let isConfirm = confirm("Ви намагаєтеся видалити з бази обрані записи.\nУВАГА! Повернутися назад буде неможливо!\nБажаєте продовжити?");
+    if(isConfirm){
+      // формуємо дані для відправки
+      let dataAccept = {
+        table: this.myTable, 
+        field: field, 
+        id: 'regnum', 
+        ids: this.arrOfCheckId, 
+      };
+      console.log('selected data: ', dataAccept);
+      let post = this.server.post(dataAccept, 'editExhibition_del_rec').subscribe(data =>{
+        console.log("data: ", data);
+        if(data[0]){
+          // перевіряємо права користувача, видаємо повідомлення, якщо немає прав 
+          if(this.server.accessIsDenied(data[0].rights)) return post.unsubscribe();
+        }
+        //тут треба оновити локальну базу
+        this.selection.clear();
+        //this.arrOfCheckId = [];
+        //this.refreshDataSourse();
+        this.editElementDataSource(this.viewData, this.arrOfCheckId);
+
+      })
+    }
   }
 
 
