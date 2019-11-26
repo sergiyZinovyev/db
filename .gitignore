@@ -11,7 +11,7 @@
 /node_modules
 
 # secure
-/server/cert
+/server/cert/
 /server/config.js
 
 # profiling files
