@@ -13,3 +13,13 @@
     margin-top: 5px;
     margin-bottom: 5px;
 }
+
+.legend{
+    width: 50px;
+    font-weight: bold;
+}
+
+.no-gutter > [class*='col-'] {
+    padding-right:3px;
+    padding-left:3px;
+}

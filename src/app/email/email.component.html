@@ -1,6 +1,6 @@
 <div class="m-3">
-    <div class="row">
-        <div class="col-1 border border-secondary">
+    <div class="row no-gutter">
+        <div class="col-auto border border-secondary d-flex align-items-center p-1">
             <button 
                 mat-raised-button
                 color="primary"
@@ -8,27 +8,27 @@
                 <mat-icon>send</mat-icon>
             </button>
         </div>
-        <div class="col-11 border border-secondary">
-            <div class="row">
-                <div class="col-1 border border-secondary">
-                    Кому:
+        <div class="col border border-secondary">
+            <div class="row no-gutter">
+                <div class="col-auto border border-secondary d-flex align-items-center">
+                    <div class="legend text-right border border-secondary">Кому:</div>
                 </div>
-                <div class="col-11 border border-secondary">
+                <div class="col p-1 border border-secondary">
                     <input class='send-form' placeholder="Введіть електронні адреси через - ';'">
                 </div> 
             </div>
-            <div class="row">
-                <div class="col-1 border border-secondary">
-                    Тема:
+            <div class="row no-gutter">
+                <div class="col-auto border border-secondary d-flex align-items-center"> 
+                    <div class="legend text-right border border-secondary">Тема:</div>
                 </div>
-                <div class="col-11 border border-secondary">
+                <div class="col p-1 border border-secondary">
                     <input class='send-form' placeholder="Введіть тему листа">
                 </div> 
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-1 border border-secondary">
+    <div class="row  no-gutter">
+        <div class="col-auto border border-secondary d-flex align-items-center p-1">
             <button 
                 mat-raised-button
                 color="primary"
@@ -36,10 +36,10 @@
                 <mat-icon>attach_file</mat-icon>
             </button>
         </div>
-        <div class="col-1 border border-secondary">Вкладення</div>
-        <div class="col-10 border border-secondary">col</div>
+        <div class="col-auto border border-secondary d-flex align-items-center"><div class="text-right">Вкладення</div></div>
+        <div class="col border border-secondary">col</div>
     </div>
-    <div class="row">
+    <div class="row no-gutter">
         <div class="col-12 border border-secondary">
             <textarea class='send-form' placeholder="Textarea"></textarea>    
         </div>
