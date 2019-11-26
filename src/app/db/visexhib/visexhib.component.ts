@@ -373,7 +373,7 @@ export class VisexhibComponent implements OnInit, OnDestroy {
   }
 
   addColumn(item: string) {
-    this.displayedColumns.push(item);
+    this.displayedColumns.splice(this.displayedColumns.length-1, 0, item);
     this.displayedColumns2 = this.module.addText(this.displayedColumns, 'f_');
     this.keyData.splice(this.module.checkArrIdVal(this.keyData, item), 1)
     console.log('this.keyData: ',this.keyData);

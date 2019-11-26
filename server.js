@@ -18,6 +18,7 @@ const emailController = require('./server/controllers/email');
 const pdfController = require('./server/controllers/pdf');
 const authController = require('./server/controllers/auth'); 
 const sharedController = require('./server/controllers/shared');
+const Secure = require('./server/config');
 //const Visitors = require('./server/models/sql-visitors');
 
 const urlencodedParser = bodyParser.urlencoded({extended: false});
@@ -29,7 +30,7 @@ const app = express();
 //const host = '31.41.221.156'; //www host test 
 const host = 'visitors.galexpo.com.ua'; //prod host 
 //const port = 7001; //prod
-const port = 7002; //dev
+const port = Secure.Config.serverConfig.backendPort; //dev
 https.createServer({
   key: fs.readFileSync('./server/cert/key.pem'),
   cert: fs.readFileSync('./server/cert/cert.pem')
@@ -43,7 +44,7 @@ https.createServer({
 //front-end server
 const ang = express();
 //const port2 = 4201; //prod
-const port2 = 4202; //dev
+const port2 = Secure.Config.serverConfig.frontendPort; //dev
 https.createServer({
   key: fs.readFileSync('./server/cert/key.pem'),
   cert: fs.readFileSync('./server/cert/cert.pem')

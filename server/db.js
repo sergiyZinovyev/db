@@ -1,4 +1,6 @@
 const mysql = require("mysql2");
+const Secure = require("../server/config");
+
 
 // my db
 // const connection = mysql.createPool({
@@ -16,7 +18,12 @@ const mysql = require("mysql2");
 
 //www db prod
 const connection = mysql.createPool({
-	
+	connectionLimit: 100,
+	host: "localhost",
+	user: Secure.Config.dbConfig.user,
+	password: Secure.Config.dbConfig.pass,
+	database: Secure.Config.dbConfig.database,
+	charset: "cp1251"
 });
 
 

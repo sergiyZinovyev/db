@@ -1,6 +1,7 @@
 td.mat-cell {
     /* row border */
-    border-left: 1px solid rgb(212, 212, 212);
+    /* border-left: 1px solid rgb(212, 212, 212); */
+    border-right: 1px solid rgb(212, 212, 212);
     padding-left: 10px;
     padding-right: 10px;
   }
@@ -146,7 +147,10 @@ td.mat-cell {
   z-index: 101;
   /* height: 20px; */
 }
- 
+.transcolor{
+  background-color: rgba(255, 255, 255, 0.356) !important;
+}
+
 .filtr{
   width: 100% !important;
   border: 2px inset rgb(206, 206, 206);
@@ -182,3 +186,13 @@ td.mat-cell {
 .myPanelClass{
   margin: 25px 0px;
 }
+
+/* table {
+  width: 800px;
+  overflow-x: auto;
+} */
+
+/* .example-container {
+  width: 100%;
+  overflow-x: auto;
+} */

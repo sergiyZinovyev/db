@@ -1,5 +1,6 @@
 var nodemailer = require('nodemailer');
 var fs = require('fs');
+const Secure = require("../config");
 
 let testEmailAccount = nodemailer.createTestAccount();
 
@@ -16,7 +17,8 @@ var transporter = nodemailer.createTransport({
         rejectUnauthorized: false
     },
     auth: {
-        
+        pass: Secure.Config.emailConfig.pass,
+        user: Secure.Config.emailConfig.user
     }
 });
 

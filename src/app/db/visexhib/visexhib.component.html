@@ -1,8 +1,8 @@
-<div class="mat-elevation-z8 container-fluid">
+
     <div class="example-loading-shade" *ngIf="isLoadingResults">
         <mat-spinner></mat-spinner>
     </div>
-    <div class="d-flex justify-content-between sticky">
+    <nav class="d-flex justify-content-between sticky">
         <span class="ml-5 my-2" [style.color]="headerColor"><strong>{{name}}</strong></span>
         <span class="my-2 name-exhib"><strong>{{getExhibName()}}</strong></span>
         <div class="d-flex justify-content-between">
@@ -87,16 +87,21 @@
                     </ng-container>
                 </mat-menu>
         </div>
-    </div>
- <!-- Таблиця -->
+    </nav>
+<!-- Таблиця -->
+<div class="example-container">
     <table mat-table
         [dataSource]="dataSource" 
         multiTemplateDataRows
         matSort
-        class="mat-elevation-z8 border">
+        class="">
 
         <!-- філтр -->
-        <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns2">
+        <ng-container 
+            matColumnDef="{{column}}"
+            [sticky]='column.slice(2) == "id_visitor" ? true : false'
+            [stickyEnd]='column.slice(2) == "select" ? true : false'
+            *ngFor="let column of displayedColumns2">
             <th mat-header-cell *matHeaderCellDef [style.background-color]="headerColor" class="filtr2">
 
                 <!-- filter input -->
@@ -134,9 +139,15 @@
         <!-- основні колонки --> 
         <ng-container *ngFor="let column of displayedColumns">
             <ng-container *ngIf='column != "select"'>
-                <ng-container matColumnDef="{{column}}" >
+                <ng-container 
+                    matColumnDef="{{column}}" 
+                    [sticky]='column == "id_visitor" ? true : false'>
                     <th mat-header-cell *matHeaderCellDef mat-sort-header [style.background-color]="headerColor"> {{column | translate: 'ukr'}} </th>
-                    <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
+                    <td 
+                        mat-cell 
+                        *matCellDef="let element"> 
+                        {{element[column]}} 
+                    </td>
                 </ng-container>   
             </ng-container>
         </ng-container>
@@ -156,7 +167,7 @@
         </ng-container>
 
         <!-- додаткові колонки -->
-        <ng-container matColumnDef="select">
+        <ng-container matColumnDef="select" stickyEnd>
             <th mat-header-cell *matHeaderCellDef [style.background-color]="headerColor" class="pt-2">
               <mat-checkbox (change)="$event ? masterToggle($event) : null"
                             [checked]="selection.hasValue() && isAllSelected()"
@@ -186,6 +197,6 @@
         </tr>
         <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
     </table>
-    
+</div>    
     <mat-paginator [pageSizeOptions]="[i, 15, 30, 50, 100]" showFirstLastButtons></mat-paginator>
-</div> 
+
