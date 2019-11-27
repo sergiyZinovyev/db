@@ -184,5 +184,21 @@ findOdjInArrObj(array: any[], keyVal: string, val: any) {
     else {return new Date()};
     return formated_date;
   }
+
+// ----------------------------------------------------------------------------------------------------------
+
+  //отримати файл
+  getFile(id){
+    let control = <HTMLInputElement>document.getElementById(id);
+    let files = control.files,
+        len = files.length;
+ 
+    for (let i=0; i < len; i++) {
+        console.log("Filename: " + files[i].name);
+        console.log("Type: " + files[i].type);
+        console.log("Size: " + files[i].size + " bytes");
+    }
+    return files[0];
+  }
   
 }

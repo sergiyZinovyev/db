@@ -116,7 +116,8 @@ app.post("/editExhibition_typeOfReg", authController.checkAuth, urlencodedParser
 
 //----------------------------------------
 
-
+//розсилка
+app.post("/massMaling", cors(), urlencodedParser, authController.checkAuth, emailController.massMaling);
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 

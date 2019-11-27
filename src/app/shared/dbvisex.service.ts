@@ -180,7 +180,7 @@ export class DbvisexService {
     let result: string
     let currentDate = new Date();
     let dateFromDb = new Date(date);
-    let differenceDate = (currentDate.getTime() - dateFromDb.getTime())/10000;
+    let differenceDate = (currentDate.getTime() - dateFromDb.getTime())/1000;
     console.log('currentDate: '+currentDate+'; dateFromDb: '+dateFromDb);
     console.log('differenceDate: '+differenceDate+'sec');
     if(differenceDate<60){

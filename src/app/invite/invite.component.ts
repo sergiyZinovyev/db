@@ -19,7 +19,7 @@ export class InviteComponent implements OnInit, OnDestroy{
 
   //html2pdf: any;
 
-  //myUrl = 'http://localhost:7001/img/bud.png';
+  //myUrl = 'http://localhost:7001/img/bud.png'; 
   bcFormat = 'CODE128'; //формат штрихкоду
 
   email:string = '';

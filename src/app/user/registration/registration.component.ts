@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
 })
 export class RegistrationComponent implements OnInit, OnDestroy {
   
-  visibleCaptcha: boolean = true; //визначає чи застосовувати рекапчу 
+  visibleCaptcha: boolean = true; //визначає чи застосовувати рекапчу  
 
   myExhib = [];
 

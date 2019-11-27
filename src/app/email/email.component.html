@@ -1,48 +1,64 @@
 <div class="m-3">
-    <div class="row no-gutter">
-        <div class="col-auto border border-secondary d-flex align-items-center p-1">
-            <button 
-                mat-raised-button
-                color="primary"
-                matTooltip="Відправити">
-                <mat-icon>send</mat-icon>
-            </button>
-        </div>
-        <div class="col border border-secondary">
-            <div class="row no-gutter">
-                <div class="col-auto border border-secondary d-flex align-items-center">
-                    <div class="legend text-right border border-secondary">Кому:</div>
-                </div>
-                <div class="col p-1 border border-secondary">
-                    <input class='send-form' placeholder="Введіть електронні адреси через - ';'">
-                </div> 
+    <form class="" [formGroup]="emailForm">
+        <div class="row no-gutter">
+            <div class="col-auto d-flex align-items-start p-1">
+                <button 
+                    mat-raised-button
+                    matTooltip="Відправити"
+                    (click)="send()">
+                    <mat-icon color="primary">send</mat-icon>
+                </button>
             </div>
-            <div class="row no-gutter">
-                <div class="col-auto border border-secondary d-flex align-items-center"> 
-                    <div class="legend text-right border border-secondary">Тема:</div>
+            <div class="col  ">
+                <div class="row no-gutter">
+                    <div class="col-auto   d-flex align-items-center">
+                        <div class="legend text-right  ">Кому:</div>
+                    </div>
+                    <div class="col example-input  ">
+                        <input class='send-form p-1' placeholder="Введіть електронні адреси через - ';'" formControlName="to">
+                    </div> 
                 </div>
-                <div class="col p-1 border border-secondary">
-                    <input class='send-form' placeholder="Введіть тему листа">
-                </div> 
+                <div class="row no-gutter">
+                    <div class="col-auto   d-flex align-items-center">
+                        <div class="legend text-right  ">Від:</div>
+                    </div>
+                    <div class="col example-input  ">
+                        <input class='send-form p-1' placeholder="" formControlName="from">
+                    </div> 
+                </div>
+                <div class="row no-gutter">
+                    <div class="col-auto   d-flex align-items-center"> 
+                        <div class="legend text-right  ">Тема:</div>
+                    </div>
+                    <div class="col example-input  ">
+                        <input class='send-form p-1' placeholder="Введіть тему листа" formControlName="subject">
+                    </div> 
+                </div>
             </div>
         </div>
-    </div>
-    <div class="row  no-gutter">
-        <div class="col-auto border border-secondary d-flex align-items-center p-1">
-            <button 
-                mat-raised-button
-                color="primary"
-                matTooltip="Додати файл">
-                <mat-icon>attach_file</mat-icon>
-            </button>
+        <div class="row  no-gutter">
+            <div class="col-auto   d-flex align-items-center p-1">
+                <input
+                    type="file" 
+                    id="your-files" 
+                    #fileInput
+                    hidden
+                    (change)='addFile(fileInput.id)'>
+                <button 
+                    mat-raised-button
+                    matTooltip="Додати файл"
+                    (click)='fileInput.click()'>
+                    <mat-icon color="primary">attach_file</mat-icon>
+                </button>
+            </div>
+            <div class="col-auto "><div class="text-right">Вкладення</div></div>
+            <div class="col d-flex align-items-center"><i>file-name</i></div>
         </div>
-        <div class="col-auto border border-secondary d-flex align-items-center"><div class="text-right">Вкладення</div></div>
-        <div class="col border border-secondary">col</div>
-    </div>
-    <div class="row no-gutter">
-        <div class="col-12 border border-secondary">
-            <textarea class='send-form' placeholder="Textarea"></textarea>    
+        <div class="row no-gutter">
+            <div class="col-12  ">
+                <textarea class='send-form example-textarea' placeholder="Введіть текст листа" formControlName="message"></textarea>  
+            </div>
         </div>
-    </div>
+    </form>
 </div>
 

@@ -605,7 +605,7 @@ export class VisitorsComponent implements OnInit {
     return files[0];
   }
 
-  //отримати дані з файлу та повернути у вигляді масива
+  //отримати дані з файлу та повернути у вигляді масива  
   getDataFile(file){
     return new Promise((resolve, reject) => {
       let reader = new FileReader();

@@ -57,3 +57,31 @@ exports.sendEmail = function(req, res){
         }   
     });
 }
+
+exports.massMaling = function(req, res){
+    const mailOptions = {
+        from: req.body.from, // sender address
+        to: req.body.to, // list of receivers
+        subject: req.body.subject, // Subject line
+        html: req.body.message // plain text body
+    };
+    if(req.body.attachments){
+        // mailOptions.attachments = [
+        //     {   
+        //         filename: req.body.filename,
+        //         path: req.body.attachments
+        //     }
+        // ]
+        mailOptions.attachments = req.body.attachments
+    }
+    transporter.sendMail(mailOptions, function (err, info) {
+        if(err){
+            console.log(err);
+            //res.send(err)
+        }   
+        else{
+            //console.log(info);
+            res.send(info);
+        }   
+    });
+}

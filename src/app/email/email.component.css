@@ -16,10 +16,19 @@
 
 .legend{
     width: 50px;
-    font-weight: bold;
+    font-weight: bold; 
 }
 
 .no-gutter > [class*='col-'] {
-    padding-right:3px;
-    padding-left:3px;
+    padding:3px;
+    /* padding-left:3px; */
+
+}
+
+.example-input{
+    padding:3px;
+}
+
+.example-textarea{
+    height: 400px;
 }
