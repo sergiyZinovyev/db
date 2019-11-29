@@ -645,7 +645,7 @@ export class VisitorsComponent implements OnInit {
         return this.filterController(data, field);
       },
       error => {
-        alert("Rejected: " + error); // error - аргумент reject
+        alert("Rejected: " + error); // error - аргумент reject 
       }
     )
   }

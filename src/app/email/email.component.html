@@ -51,8 +51,24 @@
                     <mat-icon color="primary">attach_file</mat-icon>
                 </button>
             </div>
-            <div class="col-auto "><div class="text-right">Вкладення</div></div>
-            <div class="col d-flex align-items-center"><i>file-name</i></div>
+            <div class="col-auto d-flex align-items-center"><div class="text-right">Вкладення:</div></div>
+            <div class="col d-flex align-items-center">
+                <ng-container *ngFor='let attachment of attachmentsArray; let i = index'>
+                    <div class="card-file card-file-1 d-flex justify-content-between">
+                        <div class="file-info">
+                            <div class="file-name text-truncate"><i>{{attachment.filename}}</i></div>
+                            <div class="file-size">{{(attachment.size/1024).toFixed(2)}} KB</div>
+                        </div>
+                        <button 
+                            mat-icon-button 
+                            matTooltip="Закрити" 
+                            aria-label="Example icon-button with a heart icon"
+                            (click)='deleteFileFromMessage(i)'>
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </div>
+                </ng-container>
+            </div>
         </div>
         <div class="row no-gutter">
             <div class="col-12  ">
@@ -60,5 +76,19 @@
             </div>
         </div>
     </form>
+    <input
+        type="file"
+        accept="text/html"
+        id="your-html"  
+        #fileHTMLInput
+        hidden
+        (change)='addHtml(fileHTMLInput.id)'>
+    <button 
+        mat-raised-button
+        matTooltip="Додати текст повідомлення в HTML форматі"
+        (click)='fileHTMLInput.click()'
+        color="primary">
+        Add HTML
+    </button>
 </div>
 

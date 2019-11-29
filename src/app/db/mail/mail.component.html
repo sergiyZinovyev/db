@@ -1,0 +1,26 @@
+<!-- форма для створення листа -->
+<div class="add-item" *ngIf="isAddingItemSendEmail">
+    <div class="back-add-item-element overflow-auto w-75">
+        <div class="panel-add-item-element d-flex justify-content-between align-items-center sticky-top">
+            <div class="header-panel-add-item-element"><strong>Надіслати лист</strong></div>
+            <button 
+                mat-icon-button 
+                matTooltip="Закрити" 
+                aria-label="Example icon-button with a heart icon" 
+                (click)='newElement("isAddingItemSendEmail")'>
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+        <div class="p-3 overflow-auto">
+            <app-email></app-email> 
+        </div> 
+    </div>  
+</div>
+
+<button 
+    mat-icon-button 
+    matTooltip="Створити лист" 
+    aria-label="Example icon-button with a heart icon" 
+    (click)='newElement("isAddingItemSendEmail")'>
+    <mat-icon>email</mat-icon>
+</button>

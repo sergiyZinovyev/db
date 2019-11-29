@@ -75,6 +75,7 @@ import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
 
 import { html2pdf } from 'html2pdf.js';
 import { EmailComponent } from './email/email.component';
+import { MailComponent } from './db/mail/mail.component';
 
 
 
@@ -95,7 +96,8 @@ import { EmailComponent } from './email/email.component';
     VisexhibsComponent,
     VisexhibComponent,
     TranslatePipe,
-    EmailComponent
+    EmailComponent,
+    MailComponent
   ],
   imports: [
     BrowserModule,

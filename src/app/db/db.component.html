@@ -19,6 +19,7 @@
                     <button mat-menu-item (click)='getItemMenu("visitors")'>База відвідувачів</button>
                     <button mat-menu-item (click)='getItemMenu("plahty")'>Плахти</button>
                     <button mat-menu-item (click)='getItemMenu("visexhibs")'>Відвідувачі виставок</button>
+                    <button mat-menu-item (click)='getItemMenu("mail")'>Пошта</button>
                 </mat-menu>
             </div>
             <div>
@@ -50,6 +51,10 @@
 
             <ng-container *ngIf = 'nav.visexhib'>  
                 <app-visexhib></app-visexhib>
+            </ng-container>
+
+            <ng-container *ngIf = 'nav.mail'>  
+                <app-mail></app-mail>
             </ng-container>
         </div>
 

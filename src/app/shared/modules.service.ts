@@ -185,7 +185,7 @@ findOdjInArrObj(array: any[], keyVal: string, val: any) {
     return formated_date;
   }
 
-// ----------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------- 
 
   //отримати файл
   getFile(id){
@@ -197,8 +197,30 @@ findOdjInArrObj(array: any[], keyVal: string, val: any) {
         console.log("Filename: " + files[i].name);
         console.log("Type: " + files[i].type);
         console.log("Size: " + files[i].size + " bytes");
+        console.log("File Odj: ", files[i]);
     }
     return files[0];
+  }
+
+  //отримати дані з файлу та повернути у вигляді DataURL чи тексту
+  getDataFile(file: Blob, readAs: 'readAsText' | 'readAsArrayBuffer' | 'readAsDataURL'): Promise<any>{
+    return new Promise((resolve, reject) => {
+      let reader = new FileReader();
+      reader[readAs](file, 'cp1251');
+      if (!file){
+        console.error("file not selected!");
+        reject(reader.error.code);
+      }
+      reader.onload = () => {
+        var contents = reader.result;
+        //console.log("Вміст файла: \n" + contents); 
+        resolve(contents) ;
+      };
+      reader.onerror = () => {
+        console.error("File could not be read!");
+        reject(reader.error.code);
+      };
+    })
   }
   
 }

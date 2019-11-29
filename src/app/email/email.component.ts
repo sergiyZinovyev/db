@@ -16,7 +16,7 @@ export class EmailComponent implements OnInit {
     private module: ModulesService
   ) { }
 
-  attachmentsArray: {filename, path}[] = [];
+  attachmentsArray: {filename, path, size}[] = [];
 
   emailForm = this.fb.group({
     to: ['', [Validators.required]],
@@ -49,40 +49,36 @@ export class EmailComponent implements OnInit {
     }
   }
 
-  //отримати дані з файлу та повернути у вигляді DataURL  
-  getDataFile(file){
-    return new Promise((resolve, reject) => {
-      let reader = new FileReader();
-      reader.readAsDataURL(file);
-      if (!file){
-        console.error("file not selected!");
-        reject(reader.error.code);
-      }
-      reader.onload = () => {
-          var contents = reader.result;
-          //console.log("Вміст файла: \n" + contents);
-          resolve(contents) ;
-      };
-      reader.onerror = () => {
-          console.error("File could not be read!");
-          reject(reader.error.code);
-      };
-    })
-  }
-
   //додати файл до листа
   addFile(id){
     let file = this.module.getFile(id);
-    this.getDataFile(file).then(
+    this.module.getDataFile(file, 'readAsDataURL').then(
       data => {
-        this.attachmentsArray.push({filename: file.name, path: data});
+        this.attachmentsArray.push({filename: file.name, path: data, size: file.size}); 
         //console.log('subscribe data: ', data);
         return this.emailForm.patchValue({attachments: this.attachmentsArray});
       },
       error => {
-        alert("Rejected: " + error); // error - аргумент reject
+        alert("Rejected: " + error); // error - аргумент reject   
       }
     )
   }
+
+  deleteFileFromMessage(index){
+    this.attachmentsArray.splice(index, 1);
+  }
+
+  addHtml(id){
+    let file = this.module.getFile(id);
+    this.module.getDataFile(file, 'readAsText').then(
+      data => {
+        return this.emailForm.patchValue({message: data});
+      },
+      error => {
+        alert("Rejected: " + error); // error - аргумент reject   
+      }
+    )
+  }
+
 
 }

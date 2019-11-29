@@ -13,6 +13,7 @@ export class DbService {
     plahty: false,
     visexhibs: false,
     visexhib: false,
+    mail: false
   }
   constructor(
     private server: ServerService,
