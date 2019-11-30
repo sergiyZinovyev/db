@@ -5,11 +5,19 @@ const Secure = require("../config");
 let testEmailAccount = nodemailer.createTestAccount();
 
 var transporter = nodemailer.createTransport({
-    // service: 'gmail',
+    // host: 'smtp.gmail.com',
+    // port: 587,
+    // secure: false, //disable SSL    
+    // requireTLS: true, //Force TLS 
+    // tls: {
+    //     rejectUnauthorized: false
+    // },
     // auth: {
-    //    
+    //    pass: 'nthsjyfyutk',
+    //    user: 'visitors.galexpo@gmail.com'
     // }
-    host: 'smtp.galexpo.com.ua',
+    //host: 'smtp.galexpo.com.ua',
+    host: Secure.Config.emailConfig.host,
     port: 587,
     secure: false, //disable SSL    
     requireTLS: true, //Force TLS 

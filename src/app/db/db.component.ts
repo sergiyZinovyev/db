@@ -57,7 +57,7 @@ export class DbComponent implements OnInit {
   //   console.log('myURL: ', myURL);
   //   console.log('formURL: ', formURL);
 
-  //   // перебираємо всі властивості обєкта objUtm та записуємо в них значення з url
+  //   // перебираємо всі властивості обєкта objUtm та записуємо в них значення з url 
   //   for(var key in objUtm){
   //     if(myURL.searchParams.get(key)){
   //       objUtm[key] = myURL.searchParams.get(key);

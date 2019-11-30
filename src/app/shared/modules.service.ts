@@ -202,7 +202,7 @@ findOdjInArrObj(array: any[], keyVal: string, val: any) {
     return files[0];
   }
 
-  //отримати дані з файлу та повернути у вигляді DataURL чи тексту
+  //отримати дані з файлу та повернути у вигляді DataURL чи тексту 
   getDataFile(file: Blob, readAs: 'readAsText' | 'readAsArrayBuffer' | 'readAsDataURL'): Promise<any>{
     return new Promise((resolve, reject) => {
       let reader = new FileReader();
