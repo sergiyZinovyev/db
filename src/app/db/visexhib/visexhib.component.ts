@@ -490,7 +490,7 @@ export class VisexhibComponent implements OnInit, OnDestroy {
       //this.visitorsIds.patchValue({date_vis: new Date});
       //console.log(this.visitorsIds.value);
 
-      //перевіряємо чи є в таблиці реєстрації відвідувач з таким id 
+      //перевіряємо чи є в таблиці реєстрації відвідувач з таким id  
       this.dbvisex.checkVis(this.visitorsIds.get('id_visitor').value, cb=>{
         if(!cb[0]){ //якщо нема
           // alert('відвідувач ще не реєструвався');

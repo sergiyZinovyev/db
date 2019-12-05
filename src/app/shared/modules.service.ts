@@ -32,7 +32,7 @@ findPropValInArrObj(array: any[], keyVal: string, val: any, keyVal2: string):any
 }
 
 // ----------------------------------------------------------------------------------------------------------
-// знаходить обєкти в масиві по значенню вказаної властивості властивості, обєкт з масиву
+// знаходить обєкти в масиві по значенню вказаної властивості, обєкт з масиву
 // array: any[] масив обєктів, 
 // keyVal: string - назва властивості обєкту по якій шукають, 
 // val: any - значення властивості keyVal,
@@ -107,9 +107,35 @@ findOdjInArrObj(array: any[], keyVal: string, val: any) {
     }
     if(type == 'number'){
       // якщо тип даних number тоді..
-      data = data.filter( item => {
-        return item[fild] == filterValue;
-      })
+      // перевіряємо значення для фільтру
+
+      // якщо значення для фільтру є масивом....
+      if (Array.isArray(filterValue)){
+        console.log('value is array: ', filterValue);
+        
+          data = data.filter( item => {
+            let flag: boolean = true;
+            for(let val of filterValue){
+              // перебираємо всі елементи масива 
+              // якщо елемент масива включений в item[fild] тоді відразу закінчуємо цикл з результатом true
+              if(item[fild] == val){
+                flag = true;
+                break;
+              }
+              // інакше результат false та продовжуємо цикл
+              else {flag = false}
+            }
+            return flag
+          })
+        
+      }
+      // інакше працюємо з ним як зі строкою
+      else{
+        data = data.filter( item => {
+          return item[fild] == filterValue;
+        })
+      }
+      
     }
     else{
       // якщо тип даних інший тоді..
@@ -185,7 +211,7 @@ findOdjInArrObj(array: any[], keyVal: string, val: any) {
     return formated_date;
   }
 
-// ---------------------------------------------------------------------------------------------------------- 
+// ----------------------------------------------------------------------------------------------------------  
 
   //отримати файл
   getFile(id){

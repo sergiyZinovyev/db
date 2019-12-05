@@ -24,7 +24,7 @@ export class LoginComponent implements OnInit {
 
   myCaptha;
 
-  visibleCaptcha: boolean = true; //визначає чи застосовувати рекапчу
+  visibleCaptcha: boolean = true; //визначає чи застосовувати рекапчу 
 
   matcher = new MyErrorStateMatcher();
   warning = '';
@@ -37,6 +37,7 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.user.setUserLogData('');
     console.log('window.location: ',window.location);
     this.server.setFrontURL(window.location);
     this.user.setReferrer(window.document.referrer);
@@ -79,7 +80,7 @@ export class LoginComponent implements OnInit {
     // }
     if(this.loginForm.get('email').valid || this.loginForm.get('cellphone').valid){
       this.warning = '';
-      this.user.setUserLogData(this.loginForm.value);
+      //this.user.setUserLogData(this.loginForm.value);
       //this.loginForm.patchValue({captcha: capcha})
       //обираємо який метод get застосувати get2 - з рекапчею чи get3 - без рекапчі але з аутентифікацією
       if(this.visibleCaptcha){
@@ -89,10 +90,17 @@ export class LoginComponent implements OnInit {
         }
         let get=this.server.post(this.loginForm.value, "get2").subscribe(data =>{
           console.log("data login: ", data);
-          //if(data == ''){this.router.navigate(['user/registration']);}   
+          console.log("data[0]: ", data[0]);
+          //if(data == ''){this.router.navigate(['user/registration']);}
           if(data[0]){
+            //alert('setUserData');
             this.user.setUserData(data);
-            this.router.navigate(['registration']);
+            //this.router.navigate(['registration']);
+          }  
+          else{
+            //alert('setUserLogData');
+            this.user.setUserRegData(this.loginForm.value);
+            //this.router.navigate(['registration']);
           }
           if(data){
             console.log("unsubscribe")
@@ -105,8 +113,14 @@ export class LoginComponent implements OnInit {
           console.log("data login: ", data);
           //if(data == ''){this.router.navigate(['user/registration']);}  
           if(data[0]){
+            //alert('setUserData');
             this.user.setUserData(data);
-            this.router.navigate(['registration']);
+            //this.router.navigate(['registration']);
+          }  
+          else{
+            //alert('setUserLogData');
+            this.user.setUserRegData(this.loginForm.value);
+            //this.router.navigate(['registration']);
           }
           if(data){
             console.log("unsubscribe")

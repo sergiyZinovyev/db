@@ -11,6 +11,7 @@ import {ServerService} from './server.service'
 export class UserService {
 
   userData = new Subject();
+  userRegData = new Subject();
 
   referrer: string;
   
@@ -38,7 +39,13 @@ export class UserService {
     this.userData.next(data);
   }
 
+  setUserRegData(data){
+    console.log('next userRegData: ', data);
+    this.userRegData.next(data);
+  }
+
   setUserLogData(data){
+    console.log('setUserLogData: ', data);
     this.userLogData=data;
   }
 

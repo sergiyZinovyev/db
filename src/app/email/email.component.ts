@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms';
 import { ServerService } from '../shared/server.service';
 import { ModulesService } from '../shared/modules.service';
+import { MailService } from '../shared/mail.service';
 
 @Component({
   selector: 'app-email',
@@ -13,7 +14,8 @@ export class EmailComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private server: ServerService,
-    private module: ModulesService
+    private module: ModulesService,
+    private mail: MailService,
   ) { }
 
   attachmentsArray: {filename, path, size}[] = [];
@@ -26,7 +28,13 @@ export class EmailComponent implements OnInit {
     message: ['', []]
   })
 
+  sendList: [];
+  subSendList;
+
   ngOnInit() {
+    this.subSendList = this.mail.getCurrentSendList().subscribe(data=>{
+      console.log('getCurrentSendList().data: ',data);
+    })
   }
 
   send(){

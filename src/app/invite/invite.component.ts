@@ -35,7 +35,7 @@ export class InviteComponent implements OnInit, OnDestroy{
     private dbsisex: DbvisexService,
     private db: DbService,
     private router: Router,
-    private sanitizer: DomSanitizer, 
+    private sanitizer: DomSanitizer,  
   ) { }
 
   ngOnInit() {

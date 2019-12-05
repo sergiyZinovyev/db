@@ -6,6 +6,7 @@ import {MatSort} from '@angular/material/sort';
 import { Router } from '@angular/router';
 import { ServerService } from '../../shared/server.service';
 import { ModulesService } from '../../shared/modules.service';
+import { MailService } from '../../shared/mail.service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {FormControl} from '@angular/forms';
 import { Subscribable } from 'rxjs';
@@ -86,6 +87,7 @@ export class VisitorsComponent implements OnInit {
     private server: ServerService,
     private module: ModulesService,
     private router: Router,
+    private mail: MailService,
   ) { }
 
   ngOnInit() {
@@ -455,7 +457,7 @@ export class VisitorsComponent implements OnInit {
     } 
 
 
-  // отримати поле з масиву обєктів у вигляді списку
+  // отримати поле з масиву обєктів у вигляді списку 
   getListToFile(field, array, regnum, dataSource){
     console.log('array: ', array);
     let myString = '';
@@ -680,6 +682,16 @@ export class VisitorsComponent implements OnInit {
     }
   }
 
+  addMailList(){
+    let newList = this.module.filter(this.dataSource.data, this.arrOfCheckId, 'regnum');
+    newList = newList.map(function(obj:any) {
+      return {regnum: obj.regnum, email: obj.email, namepovne: obj.namepovne};
+    });
+    console.log('newList: ',newList);
+    this.mail.setCurrentSendList(newList);
+    this.newElement("isAddingItemSendEmail");
+  }
+  
 
 }
 

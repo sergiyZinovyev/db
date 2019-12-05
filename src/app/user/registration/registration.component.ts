@@ -18,6 +18,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   myExhib = [];
 
   subUserData;
+  regUserData;
 
   captcha;
 
@@ -129,16 +130,29 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.isLoadingResults = true;
     // if(this.server.frontURL.searchParams.has('exhibreg')){
     //   //параметр 'exhibreg' задається під час реєстрації на виставці і свідчить про те що перехід відбувся звідти
     //   //в такому разі рекапчу не застосовуємо
     //   this.visibleCaptcha = false;
     // }
-    
+    //console.log('this.user.userLogData.email', this.user.userLogData.email);
+    //console.log('this.user.userLogData.cellphone', this.user.userLogData.cellphone);
+    //if(!this.user.userLogData.email && !this.user.userLogData.cellphone){this.isLoadingResults = true;}
     this.getRegion('region');
+    this.regUserData = this.user.userRegData.subscribe({
+      next: (value: any) => {
+        console.log('reg - user.userRegData: ',value);
+        this.isLoadingResults = false;
+        this.loginForm.patchValue({email: value.email});
+        this.loginForm.patchValue({cellphone: value.cellphone});
+        return this.regUserData.unsubscribe();
+      }
+    });
     //this.submitButtonText = this.createText;
     this.subUserData = this.user.userData.subscribe({
       next: (value) => {
+        this.isLoadingResults = false;
         console.log('reg - user.userData: ',value);
         this.getMyExhib(data => {
           this.getExhib('exhibitions_dict', data);
@@ -355,7 +369,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   }
 
   submit(capcha?){
-    console.log(`Resolved captcha with response: ${capcha}`);
+    console.log(`Resolved captcha with response: ${capcha}`); 
     this.captcha = capcha;
     this.worningCheck = '';
     if(this.loginForm.get('prizv').valid &&
