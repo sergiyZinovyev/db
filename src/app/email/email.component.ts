@@ -1,15 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy} from '@angular/core';
 import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms';
 import { ServerService } from '../shared/server.service';
 import { ModulesService } from '../shared/modules.service';
 import { MailService } from '../shared/mail.service';
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+
+export interface IUser {
+  id?: number;
+  regnum: number; 
+  is_send?: string; 
+  mail_list_id?: number; 
+  date?: string;
+  email: string;
+  namepovne: string;
+}
 
 @Component({
   selector: 'app-email',
   templateUrl: './email.component.html',
   styleUrls: ['./email.component.css']
 })
-export class EmailComponent implements OnInit {
+export class EmailComponent implements OnInit, OnDestroy{
 
   constructor(
     private fb: FormBuilder,
@@ -22,18 +34,24 @@ export class EmailComponent implements OnInit {
 
   emailForm = this.fb.group({
     to: ['', [Validators.required]],
+    sendList: ['', [Validators.required]],
     from: ['send@galexpo.lviv.ua', [Validators.required]],
     subject: ['', [Validators.required]],
     attachments: ['', []],
     message: ['', []]
   })
 
-  sendList: [];
   subSendList;
 
   ngOnInit() {
-    this.subSendList = this.mail.getCurrentSendList().subscribe(data=>{
-      console.log('getCurrentSendList().data: ',data);
+    this.subSendList = this.mail.getCurrentSendList().pipe(
+      map((vl: any, i) => {
+        //console.log('Index', i);
+        return Array.from(vl)
+      })
+    ).subscribe((data: IUser[]) =>{
+      this.emailForm.patchValue({to: data.map(el => el.email).join('; ')}); 
+      this.emailForm.patchValue({sendList: data});
     })
   }
 
@@ -83,10 +101,13 @@ export class EmailComponent implements OnInit {
         return this.emailForm.patchValue({message: data});
       },
       error => {
-        alert("Rejected: " + error); // error - аргумент reject   
+        alert("Rejected: " + error); // error - аргумент reject    
       }
     )
   }
 
+  ngOnDestroy(){
+    this.subSendList.unsubscribe();
+  }
 
 }

@@ -683,13 +683,14 @@ export class VisitorsComponent implements OnInit {
   }
 
   addMailList(){
+    this.newElement("isAddingItemSendEmail");
     let newList = this.module.filter(this.dataSource.data, this.arrOfCheckId, 'regnum');
     newList = newList.map(function(obj:any) {
       return {regnum: obj.regnum, email: obj.email, namepovne: obj.namepovne};
     });
-    console.log('newList: ',newList);
+    //console.log('newList: ',newList);
     this.mail.setCurrentSendList(newList);
-    this.newElement("isAddingItemSendEmail");
+    
   }
   
 

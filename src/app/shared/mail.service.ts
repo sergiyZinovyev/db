@@ -12,7 +12,7 @@ export interface IUser {
 }
 
 @Injectable({
-  providedIn: 'root' 
+  providedIn: 'root'  
 })
 export class MailService {
 
@@ -25,6 +25,10 @@ export class MailService {
       sub.next(this.currentSendList);
     })
   }
+
+  // getCurrentSendList() : Observable<IUser[]> {
+  //   return this.currentSendList
+  // }
 
   setCurrentSendList(arrOfObj){
     let newArray = [];
@@ -42,4 +46,7 @@ export class MailService {
   clearCurrentSendList(){
     this.currentSendList = [];
   }
+
+  
+
 }
