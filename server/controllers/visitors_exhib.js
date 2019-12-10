@@ -163,7 +163,7 @@ exports.editExhibition_vis = function(req, res) {
 };
 
 //-------------------------------------------------------------------------------------------------------------  
-//редагування запису відвідування виставки у таблиці Exhibition_vis відміна відвідування 
+//редагування запису відвідування виставки у таблиці Exhibition_vis відміна відвідування  
 
 exports.editExhibition_vis_visited_cancel = function(req, res) {
     ControllersShared.getRights(req.query.login, function(err, doc){

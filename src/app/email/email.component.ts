@@ -37,7 +37,7 @@ export class EmailComponent implements OnInit, OnDestroy{
     sendList: ['', [Validators.required]],
     from: ['send@galexpo.lviv.ua', [Validators.required]],
     subject: ['', [Validators.required]],
-    attachments: ['', []],
+    attach: ['', []],
     message: ['', []]
   })
 
@@ -82,7 +82,7 @@ export class EmailComponent implements OnInit, OnDestroy{
       data => {
         this.attachmentsArray.push({filename: file.name, path: data, size: file.size}); 
         //console.log('subscribe data: ', data);
-        return this.emailForm.patchValue({attachments: this.attachmentsArray});
+        return this.emailForm.patchValue({attach: this.attachmentsArray});
       },
       error => {
         alert("Rejected: " + error); // error - аргумент reject   

@@ -129,7 +129,7 @@ exports.checkViv = function(data, cb){
   })
 }
 
-//створення нового запису у Exhibition_vis
+//створення нового запису у Exhibition_vis 
 exports.createExhibition_vis = function(dataVisitor, cb){
   let sql = `INSERT INTO exhibition_vis (
     id_exhibition,
@@ -154,7 +154,7 @@ exports.createExhibition_vis = function(dataVisitor, cb){
   })
 }
 
-//редагування запису відвідування виставки у таблиці Exhibition_vis 
+//редагування запису відвідування виставки у таблиці Exhibition_vis  
 exports.editExhibition_vis = function(dataVisitor, cb){
   let sql = `UPDATE exhibition_vis SET visited=?, registered=?, date_vis=?, date_reg=?, reg_user=? WHERE (id_visitor=? AND id_exhibition=?)`;
   db.get().query(sql, dataVisitor, function(err, data) {
