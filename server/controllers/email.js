@@ -20,15 +20,6 @@ const transporter = nodemailer.createTransport({
 });
 
 exports.sendEmail = function(req, res){
-    //console.log(req.body.file);
-    //res.send(req.body);
-    //fs.createWriteStream('server/img/file.pdf').write(req.body.file.buffer);  
-    // var base64Data = req.body.file.replace(/^data:image\/png;base64,/, ""); 
-    // fs.writeFile('server/img/file.pdf', base64Data, 'base64', function(err) {
-    // console.log(err);
-    // });
-
-    //console.log(req.body);
     const mailOptions = {
         from: 'send@galexpo.lviv.ua', // sender address
         to: req.body.email, // list of receivers
@@ -56,28 +47,17 @@ exports.sendEmail = function(req, res){
 }
 
 exports.massMaling = function(req, res){
-    const mailOptions = {
-        from: req.body.from, // sender address
-        to: req.body.to, // list of receivers
-        subject: req.body.subject, // Subject line
-        html: req.body.message, // plain text body
-        attachments: req.body.attach
-    };
-    EmailModule.saveDataSendMail(req, res)
+    const arrAccess = [3,4,5];
+    EmailModule.saveDataSendMail(req, res, arrAccess)
         .then(data => {
             console.log('data saveDataSendMail: ', data);
-            res.send({"data": data});
-            // transporter.sendMail(mailOptions, function (err, info) {
-            //     if(err){
-            //         //console.log(err);
-            //         res.send(err)
-            //     }   
-            //     else{
-            //         //console.log(info);
-            //         res.send(info);
-            //     }   
-            // })
+            return EmailModule.sendDataSendMail(data, transporter);
         })
+        .then(data => res.send(data))
+        .catch(err => {
+            console.log(err);
+            return res.send(err);
+        });
 }
 
 

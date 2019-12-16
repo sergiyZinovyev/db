@@ -161,3 +161,30 @@ exports.checkAuth = function(req, res, next){
     })
     
 };
+
+//-----------------------------------------------------------------------------------------------------------   
+// перевіряє права доступу та повертає id користувача або помилу, якщо нема прав
+// login - логін користувача; arrAccess - масив з дозволеними правами ([1,2,3,4,5])
+exports.getUsersaccountId = function(login, arrAccess) {
+    return new Promise((resolve, reject) => {
+        Shared.getRights(login, function(err, doc){
+            if (err) {
+                console.log('err: ',err);
+                reject(err);
+            }
+            else {
+                console.log('rights cb: ', doc.insupdvisitors);
+                if(!arrAccess.includes(doc.insupdvisitors)){  
+                    console.log('у вас немає прав доступу: ', doc.insupdvisitors);
+                    reject([{
+                        "rights": "false",
+                    }]);
+                }
+                else{
+                    resolve(doc.id); 
+                }
+            }
+        })   
+    })
+    
+};

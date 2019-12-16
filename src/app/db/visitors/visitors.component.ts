@@ -469,7 +469,7 @@ export class VisitorsComponent implements OnInit {
     return myString;
   }
 
-  // зберегти список/строку у вигляді файла
+  // зберегти список/строку у вигляді файла 
   saveStringAsFile(data, filename, type) {
     //this.isLoadingResults = true;
     if(!data){

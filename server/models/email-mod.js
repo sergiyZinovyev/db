@@ -1,8 +1,22 @@
-const nodemailer = require('nodemailer');
 const fs = require('fs');
-const Secure = require("../config");
-const ControllersShared = require('../controllers/shared');
 const SQLEmail = require('../models/sql-email');
+const AuthController = require('../controllers/auth');
+// const nodemailer = require('nodemailer');
+// const Secure = require('../config');
+
+// const transporter = nodemailer.createTransport({
+//     host: Secure.Config.emailConfig.host,
+//     port: 587,
+//     secure: false, //disable SSL    
+//     requireTLS: true, //Force TLS 
+//     tls: {
+//         rejectUnauthorized: false
+//     },
+//     auth: {
+//         pass: Secure.Config.emailConfig.pass,
+//         user: Secure.Config.emailConfig.user
+//     }
+// });
 
 // створюємо необхідну директорію
 function createDir(name, date) {
@@ -19,10 +33,12 @@ function createDir(name, date) {
     })
 }
 
-// запис файлу у обрану директорію
+// запис файлу у обрану директорію 
 function createFile(path, nameFile, contentFile) {
     return new Promise((resolve, reject) => {
-        fs.writeFile(`${path}/${nameFile}`, contentFile, 'utf8', err => {
+        let base64Data = contentFile.replace(/^data:([A-Za-z-+/]+);base64,/, '');
+        let file = Buffer.from(base64Data, 'base64');
+        fs.writeFile(`${path}/${nameFile}`, file, err => {
             if(err){
                 reject(err);
                 throw err;
@@ -121,37 +137,83 @@ function saveVisitorsMailingLists(params, mail_list_id) {
     })
 }
 
-// отримати дані про юзера (права, id)
-function getUsersaccountId (login) {
-    return new Promise((resolve, reject) => {
-        ControllersShared.getRights(login, function(err, doc){
-            if (err) {
-                console.log('err: ',err);
-                reject(err);
-            }
-            else {
-                console.log('rights cb: ', doc.insupdvisitors);
-                if(![3,4,5].includes(doc.insupdvisitors)){  
-                    console.log('у вас немає прав доступу: ', doc.insupdvisitors);
-                    reject([{
-                        "rights": "false",
-                    }]);
-                }
-                else{
-                    resolve(doc.id); 
-                }
-            }
-        })   
-    })
-    
-};
+//--------------------------------------------------------------------------------------------------------------------------
 
-exports.saveDataSendMail = function(req, res){
+//отримання даних для розсилки
+function getDataForMailing(id) {
+    //console.log(`getDataForMailing is work whith argument: id = ${id}`);
+    return new Promise((resolve, reject) => {
+        //console.log('Promise of getDataForMailing is work');
+        SQLEmail.getDataMailing(id, function(err, doc) {
+            if (err) {
+                console.log(err);
+                return reject(err);
+            }
+            console.log('getDataMailing: ', doc);
+            return resolve(doc);
+        });
+    })
+}
+
+// відправка листа де params - параметри листа, transporter - обєкт nodemailer
+function sendEmail(params, transporter) {
+    //console.log(`sendEmail is work whith argument: params.to = ${params.to}`);
+    class Attach {
+        constructor(params) {
+            this.path = params;
+        }
+    }
+    return new Promise((resolve, reject) => {
+        let attachArr = params.path.split('; ').map(item => new Attach(item));
+        console.log('attachArr: ', attachArr);
+        const emailOptions = {
+            from: params.from, // sender address
+            to: params.to, // list of receivers
+            subject: params.subject, // Subject line
+            attachments: attachArr,
+            html: params.message // plain text body
+        };
+        transporter.sendMail(emailOptions, function (err, info) {
+            if(err){
+                console.log(err);
+                reject(err);
+                //res.send(err)
+            }   
+            else{
+                //console.log(info);
+                resolve(params.id);
+                //res.send(info);
+            }   
+        });
+    })
+}
+
+//--------------------------------------------------------------------------------------------------------------------------
+
+//відправка розсилки
+exports.sendDataSendMail = function(idMailinngList, transporter){
+    //console.log(`sendDataSendMail is work whith arguments: idMailinngList = ${idMailinngList}; transporter = ${transporter}`);
+    return new Promise((resolve, reject) => {
+        //console.log('Promise of sendDataSendMail is work');
+        getDataForMailing(idMailinngList) //отримуємо з бази SQL дані для відправки
+            .then(data => {console.log('data params:', data[0]); return sendEmail(data[0], transporter)}) //відправляємо лист
+            //.then() //записуємо дані про відправлення в SQL
+            //.then(doc => doc)
+            .then(doc => {console.log('params.id:', doc); return resolve(doc)})
+            .catch(err => {
+                console.log(err);
+                reject(err);
+            });
+    })
+}
+
+//запис на сервер інформації про розсилку
+exports.saveDataSendMail = function(req, res, arrAccess){
     return new Promise((resolve, reject) => {
         const currentDate = new Date();
         let idUser;
         let idMailinngList;
-        getUsersaccountId(req.query.login)
+        AuthController.getUsersaccountId(req.query.login, arrAccess)
             .then(id => idUser = id) //перевіряємо права та id користувача
             .then(data => {console.log('idUser data: ', data); return createDir(req.body.subject, currentDate.getTime())}) //створюємо папку для файлів розсилки
             .then(data => {console.log('createDir data: ', data); return createFiles(req.body.attach, data)}) //зберігаємо файли
@@ -162,7 +224,7 @@ exports.saveDataSendMail = function(req, res){
             .catch(err => {
                 console.log(err);
                 reject(err);
-                return res.send(err);
+                //return res.send(err);
             });
     })
 }
