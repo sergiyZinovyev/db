@@ -51,7 +51,7 @@ exports.massMaling = function(req, res){
     EmailModule.saveDataSendMail(req, res, arrAccess)
         .then(data => {
             console.log('data saveDataSendMail: ', data);
-            return EmailModule.sendDataSendMail(data, transporter);
+            return EmailModule.sendDataSendMailAll(data, transporter);
         })
         .then(data => res.send(data))
         .catch(err => {

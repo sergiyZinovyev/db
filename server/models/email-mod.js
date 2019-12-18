@@ -1,22 +1,6 @@
 const fs = require('fs');
 const SQLEmail = require('../models/sql-email');
 const AuthController = require('../controllers/auth');
-// const nodemailer = require('nodemailer');
-// const Secure = require('../config');
-
-// const transporter = nodemailer.createTransport({
-//     host: Secure.Config.emailConfig.host,
-//     port: 587,
-//     secure: false, //disable SSL    
-//     requireTLS: true, //Force TLS 
-//     tls: {
-//         rejectUnauthorized: false
-//     },
-//     auth: {
-//         pass: Secure.Config.emailConfig.pass,
-//         user: Secure.Config.emailConfig.user
-//     }
-// });
 
 // створюємо необхідну директорію
 function createDir(name, date) {
@@ -139,6 +123,22 @@ function saveVisitorsMailingLists(params, mail_list_id) {
 
 //--------------------------------------------------------------------------------------------------------------------------
 
+//отримання масиву всіх id для розсилки
+function getArrDataForMailing(id) {
+    //console.log(`getDataForMailing is work whith argument: id = ${id}`);
+    return new Promise((resolve, reject) => {
+        //console.log('Promise of getDataForMailing is work');
+        SQLEmail.getDataMailingAll(id, function(err, doc) {
+            if (err) {
+                console.log(err);
+                return reject(err);
+            }
+            console.log('ArrDataForMailing: ', doc);
+            return resolve(doc);
+        });
+    })
+}
+
 //отримання даних для розсилки
 function getDataForMailing(id) {
     //console.log(`getDataForMailing is work whith argument: id = ${id}`);
@@ -149,7 +149,7 @@ function getDataForMailing(id) {
                 console.log(err);
                 return reject(err);
             }
-            console.log('getDataMailing: ', doc);
+            //console.log('getDataMailing: ', doc);
             return resolve(doc);
         });
     })
@@ -157,15 +157,25 @@ function getDataForMailing(id) {
 
 // відправка листа де params - параметри листа, transporter - обєкт nodemailer
 function sendEmail(params, transporter) {
-    //console.log(`sendEmail is work whith argument: params.to = ${params.to}`);
+    console.log(`sendEmail is work whith argument: params.path = ${params.path}`);
     class Attach {
         constructor(params) {
             this.path = params;
         }
     }
+    let attachArr;
     return new Promise((resolve, reject) => {
-        let attachArr = params.path.split('; ').map(item => new Attach(item));
-        console.log('attachArr: ', attachArr);
+        if (params.is_send != 'pending'){
+            return resolve('NO_SEND')
+        }
+        if(params.path == ''){
+            attachArr = ''
+        }
+        else{
+            attachArr = params.path.split('; ').map(item => new Attach(item));
+        }
+        
+        //console.log('attachArr: ', attachArr);
         const emailOptions = {
             from: params.from, // sender address
             to: params.to, // list of receivers
@@ -177,34 +187,121 @@ function sendEmail(params, transporter) {
             if(err){
                 console.log(err);
                 reject(err);
-                //res.send(err)
             }   
             else{
-                //console.log(info);
                 resolve(params.id);
-                //res.send(info);
             }   
         });
     })
 }
 
+// позначаємо як відправлене в SQL
+function noteAsSent(id) {
+    const currentDate = new Date();
+    return new Promise((resolve, reject) => {
+        if (id == 'NO_SEND'){
+            return resolve(id);
+        }
+        let data = [
+            //дані для внесення 
+            //is_send, date, id
+            'sent',
+            currentDate,
+            id
+        ];
+        //console.log('data for SQL: ', data);
+        SQLEmail.editVisitorsMailingLists(data, function(err, doc) {
+            if (err) {
+                console.log(err);
+                reject(err);
+            }
+            resolve({'id':id, 'date send': currentDate});
+        });
+    })
+}
+
+//-------------------------------------------------------------------------------------------------------------------------
+//розбити масив на підмасиви
+function arrToSubarr(arr, size) {
+    return res = arr.reduce((p,c)=>{
+        if(p[p.length-1].length == size){
+          p.push([]);
+        }
+        
+        p[p.length-1].push(c);
+        return p;
+      }, [[]]); 
+}
+
+
+
 //--------------------------------------------------------------------------------------------------------------------------
 
-//відправка розсилки
-exports.sendDataSendMail = function(idMailinngList, transporter){
+//відправка одного листа зі списку
+function sendDataSendMail(id, transporter){
     //console.log(`sendDataSendMail is work whith arguments: idMailinngList = ${idMailinngList}; transporter = ${transporter}`);
     return new Promise((resolve, reject) => {
         //console.log('Promise of sendDataSendMail is work');
-        getDataForMailing(idMailinngList) //отримуємо з бази SQL дані для відправки
+        getDataForMailing(id) //отримуємо з бази SQL дані для відправки
             .then(data => {console.log('data params:', data[0]); return sendEmail(data[0], transporter)}) //відправляємо лист
-            //.then() //записуємо дані про відправлення в SQL
-            //.then(doc => doc)
-            .then(doc => {console.log('params.id:', doc); return resolve(doc)})
+            .then(data => {console.log('params.id:', data); return noteAsSent(data)}) //записуємо дані про відправлення в SQL
+            .then(data => {console.log('doc:', data); return resolve(data)})
             .catch(err => {
                 console.log(err);
                 reject(err);
             });
     })
+}
+
+//--------------------------------------------------------------------------------------------------------------------------
+
+//відправка всіх листів синхронно
+function sendDataSendMailAllParts(arr, transporter){
+    // Promise.resolve()
+    // .then(() => Promise.all(arr.map(element => sendDataSendMail(element.id, transporter))))
+    // .catch(err => {
+    //     console.log(err);
+    //     reject(err);
+    // });
+    return Promise.all(arr.map(element => sendDataSendMail(element.id, transporter)))
+}
+
+//--------------------------------------------------------------------------------------------------------------------------
+
+// послідовне виконання промісів
+function awaitEx(tasks, interval, transporter){
+    let promise = Promise.resolve();
+    console.log('tasks.length: ', tasks.length);
+    tasks.forEach((task, i) => {
+        //console.log(`task(${i}) start; arr = ${task}`);
+        setTimeout(() => {
+            console.log(`i = `,i);
+            if(i == tasks.length){
+                console.log(`last task task(${i}) start; arr = ${task}`);
+                return promise.then(() => {return sendDataSendMailAllParts(task, transporter)})
+                    .then((data) => {console.log('data last promise: ', data); return data})
+            }
+            else{
+                console.log(`task(${i}) start; arr = ${task}`);
+                promise = promise.then(() => {sendDataSendMailAllParts(task, transporter)})
+            }   
+        }, interval * ++i);
+           
+    });
+
+    //return promise.then((data) => {console.log('data: ', data); return data})
+}
+
+//--------------------------------------------------------------------------------------------------------------------------
+
+//відправка всіх листів синхронно(з обмеженнями)
+exports.sendDataSendMailAll = function(idMailinngList, transporter){
+    return getArrDataForMailing(idMailinngList) //отримуємо всі id по яким має бути розсилка
+        .then(arr =>  awaitEx(arrToSubarr(arr, 2), 5000, transporter)) //послідовно виконуємо групи промісів з заданим інтервалом
+        .catch(err => {
+            console.log(err);
+            reject(err);
+        });
 }
 
 //запис на сервер інформації про розсилку

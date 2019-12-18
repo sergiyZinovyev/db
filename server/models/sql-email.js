@@ -17,7 +17,7 @@ exports.createMailingList = function(dataMailingList, cb){
 }
 
 //створення n-записів у таблиці visitors_mailing_lists
-// dataVisitors - запис у форматі: '(data1, data1, ...), (data2, data2, ...), (data3, data3, ...), ...'
+// dataVisitors - запис у форматі: '(data1, data1, ...), (data2, data2, ...), (data3, data3, ...), ...' 
 exports.createGroupVisitorsMailingLists = function(dataVisitors, cb){
   let sql = `INSERT INTO visitors_mailing_lists (
       regnum,
@@ -31,9 +31,9 @@ exports.createGroupVisitorsMailingLists = function(dataVisitors, cb){
   })
 }
 
-//отримання даних для розсилки
+//отримання даних для розсилки по вказаному id
 exports.getDataMailing = function(id, cb){
-  let sql = `SELECT id, email AS 'to', namepovne, sender AS 'from', subject, attachments AS path, body_files, message FROM
+  let sql = `SELECT id, is_send, email AS 'to', namepovne, sender AS 'from', subject, attachments AS path, body_files, message FROM
   (SELECT id, is_send, mail_list_id as ml_id, email, namepovne FROM visitors_mailing_lists) AS list
   LEFT OUTER JOIN
   (SELECT mail_list_id, sender, subject, attachments, body_files, message FROM
@@ -42,9 +42,37 @@ exports.getDataMailing = function(id, cb){
       (SELECT id as message_id, subject, attachments, body_files, message FROM messages) AS messages 
       ON mailing_list.m_id = messages.message_id)) AS email
   ON list.ml_id = email.mail_list_id
-  WHERE (mail_list_id=${id} AND is_send = 'pending')
-  limit 1`;
+  WHERE (id=${id})`;
   db.get().query(sql, function(err, data) {
+    cb(err, data)
+  })
+}
+
+//отримання масиву всіх даних для розсилки
+exports.getDataMailingAll = function(id, cb){
+  let sql = `SELECT id FROM
+  (SELECT id, is_send, mail_list_id as ml_id, email, namepovne FROM visitors_mailing_lists) AS list
+  LEFT OUTER JOIN
+  (SELECT mail_list_id, sender, subject, attachments, body_files, message FROM
+  ((SELECT id as mail_list_id, message_id as m_id, sender FROM mailing_list) AS mailing_list
+  LEFT OUTER JOIN 
+      (SELECT id as message_id, subject, attachments, body_files, message FROM messages) AS messages 
+      ON mailing_list.m_id = messages.message_id)) AS email
+  ON list.ml_id = email.mail_list_id
+  WHERE (mail_list_id=${id})`;
+  db.get().query(sql, function(err, data) {
+    cb(err, data)
+  })
+}
+
+
+//редагування запису у visitors_mailing_lists
+exports.editVisitorsMailingLists = function(data, cb){
+  let sql = `UPDATE visitors_mailing_lists SET 
+  is_send=?, 
+  date=? 
+    WHERE id=?`;
+  db.get().query(sql, data, function(err, data) {
     cb(err, data)
   })
 }
