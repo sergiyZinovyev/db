@@ -270,23 +270,25 @@ function sendDataSendMailAllParts(arr, transporter){
 
 // послідовне виконання промісів
 function awaitEx(tasks, interval, transporter){
-    let promise = Promise.resolve();
-    console.log('tasks.length: ', tasks.length);
-    tasks.forEach((task, i) => {
-        //console.log(`task(${i}) start; arr = ${task}`);
-        setTimeout(() => {
-            console.log(`i = `,i);
-            if(i == tasks.length){
-                console.log(`last task task(${i}) start; arr = ${task}`);
-                return promise.then(() => {return sendDataSendMailAllParts(task, transporter)})
-                    .then((data) => {console.log('data last promise: ', data); return data})
-            }
-            else{
-                console.log(`task(${i}) start; arr = ${task}`);
-                promise = promise.then(() => {sendDataSendMailAllParts(task, transporter)})
-            }   
-        }, interval * ++i);
-           
+    return new Promise((resolve, reject) => {
+        let promise = Promise.resolve();
+        console.log('tasks.length: ', tasks.length);
+        tasks.forEach((task, i) => {
+            //console.log(`task(${i}) start; arr = ${task}`);
+            setTimeout(() => {
+                console.log(`i = `,i);
+                if(i == tasks.length){
+                    console.log(`last task task(${i}) start; arr = ${task}`);
+                    return promise.then(() => {return sendDataSendMailAllParts(task, transporter)})
+                        .then((data) => {console.log('data last promise: ', data); return resolve({'allDone': true})})
+                }
+                else{
+                    console.log(`task(${i}) start; arr = ${task}`);
+                    promise = promise.then(() => {sendDataSendMailAllParts(task, transporter)})
+                }   
+            }, interval * ++i);
+            
+        });
     });
 
     //return promise.then((data) => {console.log('data: ', data); return data})

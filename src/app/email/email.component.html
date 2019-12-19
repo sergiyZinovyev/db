@@ -15,7 +15,7 @@
                         <div class="legend text-right  ">Кому:</div>
                     </div>
                     <div class="col example-input  ">
-                        <input class='send-form p-1' placeholder="Введіть електронні адреси через - ';'" formControlName="to">
+                        <input class='send-form p-1' placeholder="" formControlName="to">
                     </div> 
                 </div>
                 <div class="row no-gutter">
@@ -72,23 +72,45 @@
         </div>
         <div class="row no-gutter">
             <div class="col-12  ">
-                <textarea class='send-form example-textarea' placeholder="Введіть текст листа" formControlName="message"></textarea>  
+                <textarea 
+                    [class]="!slideToggle.checked?'send-form example-textarea d-block':'send-form example-textarea d-none'" 
+                    placeholder="Введіть текст листа" 
+                    formControlName="message">
+                </textarea>
+                <div [class]="slideToggle.checked?'send-form example-textarea d-block':'send-form example-textarea d-none'">
+                    <!-- {{htmlTextData}} -->
+                    <!-- <iframe [src]="htmlTextData"></iframe> -->
+                    <!-- <div id='htmlMessage'></div> -->
+                    <div [innerHTML]="htmlTextData"></div>
+                </div>
             </div>
         </div>
     </form>
-    <input
-        type="file"
-        accept="text/html"
-        id="your-html"  
-        #fileHTMLInput
-        hidden
-        (change)='addHtml(fileHTMLInput.id)'>
-    <button 
-        mat-raised-button
-        matTooltip="Додати текст повідомлення в HTML форматі"
-        (click)='fileHTMLInput.click()'
-        color="primary">
-        Add HTML
-    </button>
+    <div class="d-flex">
+        <input
+            type="file"
+            accept="text/html"
+            id="your-html"  
+            #fileHTMLInput
+            hidden
+            (change)='addHtml(fileHTMLInput.id)'>
+        <button 
+            mat-raised-button
+            matTooltip="Додати текст повідомлення в HTML форматі"
+            (click)='fileHTMLInput.click()'
+            color="primary">
+            Add HTML
+        </button>
+
+        <section class="example-section">
+            <mat-slide-toggle
+                #slideToggle
+                class="example-margin"
+                color="primary">
+            <div *ngIf = 'slideToggle.checked'>HTML</div>
+            <div *ngIf = '!slideToggle.checked'> text</div>
+            </mat-slide-toggle>
+        </section>
+    </div>    
 </div>
 

@@ -30,7 +30,9 @@
 }
 
 .example-textarea{
+    background-color: white;
     height: 390px;
+    overflow: auto;
 }
 
 .card-file{
@@ -73,3 +75,13 @@
 .file-info:hover{
     background: rgb(134, 174, 226); 
 }
+.example-section {
+    display: flex;
+    align-content: center;
+    align-items: center;
+    height: 40px;
+  }
+  
+  .example-margin {
+    margin: 10px;
+  }

@@ -5,6 +5,7 @@ import { ModulesService } from '../shared/modules.service';
 import { MailService } from '../shared/mail.service';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { DomSanitizer, SafeResourceUrl, SafeUrl} from '@angular/platform-browser';
 
 export interface IUser {
   id?: number;
@@ -28,6 +29,7 @@ export class EmailComponent implements OnInit, OnDestroy{
     private server: ServerService,
     private module: ModulesService,
     private mail: MailService,
+    private sanitizer: DomSanitizer, 
   ) { }
 
   attachmentsArray: {filename, path, size}[] = [];
@@ -42,6 +44,7 @@ export class EmailComponent implements OnInit, OnDestroy{
   })
 
   subSendList;
+  htmlTextData;
 
   ngOnInit() {
     this.subSendList = this.mail.getCurrentSendList().pipe(
@@ -53,6 +56,10 @@ export class EmailComponent implements OnInit, OnDestroy{
       this.emailForm.patchValue({to: data.map(el => el.email).join('; ')}); 
       this.emailForm.patchValue({sendList: data});
     })
+
+    this.emailForm.get('message').valueChanges.subscribe((v) => {
+      this.htmlTextData = this.sanitizer.bypassSecurityTrustHtml(v);
+     });
   }
 
   send(){
@@ -75,7 +82,7 @@ export class EmailComponent implements OnInit, OnDestroy{
     }
   }
 
-  //додати файл до листа
+  //додати файл до листа 
   addFile(id){
     let file = this.module.getFile(id);
     this.module.getDataFile(file, 'readAsDataURL').then(
@@ -98,12 +105,17 @@ export class EmailComponent implements OnInit, OnDestroy{
     let file = this.module.getFile(id);
     this.module.getDataFile(file, 'readAsText').then(
       data => {
+        //this.htmlTextData = data;
+        
         return this.emailForm.patchValue({message: data});
       },
       error => {
         alert("Rejected: " + error); // error - аргумент reject    
       }
-    )
+    ).then(()=> {
+      console.log('message: ', this.emailForm.get('message').value);
+      //this.htmlTextData = this.emailForm.get('message').value;
+    })
   }
 
   ngOnDestroy(){
