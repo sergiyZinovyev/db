@@ -5,7 +5,7 @@ import { ModulesService } from '../shared/modules.service';
 import { MailService } from '../shared/mail.service';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { DomSanitizer, SafeResourceUrl, SafeUrl} from '@angular/platform-browser';
+import { DomSanitizer, SafeResourceUrl, SafeUrl, SafeHtml} from '@angular/platform-browser';
 
 export interface IUser {
   id?: number;
@@ -40,11 +40,12 @@ export class EmailComponent implements OnInit, OnDestroy{
     from: ['send@galexpo.lviv.ua', [Validators.required]],
     subject: ['', [Validators.required]],
     attach: ['', []],
-    message: ['', []]
+    message: ['', []],
+    messageID: [this.mail.messageID, []]
   })
 
   subSendList;
-  htmlTextData;
+  htmlTextData: SafeHtml;
 
   ngOnInit() {
     this.subSendList = this.mail.getCurrentSendList().pipe(
@@ -57,7 +58,7 @@ export class EmailComponent implements OnInit, OnDestroy{
       this.emailForm.patchValue({sendList: data});
     })
 
-    this.emailForm.get('message').valueChanges.subscribe((v) => {
+    this.emailForm.get('message').valueChanges.subscribe((v: string) => {
       this.htmlTextData = this.sanitizer.bypassSecurityTrustHtml(v);
      });
   }
@@ -116,6 +117,19 @@ export class EmailComponent implements OnInit, OnDestroy{
       console.log('message: ', this.emailForm.get('message').value);
       //this.htmlTextData = this.emailForm.get('message').value;
     })
+  }
+
+  addImage(id){
+    let file = this.module.getFileArr(id);
+    this.module.getDataFile(file[0], 'readAsDataURL').then(
+      data => {
+        //this.htmlTextData = data;
+        
+      },
+      error => {
+        alert("Rejected: " + error); // error - аргумент reject    
+      }
+    )
   }
 
   ngOnDestroy(){

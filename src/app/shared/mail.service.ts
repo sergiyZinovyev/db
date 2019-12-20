@@ -17,20 +17,17 @@ export interface IUser {
 export class MailService {
 
   currentSendList: IUser[] = [];
+  messageID: number | string = 'new';
 
   constructor() { }
 
-  getCurrentSendList(){
+  getCurrentSendList(): Observable<IUser[]>{
     return new Observable(sub => {
       sub.next(this.currentSendList);
     })
   }
 
-  // getCurrentSendList() : Observable<IUser[]> {
-  //   return this.currentSendList
-  // }
-
-  setCurrentSendList(arrOfObj){
+  setCurrentSendList(arrOfObj): void{
     let newArray = [];
     this.currentSendList = this.currentSendList.concat(arrOfObj);
     for (let index = 0; index < this.currentSendList.length; index++) {
@@ -40,11 +37,14 @@ export class MailService {
       }
     }
     this.currentSendList = newArray;
-    //console.log('this.currentSendList: ',this.currentSendList);
   }
 
-  clearCurrentSendList(){
+  clearCurrentSendList(): void{
     this.currentSendList = [];
+  }
+
+  setMessageID(id: number): void{
+    this.messageID = id
   }
 
   

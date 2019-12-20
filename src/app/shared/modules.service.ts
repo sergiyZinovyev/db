@@ -228,6 +228,21 @@ findOdjInArrObj(array: any[], keyVal: string, val: any) {
     return files[0];
   }
 
+  //отримати масив файлів
+  getFileArr(id){
+    let control = <HTMLInputElement>document.getElementById(id);
+    let files = control.files,
+        len = files.length;
+ 
+    for (let i=0; i < len; i++) {
+        console.log("Filename: " + files[i].name);
+        console.log("Type: " + files[i].type);
+        console.log("Size: " + files[i].size + " bytes");
+        console.log("File Odj: ", files[i]);
+    }
+    return files;
+  }
+
   //отримати дані з файлу та повернути у вигляді DataURL чи тексту  
   getDataFile(file: Blob, readAs: 'readAsText' | 'readAsArrayBuffer' | 'readAsDataURL'): Promise<any>{
     return new Promise((resolve, reject) => {

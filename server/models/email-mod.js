@@ -312,11 +312,12 @@ exports.saveDataSendMail = function(req, res, arrAccess){
         const currentDate = new Date();
         let idUser;
         let idMailinngList;
-        AuthController.getUsersaccountId(req.query.login, arrAccess)
-            .then(id => idUser = id) //перевіряємо права та id користувача
+        AuthController.getUsersaccountId(req.query.login, arrAccess)//перевіряємо права та id користувача
+            .then(id => idUser = id) //зберігаємо id користувача
+            .then(data => {return data}) //створюємо лист
             .then(data => {console.log('idUser data: ', data); return createDir(req.body.subject, currentDate.getTime())}) //створюємо папку для файлів розсилки
             .then(data => {console.log('createDir data: ', data); return createFiles(req.body.attach, data)}) //зберігаємо файли
-            .then(data => {console.log('attachments: ', data); return saveMessage(req.body, data, '', idUser)}) //зберігаємо лист
+            .then(data => {console.log('attachments: ', data); return saveMessage(req.body, data, '', idUser)}) //зберігаємо лист //вносимо зміни в лист
             .then(doc => {console.log('SQLdoc Id: ', doc.insertId); return saveMailingList(req.body, doc.insertId, idUser)}) //зберігаємо розсилку
             .then(doc => {idMailinngList = doc.insertId; return saveVisitorsMailingLists(req.body.sendList, doc.insertId)}) //зберігаємо список розсилки
             .then(doc => resolve(idMailinngList))

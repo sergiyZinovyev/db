@@ -683,6 +683,9 @@ export class VisitorsComponent implements OnInit {
   }
 
   addMailList(){
+    if(this.arrOfCheckId.length == 0){
+      return alert('Ви не обрали жодного запису для розсилки');
+    }
     this.newElement("isAddingItemSendEmail");
     let newList = this.module.filter(this.dataSource.data, this.arrOfCheckId, 'regnum');
     newList = newList.map(function(obj:any) {

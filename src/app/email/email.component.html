@@ -78,9 +78,6 @@
                     formControlName="message">
                 </textarea>
                 <div [class]="slideToggle.checked?'send-form example-textarea d-block':'send-form example-textarea d-none'">
-                    <!-- {{htmlTextData}} -->
-                    <!-- <iframe [src]="htmlTextData"></iframe> -->
-                    <!-- <div id='htmlMessage'></div> -->
                     <div [innerHTML]="htmlTextData"></div>
                 </div>
             </div>
@@ -100,6 +97,23 @@
             (click)='fileHTMLInput.click()'
             color="primary">
             Add HTML
+        </button>
+
+        <input
+            type="file"
+            multiple
+            accept="image/*"
+            id="your-image"  
+            #fileImage
+            hidden
+            (change)='addImage(fileImage.id)'>
+        <button
+            class="ml-1" 
+            mat-raised-button
+            matTooltip="Додати зображення для HTML"
+            (click)='fileImage.click()'
+            color="primary">
+            <mat-icon>add_photo_alternate</mat-icon>
         </button>
 
         <section class="example-section">
