@@ -220,6 +220,39 @@ function noteAsSent(id) {
     })
 }
 
+// оримуємо attachments & body_files
+function getAttachAndBodyFales(id) {
+    return new Promise((resolve, reject) => {
+        SQLEmail.getDataMessage(id, function(err, doc) {
+            if (err) {
+                console.log(err);
+                reject(err);
+            }
+            resolve(doc);
+        });
+    })
+}
+
+// оримуємо attachments & body_files
+function editAttachAndBodyFales(files) {
+    return new Promise((resolve, reject) => {
+        let dataUpdate = [
+            //дані для внесення 
+            //attachments, body_files, id
+            files.attachments,
+            files.body_files,
+            files.id
+        ];
+        SQLEmail.getDataMessage(dataUpdate, function(err, doc) {
+            if (err) {
+                console.log(err);
+                reject(err);
+            }
+            resolve(doc);
+        });
+    })
+}
+
 //-------------------------------------------------------------------------------------------------------------------------
 //розбити масив на підмасиви
 function arrToSubarr(arr, size) {
@@ -230,11 +263,8 @@ function arrToSubarr(arr, size) {
         
         p[p.length-1].push(c);
         return p;
-      }, [[]]); 
+    }, [[]]); 
 }
-
-
-
 //--------------------------------------------------------------------------------------------------------------------------
 
 //відправка одного листа зі списку
@@ -296,7 +326,7 @@ function awaitEx(tasks, interval, transporter){
 
 //--------------------------------------------------------------------------------------------------------------------------
 
-//відправка всіх листів синхронно(з обмеженнями)
+//відправка всіх листів синхронно(з обмеженнями) отримує id розсилки та поштовий транспорт
 exports.sendDataSendMailAll = function(idMailinngList, transporter){
     return getArrDataForMailing(idMailinngList) //отримуємо всі id по яким має бути розсилка
         .then(arr =>  awaitEx(arrToSubarr(arr, 2), 5000, transporter)) //послідовно виконуємо групи промісів з заданим інтервалом
@@ -314,7 +344,6 @@ exports.saveDataSendMail = function(req, res, arrAccess){
         let idMailinngList;
         AuthController.getUsersaccountId(req.query.login, arrAccess)//перевіряємо права та id користувача
             .then(id => idUser = id) //зберігаємо id користувача
-            .then(data => {return data}) //створюємо лист
             .then(data => {console.log('idUser data: ', data); return createDir(req.body.subject, currentDate.getTime())}) //створюємо папку для файлів розсилки
             .then(data => {console.log('createDir data: ', data); return createFiles(req.body.attach, data)}) //зберігаємо файли
             .then(data => {console.log('attachments: ', data); return saveMessage(req.body, data, '', idUser)}) //зберігаємо лист //вносимо зміни в лист

@@ -40,6 +40,7 @@ export class EmailComponent implements OnInit, OnDestroy{
     from: ['send@galexpo.lviv.ua', [Validators.required]],
     subject: ['', [Validators.required]],
     attach: ['', []],
+    body_files: ['', []],
     message: ['', []],
     messageID: [this.mail.messageID, []]
   })
