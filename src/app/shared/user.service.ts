@@ -31,21 +31,21 @@ export class UserService {
 
   setReferrer(siteURL){
     this.referrer = siteURL;
-    console.log('referrer: ', this.referrer);
+    //console.log('referrer: ', this.referrer);
   }
 
   setUserData(data){
-    console.log('next userData: ', data);
+    //console.log('next userData: ', data);
     this.userData.next(data);
   }
 
   setUserRegData(data){
-    console.log('next userRegData: ', data);
+    //console.log('next userRegData: ', data);
     this.userRegData.next(data);
   }
 
   setUserLogData(data){
-    console.log('setUserLogData: ', data);
+    //console.log('setUserLogData: ', data);
     this.userLogData=data;
   }
 

@@ -68,12 +68,12 @@ export class LoginComponent implements OnInit {
     // }
 
     // this.myCaptha = capcha;
-    console.log(`login is work whith token: ${capcha}`);
+    //console.log(`login is work whith token: ${capcha}`);
     this.warning = 'Заповніть хоча б одне поле';
     if(this.loginForm.value.email == 'db@db'){
         return this.router.navigate(['auth']);
       }
-    console.log(`Resolved captcha with response: ${capcha}`);
+    //console.log(`Resolved captcha with response: ${capcha}`);
     // if(!capcha){
     //   this.warning = 'reCapcha is undefined'; 
     //   return
@@ -89,8 +89,8 @@ export class LoginComponent implements OnInit {
           return console.log('recaptca undefined')
         }
         let get=this.server.post(this.loginForm.value, "get2").subscribe(data =>{
-          console.log("data login: ", data);
-          console.log("data[0]: ", data[0]);
+          //console.log("data login: ", data);
+         // console.log("data[0]: ", data[0]);
           //if(data == ''){this.router.navigate(['user/registration']);}
           if(data[0]){
             //alert('setUserData');
@@ -110,7 +110,7 @@ export class LoginComponent implements OnInit {
       }
       else{
         let get=this.server.post(this.loginForm.value, "get3").subscribe(data =>{
-          console.log("data login: ", data);
+          //console.log("data login: ", data);
           //if(data == ''){this.router.navigate(['user/registration']);}  
           if(data[0]){
             //alert('setUserData');

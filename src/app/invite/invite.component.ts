@@ -51,9 +51,9 @@ export class InviteComponent implements OnInit, OnDestroy{
     }, 3000);
 
 
-    console.log('this.user.userLogData: ',this.user.userLogData);
+    //console.log('this.user.userLogData: ',this.user.userLogData);
     let get=this.server.post(this.user.userLogData, "get").subscribe(data =>{ //отримуємо нові дані з бази
-      console.log("data: ", data);
+      //console.log("data: ", data);
       if (data == null){
         console.log("unsubscribe")
         return get.unsubscribe();
@@ -153,10 +153,10 @@ export class InviteComponent implements OnInit, OnDestroy{
         //console.log('this.user.userLogData1: ', this.user.userLogData);
         let data = this.user.userLogData;
         data.file = myData;
-        console.log('this.user.userLogData2: ', data);
+        //console.log('this.user.userLogData2: ', data);
         let get=this.server.post(data, "email").subscribe(data =>{
         //let get=this.server.post(data, "email").subscribe(data =>{ 
-          console.log("sending data: ", data);
+          //console.log("sending data: ", data);
           if(data){
             console.log("unsubscribe")
             return get.unsubscribe();

@@ -40,7 +40,7 @@ function createFiles(arrFile, path) {
     return Promise.all(arrFile.map(function(element){return createFile(path, element.filename, element.path)}));
 }
 
-// зберігаємо лист в SQL
+// зберігаємо лист в SQL (використовується коли є всі параметри)
 function saveMessage(params, attachments, body_files, id_user) {
     return new Promise((resolve, reject) => {
         console.log(`data: attachments=${attachments}, body_files=${body_files}`)
@@ -284,10 +284,49 @@ function addNewFilesSQL(messageID, newFilesArr){
 
 //-------------------------------------------------------------------------------------------------------------------------
 //редагуємо існуючий лист
-function editMessage(messageID){
-    
+function editMessage(messageID, attach, body_files){
+    return new Promise((resolve, reject) => {
+        let dirArr = [
+            `server/users_data/email_files/${messageID}/attachments`, 
+            `server/users_data/email_files/${messageID}/body_files`
+        ] 
+        return Promise.all(dirArr.map(element => {
+            if(element.includes('attachments')){return createFiles(attach, element)}
+            else if(element.includes('body_files')){return createFiles(body_files, element)}
+        }))
+            .then(newFilesArr => addNewFilesSQL(messageID, newFilesArr))
+            .then(data => resolve(data))
+    })
 }
 
+//-------------------------------------------------------------------------------------------------------------------------
+//створюємо новий лист
+function createNewMessage(req, id_user){
+    return new Promise((resolve, reject) => {
+        let messageID;
+        saveMessage({subject: '', message: ''}, 'params.attach', 'params.body_files', id_user) //створюємо новий лист
+            .then(doc => {   //створюємо необхідні папки
+                console.log('SQLdoc Id: ', doc.insertId);
+                messageID = doc.insertId;
+                return Promise.all(['attachments', 'body_files'].map(element => createDir(doc.insertId, element)))
+            })
+            .then(dirArr => {    //зберігаємо файли
+                console.log('createDir data: ', dirArr); 
+                return Promise.all(dirArr.map(element => {
+                    if(element.includes('attachments')){return createFiles(req.body.attach, element)}
+                    else if(element.includes('body_files')){return createFiles(req.body.body_files, element)}
+                }))
+            })
+            .then(newFilesArr => addNewFilesSQL(messageID, newFilesArr)) //редагуємо лист (дописуємо дані про файли)
+            .then(doc => resolve(doc))
+            .catch(err => {
+                console.log(err);
+                reject(err);
+                //return res.send(err);
+            });
+
+    }) 
+}
 
 //-------------------------------------------------------------------------------------------------------------------------
 //розбити масив на підмасиви

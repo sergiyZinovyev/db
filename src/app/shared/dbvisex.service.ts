@@ -37,7 +37,7 @@ export class DbvisexService {
       new_visitor: '',
     };
     let get=this.server.post(this.user.userLogData, "get").subscribe(data =>{ //отримуємо нові дані з бази 
-      console.log("data: ", data);
+      //console.log("data: ", data);
       if (data == null){
         console.log("visitor is not exist")
         console.log("unsubscribe")
@@ -88,7 +88,7 @@ export class DbvisexService {
               }
               console.log('visitorsIds: ', visitorsIds);
               this.server.post(visitorsIds, 'createInExhibition_vis').subscribe(data4 =>{ 
-                console.log("data: ", data4);
+                //console.log("data: ", data4);
                 visitorsIds.id_visitor = '';
               })
               get2.unsubscribe()
@@ -107,7 +107,7 @@ export class DbvisexService {
               dataCheckVis[0].visited = String(dataCheckVis[0].visited + 1);
               dataCheckVis[0].vis = 1;
               this.server.post(dataCheckVis[0], 'editExhibition_vis').subscribe(data3 =>{
-                console.log("data: ", data3);
+                //console.log("data: ", data3);
                 get3.unsubscribe()
               })
             }
