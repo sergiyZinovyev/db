@@ -3,14 +3,15 @@ const SQLEmail = require('../models/sql-email');
 const AuthController = require('../controllers/auth');
 
 // створюємо необхідну директорію
-function createDir(name, date) {
+function createDir(firstName, secondName) {
     return new Promise((resolve, reject) => {
-        fs.mkdir(`server/users_data/email_files/${date}`, {recursive: false}, err => {
+        console.log('new dir: ', `server/users_data/email_files/${firstName}/${secondName}`);
+        fs.mkdir(`server/users_data/email_files/${firstName}/${secondName}`, {recursive: true}, err => {
             if(err){
                 reject(err);
                 throw err;
             }
-            let path = `server/users_data/email_files/${date}`
+            let path = `server/users_data/email_files/${firstName}/${secondName}`
             console.log('Created dir: ', path)
             resolve(path);
         })
@@ -42,12 +43,13 @@ function createFiles(arrFile, path) {
 // зберігаємо лист в SQL
 function saveMessage(params, attachments, body_files, id_user) {
     return new Promise((resolve, reject) => {
+        console.log(`data: attachments=${attachments}, body_files=${body_files}`)
         let data = [
             //дані для внесення 
             params.subject,
             params.message, 
             attachments.join('; '), 
-            body_files, 
+            body_files.join('; '), 
             id_user
         ];
         SQLEmail.createMessage(data, function(err, doc) {
@@ -220,6 +222,8 @@ function noteAsSent(id) {
     })
 }
 
+//--------------------------------------------------------------------------------------------------------------------------
+
 // оримуємо attachments & body_files
 function getAttachAndBodyFales(id) {
     return new Promise((resolve, reject) => {
@@ -233,7 +237,7 @@ function getAttachAndBodyFales(id) {
     })
 }
 
-// оримуємо attachments & body_files
+// редагуємо attachments & body_files
 function editAttachAndBodyFales(files) {
     return new Promise((resolve, reject) => {
         let dataUpdate = [
@@ -252,6 +256,38 @@ function editAttachAndBodyFales(files) {
         });
     })
 }
+
+// Доповнюємо БД новими даними про файли
+function addNewFilesSQL(messageID, newFilesArr){
+    return new Promise((resolve, reject) => {
+        getAttachAndBodyFales(messageID)  //отримуємо записи з бази
+            .then(data => {
+                let files = {};
+                files.id = messageID;
+                let newStr;
+                for(let key in data[0]){
+                    if(key == 'attachments'){ //тут потрібно спростити ...
+                        newStr = getIndexValue(newFilesArr, 'attachments').join('; ');
+                        files.attachments = data[0].key + '; ' + newStr
+                    }
+                    if(key == 'body_files'){
+                        newStr = getIndexValue(newFilesArr, 'body_files').join('; ');
+                        files.body_files = data[0].key + '; ' + newStr
+                    }
+                }
+                return files;
+            })
+            .then(files => {console.log('files: ',files); return editAttachAndBodyFales(files)})
+            .then(data => resolve(data))
+    }) 
+}
+
+//-------------------------------------------------------------------------------------------------------------------------
+//редагуємо існуючий лист
+function editMessage(messageID){
+    
+}
+
 
 //-------------------------------------------------------------------------------------------------------------------------
 //розбити масив на підмасиви
@@ -287,12 +323,6 @@ function sendDataSendMail(id, transporter){
 
 //відправка всіх листів синхронно
 function sendDataSendMailAllParts(arr, transporter){
-    // Promise.resolve()
-    // .then(() => Promise.all(arr.map(element => sendDataSendMail(element.id, transporter))))
-    // .catch(err => {
-    //     console.log(err);
-    //     reject(err);
-    // });
     return Promise.all(arr.map(element => sendDataSendMail(element.id, transporter)))
 }
 
@@ -320,8 +350,6 @@ function awaitEx(tasks, interval, transporter){
             
         });
     });
-
-    //return promise.then((data) => {console.log('data: ', data); return data})
 }
 
 //--------------------------------------------------------------------------------------------------------------------------
@@ -344,9 +372,18 @@ exports.saveDataSendMail = function(req, res, arrAccess){
         let idMailinngList;
         AuthController.getUsersaccountId(req.query.login, arrAccess)//перевіряємо права та id користувача
             .then(id => idUser = id) //зберігаємо id користувача
-            .then(data => {console.log('idUser data: ', data); return createDir(req.body.subject, currentDate.getTime())}) //створюємо папку для файлів розсилки
-            .then(data => {console.log('createDir data: ', data); return createFiles(req.body.attach, data)}) //зберігаємо файли
-            .then(data => {console.log('attachments: ', data); return saveMessage(req.body, data, '', idUser)}) //зберігаємо лист //вносимо зміни в лист
+            .then(data => {console.log('idUser data: ', data); return Promise.all(['attachments', 'body_files'].map(element => createDir(req.body.messageID, element)))}) //створюємо папки для файлів розсилки
+            .then(dirArr => {    //зберігаємо файли
+                console.log('createDir data: ', dirArr); 
+                return Promise.all(dirArr.map(element => {
+                    if(element.includes('attachments')){return createFiles(req.body.attach, element)}
+                    else if(element.includes('body_files')){return createFiles(req.body.body_files, element)}
+                }))
+            })
+            .then(filePathArr => {  //зберігаємо лист //вносимо зміни в лист
+                console.log('attachments: ', filePathArr); 
+                return saveMessage(req.body, getIndexValue(filePathArr, 'attachments'), getIndexValue(filePathArr, 'body_files'), idUser)
+            }) 
             .then(doc => {console.log('SQLdoc Id: ', doc.insertId); return saveMailingList(req.body, doc.insertId, idUser)}) //зберігаємо розсилку
             .then(doc => {idMailinngList = doc.insertId; return saveVisitorsMailingLists(req.body.sendList, doc.insertId)}) //зберігаємо список розсилки
             .then(doc => resolve(idMailinngList))
@@ -356,4 +393,23 @@ exports.saveDataSendMail = function(req, res, arrAccess){
                 //return res.send(err);
             });
     })
+}
+
+// повертає масив який містить задану строку
+function getIndexValue(arr, pattern){
+    let returnedArr;
+    for (let index = 0; index < arr.length; index++) {
+        const element = arr[index];
+        let newArr = element.find(item => item.includes(pattern))
+        if(!newArr) {
+            returnedArr = [];
+            console.log('returnedArr = "": ', element);
+        }
+        else {
+            returnedArr = element;
+            console.log('returnedArr: ', element);
+            break
+        }
+    }
+    return returnedArr
 }

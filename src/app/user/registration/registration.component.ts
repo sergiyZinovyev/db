@@ -142,7 +142,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     this.getRegion('region');
     this.regUserData = this.user.userRegData.subscribe({
       next: (value: any) => {
-        console.log('reg - user.userRegData: ',value);
+        //console.log('reg - user.userRegData: ',value);
         this.isLoadingResults = false;
         this.loginForm.patchValue({email: value.email});
         this.loginForm.patchValue({cellphone: value.cellphone});
@@ -153,7 +153,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     this.subUserData = this.user.userData.subscribe({
       next: (value) => {
         this.isLoadingResults = false;
-        console.log('reg - user.userData: ',value);
+        //console.log('reg - user.userData: ',value);
         this.getMyExhib(data => {
           this.getExhib('exhibitions_dict', data);
         })
@@ -288,10 +288,10 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     this.isLoadingResults = true;
     this.loginForm.patchValue({potvid: this.server.getStringExhibForm(this.exhibForm.value)}) //змінюємо поле з виставками 
     this.loginForm.patchValue({table: 'visitors_create'}) //змінюємо поле з таблицею в яку вносити дані
-    console.log('this.loginForm.value - after: ',this.loginForm.value);
+    //console.log('this.loginForm.value - after: ',this.loginForm.value);
     let post = this.server.post(this.loginForm.value, "createInVisitorsCreate").subscribe(data =>{
-      console.log('this.loginForm.value: ',this.loginForm.value);
-      console.log("dataServer: ", data);
+      //console.log('this.loginForm.value: ',this.loginForm.value);
+      //console.log("dataServer: ", data);
       
       if(data){
         this.isLoadingResults = false;
@@ -314,10 +314,10 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   editUser(){
     this.user.setUserData(this.loginForm.value);
     this.isLoadingResults = true;
-    console.log('data check email&cellphone',this.loginForm.value)
+    //console.log('data check email&cellphone',this.loginForm.value)
     let get=this.server.post(this.loginForm.value, "get").subscribe(checkData =>{
       //перевіряємо чи є ще інші такі емейли та телефони
-      console.log("data check email & cellphone: ", checkData);
+      //console.log("data check email & cellphone: ", checkData);
       if(checkData[2]){ // якщо є...
         this.isLoadingResults = false;
         get.unsubscribe();
@@ -333,7 +333,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         this.loginForm.patchValue({table: this.spreadsheet}) //змінюємо поле з таблицею в яку вносити дані
         //перевіряємо чи були змінені поля email/cellphone та вносимо відповідні зміни у форму
         if(this.loginForm.get('email').value != this.myEmail){
-          console.log(this.loginForm.get('email').value,'--',this.myEmail);
+          //console.log(this.loginForm.get('email').value,'--',this.myEmail);
           this.loginForm.patchValue({checkEmail: true})
         }
         else{this.loginForm.patchValue({checkEmail: false})}
@@ -344,8 +344,8 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
         //if(!this.myRequest){return console.log('Err: myRequest is undefined')};
         let post = this.server.post(this.loginForm.value, "editPro2").subscribe(data =>{
-          console.log('this.loginForm.value: ',this.loginForm.value);
-          console.log("dataServer: ", data);
+          //console.log('this.loginForm.value: ',this.loginForm.value);
+          //console.log("dataServer: ", data);
           
           if(data){
             this.isLoadingResults = false;
@@ -369,7 +369,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   }
 
   submit(capcha?){
-    console.log(`Resolved captcha with response: ${capcha}`); 
+    //console.log(`Resolved captcha with response: ${capcha}`); 
     this.captcha = capcha;
     this.worningCheck = '';
     if(this.loginForm.get('prizv').valid &&
@@ -377,24 +377,24 @@ export class RegistrationComponent implements OnInit, OnDestroy {
        this.loginForm.get('name').valid &&
        this.loginForm.get('countryid').valid &&
        this.loginForm.get('regionid').valid){
-        console.log("this.loginForm.get('email').valid: ", this.loginForm.get('email').value," - ",this.loginForm.get('email').valid);
-        console.log("this.loginForm.get('cellphone').valid: ", this.loginForm.get('cellphone').value," - ",this.loginForm.get('cellphone').valid);
+        //console.log("this.loginForm.get('email').valid: ", this.loginForm.get('email').value," - ",this.loginForm.get('email').valid);
+        //console.log("this.loginForm.get('cellphone').valid: ", this.loginForm.get('cellphone').value," - ",this.loginForm.get('cellphone').valid);
         if(this.loginForm.get('email').valid || this.loginForm.get('cellphone').valid){
-          console.log('email: ', this.loginForm.get('email').value);
-          console.log('cellphone: ', this.loginForm.get('cellphone').value);
+          //console.log('email: ', this.loginForm.get('email').value);
+          //console.log('cellphone: ', this.loginForm.get('cellphone').value);
           if(this.loginForm.get('email').value == null){this.loginForm.patchValue({email: ''})}
           if(this.loginForm.get('cellphone').value == null){this.loginForm.patchValue({cellphone: ''})}
 
           if((this.loginForm.get('email').invalid && (this.loginForm.get('email').value != '')) ||
              (this.loginForm.get('cellphone').invalid && (this.loginForm.get('cellphone').value != ''))){
-            console.log('email: ', this.loginForm.get('email').value);
-            console.log('cellphone: ', this.loginForm.get('cellphone').value);
+            //console.log('email: ', this.loginForm.get('email').value);
+            //console.log('cellphone: ', this.loginForm.get('cellphone').value);
             return console.log('invalid!')
           }
           else{
             //обираємо метод (редагування чи внесення нового)
-            console.log('email: ', this.loginForm.get('email').value);
-            console.log('cellphone: ', this.loginForm.get('cellphone').value);
+            //console.log('email: ', this.loginForm.get('email').value);
+            //console.log('cellphone: ', this.loginForm.get('cellphone').value);
             if(this.edit){
               this.editUser();
             }
@@ -438,31 +438,31 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
   checkFormChange(){
     let flag = true
-    console.log('this.startLoginForm: ', this.startLoginForm);
-    console.log('this.loginForm: ', this.loginForm.value);
+    //console.log('this.startLoginForm: ', this.startLoginForm);
+    //console.log('this.loginForm: ', this.loginForm.value);
     for (let key in this.startLoginForm){
       //console.log(key,': ',this.startLoginForm[key])
       if(this.loginForm.get(key)){
         if(this.startLoginForm[key] == this.loginForm.get(key).value){
-          console.log(key, ': not changed')
+          //console.log(key, ': not changed')
         }
         else{
           flag = false;
-          console.log(key, ': changed')
+          //console.log(key, ': changed')
         }
       }
     }
-    console.log(flag);
-    console.log('-------------------');
+    //console.log(flag);
+    //console.log('-------------------');
     return flag;
   }
  
   getMyExhib(cb){
     let exhibFromBD;
-    console.log('idex: ', this.server.frontURL.searchParams.get('idex'));
+    //console.log('idex: ', this.server.frontURL.searchParams.get('idex'));
     this.user.getIdExDect(this.server.frontURL.searchParams.get('idex'), data=>{
     //this.user.getIdExDect(this.server.idex, data=>{  
-      console.log('exhib_dict', data);
+      //console.log('exhib_dict', data);
       //повертаємо з бази id виставки
       switch (data) {
         case 13:
