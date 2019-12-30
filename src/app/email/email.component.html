@@ -43,7 +43,7 @@
                     id="your-files" 
                     #fileInput
                     hidden
-                    (change)='addFile(fileInput.id)'>
+                    (change)='addFile(fileInput.id, "attachmentsArray")'>
                 <button 
                     mat-raised-button
                     matTooltip="Додати файл"
@@ -55,15 +55,17 @@
             <div class="col d-flex align-items-center">
                 <ng-container *ngFor='let attachment of attachmentsArray; let i = index'>
                     <div class="card-file card-file-1 d-flex justify-content-between">
-                        <div class="file-info">
-                            <div class="file-name text-truncate"><i>{{attachment.filename}}</i></div>
-                            <div class="file-size">{{(attachment.size/1024).toFixed(2)}} KB</div>
-                        </div>
+                        <a [href]="attachment.href">
+                            <div class="file-info">
+                                <div class="file-name text-truncate"><i>{{attachment.filename}}</i></div>
+                                <div class="file-size">{{(attachment.size/1024).toFixed(2)}} KB</div>
+                            </div>
+                        </a>
                         <button 
                             mat-icon-button 
-                            matTooltip="Закрити" 
+                            matTooltip="Видалити" 
                             aria-label="Example icon-button with a heart icon"
-                            (click)='deleteFileFromMessage(i)'>
+                            (click)='deleteFileFromMessage(i, "attachmentsArray")'>
                             <mat-icon>close</mat-icon>
                         </button>
                     </div>
@@ -92,28 +94,64 @@
             hidden
             (change)='addHtml(fileHTMLInput.id)'>
         <button 
-            mat-raised-button
+            type="button" 
+            class="btn btn-secondary mr-1"
             matTooltip="Додати текст повідомлення в HTML форматі"
-            (click)='fileHTMLInput.click()'
-            color="primary">
+            (click)='fileHTMLInput.click()'>
             Add HTML
         </button>
 
         <input
             type="file"
-            multiple
             accept="image/*"
             id="your-image"  
             #fileImage
             hidden
-            (change)='addImage(fileImage.id)'>
-        <button
-            class="ml-1" 
-            mat-raised-button
-            matTooltip="Додати зображення для HTML"
-            (click)='fileImage.click()'
-            color="primary">
-            <mat-icon>add_photo_alternate</mat-icon>
+            (change)='addFile(fileImage.id, "bodyFilesArray")'>   
+
+        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+            <button 
+                class="btn btn-secondary"
+                matTooltip="Додати зображення для HTML"
+                (click)='fileImage.click()'>
+                <mat-icon>add_photo_alternate</mat-icon>
+            </button>
+            <button
+                [disabled]='bodyFilesArray.length>0?false:true'
+                class="btn btn-secondary pl-0 pr-0"
+                [matMenuTriggerFor]="menu_files">
+                <mat-icon>arrow_drop_down</mat-icon>
+            </button>
+        </div> 
+
+        <mat-menu #menu_files="matMenu" xPosition="after" yPosition="below">
+            <ng-container *ngFor='let attachment of bodyFilesArray; let i = index'>
+                <a #link class='invisible' [href]="attachment.href"></a>
+                <div class="d-flex justify-content-between file-info">
+                    <div class="d-flex justify-content-start">
+                        <button
+                            mat-button
+                            (click)='link.click()'>
+                            {{attachment.filename}}
+                        </button>
+                    </div>
+                    <button 
+                        mat-icon-button 
+                        matTooltip="Видалити" 
+                        aria-label="Example icon-button with a heart icon"
+                        (click)='deleteFileFromMessage(i, "bodyFilesArray")'>
+                        <mat-icon color="primary">delete_forever</mat-icon>
+                    </button>
+                </div>
+            </ng-container>
+        </mat-menu>
+
+        <button 
+            type="button" 
+            class="btn btn-secondary ml-1"
+            matTooltip="Зберегти лист"
+            (click)='saveMessage()'>
+            Save
         </button>
 
         <section class="example-section">
@@ -121,8 +159,8 @@
                 #slideToggle
                 class="example-margin"
                 color="primary">
-            <div *ngIf = 'slideToggle.checked'>HTML</div>
-            <div *ngIf = '!slideToggle.checked'> text</div>
+                <div *ngIf = 'slideToggle.checked'>HTML</div>
+                <div *ngIf = '!slideToggle.checked'> text</div>
             </mat-slide-toggle>
         </section>
     </div>    

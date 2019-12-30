@@ -161,7 +161,8 @@ exports.checkIdVisitor = function(req, res) {
 //-------------------------------------------------------------------------------------------------------------
 
 exports.file = function(req, res) {
-	Shared.file(req.params.id, function(err, doc) {
+    console.log('req.params.id from img', req.params.id);
+	Shared.file(req.params.id, req.query.path, function(err, doc) {
 		if (err) {
 			console.log(err);
 			return res.sendStatus(500);

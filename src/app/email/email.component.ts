@@ -16,6 +16,14 @@ export interface IUser {
   email: string;
   namepovne: string;
 }
+export interface files {filename; path; size; href}
+
+// class SendedFile {
+//   constructor(name) {
+//     this.name = name;
+//   }
+//   name
+// }
 
 @Component({
   selector: 'app-email',
@@ -32,7 +40,11 @@ export class EmailComponent implements OnInit, OnDestroy{
     private sanitizer: DomSanitizer, 
   ) { }
 
-  attachmentsArray: {filename, path, size}[] = [];
+  attachmentsArray: files[] = [];
+  bodyFilesArray: files[]= [];
+
+  // newFile = new SendedFile('someFile');
+  //href= `https://visitors.galexpo.com.ua:7002/img/001.jpg?path=email_files/181/attachments`
 
   emailForm = this.fb.group({
     to: ['', [Validators.required]],
@@ -47,6 +59,8 @@ export class EmailComponent implements OnInit, OnDestroy{
 
   subSendList;
   htmlTextData: SafeHtml;
+
+
 
   ngOnInit() {
     this.subSendList = this.mail.getCurrentSendList().pipe(
@@ -85,13 +99,43 @@ export class EmailComponent implements OnInit, OnDestroy{
   }
 
   //додати файл до листа 
-  addFile(id){
+  addFile(id, fileArr: string){
     let file = this.module.getFile(id);
+    if(!this.checkFile(file.name, this[fileArr])){ return alert(`Файл з іменем ${file.name} вже існує`)}
+    let sendingData = {
+      attach: [],
+      body_files: [],
+      messageID: this.mail.messageID
+    }
+    let folder: 'attachments' | 'body_files';
     this.module.getDataFile(file, 'readAsDataURL').then(
       data => {
-        this.attachmentsArray.push({filename: file.name, path: data, size: file.size}); 
-        //console.log('subscribe data: ', data);
-        return this.emailForm.patchValue({attach: this.attachmentsArray});
+        if (fileArr == 'attachmentsArray'){
+          sendingData.attach.push({filename: file.name, path: data, size: file.size});
+          folder = 'attachments'
+        }
+        else if (fileArr == 'bodyFilesArray'){
+          sendingData.body_files.push({filename: file.name, path: data, size: file.size});
+          folder = 'body_files'
+        }
+        console.log("reqData: ", sendingData);
+        let get=this.server.post(sendingData, 'saveMailFile').subscribe((data:{id, attachments, body_files}) =>{
+          console.log("res data: ", data);
+          let newLink = `${this.server.apiUrl}/img/${file.name}?path=email_files/${data.id}/${folder}`;
+          this.mail.setMessageID(data.id);
+          let newMessage = this.replaceSrc(this.emailForm.get('message').value, file.name, newLink);
+          this.emailForm.patchValue({message: newMessage});
+          this[fileArr].push({
+            filename: file.name, 
+            path: data, 
+            size: file.size,
+            href: newLink
+          }); 
+          if(data){
+            console.log("unsubscribe")
+            return get.unsubscribe();
+          }
+        });
       },
       error => {
         alert("Rejected: " + error); // error - аргумент reject   
@@ -99,8 +143,8 @@ export class EmailComponent implements OnInit, OnDestroy{
     )
   }
 
-  deleteFileFromMessage(index){
-    this.attachmentsArray.splice(index, 1);
+  deleteFileFromMessage(index, fileArr: string){
+    this[fileArr].splice(index, 1);
   }
 
   addHtml(id){
@@ -120,17 +164,33 @@ export class EmailComponent implements OnInit, OnDestroy{
     })
   }
 
-  addImage(id){
-    let file = this.module.getFileArr(id);
-    this.module.getDataFile(file[0], 'readAsDataURL').then(
-      data => {
-        //this.htmlTextData = data;
-        
-      },
-      error => {
-        alert("Rejected: " + error); // error - аргумент reject    
+  checkFile(fileName: string, fileArr: files[]): boolean{
+    if(!this.module.findOdjInArrObj(fileArr, 'filename', fileName)) {
+      return true
+    }
+    else {
+      return false
+    }
+  }
+
+  saveMessage(){
+    let sendingData = this.emailForm.value;
+    console.log("sendingData: ", sendingData);
+    let get=this.server.post(sendingData, 'saveMessage').subscribe((data:{id}) =>{
+      console.log("res data: ", data);
+      if(data){
+        this.mail.setMessageID(data.id);
+        this.emailForm.patchValue({messageID: data.id});
+        console.log("unsubscribe")
+        return get.unsubscribe();
       }
-    )
+    });
+  }
+
+  replaceSrc(str: string, fileName: string, newSrc: string):string{
+    let pattern = `["'][^"']*${fileName}[^"']*["']`;
+    let VRegExp = new RegExp(pattern, 'g');
+    return str.replace(VRegExp, `"${newSrc}"`);
   }
 
   ngOnDestroy(){

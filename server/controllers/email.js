@@ -60,4 +60,24 @@ exports.massMaling = function(req, res){
         });
 }
 
+exports.createMessageSaveFiles = function(req, res){
+    const arrAccess = [3,4,5];
+    EmailModule.createMessageSaveFiles(req, arrAccess)
+        .then(data => {console.log('returned from createMessageSaveFiles: ', data); console.log('All done!'); return res.send(data)})
+        .catch(err => {
+            console.log(err);
+            return res.send(err);
+        });
+}
+
+exports.createMessageSaveMessage = function(req, res){
+    const arrAccess = [3,4,5];
+    EmailModule.createEditMessage(req, arrAccess)
+        .then(data => {console.log('createEditMessage: ', data); console.log('All done!'); return res.send(data)})
+        .catch(err => {
+            console.log(err);
+            return res.send(err);
+        });
+}
+
 

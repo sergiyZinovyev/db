@@ -119,6 +119,12 @@ app.post("/editExhibition_typeOfReg", authController.checkAuth, urlencodedParser
 //розсилка
 app.post("/massMaling", cors(), urlencodedParser, authController.checkAuth, emailController.massMaling);
 
+//збереження файлів для розсилки/створення нового листа
+app.post("/saveMailFile", urlencodedParser, authController.checkAuth, emailController.createMessageSaveFiles);
+
+//збереження/редагування листа
+app.post("/saveMessage", urlencodedParser, authController.checkAuth, emailController.createMessageSaveMessage);
+
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 

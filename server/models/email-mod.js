@@ -247,12 +247,13 @@ function editAttachAndBodyFales(files) {
             files.body_files,
             files.id
         ];
-        SQLEmail.getDataMessage(dataUpdate, function(err, doc) {
+        SQLEmail.editMessagesAttachAndBodyFiles(dataUpdate, function(err, doc) {
             if (err) {
                 console.log(err);
-                reject(err);
+                return reject(err);
             }
-            resolve(doc);
+            //console.log('editMessagesAttachAndBodyFiles doc: ', doc);
+            return resolve(doc);
         });
     })
 }
@@ -260,51 +261,82 @@ function editAttachAndBodyFales(files) {
 // Доповнюємо БД новими даними про файли
 function addNewFilesSQL(messageID, newFilesArr){
     return new Promise((resolve, reject) => {
+        let newFiles;
         getAttachAndBodyFales(messageID)  //отримуємо записи з бази
             .then(data => {
+                console.log('getAttachAndBodyFales data[0]: ', data[0]);
+
                 let files = {};
                 files.id = messageID;
                 let newStr;
                 for(let key in data[0]){
-                    if(key == 'attachments'){ //тут потрібно спростити ...
-                        newStr = getIndexValue(newFilesArr, 'attachments').join('; ');
-                        files.attachments = data[0].key + '; ' + newStr
+                    newStr = getIndexValue(newFilesArr, key).join('; ');
+                    if(data[0][key] == ''){
+                        files[key]=newStr
                     }
-                    if(key == 'body_files'){
-                        newStr = getIndexValue(newFilesArr, 'body_files').join('; ');
-                        files.body_files = data[0].key + '; ' + newStr
+                    else {
+                        files[key]= data[0][key] + '; ' + newStr
                     }
                 }
+                //console.log('files1: ',files);
                 return files;
             })
-            .then(files => {console.log('files: ',files); return editAttachAndBodyFales(files)})
-            .then(data => resolve(data))
+            .then(files => {newFiles = files; console.log('files: ',files); return editAttachAndBodyFales(files)})
+            .then(data => {console.log('returned from editAttachAndBodyFales: ',data); console.log('newFiles: ',newFiles); return resolve(newFiles)})
+            .catch(err => {
+                console.log(err);
+                reject(err);
+            });
     }) 
 }
 
 //-------------------------------------------------------------------------------------------------------------------------
-//редагуємо існуючий лист
-function editMessage(messageID, attach, body_files){
+//редагуємо існуючий лист додаємо нові файли
+function editMessageAddNewFiles(messageID, attach, body_files){
     return new Promise((resolve, reject) => {
         let dirArr = [
             `server/users_data/email_files/${messageID}/attachments`, 
             `server/users_data/email_files/${messageID}/body_files`
         ] 
-        return Promise.all(dirArr.map(element => {
+        return Promise.all(dirArr.map(element => { // зберігаємо файли у відповідних дерикторіях
             if(element.includes('attachments')){return createFiles(attach, element)}
             else if(element.includes('body_files')){return createFiles(body_files, element)}
         }))
             .then(newFilesArr => addNewFilesSQL(messageID, newFilesArr))
-            .then(data => resolve(data))
+            .then(data => {console.log('returned from addNewFilesSQL_2: ', data); return resolve(data)})
+            .catch(err => {
+                console.log(err);
+                reject(err);
+            });
     })
 }
 
 //-------------------------------------------------------------------------------------------------------------------------
-//створюємо новий лист
-function createNewMessage(req, id_user){
+//редагуємо існуючий лист без збереження файлів
+function editMessage(params, id_user){
+    return new Promise((resolve, reject) => {
+        let dataUpdate = [ //subject, message, id_user, id
+            params.subject, 
+            params.message, 
+            id_user,
+            params.messageID
+        ];
+        SQLEmail.editMessages(dataUpdate, function(err, doc) {
+            if (err) {
+                console.log(err);
+                return reject(err);
+            }
+            return resolve(params.messageID);
+        });
+    })
+}
+
+//-------------------------------------------------------------------------------------------------------------------------
+//створюємо новий лист та зберігаємо лише файли
+function createNewMessageForSaveFiles(req, id_user){
     return new Promise((resolve, reject) => {
         let messageID;
-        saveMessage({subject: '', message: ''}, 'params.attach', 'params.body_files', id_user) //створюємо новий лист
+        saveMessage({subject: '', message: ''}, [], [], id_user) //створюємо новий лист
             .then(doc => {   //створюємо необхідні папки
                 console.log('SQLdoc Id: ', doc.insertId);
                 messageID = doc.insertId;
@@ -318,7 +350,7 @@ function createNewMessage(req, id_user){
                 }))
             })
             .then(newFilesArr => addNewFilesSQL(messageID, newFilesArr)) //редагуємо лист (дописуємо дані про файли)
-            .then(doc => resolve(doc))
+            .then(doc => {console.log('returned from addNewFilesSQL_1: ', doc); return resolve(doc)})
             .catch(err => {
                 console.log(err);
                 reject(err);
@@ -326,6 +358,43 @@ function createNewMessage(req, id_user){
             });
 
     }) 
+}
+
+//-------------------------------------------------------------------------------------------------------------------------
+//створюємо новий лист без збереження файлів
+function createNewMessage(req, id_user){
+    return new Promise((resolve, reject) => {
+        let messageID;
+        saveMessage(req.body, [], [], id_user) //створюємо новий лист
+            .then(doc => {console.log('returned from saveMessage: ', doc); return doc.insertId})
+            .then(doc => {   //створюємо необхідні папки
+                console.log('messageID: ', doc);
+                messageID = doc;
+                return Promise.all(['attachments', 'body_files'].map(element => createDir(doc, element)))
+            })
+            .then(() => resolve(messageID))
+            .catch(err => {
+                console.log(err);
+                reject(err);
+            });
+
+    }) 
+}
+
+//-------------------------------------------------------------------------------------------------------------------------
+//перевіряємо чи була розсилка по заданому листу
+function isMailing(messageID) {
+    return new Promise((resolve, reject) => {
+        SQLEmail.isMailing(messageID, function(err, doc) {
+            if (err) {
+                console.log(err);
+                return reject(err);
+            }
+            if (doc[0]) resolve(true)
+            else resolve(false)
+        });
+    })
+    
 }
 
 //-------------------------------------------------------------------------------------------------------------------------
@@ -340,8 +409,8 @@ function arrToSubarr(arr, size) {
         return p;
     }, [[]]); 
 }
-//--------------------------------------------------------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------------------------------------------------------
 //відправка одного листа зі списку
 function sendDataSendMail(id, transporter){
     //console.log(`sendDataSendMail is work whith arguments: idMailinngList = ${idMailinngList}; transporter = ${transporter}`);
@@ -359,14 +428,12 @@ function sendDataSendMail(id, transporter){
 }
 
 //--------------------------------------------------------------------------------------------------------------------------
-
 //відправка всіх листів синхронно
 function sendDataSendMailAllParts(arr, transporter){
     return Promise.all(arr.map(element => sendDataSendMail(element.id, transporter)))
 }
 
 //--------------------------------------------------------------------------------------------------------------------------
-
 // послідовне виконання промісів
 function awaitEx(tasks, interval, transporter){
     return new Promise((resolve, reject) => {
@@ -392,6 +459,52 @@ function awaitEx(tasks, interval, transporter){
 }
 
 //--------------------------------------------------------------------------------------------------------------------------
+
+//створення/редагування листа (без збереження файлів)
+exports.createEditMessage = function(req, arrAccess){
+    return new Promise((resolve, reject) => {
+        let id_user;
+        AuthController.getUsersaccountId(req.query.login, arrAccess)//перевіряємо права та id користувача
+            .then(id => id_user = id) //зберігаємо id користувача
+            .then(() => {
+                if(req.body.messageID == 'new'){return createNewMessage(req, id_user)} // створюємо новий лист 
+                else {
+                    return isMailing(req.body.messageID).then(isMailingState => {
+                        if(isMailingState){return createNewMessage(req, id_user)} // створюємо новий лист 
+                        else return editMessage(req.body, id_user) // редагуємо лист
+                    })
+                }
+            })
+            .then(data => {console.log('returned from .then: ', data); return resolve({'id': data})})
+            .catch(err => {
+                console.log(err);
+                reject(err);
+            });
+    })
+}
+
+//збереження файлів для розсилки/створення нового листа
+exports.createMessageSaveFiles = function(req, arrAccess){
+    return new Promise((resolve, reject) => {
+        let id_user;
+        AuthController.getUsersaccountId(req.query.login, arrAccess)//перевіряємо права та id користувача
+            .then(id => id_user = id) //зберігаємо id користувача
+            .then(() => {
+                if(req.body.messageID == 'new'){return createNewMessageForSaveFiles(req, id_user)} // створюємо новий лист та зберігаємо тільки файли
+                else {
+                    return isMailing(req.body.messageID).then(isMailingState => {
+                        if(isMailingState){return createNewMessageForSaveFiles(req, id_user)} // створюємо новий лист та зберігаємо тільки файли
+                        else return editMessageAddNewFiles(req.body.messageID, req.body.attach, req.body.body_files) // редагуємо лист додаємо нові файли
+                    })
+                }
+            })
+            .then(data => {console.log('returned from .then: ', data); return resolve(data)})
+            .catch(err => {
+                console.log(err);
+                reject(err);
+            });
+    })
+}
 
 //відправка всіх листів синхронно(з обмеженнями) отримує id розсилки та поштовий транспорт
 exports.sendDataSendMailAll = function(idMailinngList, transporter){
@@ -434,7 +547,7 @@ exports.saveDataSendMail = function(req, res, arrAccess){
     })
 }
 
-// повертає масив який містить задану строку
+// повертає масив який містить задану строку //потрібно перенести в окремий модуль
 function getIndexValue(arr, pattern){
     let returnedArr;
     for (let index = 0; index < arr.length; index++) {

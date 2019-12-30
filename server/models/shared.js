@@ -1,8 +1,8 @@
 const fs = require("fs");
  
 // отримання файлу
-exports.file = function(file, cb){
-    fs.readFile(`server/img/${file}`, function(err,data){
+exports.file = function(file, path, cb){
+    fs.readFile(`server/users_data/${path}/${file}`, function(err,data){
         cb(err, data)
     });
 }

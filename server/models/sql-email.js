@@ -8,13 +8,11 @@ exports.createMessage = function(dataMessage, cb){
   })
 }
 
-//редагування всього запису messages
+//редагування 'subject', 'message', 'id_user' у таблиці 'messages'
 exports.editMessages = function(dataUpdate, cb){
   let sql = `UPDATE messages SET 
   subject=?, 
-  message=?, 
-  attachments=?, 
-  body_files=?, 
+  message=?,  
   id_user=?
     WHERE id=?`;
   db.get().query(sql, dataUpdate, function(err, data) {
@@ -26,7 +24,7 @@ exports.editMessages = function(dataUpdate, cb){
 exports.editMessagesAttachAndBodyFiles = function(dataUpdate, cb){
   let sql = `UPDATE messages SET 
   attachments=?, 
-  body_files=?, 
+  body_files=? 
     WHERE id=?`;
   db.get().query(sql, dataUpdate, function(err, data) {
     cb(err, data)
@@ -42,7 +40,7 @@ exports.getDataMessage = function(id, cb){
 }
 
 //перевірка чи була розсилка по заданому messagesID
-exports.getDataMessage = function(id, cb){
+exports.isMailing = function(id, cb){
   let sql = `SELECT id FROM mailing_list WHERE message_id=${id} AND date_start IS NOT NULL`;
   db.get().query(sql, function(err, data) {
     cb(err, data)
