@@ -1,6 +1,7 @@
 const fs = require('fs');
 const SQLEmail = require('../models/sql-email');
 const AuthController = require('../controllers/auth');
+const Shared = require('../models/shared')
 
 // створюємо необхідну директорію
 function createDir(firstName, secondName) {
@@ -73,12 +74,31 @@ function saveMailingList(params, message_id, id_user) {
             message_id,
             params.from
         ];
-        //console.log('data for SQL: ', data);
         SQLEmail.createMailingList(data, function(err, doc) {
             if (err) {
                 console.log(err);
                 reject(err);
             }
+            resolve(doc);
+        });
+    })
+}
+
+// редагуємо розсилку в SQL / вносимо дати
+function editMailingList(fieldName, fieldValue, id) {
+    return new Promise((resolve, reject) => {
+        let data = [
+            //дані для внесення 
+            //fieldValue, id
+            fieldValue,
+            id
+        ];
+        SQLEmail.editMailingList(data, fieldName, function(err, doc) {
+            if (err) {
+                console.log(err);
+                reject(err);
+            }
+            console.log('editMailingList data: ', doc);
             resolve(doc);
         });
     })
@@ -460,21 +480,64 @@ function awaitEx(tasks, interval, transporter){
 
 //--------------------------------------------------------------------------------------------------------------------------
 
-//створення/редагування листа (без збереження файлів)
-exports.createEditMessage = function(req, arrAccess){
+//створення/редагування листа (без збереження файлів)  //подумати про обєднання цього і наступного методів!!!
+// exports.createEditMessage = function(req, arrAccess){
+//     return new Promise((resolve, reject) => {
+//         let id_user;
+//         AuthController.getUsersaccountId(req.query.login, arrAccess)//перевіряємо права та id користувача
+//             .then(id => id_user = id) //зберігаємо id користувача
+//             .then(() => {
+//                 if(req.body.messageID == 'new'){return createNewMessage(req, id_user)} // створюємо новий лист 
+//                 else {
+//                     return isMailing(req.body.messageID).then(isMailingState => {
+//                         if(isMailingState){return createNewMessage(req, id_user)} // створюємо новий лист 
+//                         else return editMessage(req.body, id_user) // редагуємо лист
+//                     })
+//                 }
+//             })
+//             .then(data => {console.log('returned from .then: ', data); return resolve({'id': data})})
+//             .catch(err => {
+//                 console.log(err);
+//                 reject(err);
+//             });
+//     })
+// }
+
+//збереження файлів для розсилки/створення нового листа
+// exports.createMessageSaveFiles = function(req, arrAccess){
+//     return new Promise((resolve, reject) => {
+//         let id_user;
+//         AuthController.getUsersaccountId(req.query.login, arrAccess)//перевіряємо права та id користувача
+//             .then(id => id_user = id) //зберігаємо id користувача
+//             .then(() => {
+//                 if(req.body.messageID == 'new'){return createNewMessageForSaveFiles(req, id_user)} // створюємо новий лист та зберігаємо тільки файли
+//                 else {
+//                     return isMailing(req.body.messageID).then(isMailingState => {
+//                         if(isMailingState){return createNewMessageForSaveFiles(req, id_user)} // створюємо новий лист та зберігаємо тільки файли
+//                         else return editMessageAddNewFiles(req.body.messageID, req.body.attach, req.body.body_files) // редагуємо лист додаємо нові файли
+//                     })
+//                 }
+//             })
+//             .then(data => {console.log('returned from .then: ', data); return resolve(data)})
+//             .catch(err => {
+//                 console.log(err);
+//                 reject(err);
+//             });
+//     })
+// }
+
+//створення/редагування листа (без збереження файлів)  //подумати про обєднання цього і наступного методів!!!
+exports.createEditMessage = function(req, id_user){
     return new Promise((resolve, reject) => {
-        let id_user;
-        AuthController.getUsersaccountId(req.query.login, arrAccess)//перевіряємо права та id користувача
-            .then(id => id_user = id) //зберігаємо id користувача
-            .then(() => {
-                if(req.body.messageID == 'new'){return createNewMessage(req, id_user)} // створюємо новий лист 
-                else {
-                    return isMailing(req.body.messageID).then(isMailingState => {
-                        if(isMailingState){return createNewMessage(req, id_user)} // створюємо новий лист 
-                        else return editMessage(req.body, id_user) // редагуємо лист
-                    })
-                }
-            })
+        (() => {
+            if(req.body.messageID == 'new'){return createNewMessage(req, id_user)} // створюємо новий лист 
+            else {
+                return isMailing(req.body.messageID).then(isMailingState => {
+                    if(isMailingState){return createNewMessage(req, id_user)} // створюємо новий лист 
+                    else return editMessage(req.body, id_user) // редагуємо лист
+                })
+            }
+        })()
             .then(data => {console.log('returned from .then: ', data); return resolve({'id': data})})
             .catch(err => {
                 console.log(err);
@@ -484,20 +547,17 @@ exports.createEditMessage = function(req, arrAccess){
 }
 
 //збереження файлів для розсилки/створення нового листа
-exports.createMessageSaveFiles = function(req, arrAccess){
+exports.createMessageSaveFiles = function(req, id_user){
     return new Promise((resolve, reject) => {
-        let id_user;
-        AuthController.getUsersaccountId(req.query.login, arrAccess)//перевіряємо права та id користувача
-            .then(id => id_user = id) //зберігаємо id користувача
-            .then(() => {
-                if(req.body.messageID == 'new'){return createNewMessageForSaveFiles(req, id_user)} // створюємо новий лист та зберігаємо тільки файли
-                else {
-                    return isMailing(req.body.messageID).then(isMailingState => {
-                        if(isMailingState){return createNewMessageForSaveFiles(req, id_user)} // створюємо новий лист та зберігаємо тільки файли
-                        else return editMessageAddNewFiles(req.body.messageID, req.body.attach, req.body.body_files) // редагуємо лист додаємо нові файли
-                    })
-                }
-            })
+        (() => {
+            if(req.body.messageID == 'new'){return createNewMessageForSaveFiles(req, id_user)} // створюємо новий лист та зберігаємо тільки файли
+            else {
+                return isMailing(req.body.messageID).then(isMailingState => {
+                    if(isMailingState){return createNewMessageForSaveFiles(req, id_user)} // створюємо новий лист та зберігаємо тільки файли
+                    else return editMessageAddNewFiles(req.body.messageID, req.body.attach, req.body.body_files) // редагуємо лист додаємо нові файли
+                })
+            }
+        })()
             .then(data => {console.log('returned from .then: ', data); return resolve(data)})
             .catch(err => {
                 console.log(err);
@@ -508,8 +568,13 @@ exports.createMessageSaveFiles = function(req, arrAccess){
 
 //відправка всіх листів синхронно(з обмеженнями) отримує id розсилки та поштовий транспорт
 exports.sendDataSendMailAll = function(idMailinngList, transporter){
-    return getArrDataForMailing(idMailinngList) //отримуємо всі id по яким має бути розсилка
-        .then(arr =>  awaitEx(arrToSubarr(arr, 2), 5000, transporter)) //послідовно виконуємо групи промісів з заданим інтервалом
+    let is_send;
+    return editMailingList('date_start', Shared.curentDate(Date.now()), idMailinngList) // робимо запис про початок розсилки
+        .then(() => getArrDataForMailing(idMailinngList))  //отримуємо всі id по яким має бути розсилка
+        .then(arr =>  awaitEx(arrToSubarr(arr, 5), 2000, transporter)) //послідовно виконуємо групи промісів з заданим інтервалом
+        .then(data => is_send = data)
+        .then(() => editMailingList('date_end', Shared.curentDate(Date.now()), idMailinngList)) // робимо запис про закінчення розсилки
+        .then(() => is_send)
         .catch(err => {
             console.log(err);
             reject(err);
@@ -517,32 +582,45 @@ exports.sendDataSendMailAll = function(idMailinngList, transporter){
 }
 
 //запис на сервер інформації про розсилку
-exports.saveDataSendMail = function(req, res, arrAccess){
+// exports.saveDataSendMail = function(req, res, arrAccess){
+//     return new Promise((resolve, reject) => {
+//         const currentDate = new Date();
+//         let idUser;
+//         let idMailinngList;
+//         AuthController.getUsersaccountId(req.query.login, arrAccess)//перевіряємо права та id користувача
+//             .then(id => idUser = id) //зберігаємо id користувача
+//             .then(data => {console.log('idUser data: ', data); return Promise.all(['attachments', 'body_files'].map(element => createDir(req.body.messageID, element)))}) //створюємо папки для файлів розсилки
+//             .then(dirArr => {    //зберігаємо файли
+//                 console.log('createDir data: ', dirArr); 
+//                 return Promise.all(dirArr.map(element => {
+//                     if(element.includes('attachments')){return createFiles(req.body.attach, element)}
+//                     else if(element.includes('body_files')){return createFiles(req.body.body_files, element)}
+//                 }))
+//             })
+//             .then(filePathArr => {  //зберігаємо лист //вносимо зміни в лист
+//                 console.log('attachments: ', filePathArr); 
+//                 return saveMessage(req.body, getIndexValue(filePathArr, 'attachments'), getIndexValue(filePathArr, 'body_files'), idUser)
+//             }) 
+//             .then(doc => {console.log('SQLdoc Id: ', doc.insertId); return saveMailingList(req.body, doc.insertId, idUser)}) //зберігаємо розсилку
+//             .then(doc => {idMailinngList = doc.insertId; return saveVisitorsMailingLists(req.body.sendList, doc.insertId)}) //зберігаємо список розсилки
+//             .then(doc => resolve(idMailinngList))
+//             .catch(err => {
+//                 console.log(err);
+//                 reject(err);
+//                 //return res.send(err);
+//             });
+//     })
+// }
+
+//запис на сервер інформації про розсилку
+exports.saveDataSendMail = function(req, messageID, idUser){
     return new Promise((resolve, reject) => {
-        const currentDate = new Date();
-        let idUser;
-        let idMailinngList;
-        AuthController.getUsersaccountId(req.query.login, arrAccess)//перевіряємо права та id користувача
-            .then(id => idUser = id) //зберігаємо id користувача
-            .then(data => {console.log('idUser data: ', data); return Promise.all(['attachments', 'body_files'].map(element => createDir(req.body.messageID, element)))}) //створюємо папки для файлів розсилки
-            .then(dirArr => {    //зберігаємо файли
-                console.log('createDir data: ', dirArr); 
-                return Promise.all(dirArr.map(element => {
-                    if(element.includes('attachments')){return createFiles(req.body.attach, element)}
-                    else if(element.includes('body_files')){return createFiles(req.body.body_files, element)}
-                }))
-            })
-            .then(filePathArr => {  //зберігаємо лист //вносимо зміни в лист
-                console.log('attachments: ', filePathArr); 
-                return saveMessage(req.body, getIndexValue(filePathArr, 'attachments'), getIndexValue(filePathArr, 'body_files'), idUser)
-            }) 
-            .then(doc => {console.log('SQLdoc Id: ', doc.insertId); return saveMailingList(req.body, doc.insertId, idUser)}) //зберігаємо розсилку
+        saveMailingList(req.body, messageID, idUser) //зберігаємо розсилку
             .then(doc => {idMailinngList = doc.insertId; return saveVisitorsMailingLists(req.body.sendList, doc.insertId)}) //зберігаємо список розсилки
-            .then(doc => resolve(idMailinngList))
+            .then(() => resolve(idMailinngList))
             .catch(err => {
                 console.log(err);
                 reject(err);
-                //return res.send(err);
             });
     })
 }

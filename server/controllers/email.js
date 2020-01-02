@@ -4,6 +4,7 @@ const Secure = require("../config");
 const ControllersShared = require('../controllers/shared');
 const SQLEmail = require('../models/sql-email');
 const EmailModule = require('../models/email-mod');
+const AuthController = require('../controllers/auth');
 
 const transporter = nodemailer.createTransport({
     host: Secure.Config.emailConfig.host,
@@ -46,12 +47,29 @@ exports.sendEmail = function(req, res){
     });
 }
 
+// exports.massMaling = function(req, res){
+//     const arrAccess = [3,4,5];
+//     EmailModule.saveDataSendMail(req, res, arrAccess)
+//         .then(data => {
+//             console.log('data saveDataSendMail: ', data);
+//             return EmailModule.sendDataSendMailAll(data, transporter);
+//         })
+//         .then(data => res.send(data))
+//         .catch(err => {
+//             console.log(err);
+//             return res.send(err);
+//         });
+// }
+
 exports.massMaling = function(req, res){
     const arrAccess = [3,4,5];
-    EmailModule.saveDataSendMail(req, res, arrAccess)
+    let idUser;
+    AuthController.getUsersaccountId(req.query.login, arrAccess) //перевіряємо права доступу
+        .then(data => {idUser = data; return EmailModule.createEditMessage(req, idUser)}) //створюємо/редагуємо лист
+        .then(messageID => {console.log('messageID returnel from createEditMessage: ', messageID.id); return EmailModule.saveDataSendMail(req, messageID.id, idUser)}) //зберігаємо інформацію про розсилку
         .then(data => {
             console.log('data saveDataSendMail: ', data);
-            return EmailModule.sendDataSendMailAll(data, transporter);
+            return EmailModule.sendDataSendMailAll(data, transporter); //запускаємо розсилку
         })
         .then(data => res.send(data))
         .catch(err => {
@@ -62,7 +80,8 @@ exports.massMaling = function(req, res){
 
 exports.createMessageSaveFiles = function(req, res){
     const arrAccess = [3,4,5];
-    EmailModule.createMessageSaveFiles(req, arrAccess)
+    AuthController.getUsersaccountId(req.query.login, arrAccess)
+        .then(id_user => EmailModule.createMessageSaveFiles(req, id_user))
         .then(data => {console.log('returned from createMessageSaveFiles: ', data); console.log('All done!'); return res.send(data)})
         .catch(err => {
             console.log(err);
@@ -72,7 +91,8 @@ exports.createMessageSaveFiles = function(req, res){
 
 exports.createMessageSaveMessage = function(req, res){
     const arrAccess = [3,4,5];
-    EmailModule.createEditMessage(req, arrAccess)
+    AuthController.getUsersaccountId(req.query.login, arrAccess)
+        .then(id_user => EmailModule.createEditMessage(req, id_user))
         .then(data => {console.log('createEditMessage: ', data); console.log('All done!'); return res.send(data)})
         .catch(err => {
             console.log(err);

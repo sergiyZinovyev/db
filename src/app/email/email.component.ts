@@ -86,6 +86,8 @@ export class EmailComponent implements OnInit, OnDestroy{
         // надсилаємо лист
         let get=this.server.post(this.emailForm.value, "massMaling").subscribe(data =>{
           console.log("sending data: ", data);
+          // перевіряємо права користувача, видаємо повідомлення, якщо немає прав 
+          if(data[0] && this.server.accessIsDenied(data[0].rights)) return get.unsubscribe();
           if(data){
             console.log("unsubscribe")
             return get.unsubscribe();
@@ -121,8 +123,11 @@ export class EmailComponent implements OnInit, OnDestroy{
         console.log("reqData: ", sendingData);
         let get=this.server.post(sendingData, 'saveMailFile').subscribe((data:{id, attachments, body_files}) =>{
           console.log("res data: ", data);
+          // перевіряємо права користувача, видаємо повідомлення, якщо немає прав 
+          if(data[0] && this.server.accessIsDenied(data[0].rights)) return get.unsubscribe();
           let newLink = `${this.server.apiUrl}/img/${file.name}?path=email_files/${data.id}/${folder}`;
           this.mail.setMessageID(data.id);
+          this.emailForm.patchValue({messageID: data.id});
           let newMessage = this.replaceSrc(this.emailForm.get('message').value, file.name, newLink);
           this.emailForm.patchValue({message: newMessage});
           this[fileArr].push({
@@ -151,16 +156,19 @@ export class EmailComponent implements OnInit, OnDestroy{
     let file = this.module.getFile(id);
     this.module.getDataFile(file, 'readAsText').then(
       data => {
-        //this.htmlTextData = data;
-        
-        return this.emailForm.patchValue({message: data});
+        let newMessage = data;
+        if(this.bodyFilesArray.length > 0){
+          this.bodyFilesArray.forEach(element => {
+            newMessage = this.replaceSrc(newMessage, element.filename, element.href);
+          });
+        }
+        return this.emailForm.patchValue({message: newMessage});
       },
       error => {
         alert("Rejected: " + error); // error - аргумент reject    
       }
     ).then(()=> {
-      console.log('message: ', this.emailForm.get('message').value);
-      //this.htmlTextData = this.emailForm.get('message').value;
+      console.log('messageID: ', this.emailForm.get('messageID').value);
     })
   }
 
@@ -178,9 +186,12 @@ export class EmailComponent implements OnInit, OnDestroy{
     console.log("sendingData: ", sendingData);
     let get=this.server.post(sendingData, 'saveMessage').subscribe((data:{id}) =>{
       console.log("res data: ", data);
+      // перевіряємо права користувача, видаємо повідомлення, якщо немає прав 
+      if(data[0] && this.server.accessIsDenied(data[0].rights)) return get.unsubscribe();
       if(data){
         this.mail.setMessageID(data.id);
         this.emailForm.patchValue({messageID: data.id});
+        
         console.log("unsubscribe")
         return get.unsubscribe();
       }
@@ -188,7 +199,7 @@ export class EmailComponent implements OnInit, OnDestroy{
   }
 
   replaceSrc(str: string, fileName: string, newSrc: string):string{
-    let pattern = `["'][^"']*${fileName}[^"']*["']`;
+    const pattern = `["'][^"']*${fileName}[^"']*["']`;
     let VRegExp = new RegExp(pattern, 'g');
     return str.replace(VRegExp, `"${newSrc}"`);
   }

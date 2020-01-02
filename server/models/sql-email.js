@@ -55,6 +55,14 @@ exports.createMailingList = function(dataMailingList, cb){
   })
 }
 
+//редагування запису в mailing_list
+exports.editMailingList = function(dataMailingList, fieldName, cb){
+  let sql = `UPDATE mailing_list SET ${fieldName}=? WHERE id=?`;
+  db.get().query(sql, dataMailingList, function(err, data) {
+    cb(err, data)
+  })
+}
+
 //створення n-записів у таблиці visitors_mailing_lists
 // dataVisitors - запис у форматі: '(data1, data1, ...), (data2, data2, ...), (data3, data3, ...), ...' 
 exports.createGroupVisitorsMailingLists = function(dataVisitors, cb){

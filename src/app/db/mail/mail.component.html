@@ -17,10 +17,35 @@
     </div>  
 </div>
 
-<button 
-    mat-icon-button 
-    matTooltip="Створити лист" 
-    aria-label="Example icon-button with a heart icon" 
-    (click)='newElement("isAddingItemSendEmail")'>
-    <mat-icon>email</mat-icon>
-</button>
+<mat-drawer-container class="example-container" hasBackdrop="false">
+    <mat-drawer #drawer mode="side">I'm a drawer</mat-drawer>
+    <mat-drawer-content>
+      <!-- <mat-form-field>
+        <mat-label>Sidenav mode</mat-label>
+        <mat-select #mode value="side">
+          <mat-option value="side">Side</mat-option>
+          <mat-option value="over">Over</mat-option>
+          <mat-option value="push">Push</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Has backdrop</mat-label>
+        <mat-select #hasBackdrop>
+          <mat-option>Unset</mat-option>
+          <mat-option [value]="true">True</mat-option>
+          <mat-option [value]="false">False</mat-option>
+        </mat-select>
+      </mat-form-field> -->
+      <button mat-raised-button (click)="drawer.toggle()">Toggle drawer</button>
+      <button 
+        mat-icon-button 
+        matTooltip="Створити лист" 
+        aria-label="Example icon-button with a heart icon" 
+        (click)='newElement("isAddingItemSendEmail")'>
+        <mat-icon>email</mat-icon>
+    </button>
+    </mat-drawer-content> 
+  </mat-drawer-container>
+  
+
+
