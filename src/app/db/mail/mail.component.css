@@ -24,34 +24,47 @@
 
 .add-item-element{
     display: flex;
-    /* background-color:  rgb(197, 220, 255); */ 
-    /* margin: 30px; */
     padding: 25px;
     border-radius: 10px;
     /* z-index: 200; */ 
 }
 
 .panel-add-item-element{
-    border-radius: 10px 10px 0px 0px;
-    /* height: 40px; */
-    background-color: rgb(54, 133, 252);
+    background-color: rgb(95, 159, 255);
+    width: 100%;
+    color: white;
+    height: 40px;
 }
 
 .header-panel-add-item-element{
-    color: white;
-    padding-left: 20px;
+    width: 93%;
+    text-align: center;
+    font-weight: bold;
 }
 
 .example-container {
     width: 100%;
     height: 1024px;
-    margin: 0px;
-    /* border: 1px solid #555; */
-  }
+    background-color:  rgb(224, 236, 255);
+}
+
+.example-sidenav{
+    /* padding: 10px;   */
+    width: 350px;
+}
+
+.conteiner-email{
+    width: 100%;
+}
+
+.email{
+    margin: 10px;
+    /* width: 100%; */
+    /* box-sizing: content-box */
+}
   
-  mat-drawer-content {
-    padding: 12px;
+mat-sidenav-content {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-  }
+}

@@ -1,0 +1,44 @@
+.header{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 12px;
+    font-weight: bold;
+    color:  rgb(139, 139, 139);
+}
+.mat-divider-header{
+    border-top-width: 2px;
+    /* border-color: rgb(85, 85, 85); */
+}
+.list{
+    /* display: flex; */
+    border-bottom: darkgray 1px solid;
+    font-size: 12px;
+    padding-bottom: 6px;
+    padding-top: 6px;
+}
+
+.list:hover{
+    background-color:  rgb(224, 236, 255);
+    border-left:rgb(95, 159, 255) 3px solid;
+}
+
+.name{
+    /* overflow: hidden; */
+    padding-right: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+    font-size: 14px;
+    width: 70%;
+    /* text-overflow: ellipsis; */
+}
+.date{
+    margin-right: 2px;
+    width: 25%;
+}
+.del{
+    width: 5%;
+    margin-right: 6px;
+}
+.sender-name{
+    color:  rgb(139, 139, 139);
+}

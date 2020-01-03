@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy} from '@angular/core';
 import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms';
-import { ServerService } from '../shared/server.service';
-import { ModulesService } from '../shared/modules.service';
-import { MailService } from '../shared/mail.service';
+import { ServerService } from '../../../shared/server.service';
+import { ModulesService } from '../../../shared/modules.service';
+import { MailService } from '../../../shared/mail.service';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { DomSanitizer, SafeResourceUrl, SafeUrl, SafeHtml} from '@angular/platform-browser';

@@ -17,35 +17,62 @@
     </div>  
 </div>
 
-<mat-drawer-container class="example-container" hasBackdrop="false">
-    <mat-drawer #drawer mode="side">I'm a drawer</mat-drawer>
-    <mat-drawer-content>
-      <!-- <mat-form-field>
-        <mat-label>Sidenav mode</mat-label>
-        <mat-select #mode value="side">
-          <mat-option value="side">Side</mat-option>
-          <mat-option value="over">Over</mat-option>
-          <mat-option value="push">Push</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Has backdrop</mat-label>
-        <mat-select #hasBackdrop>
-          <mat-option>Unset</mat-option>
-          <mat-option [value]="true">True</mat-option>
-          <mat-option [value]="false">False</mat-option>
-        </mat-select>
-      </mat-form-field> -->
-      <button mat-raised-button (click)="drawer.toggle()">Toggle drawer</button>
-      <button 
-        mat-icon-button 
-        matTooltip="Створити лист" 
-        aria-label="Example icon-button with a heart icon" 
-        (click)='newElement("isAddingItemSendEmail")'>
-        <mat-icon>email</mat-icon>
-    </button>
-    </mat-drawer-content> 
-  </mat-drawer-container>
+<mat-sidenav-container class="example-container" hasBackdrop="false">
+    <mat-sidenav 
+        #drawer1
+        opened
+        class="example-sidenav" 
+        mode="side">
+        <div class="panel-add-item-element d-flex justify-content-between align-items-center sticky-top">
+            <div class="header-panel-add-item-element">Список розсилок</div>
+        </div>
+        <div class="m-1 mailinglist">
+            <app-mailinglist></app-mailinglist>
+        </div>
+    </mat-sidenav
+    >
+    <mat-sidenav-content>
+
+        <mat-sidenav-container class="example-container" hasBackdrop="false">
+            <mat-sidenav 
+                #drawer2
+                opened
+                class="example-sidenav" 
+                mode="side">
+                <div class="panel-add-item-element d-flex justify-content-between align-items-center sticky-top">
+                    <div class="header-panel-add-item-element">Розсилка</div>
+                </div>
+            </mat-sidenav>
+            <mat-sidenav-content>
+                <div class="panel-add-item-element d-flex justify-content-between align-items-center sticky-top">
+                    <div>
+                        <button 
+                            mat-icon-button 
+                            matTooltip="Список розсилок" 
+                            aria-label="Example icon-button with a heart icon" 
+                            (click)='drawer1.toggle()'>
+                            <mat-icon>list_alt</mat-icon>
+                        </button>
+                        <button 
+                            mat-icon-button 
+                            matTooltip="Розсилка" 
+                            aria-label="Example icon-button with a heart icon" 
+                            (click)='drawer2.toggle()'>
+                            <mat-icon>view_list</mat-icon>
+                        </button>
+                    </div>
+                    <div class="header-panel-add-item-element">Новий лист</div>
+                </div>
+                <div class="conteiner-email">
+                    <div class="email">
+                        <app-email></app-email>
+                    </div>
+                </div>
+            </mat-sidenav-content> 
+        </mat-sidenav-container>
+
+    </mat-sidenav-content> 
+</mat-sidenav-container>
   
 
 
