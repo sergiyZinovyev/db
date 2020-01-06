@@ -47,20 +47,6 @@ exports.sendEmail = function(req, res){
     });
 }
 
-// exports.massMaling = function(req, res){
-//     const arrAccess = [3,4,5];
-//     EmailModule.saveDataSendMail(req, res, arrAccess)
-//         .then(data => {
-//             console.log('data saveDataSendMail: ', data);
-//             return EmailModule.sendDataSendMailAll(data, transporter);
-//         })
-//         .then(data => res.send(data))
-//         .catch(err => {
-//             console.log(err);
-//             return res.send(err);
-//         });
-// }
-
 exports.massMaling = function(req, res){
     const arrAccess = [3,4,5];
     let idUser;
@@ -98,6 +84,44 @@ exports.createMessageSaveMessage = function(req, res){
             console.log(err);
             return res.send(err);
         });
+}
+
+//отримання масиву всіх розсилок
+exports.getMailingList = function(req, res) {
+    SQLEmail.getMailingList(function(err, doc) {
+        if (err) {
+            console.log(err);
+            return res.send(err);
+        }
+        //console.log('ArrDataForMailing: ', doc);
+        return res.send(doc);
+    });
+}
+
+//отримання вказаної розсилки
+exports.getDataMailing = function(req, res) {
+    SQLEmail.getMailing(req.query.id, function(err, doc) {
+        if (err) {
+            console.log(err);
+            return res.send(err);
+        }
+        // console.log('req.query.id for getDataMailing: ', req.query.id);
+        // console.log('getDataMailing: ', doc);
+        return res.send(doc);
+    });
+}
+
+//отримання обраного листа з messages
+exports.getFullMessage = function(req, res) {
+    SQLEmail.getFullMessage(req.query.id, function(err, doc) {
+        if (err) {
+            console.log(err);
+            return res.send(err);
+        }
+        // console.log('req.query.id for getAllMessage: ', req.query.id);
+        // console.log('getAllMessage: ', doc);
+        return res.send(doc);
+    });
 }
 
 

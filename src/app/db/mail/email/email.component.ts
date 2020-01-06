@@ -4,32 +4,16 @@ import { ServerService } from '../../../shared/server.service';
 import { ModulesService } from '../../../shared/modules.service';
 import { MailService } from '../../../shared/mail.service';
 import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { DomSanitizer, SafeResourceUrl, SafeUrl, SafeHtml} from '@angular/platform-browser';
-
-export interface IUser {
-  id?: number;
-  regnum: number; 
-  is_send?: string; 
-  mail_list_id?: number; 
-  date?: string;
-  email: string;
-  namepovne: string;
-}
-export interface files {filename; path; size; href}
-
-// class SendedFile {
-//   constructor(name) {
-//     this.name = name;
-//   }
-//   name
-// }
+import {IUser, IMailig, IMessage, Ifiles} from '../mailInterface';
 
 @Component({
   selector: 'app-email',
   templateUrl: './email.component.html',
   styleUrls: ['./email.component.css']
 })
+
 export class EmailComponent implements OnInit, OnDestroy{
 
   constructor(
@@ -40,11 +24,11 @@ export class EmailComponent implements OnInit, OnDestroy{
     private sanitizer: DomSanitizer, 
   ) { }
 
-  attachmentsArray: files[] = [];
-  bodyFilesArray: files[]= [];
-
-  // newFile = new SendedFile('someFile');
-  //href= `https://visitors.galexpo.com.ua:7002/img/001.jpg?path=email_files/181/attachments`
+  subMessage: Subscription;
+  subSendList: Subscription;
+  htmlTextData: SafeHtml;
+  attachmentsArray: Ifiles[] = [];
+  bodyFilesArray: Ifiles[]= [];
 
   emailForm = this.fb.group({
     to: ['', [Validators.required]],
@@ -57,20 +41,28 @@ export class EmailComponent implements OnInit, OnDestroy{
     messageID: [this.mail.messageID, []]
   })
 
-  subSendList;
-  htmlTextData: SafeHtml;
-
-
-
   ngOnInit() {
-    this.subSendList = this.mail.getCurrentSendList().pipe(
+    this.subSendList = this.mail.getCurrentSendList.pipe(
       map((vl: any, i) => {
         //console.log('Index', i);
         return Array.from(vl)
       })
     ).subscribe((data: IUser[]) =>{
+      //console.log('data from getCurrentSendList', data);
       this.emailForm.patchValue({to: data.map(el => el.email).join('; ')}); 
       this.emailForm.patchValue({sendList: data});
+    })
+
+    this.subMessage = this.mail.getMessage.subscribe((data: IMessage)  => {
+      //console.log('data from getMessage: ', data);
+      this.emailForm.patchValue({subject: data.subject});
+      this.emailForm.patchValue({attach: data.attachments});
+      this.emailForm.patchValue({body_files: data.body_files});
+      this.emailForm.patchValue({message: data.message});
+      this.emailForm.patchValue({messageID: data.id});
+
+      this.bodyFilesArray = this.getFileArrFromServer(data.body_files);
+      this.attachmentsArray = this.getFileArrFromServer(data.attachments);
     })
 
     this.emailForm.get('message').valueChanges.subscribe((v: string) => {
@@ -172,7 +164,7 @@ export class EmailComponent implements OnInit, OnDestroy{
     })
   }
 
-  checkFile(fileName: string, fileArr: files[]): boolean{
+  checkFile(fileName: string, fileArr: Ifiles[]): boolean{
     if(!this.module.findOdjInArrObj(fileArr, 'filename', fileName)) {
       return true
     }
@@ -204,8 +196,31 @@ export class EmailComponent implements OnInit, OnDestroy{
     return str.replace(VRegExp, `"${newSrc}"`);
   }
 
+  getFileArrFromServer(filesString: string): Ifiles[]{
+    //console.log('filesString1: ', filesString);
+    let newFile: Ifiles[] = [];
+    let newObj: Ifiles;
+    if(!filesString) return newFile;
+    filesString.split('; ').forEach(element => {
+      let linkArr = element.split('/');
+      let file = linkArr.pop()
+      newObj = {
+        filename: file,
+        path: '',
+        size: '',
+        href: `${this.server.apiUrl}/img/${file}?path=${linkArr.slice(-3).join('/')}`
+      }
+      newFile.push(newObj)
+    });
+    //console.log('getFileArrFromServer: ', newFile);
+    return newFile
+  }
+
+
+
   ngOnDestroy(){
     this.subSendList.unsubscribe();
+    this.subMessage.unsubscribe();
   }
 
 }

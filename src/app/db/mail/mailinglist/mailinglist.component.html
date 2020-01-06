@@ -1,4 +1,4 @@
-<div class="header">
+<div class="header sticky">
     <div class="d-flex justify-content-between px-2">
         <div>Назва</div>
         <div>Дата</div>
@@ -6,35 +6,25 @@
     <mat-divider class="mat-divider-header"></mat-divider>
 </div>
 
-<div class="d-flex list align-items-center" (click)='getMessage()'>
-    <div class="name">
-        <div class="mailing-name text-truncate">Some mailing name & date big name example</div>
-        <div class="sender-name">Sergiy</div>
+<ng-container *ngFor='let mailing of mailingList; let i = index'>
+    <div class="d-flex list align-items-center" >
+        <div class="name" (click)='getMessage(mailing.id)' [matTooltip]="mailing.name">
+            <div class="mailing-name text-truncate">{{mailing.name}}</div>
+            <div class="sender-name">{{mailing.realname}}</div>
+        </div>
+        
+        <div 
+            class="date text-truncate" 
+            [ngClass]="{'no-send': !mailing.date_end?true:false}" 
+            [matTooltip]="mailing.date_end">
+            <ng-container *ngIf='mailing.date_end'>{{mailing.date_end | date: "dd.MM.yyyy"}}</ng-container>
+            <ng-container *ngIf='!mailing.date_end'>не надіслано</ng-container>
+        </div>
+        <div
+            class="del" 
+            (click)='delMessage()'
+            matTooltip="Видалити розсилку">
+            <mat-icon>clear</mat-icon>
+        </div>
     </div>
-    <div class="date text-truncate ">03.01.2020</div>
-    <div class="del">
-        <mat-icon>clear</mat-icon>
-    </div>
-</div>
-
-<div class="d-flex list align-items-center" (click)='getMessage()'>
-    <div class="name">
-        <div class="mailing-name text-truncate">Some mailing name & date big name example</div>
-        <div class="sender-name">Sergiy</div>
-    </div>
-    <div class="date text-truncate ">03.01.2020</div>
-    <div class="del">
-        <mat-icon>clear</mat-icon>
-    </div>
-</div>
-
-<div class="d-flex list align-items-center" (click)='getMessage()'>
-    <div class="name">
-        <div class="mailing-name text-truncate">Some mailing name & date big name example</div>
-        <div class="sender-name">Sergiy</div>
-    </div>
-    <div class="date text-truncate ">03.01.2020</div>
-    <div class="del">
-        <mat-icon>clear</mat-icon>
-    </div>
-</div>
+</ng-container> 

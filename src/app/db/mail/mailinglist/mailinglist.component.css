@@ -1,6 +1,6 @@
 .header{
-    margin-top: 10px;
-    margin-bottom: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     font-size: 12px;
     font-weight: bold;
     color:  rgb(139, 139, 139);
@@ -15,20 +15,27 @@
     font-size: 12px;
     padding-bottom: 6px;
     padding-top: 6px;
+    cursor: default;
 }
 
 .list:hover{
     background-color:  rgb(224, 236, 255);
-    border-left:rgb(95, 159, 255) 3px solid;
+    border-left:rgb(95, 159, 255) 4px solid;
+    /* font-weight: bold; */
 }
 
+.list:hover .del{
+    visibility: visible;
+} 
+
 .name{
-    /* overflow: hidden; */
+    /* overflow: hidden; */  
     padding-right: 5px;
     margin-left: 10px;
     margin-right: 10px;
     font-size: 14px;
     width: 70%;
+    cursor: pointer;
     /* text-overflow: ellipsis; */
 }
 .date{
@@ -36,9 +43,28 @@
     width: 25%;
 }
 .del{
+    visibility: hidden;
     width: 5%;
     margin-right: 6px;
+    color: rgb(255, 0, 0);
+    cursor: pointer;
 }
 .sender-name{
     color:  rgb(139, 139, 139);
+}
+
+.sticky {
+    position: sticky;
+    top: 40px;
+    left: 0;
+    bottom: 0px;
+    right: 0;
+    background-color: white;
+    z-index: 102;
+}
+ 
+.no-send{
+    color: red;
+    font-size: 11px;
+    font-weight: bold;
 }

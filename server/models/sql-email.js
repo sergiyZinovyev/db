@@ -39,6 +39,16 @@ exports.getDataMessage = function(id, cb){
   })
 }
 
+//отримання обраного листа з messages
+exports.getFullMessage = function(id, cb){
+  let sql = `SELECT * FROM messages WHERE id=${id}`;
+  db.get().query(sql, function(err, data) {
+    cb(err, data)
+  })
+}
+
+//--------------------------------------------------------------------------------------------------------
+
 //перевірка чи була розсилка по заданому messagesID
 exports.isMailing = function(id, cb){
   let sql = `SELECT id FROM mailing_list WHERE message_id=${id} AND date_start IS NOT NULL`;
@@ -62,6 +72,29 @@ exports.editMailingList = function(dataMailingList, fieldName, cb){
     cb(err, data)
   })
 }
+
+//отримати всі записи з mailing_list
+exports.getMailingList = function(cb){
+  let sql = `SELECT Mailing.id AS id, name, user_id, Users.realname AS realname, date_end FROM 
+      (SELECT id, name, user_id, date_end FROM mailing_list) AS Mailing
+    LEFT OUTER JOIN
+      (SELECT id, realname FROM usersaccount) AS Users
+    ON Mailing.user_id = Users.id
+  ORDER BY date_end DESC`;
+  db.get().query(sql, function(err, data) {
+    cb(err, data)
+  })
+}
+
+//отримання вказаної розсилки з mailing_list
+exports.getMailing = function(id, cb){
+  let sql = `SELECT * FROM mailing_list WHERE id = ${id}`;
+  db.get().query(sql, function(err, data) {
+    cb(err, data)
+  })
+}
+
+//--------------------------------------------------------------------------------------------------------
 
 //створення n-записів у таблиці visitors_mailing_lists
 // dataVisitors - запис у форматі: '(data1, data1, ...), (data2, data2, ...), (data3, data3, ...), ...' 

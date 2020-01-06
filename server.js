@@ -125,6 +125,15 @@ app.post("/saveMailFile", urlencodedParser, authController.checkAuth, emailContr
 //збереження/редагування листа
 app.post("/saveMessage", urlencodedParser, authController.checkAuth, emailController.createMessageSaveMessage);
 
+//отримання масиву всіх розсилок
+app.get("/getMailingList", authController.checkAuth, emailController.getMailingList);
+
+//отримання вказаної розсилки
+app.get("/getDataMailing", authController.checkAuth, emailController.getDataMailing);
+
+//отримання отримання обраного листа
+app.get("/getCurrentMessage", authController.checkAuth, emailController.getFullMessage);
+
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
