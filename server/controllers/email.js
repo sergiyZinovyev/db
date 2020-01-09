@@ -51,8 +51,18 @@ exports.massMaling = function(req, res){
     const arrAccess = [3,4,5];
     let idUser;
     AuthController.getUsersaccountId(req.query.login, arrAccess) //перевіряємо права доступу
-        .then(data => {idUser = data; return EmailModule.createEditMessage(req, idUser)}) //створюємо/редагуємо лист
-        .then(messageID => {console.log('messageID returnel from createEditMessage: ', messageID.id); return EmailModule.saveDataSendMail(req, messageID.id, idUser)}) //зберігаємо інформацію про розсилку
+        .then(data => { //перевіряємо чи відбулися зміни та створюємо/редагуємо лист або передаємо далі messageID
+            let message = {};
+            idUser = data;
+            if(req.body.changed) {
+                return EmailModule.createEditMessage(req, idUser)
+            }
+            else { //передаємо далі messageID у вигляді властивості обєкту message, щоб повязати з наступним методом
+                message.id = req.body.messageID;
+                return message
+            }
+        }) 
+        .then(messageID => {console.log('messageID returned from createEditMessage: ', messageID.id); return EmailModule.saveDataSendMail(req, messageID.id, idUser)}) //зберігаємо інформацію про розсилку
         .then(data => {
             console.log('data saveDataSendMail: ', data);
             return EmailModule.sendDataSendMailAll(data, transporter); //запускаємо розсилку

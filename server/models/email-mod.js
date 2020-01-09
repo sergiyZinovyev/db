@@ -36,10 +36,61 @@ function createFile(path, nameFile, contentFile) {
 }
 
 // запис масиву файлів у обрану директорію
+// path - місце збереження на сервері
+// arrFile - масив обєктів {filename: імя файлу, path: вміст файлу в base64Data}
 function createFiles(arrFile, path) {
     if(!arrFile) return Promise.resolve([]);
     return Promise.all(arrFile.map(function(element){return createFile(path, element.filename, element.path)}));
 }
+
+//--------------------------------------------------------------------------------------------------------------------------
+
+// створити масив з посиланнями на існуючі файли в папці (id: "назва папки", dist: "назва підпапки")
+function createArrOffilesFromPath(id, dist) {
+    const path = require('path');
+    return new Promise((resolve, reject) => {
+        let myPath = `server/users_data/email_files/${id}/${dist}`;
+        //if (!fs.readdirSync(myPath)){return resolve([])}
+        resolve (fs.readdirSync(myPath).map(fileName => {
+            return path.join(myPath, fileName)
+        }))
+        
+    })
+}
+
+// копіює файл з src в dist
+function copyFile(src, dist){
+    return new Promise((resolve, reject) => {
+        fs.copyFile(src, dist, (err)=>{
+            if (err) reject(err)
+            resolve (`${dist}`)
+        })
+    })
+}
+
+// копіює файл з масиву arrFile в dist
+function copyFiles(arrFile, dist){
+    const path = require('path');
+    if(!arrFile) return Promise.resolve([]);
+    return Promise.all(arrFile.map(function(element){return copyFile(element, `${dist}/${path.basename(element)}`)}));
+}
+
+// копіює файли з вказаної підпапки subDir в аналогічну підпапку в іншій директорії
+// srcID - директорія з якої копіюємо файли
+// distID - директорія куди копіюємо файли
+function copyFilesFromDirToDir(srcID, distID, subDir){
+    return new Promise((resolve, reject) => {
+        createArrOffilesFromPath(srcID, subDir)
+            .then(arrFile => copyFiles(arrFile, `server/users_data/email_files/${distID}/${subDir}`))
+            .then(result => resolve(result))
+            .catch(err => {
+                console.log(err);
+                reject(err);
+            });
+    })
+}
+
+//--------------------------------------------------------------------------------------------------------------------------
 
 // зберігаємо лист в SQL (використовується коли є всі параметри)
 function saveMessage(params, attachments, body_files, id_user) {
@@ -356,17 +407,32 @@ function editMessage(params, id_user){
 function createNewMessageForSaveFiles(req, id_user){
     return new Promise((resolve, reject) => {
         let messageID;
+        let dirArr;
         saveMessage({subject: '', message: ''}, [], [], id_user) //створюємо новий лист
             .then(doc => {   //створюємо необхідні папки
                 console.log('SQLdoc Id: ', doc.insertId);
                 messageID = doc.insertId;
                 return Promise.all(['attachments', 'body_files'].map(element => createDir(doc.insertId, element)))
             })
-            .then(dirArr => {    //зберігаємо файли
-                console.log('createDir data: ', dirArr); 
+            .then(data => { //копіюємо файли з старого листа
+                dirArr = data;
+                if(req.body.messageID!='new'){
+                    return Promise.all(['attachments', 'body_files'].map(element => copyFilesFromDirToDir(req.body.messageID, messageID, element)))
+                        .then(newFilesArr => {//редагуємо лист (дописуємо дані про файли)
+                            console.log('copyFilesFromDirToDir: ', newFilesArr);
+                            return addNewFilesSQL(messageID, newFilesArr)
+                        }) 
+                }
+                else return []
+            })
+            .then(data => {    //зберігаємо файли
                 return Promise.all(dirArr.map(element => {
-                    if(element.includes('attachments')){return createFiles(req.body.attach, element)}
-                    else if(element.includes('body_files')){return createFiles(req.body.body_files, element)}
+                    if(element.includes('attachments')){
+                        return createFiles(req.body.attach, element) 
+                    }
+                    else if(element.includes('body_files')){
+                        return createFiles(req.body.body_files, element)
+                    }
                 }))
             })
             .then(newFilesArr => addNewFilesSQL(messageID, newFilesArr)) //редагуємо лист (дописуємо дані про файли)
@@ -391,6 +457,17 @@ function createNewMessage(req, id_user){
                 console.log('messageID: ', doc);
                 messageID = doc;
                 return Promise.all(['attachments', 'body_files'].map(element => createDir(doc, element)))
+            })
+            .then(data => { //копіюємо файли з старого листа
+                dirArr = data;
+                if(req.body.messageID!='new'){
+                    return Promise.all(['attachments', 'body_files'].map(element => copyFilesFromDirToDir(req.body.messageID, messageID, element)))
+                        .then(newFilesArr => {//редагуємо лист (дописуємо дані про файли)
+                            console.log('copyFilesFromDirToDir: ', newFilesArr);
+                            return addNewFilesSQL(messageID, newFilesArr)
+                        }) 
+                }
+                else return []
             })
             .then(() => resolve(messageID))
             .catch(err => {
@@ -553,7 +630,7 @@ exports.createMessageSaveFiles = function(req, id_user){
             if(req.body.messageID == 'new'){return createNewMessageForSaveFiles(req, id_user)} // створюємо новий лист та зберігаємо тільки файли
             else {
                 return isMailing(req.body.messageID).then(isMailingState => {
-                    if(isMailingState){return createNewMessageForSaveFiles(req, id_user)} // створюємо новий лист та зберігаємо тільки файли
+                    if (isMailingState) { return createNewMessageForSaveFiles(req, id_user) } // створюємо новий лист та зберігаємо тільки файли // робимо копію листа // додаємо нові файли
                     else return editMessageAddNewFiles(req.body.messageID, req.body.attach, req.body.body_files) // редагуємо лист додаємо нові файли
                 })
             }

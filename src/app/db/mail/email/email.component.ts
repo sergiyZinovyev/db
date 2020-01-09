@@ -38,10 +38,12 @@ export class EmailComponent implements OnInit, OnDestroy{
     attach: ['', []],
     body_files: ['', []],
     message: ['', []],
-    messageID: [this.mail.messageID, []]
+    messageID: [this.mail.messageID, []],
+    changed: [false, [Validators.required]]
   })
 
   ngOnInit() {
+    console.log('new message is open')
     this.subSendList = this.mail.getCurrentSendList.pipe(
       map((vl: any, i) => {
         //console.log('Index', i);
@@ -60,6 +62,7 @@ export class EmailComponent implements OnInit, OnDestroy{
       this.emailForm.patchValue({body_files: data.body_files});
       this.emailForm.patchValue({message: data.message});
       this.emailForm.patchValue({messageID: data.id});
+      this.emailForm.patchValue({changed: false}); //позначаємо лист як не змінений
 
       this.bodyFilesArray = this.getFileArrFromServer(data.body_files);
       this.attachmentsArray = this.getFileArrFromServer(data.attachments);
@@ -72,6 +75,8 @@ export class EmailComponent implements OnInit, OnDestroy{
 
   send(){
     if(this.emailForm.valid){
+      if(this.emailForm.get('message').dirty || this.emailForm.get('subject').dirty) this.emailForm.patchValue({changed: true}); //позначаємо лист як змінений
+      //return console.log('emailForm: ',this.emailForm.value);
       let isEmail = confirm('Ви впевнені, що хочете розпочати масову розсилку?');
       if(isEmail){
         console.log('emailForm: ',this.emailForm.value);
@@ -96,10 +101,11 @@ export class EmailComponent implements OnInit, OnDestroy{
   addFile(id, fileArr: string){
     let file = this.module.getFile(id);
     if(!this.checkFile(file.name, this[fileArr])){ return alert(`Файл з іменем ${file.name} вже існує`)}
+    this.emailForm.patchValue({changed: true}); //позначаємо лист як змінений
     let sendingData = {
       attach: [],
       body_files: [],
-      messageID: this.mail.messageID
+      messageID: this.emailForm.get('messageID').value
     }
     let folder: 'attachments' | 'body_files';
     this.module.getDataFile(file, 'readAsDataURL').then(
@@ -148,6 +154,7 @@ export class EmailComponent implements OnInit, OnDestroy{
     let file = this.module.getFile(id);
     this.module.getDataFile(file, 'readAsText').then(
       data => {
+        this.emailForm.patchValue({changed: true}); //позначаємо лист як змінений
         let newMessage = data;
         if(this.bodyFilesArray.length > 0){
           this.bodyFilesArray.forEach(element => {
@@ -219,6 +226,7 @@ export class EmailComponent implements OnInit, OnDestroy{
 
 
   ngOnDestroy(){
+    console.log('new message will be closed');
     this.subSendList.unsubscribe();
     this.subMessage.unsubscribe();
   }

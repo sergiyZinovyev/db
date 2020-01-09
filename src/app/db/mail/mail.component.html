@@ -1,5 +1,5 @@
 <!-- форма для створення листа -->
-<div class="add-item" *ngIf="isAddingItemSendEmail">
+<!-- <div class="add-item" *ngIf="isAddingItemSendEmail">
     <div class="back-add-item-element overflow-auto w-75">
         <div class="panel-add-item-element d-flex justify-content-between align-items-center sticky-top">
             <div class="header-panel-add-item-element"><strong>Надіслати лист</strong></div>
@@ -15,7 +15,7 @@
             <app-email></app-email> 
         </div> 
     </div>  
-</div>
+</div> -->
 
 <mat-sidenav-container class="example-container" hasBackdrop="false">
     <mat-sidenav 
@@ -60,11 +60,18 @@
                             (click)='drawer2.toggle()'>
                             <mat-icon>view_list</mat-icon>
                         </button>
+                        <button 
+                            mat-icon-button 
+                            matTooltip="Нова розсилка" 
+                            aria-label="Example icon-button with a heart icon" 
+                            (click)='newMailing()'>
+                            <mat-icon>mail</mat-icon>
+                        </button>
                     </div>
-                    <div class="header-panel-add-item-element">Новий лист</div>
+                    <div class="message-name">{{nameMailing}}</div>
                 </div>
                 <div class="conteiner-email">
-                    <div class="email">
+                    <div class="email" *ngIf="isAddingItemSendEmail">
                         <app-email></app-email>
                     </div>
                 </div>

@@ -54,21 +54,24 @@
             <div class="col-auto d-flex align-items-center"><div class="text-right">Вкладення:</div></div>
             <div class="col d-flex align-items-center">
                 <ng-container *ngFor='let attachment of attachmentsArray; let i = index'>
-                    <div class="card-file card-file-1 d-flex justify-content-between">
-                        <a [href]="attachment.href">
-                            <div class="file-info">
-                                <div class="file-name text-truncate"><i>{{attachment.filename}}</i></div>
-                                <div class="file-size">{{(attachment.size/1024).toFixed(2)}} KB</div>
-                            </div>
-                        </a>
-                        <button 
-                            mat-icon-button 
-                            matTooltip="Видалити" 
-                            aria-label="Example icon-button with a heart icon"
-                            (click)='deleteFileFromMessage(i, "attachmentsArray")'>
-                            <mat-icon>close</mat-icon>
-                        </button>
-                    </div>
+                    <ng-container *ngIf='attachment.filename'>
+                        <div class="card-file card-file-1 d-flex justify-content-between">
+                            <a [href]="attachment.href">
+                                <div class="file-info">
+                                    <div class="file-name text-truncate"><i>{{attachment.filename}}</i></div>
+                                    <div *ngIf='!attachment.size' class="file-size">__ KB</div>
+                                    <div *ngIf='attachment.size' class="file-size">{{(attachment.size/1024).toFixed(2)}} KB</div>
+                                </div>
+                            </a>
+                            <button 
+                                mat-icon-button 
+                                matTooltip="Видалити" 
+                                aria-label="Example icon-button with a heart icon"
+                                (click)='deleteFileFromMessage(i, "attachmentsArray")'>
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        </div>
+                    </ng-container>
                 </ng-container>
             </div>
         </div> 
@@ -84,6 +87,7 @@
                 </div>
             </div>
         </div>
+        <!-- <input formControlName="changed">  -->
     </form>
     <div class="d-flex">
         <input
@@ -126,23 +130,25 @@
 
         <mat-menu #menu_files="matMenu" xPosition="after" yPosition="below">
             <ng-container *ngFor='let attachment of bodyFilesArray; let i = index'>
-                <a #link class='invisible' [href]="attachment.href"></a>
-                <div class="d-flex justify-content-between file-info">
-                    <div class="d-flex justify-content-start">
-                        <button
-                            mat-button
-                            (click)='link.click()'>
-                            {{attachment.filename}}
+                <ng-container *ngIf='attachment.filename'>
+                    <a #link class='invisible' [href]="attachment.href"></a>
+                    <div class="d-flex justify-content-between file-info">
+                        <div class="d-flex justify-content-start">
+                            <button
+                                mat-button
+                                (click)='link.click()'>
+                                {{attachment.filename}}
+                            </button>
+                        </div>
+                        <button 
+                            mat-icon-button 
+                            matTooltip="Видалити" 
+                            aria-label="Example icon-button with a heart icon"
+                            (click)='deleteFileFromMessage(i, "bodyFilesArray")'>
+                            <mat-icon color="primary">delete_forever</mat-icon>
                         </button>
                     </div>
-                    <button 
-                        mat-icon-button 
-                        matTooltip="Видалити" 
-                        aria-label="Example icon-button with a heart icon"
-                        (click)='deleteFileFromMessage(i, "bodyFilesArray")'>
-                        <mat-icon color="primary">delete_forever</mat-icon>
-                    </button>
-                </div>
+                </ng-container>
             </ng-container>
         </mat-menu>
  

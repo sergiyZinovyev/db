@@ -59,7 +59,10 @@ export class MailinglistComponent implements OnInit {
   }
 
   getMessage(id: number): void{
-    this.mail.setCurrentMailing(id);
+    this.mail.setIsAddingItemSendEmail(false);
+    setTimeout(() => {
+      this.mail.setCurrentMailing(id);
+    });    
   }
 
   delMessage(){

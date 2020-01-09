@@ -37,7 +37,13 @@
 }
 
 .header-panel-add-item-element{
-    width: 93%;
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+}
+
+.message-name{
+    width: 90%;
     text-align: center;
     font-weight: bold;
 }
