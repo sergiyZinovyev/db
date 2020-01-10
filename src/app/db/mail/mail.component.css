@@ -42,8 +42,12 @@
     font-weight: bold;
 }
 
+.example-button-group{
+    width: 150px;
+}
+
 .message-name{
-    width: 90%;
+    /* width: 90%; */
     text-align: center;
     font-weight: bold;
 }

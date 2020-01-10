@@ -28,7 +28,7 @@ export class EmailComponent implements OnInit, OnDestroy{
   subSendList: Subscription;
   htmlTextData: SafeHtml;
   attachmentsArray: Ifiles[] = [];
-  bodyFilesArray: Ifiles[]= [];
+  bodyFilesArray: Ifiles[] = [];
 
   emailForm = this.fb.group({
     to: ['', [Validators.required]],
@@ -217,9 +217,9 @@ export class EmailComponent implements OnInit, OnDestroy{
         size: '',
         href: `${this.server.apiUrl}/img/${file}?path=${linkArr.slice(-3).join('/')}`
       }
-      newFile.push(newObj)
+      if(newObj.filename){newFile.push(newObj)} //додаємо лише тоді коли є файли в обєкті
     });
-    //console.log('getFileArrFromServer: ', newFile);
+    console.log('getFileArrFromServer: ', newFile);
     return newFile
   }
 

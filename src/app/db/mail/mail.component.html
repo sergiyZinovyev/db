@@ -45,7 +45,7 @@
             </mat-sidenav>
             <mat-sidenav-content>
                 <div class="panel-add-item-element d-flex justify-content-between align-items-center sticky-top">
-                    <div>
+                    <div class="example-button-group">
                         <button 
                             mat-icon-button 
                             matTooltip="Список розсилок" 
@@ -68,7 +68,9 @@
                             <mat-icon>mail</mat-icon>
                         </button>
                     </div>
-                    <div class="message-name">{{nameMailing}}</div>
+                    <div class="flex-grow-1">
+                        <div class="message-name">{{nameMailing}}</div>
+                    </div>
                 </div>
                 <div class="conteiner-email">
                     <div class="email" *ngIf="isAddingItemSendEmail">

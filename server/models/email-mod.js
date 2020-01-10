@@ -1,7 +1,8 @@
 const fs = require('fs');
 const SQLEmail = require('../models/sql-email');
 const AuthController = require('../controllers/auth');
-const Shared = require('../models/shared')
+const Shared = require('../models/shared');
+const Update = require('../modules/updateHtmlLinks')
 
 // створюємо необхідну директорію
 function createDir(firstName, secondName) {
@@ -384,22 +385,31 @@ function editMessageAddNewFiles(messageID, attach, body_files){
 
 //-------------------------------------------------------------------------------------------------------------------------
 //редагуємо існуючий лист без збереження файлів
+// params = req.body
 function editMessage(params, id_user){
     return new Promise((resolve, reject) => {
-        let dataUpdate = [ //subject, message, id_user, id
-            params.subject, 
-            params.message, 
-            id_user,
-            params.messageID
-        ];
-        SQLEmail.editMessages(dataUpdate, function(err, doc) {
-            if (err) {
+        Update(params.messageID, params.message)
+            .then(data => { 
+                let dataUpdate = [ //subject, message, id_user, id
+                    params.subject, 
+                    data,
+                    id_user,
+                    params.messageID
+                ];
+                SQLEmail.editMessages(dataUpdate, function(err, doc) {
+                    if (err) {
+                        console.log(err);
+                        return reject(err);
+                    }
+                    return resolve(params.messageID);
+                });
+            })
+            .catch(err => {
                 console.log(err);
-                return reject(err);
-            }
-            return resolve(params.messageID);
-        });
+                reject(err);
+            })
     })
+        
 }
 
 //-------------------------------------------------------------------------------------------------------------------------
@@ -469,6 +479,7 @@ function createNewMessage(req, id_user){
                 }
                 else return []
             })
+            .then(() => editMessage({subject: req.body.subject, message: req.body.message, messageID: messageID}, id_user)) //викликаємо editMessage щоб оновити лінки в листі
             .then(() => resolve(messageID))
             .catch(err => {
                 console.log(err);
