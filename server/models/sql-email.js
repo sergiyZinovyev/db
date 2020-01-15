@@ -86,6 +86,19 @@ exports.getMailingList = function(cb){
   })
 }
 
+//отримати всі записи з mailing_list
+exports.getMailingPlus = function(id, cb){
+  let sql = `SELECT Mailing.id AS id, name, user_id, Users.realname AS realname, date_end FROM 
+      (SELECT id, name, user_id, date_end FROM mailing_list) AS Mailing
+    LEFT OUTER JOIN
+      (SELECT id, realname FROM usersaccount) AS Users
+    ON Mailing.user_id = Users.id
+    WHERE Mailing.id = ${id}`;
+  db.get().query(sql, function(err, data) {
+    cb(err, data)
+  })
+}
+
 //отримання вказаної розсилки з mailing_list
 exports.getMailing = function(id, cb){
   let sql = `SELECT * FROM mailing_list WHERE id = ${id}`;

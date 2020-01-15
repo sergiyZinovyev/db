@@ -5,11 +5,7 @@ const path = require('path');
 const https = require('https');
 const fs = require('fs');
 const compression = require('compression'); 
-//const passport = require('passport');
-//const session = require('express-session');
-//const RedisStore = require('connect-redis')(session);
-//const localStrategy = require('passport-local').Strategy;
-//const flash = require('connect-flash');
+const WebSocket = require('ws');
 
 //підключаємо контроллери
 const visitorsController = require('./server/controllers/visitors');
@@ -18,27 +14,29 @@ const emailController = require('./server/controllers/email');
 const pdfController = require('./server/controllers/pdf');
 const authController = require('./server/controllers/auth'); 
 const sharedController = require('./server/controllers/shared');
+//підключаємо файл конфігурації
 const Secure = require('./server/config');
-//const Visitors = require('./server/models/sql-visitors');
+//підключаємо внутрішні модулі
+const eventsHandler = require('./server/modules/eventshandler');
+
 
 const urlencodedParser = bodyParser.urlencoded({extended: false});
 
 //back-end server
 const app = express();
-//const host = 'localhost'; //dev host
-//const host = '192.168.5.107'; //prod host ge
-//const host = '31.41.221.156'; //www host test 
 const host = 'visitors.galexpo.com.ua'; //prod host 
 const port = Secure.Config.serverConfig.backendPort;
-https.createServer({
+const server = https.createServer({
   key: fs.readFileSync('./server/cert/key.pem'),
   cert: fs.readFileSync('./server/cert/cert.pem')
-}, app).listen(port, host, function () {
+}, app)
+
+const wss = new WebSocket.Server({ server });
+
+server.listen(port, host, function () {
   console.log(`Server listens https://${host}:${port}`);
 });
-// app.listen(port, host, function () {
-//   console.log(`Server listens http://${host}:${port}`);
-// });
+
 
 //front-end server
 const ang = express();
@@ -50,9 +48,6 @@ https.createServer({
   console.log(`Server2 listens https://${host}:${port2}`);
 });
 
-// ang.listen(port2, host, function () {
-//   console.log(`Server2 listens http://${host}:${port2}`);
-// });
 ang.use(express.static(__dirname + "/dist/db"));
 ang.use("/", function(request, response){
   response.sendFile(path.join(__dirname+'/dist/db/index.html')); 
@@ -63,8 +58,38 @@ ang.use("/", function(request, response){
 app.use(cors());
 app.use(bodyParser.json({limit: "50mb"}));
 app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
-
 app.use(compression());
+
+
+//------------------------------------------------------------------------------------------------------ 
+// WebSockets
+
+//розширяємо wss новим методом
+wss.sendEventAll = sendEventAllClients;
+//розсилка всім підключеним клієнтам
+function sendEventAllClients(message){
+  this.clients.forEach(function each(client) {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(message);
+    }
+  });
+}
+
+//прослуховуємо події та робимо розсилки
+emailController.emitter.on('mailingStarted', message => eventsHandler.getMailing(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
+emailController.emitter.on('mailingSended', message => eventsHandler.getMailing(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
+
+wss.on('connection', (ws) => {
+  ws.on('message', function incoming(message) {
+    console.log('received: %s', message);
+    wss.sendEventAll(message);
+  });
+  ws.send(`socket connect`, () => console.log('1 message is send'));
+});
+
+
+//------------------------------------------------------------------------------------------------------ 
+
 
 //отримати запис з таблиці usersaccount для авторизації
 app.post("/users", authController.users);

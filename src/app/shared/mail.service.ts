@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import {Observable, from, Subject, BehaviorSubject} from 'rxjs';
+import {Observable, from, Subject, BehaviorSubject, Subscription} from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ServerService } from '../shared/server.service';
-import {IUser, IMailig, IMessage} from '../db/mail/mailInterface';
+import {IUser, IMailig, IMessage, IMailingLists} from '../db/mail/mailInterface';
+import { ModulesService } from '../shared/modules.service';
 
 @Injectable({
   providedIn: 'root'  
@@ -17,6 +19,7 @@ export class MailService {
   mailingID: number | string = 'new';
 
   constructor(
+    private module: ModulesService,
     private server: ServerService
   ) { }
 
@@ -80,6 +83,61 @@ export class MailService {
     this.messageID = id
   }
 
+//-------------------------------------------------------------------------------------------------
+// sockets
+
+  subSockets: Subscription; //підписка на сокети
+
+  //підписитися на сокети
+  getSubSockets(){
+    this.subSockets = this.server.onSocket().subscribe((data_s: {event: string, data: any}) => {
+      console.log('Socket data: ',data_s);
+      switch (data_s.event) {
+
+        case 'getMailingPlus': this.handlerGetMailingPlus(data_s.data[0]);
+          break;
+      
+        default: break;
+      }
+    });
+  }
+
+  handlerGetMailingPlus(newData_s: IMailingLists){
+    let numberOfArr = this.module.checkArrOfObjIdValField(this.dataMailingList, 'id', newData_s.id);
+    //console.log('numberOfArr: ',numberOfArr);
+    if(numberOfArr>=0){
+      //console.log('така розсилка вже була, заміняємо');
+      this.dataMailingList.splice(numberOfArr, 1, newData_s);
+      this.mailingList.next(this.dataMailingList);
+      return
+    }
+    else {
+      //console.log('розсилки ще не було, додаємо нову');
+      this.dataMailingList.unshift(newData_s);
+      this.mailingList.next(this.dataMailingList);
+      return
+    }
+  }
   
+//-------------------------------------------------------------------------------------------------
+// списки розсилок
+  
+  subMailingList: Subscription; //підписка на початковий список розсилки
+  mailingList: BehaviorSubject<IMailingLists[]> = new BehaviorSubject([]); // Observable для списку розсилки
+  dataMailingList: IMailingLists[] = []; //останні данні по mailingList
+
+  //підписка на початковий список розсилки
+  getSubMailingList(){
+    this.subMailingList = this.server.getAll('getMailingList')
+      .pipe(map((vl: any, i) => Array.from(vl)))
+      .subscribe((data: IMailingLists[]) => {
+        this.mailingList.next(data);
+        this.subMailingList.unsubscribe()
+      });
+    //внутрішня підписка на список розсилки
+    this.mailingList.subscribe((data_m: IMailingLists[]) => this.dataMailingList=data_m)
+  }
+
+//-------------------------------------------------------------------------------------------------
 
 }

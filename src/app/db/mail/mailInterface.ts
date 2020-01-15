@@ -26,3 +26,11 @@ export interface Ifiles {
     size: string; 
     href: string
 }
+
+export interface IMailingLists {
+    id: number;
+    name: string; 
+    user_id: number;
+    realname: string;
+    date_end: string
+}

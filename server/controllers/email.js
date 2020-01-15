@@ -5,6 +5,10 @@ const ControllersShared = require('../controllers/shared');
 const SQLEmail = require('../models/sql-email');
 const EmailModule = require('../models/email-mod');
 const AuthController = require('../controllers/auth');
+const EventEmitter = require('events');
+
+const emitter = new EventEmitter();
+
 
 const transporter = nodemailer.createTransport({
     host: Secure.Config.emailConfig.host,
@@ -19,6 +23,8 @@ const transporter = nodemailer.createTransport({
         user: Secure.Config.emailConfig.user
     }
 });
+
+exports.emitter = emitter;
 
 exports.sendEmail = function(req, res){
     const mailOptions = {
@@ -48,8 +54,10 @@ exports.sendEmail = function(req, res){
 }
 
 exports.massMaling = function(req, res){
+    //emitter.on('mailingSended', message => console.log('Message from email: ', message));
     const arrAccess = [3,4,5];
     let idUser;
+    let mailingId;
     AuthController.getUsersaccountId(req.query.login, arrAccess) //перевіряємо права доступу
         .then(data => { //перевіряємо чи відбулися зміни та створюємо/редагуємо лист або передаємо далі messageID
             let message = {};
@@ -64,10 +72,15 @@ exports.massMaling = function(req, res){
         }) 
         .then(messageID => {console.log('messageID returned from createEditMessage: ', messageID.id); return EmailModule.saveDataSendMail(req, messageID.id, idUser)}) //зберігаємо інформацію про розсилку
         .then(data => {
+            mailingId = data;
+            emitter.emit('mailingStarted', mailingId);
             console.log('data saveDataSendMail: ', data);
             return EmailModule.sendDataSendMailAll(data, transporter); //запускаємо розсилку
         })
-        .then(data => res.send(data))
+        .then(data => {
+            emitter.emit('mailingSended', mailingId);          
+            return res.send(data)
+        })
         .catch(err => {
             console.log(err);
             return res.send(err);

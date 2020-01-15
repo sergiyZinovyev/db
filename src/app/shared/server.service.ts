@@ -2,7 +2,7 @@ import { Component, OnInit, Injectable} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms';
 import { catchError } from 'rxjs/operators';
-import { Observable, throwError  } from 'rxjs';
+import { Observable, throwError, Subject } from 'rxjs';
 
 
 @Injectable({
@@ -10,16 +10,19 @@ import { Observable, throwError  } from 'rxjs';
 })
 
 export class ServerService {
+
+  url = 'visitors.galexpo.com.ua:7002'; //dev host
+  //url = 'visitors.galexpo.com.ua:7001'; //prod host
+
   exhib = {
     id: 2,
     name: ''
   }; 
+
   frontURL: URL;
-  //apiUrl = 'http://localhost:7001'; //dev host  
-  //apiUrl = 'http://192.168.5.107:7001'; //prod host ge
-  //apiUrl = 'http://31.41.221.156:7001'; //www host test
-  //apiUrl = 'https://visitors.galexpo.com.ua:7001'; //prod host  
-  apiUrl = 'https://visitors.galexpo.com.ua:7002'; //dev host  
+  apiUrl = `https://${this.url}`;
+  wssUrl = `wss://${this.url}`; 
+  wss = new WebSocket(this.wssUrl);
 
   dataVisex;
 
@@ -49,6 +52,9 @@ export class ServerService {
   getAuth(){ //дані для аутентифікації
     return `login=${localStorage.getItem('user')}&password=${localStorage.getItem('password')}`
   }
+
+  //------------------------------------------------------------------------------------------------------------------------------
+  // методи відправки по http
 
   getAll(prop, id?, q1?, q2?, q3?, q4?){ //універсальний метод де prop - назва роута на сервері, id?, q1, ... - параметри запиту
     return this.http.get(`${this.apiUrl}/${prop}?${this.getAuth()}&id=${id}&q1=${q1}&q2=${q2}&q3=${q3}&q4=${q4}`)
@@ -80,6 +86,7 @@ export class ServerService {
     
   }
 
+  //------------------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -99,48 +106,6 @@ export class ServerService {
     return exhibStr
   }
 
-  // getExhib(nameTable: string, arrFromFormControl: [], arrFromMyExhib): [FormGroup, {id: string, name: string, kod: string}[]]{
-  //   //створити форму зі всіх виставок
-  //   let exhibForm = new FormGroup({});
-  //   let exhib = new Array;
-  //   this.get(nameTable).subscribe(data =>{
-  //     let value: boolean;
-  //     for(let i=0; i>=0; i++){
-  //       value = false;
-  //       if(!data[i]){break};
-  //       exhib.push({
-  //         id: data[i].id,
-  //         name: data[i].name,
-  //         kod: data[i].kod
-  //       })
-  //       if(arrFromFormControl.find(currentValue => currentValue == data[i].name) || arrFromMyExhib.find(currentValue => currentValue == data[i].name)){value = true}
-  //       exhibForm.addControl(data[i].name, new FormControl(value, Validators.required))
-  //     }
-  //     //console.log('exhibForm: ', exhibForm);
-  //     // this.exhibForm.valueChanges.subscribe(v => {
-  //     //   this.loginForm.patchValue({potvid: this.server.getStringExhibForm(this.exhibForm.value)}) //змінюємо поле з виставками в загальній формі
-  //     // }); 
-  //   })
-  //   return [exhibForm, exhib]
-  // }
-
-  // getRegion(nameTable){
-  //   let region = [];
-  //   let get = this.get(nameTable).subscribe(data =>{
-  //     for(let i=1; i<=25; i++){
-  //       region.push({
-  //         regionid: data[i].regionid,
-  //         teretory: data[i].teretory
-  //       })
-  //     }
-  //     console.log(region);
-  //     get.unsubscribe();
-  //     return region 
-  //   })
-  // }
-
- 
-
   accessIsDenied(data){
     if(data == 'false'){
       alert('Access is denied \n\nУ вас немає прав для здійснення цієї операції');
@@ -151,6 +116,24 @@ export class ServerService {
   private handleError(err) {
     console.log('caught mapping error and rethrowing', err);
     return throwError(err);
+  }
+
+  //------------------------------------------------------------------------------------------------------------------------------
+  // методи wss
+
+  openSocket(){
+    console.log('openSocket is work!');
+    this.wss.onopen = () => console.log("[open] Connection established");
+  }
+
+  onSocket():Subject<any>{
+    let socketMessage: Subject<any> = new Subject();
+    this.wss.onmessage = (event) => {
+      if(event.data != `socket connect` && event.data != `test message`){
+        socketMessage.next(JSON.parse(event.data));
+      }
+    }
+    return socketMessage
   }
 
 }

@@ -3,6 +3,7 @@ import { ServerService } from '../../../shared/server.service';
 import { ModulesService } from '../../../shared/modules.service';
 import { MailService } from '../../../shared/mail.service';
 import { element } from 'protractor';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-mailinglist',
@@ -20,21 +21,37 @@ export class MailinglistComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.server.getAll('getMailingList').subscribe(data=>{
-      this.mailingList = [];
-      for(let i=0; i>=0; i++){
-        if(!data[i]){break};
-        this.mailingList.push({
-          id: data[i].id,
-          name: data[i].name, 
-          user_id: data[i].user_id,
-          realname: data[i].realname, 
-          date_end: this.dateFormat(data[i].date_end)
-        })
-        //this.i = i+1; //обраховує загальну кількість елементів, якщо потрібно
-      }
-      //console.log('this.mailingList: ', this.mailingList)
-    })
+
+    if(!this.mail.subMailingList){
+      this.mail.getSubMailingList(); //запускаємо на сервісі підписку на MailingList
+      console.log('MailingList subscribed!!!');
+    }
+    
+    this.mail.mailingList.subscribe(data => this.mailingList = data); 
+
+    //this.mail.getSubMailingList().subscribe(data => this.mailingList = data);
+
+    // this.server.getAll('getMailingList')
+    //   .pipe(map((vl: any, i) => Array.from(vl)))
+    //   .subscribe(data => this.mailingList = data)
+
+
+
+    // this.server.getAll('getMailingList').subscribe(data=>{
+    //   this.mailingList = [];
+    //   for(let i=0; i>=0; i++){
+    //     if(!data[i]){break};
+    //     this.mailingList.push({
+    //       id: data[i].id,
+    //       name: data[i].name, 
+    //       user_id: data[i].user_id,
+    //       realname: data[i].realname, 
+    //       date_end: this.dateFormat(data[i].date_end)
+    //     })
+    //     //this.i = i+1; //обраховує загальну кількість елементів, якщо потрібно
+    //   }
+    //   //console.log('this.mailingList: ', this.mailingList)
+    // })
   }
 
   dateFormat(d){
@@ -66,7 +83,7 @@ export class MailinglistComponent implements OnInit {
   }
 
   delMessage(){
-    alert('delMessage is work!')
+    console.log('delMessage is work!')
   }
 
 }
