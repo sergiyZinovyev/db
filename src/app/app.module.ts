@@ -13,7 +13,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {A11yModule} from '@angular/cdk/a11y';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {PortalModule} from '@angular/cdk/portal';
-import {ScrollingModule} from '@angular/cdk/scrolling';
+import {ScrollingModule, ScrollDispatchModule} from '@angular/cdk/scrolling';
 import {CdkStepperModule} from '@angular/cdk/stepper';
 import {CdkTableModule} from '@angular/cdk/table';
 import {CdkTreeModule} from '@angular/cdk/tree';
@@ -77,6 +77,8 @@ import { html2pdf } from 'html2pdf.js';
 import { EmailComponent } from './db/mail/email/email.component';
 import { MailComponent } from './db/mail/mail.component';
 import { MailinglistComponent } from './db/mail/mailinglist/mailinglist.component';
+import { MessageslistComponent } from './db/mail/messageslist/messageslist.component';
+import { EmaillistComponent } from './db/mail/emaillist/emaillist.component';
 
 
 
@@ -99,7 +101,9 @@ import { MailinglistComponent } from './db/mail/mailinglist/mailinglist.componen
     TranslatePipe,
     EmailComponent,
     MailComponent,
-    MailinglistComponent
+    MailinglistComponent,
+    MessageslistComponent,
+    EmaillistComponent
   ],
   imports: [
     BrowserModule,
@@ -154,6 +158,7 @@ import { MailinglistComponent } from './db/mail/mailinglist/mailinglist.componen
     MatTreeModule,
     PortalModule,
     ScrollingModule,
+    ScrollDispatchModule,
     FormsModule,
     HttpClientModule,
     NgxBarcodeModule,

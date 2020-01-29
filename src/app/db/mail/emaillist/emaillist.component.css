@@ -16,10 +16,11 @@
     padding-bottom: 6px;
     padding-top: 6px;
     cursor: default;
+    width: 320px;
 }
 
 .list:hover{
-    background-color:  rgba(224, 236, 255, 0.534);
+    background-color:  rgba(182, 210, 255, 0.534);  
     border-left:rgb(95, 159, 255) 4px solid; 
     /* font-weight: bold; */
 }
@@ -34,14 +35,14 @@
     margin-left: 10px;
     margin-right: 10px;
     font-size: 14px;
-    width: 65%;
+    width: 60%;
     cursor: pointer;
     /* text-overflow: ellipsis; */
 }
 .date{
     text-align: right;
     margin-right: 2px;
-    width: 30%;
+    width: 35%;
 }
 .del{
     visibility: hidden;
@@ -56,11 +57,11 @@
 
 .sticky {
     position: sticky;
-    top: 40px;
+    top: 0px;
     left: 0;
     bottom: 0px;
     right: 0;
-    background-color: white;
+    background-color:  rgb(224, 236, 255);
     z-index: 102;
 }
  
@@ -92,4 +93,13 @@
     bottom: 0px; 
     right: 0;
     z-index: 1000;
+}
+
+.example-viewport {
+    height: 800px;
+    width: 340px;
+}
+
+.btn-1{
+    color: deepskyblue;  
 }

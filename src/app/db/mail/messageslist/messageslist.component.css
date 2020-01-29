@@ -71,25 +71,10 @@
 }
 
 .activated-list{
-    background-color:  rgb(193, 216, 255);  
+    background-color:  rgb(193, 216, 255); 
 }
 .activated-list:hover{
     background-color: rgb(149, 188, 255);;
     border-left:rgb(95, 159, 255) 4px solid; 
     /* font-weight: bold; */
-}
-
-.example-loading-shade {
-    position: fixed;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 0, 0, 0.15);
-    width: 350px;
-    height: 100%;
-    top: 0;
-    left: 0;
-    bottom: 0px; 
-    right: 0;
-    z-index: 1000;
 }

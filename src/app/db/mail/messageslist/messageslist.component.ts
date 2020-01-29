@@ -1,22 +1,21 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ServerService } from '../../../shared/server.service';
 import { ModulesService } from '../../../shared/modules.service';
 import { MailService } from '../../../shared/mail.service';
 import { element } from 'protractor';
 import { map } from 'rxjs/operators';
-import {IUser, IMessage, Ifiles} from '../mailInterface';
+import {IUser, IMessage, IMailingLists, IMessageInfo} from '../mailInterface';
 import { Message } from '../message';
 
 @Component({
-  selector: 'app-mailinglist',
-  templateUrl: './mailinglist.component.html',
-  styleUrls: ['./mailinglist.component.css']
+  selector: 'app-messageslist',
+  templateUrl: './messageslist.component.html',
+  styleUrls: ['./messageslist.component.css']
 })
-export class MailinglistComponent implements OnInit {
+export class MessageslistComponent implements OnInit {
 
-  isLoadingResults = true;
-  mailingList
-  mailingId: number; //визначає активну розсилку
+  messageList: IMessageInfo[];
+  messageId: number | string; //визначає активну розсилку 
 
   constructor(
     private mail: MailService,
@@ -25,19 +24,18 @@ export class MailinglistComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    if(!this.mail.subMailingList){
-      this.mail.getSubMailingList(); //запускаємо на сервісі підписку на MailingList    
-      console.log('MailingList subscribed!!!');
+
+    if(!this.mail.subMessageList){
+      this.mail.getSubMessageList(); //запускаємо на сервісі підписку на MessageList 
+      console.log('MessageList subscribed!!!');
     }
     
-    // підписуємось на mailingList
-    this.mail.mailingList.subscribe(data => {
-      this.mailingList = data;
-      this.isLoadingResults = false;
-    });
+    // підписуємось на messageList
+    this.mail.messageList.subscribe(data => this.messageList = data);
 
     // підписуємося на визначення активної розсилки
-    this.mail.getMessage.pipe(map((vl:Message):number => vl.mailingId)).subscribe(data => this.mailingId = data); 
+    this.mail.getMessage.pipe(map((vl:Message):number | string => vl.id)).subscribe(data => this.messageId = data);  
+
   }
 
   dateFormat(d){
@@ -55,23 +53,15 @@ export class MailinglistComponent implements OnInit {
     return formated_date;
   }
 
-  compareNumeric(a, b) {
-    if (a.date_end < b.date_end) return 1;
-    if (a.date_end == b.date_end) return 0;
-    if (a.date_end > b.date_end) return -1;
-  }
-
   getMessage(id: number): void{
     // this.mail.setIsAddingItemSendEmail(false);
     // setTimeout(() => {
-      this.mail.setCurrentMailing(id);
+      this.mail.setCurrentMessage(id);
     // });    
   }
 
   delMessage(){
     console.log('delMessage is work!')
   }
-
-  
 
 }

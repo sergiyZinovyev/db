@@ -10,6 +10,8 @@ import { MailService } from '../../shared/mail.service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {FormControl} from '@angular/forms';
 import { Subscribable } from 'rxjs';
+import {IUser, IMessage, IMailingLists} from '../mail/mailInterface';
+import { DbService } from '../../shared/db.service';
 
 export interface BDVisitors {
   cellphone: string;
@@ -68,7 +70,7 @@ export class VisitorsComponent implements OnInit {
 
   isLoadingResults = true;
   isAddingItem = false;
-  isAddingItemSendEmail = false;
+  //isAddingItemSendEmail = false;
 
   myTimeOut; // id таймаута для відміни таймаута 
 
@@ -88,6 +90,7 @@ export class VisitorsComponent implements OnInit {
     private module: ModulesService,
     private router: Router,
     private mail: MailService,
+    private db: DbService,
   ) { }
 
   ngOnInit() {
@@ -681,21 +684,21 @@ export class VisitorsComponent implements OnInit {
       })
     }
   }
-
+ 
   addMailList(){
     if(this.arrOfCheckId.length == 0){
       return alert('Ви не обрали жодного запису для розсилки');
     }
-    this.newElement("isAddingItemSendEmail");
-    let newList = this.module.filter(this.dataSource.data, this.arrOfCheckId, 'regnum');
-    newList = newList.map(function(obj:any) {
+    this.db.setNavDB('mail');
+    //this.newElement("isAddingItemSendEmail");
+    let newList = this.module.filter(this.dataSource.data, this.arrOfCheckId, 'regnum'); 
+    let SendList:IUser[] = newList.map(function(obj:IUser) {
       return {regnum: obj.regnum, email: obj.email, namepovne: obj.namepovne};
     });
     //console.log('newList: ',newList);
-    this.mail.setCurrentSendList(newList);
-    
+    this.mail.addToCurrentSendList(SendList);   
   }
-  
+ 
 
 }
 

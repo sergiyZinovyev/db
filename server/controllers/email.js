@@ -5,10 +5,7 @@ const ControllersShared = require('../controllers/shared');
 const SQLEmail = require('../models/sql-email');
 const EmailModule = require('../models/email-mod');
 const AuthController = require('../controllers/auth');
-const EventEmitter = require('events');
-
-const emitter = new EventEmitter();
-
+//const EventEmitter = require('events');
 
 const transporter = nodemailer.createTransport({
     host: Secure.Config.emailConfig.host,
@@ -24,8 +21,10 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-exports.emitter = emitter;
+// const emitter = new EventEmitter();
+// exports.emitter = emitter;
 
+//-------------------------------------------------------------------------------------------------------------------------------------
 exports.sendEmail = function(req, res){
     const mailOptions = {
         from: 'send@galexpo.lviv.ua', // sender address
@@ -53,6 +52,7 @@ exports.sendEmail = function(req, res){
     });
 }
 
+//-------------------------------------------------------------------------------------------------------------------------------------
 exports.massMaling = function(req, res){
     //emitter.on('mailingSended', message => console.log('Message from email: ', message));
     const arrAccess = [3,4,5];
@@ -73,13 +73,14 @@ exports.massMaling = function(req, res){
         .then(messageID => {console.log('messageID returned from createEditMessage: ', messageID.id); return EmailModule.saveDataSendMail(req, messageID.id, idUser)}) //зберігаємо інформацію про розсилку
         .then(data => {
             mailingId = data;
-            emitter.emit('mailingStarted', mailingId);
+            //emitter.emit('mailingStarted', mailingId);
             console.log('data saveDataSendMail: ', data);
             return EmailModule.sendDataSendMailAll(data, transporter); //запускаємо розсилку
         })
         .then(data => {
-            emitter.emit('mailingSended', mailingId);          
-            return res.send(data)
+            //emitter.emit('mailingSended', mailingId);
+            // тут потрібно отримати id розсилки          
+            return res.send({'mailingId': mailingId})
         })
         .catch(err => {
             console.log(err);
@@ -87,9 +88,11 @@ exports.massMaling = function(req, res){
         });
 }
 
+//-------------------------------------------------------------------------------------------------------------------------------------
+
 exports.createMessageSaveFiles = function(req, res){
     const arrAccess = [3,4,5];
-    AuthController.getUsersaccountId(req.query.login, arrAccess)
+    AuthController.getUsersaccountId(req.query.login, arrAccess) //перевіряємо права доступу
         .then(id_user => EmailModule.createMessageSaveFiles(req, id_user))
         .then(data => {console.log('returned from createMessageSaveFiles: ', data); console.log('All done!'); return res.send(data)})
         .catch(err => {
@@ -98,17 +101,36 @@ exports.createMessageSaveFiles = function(req, res){
         });
 }
 
+//-------------------------------------------------------------------------------------------------------------------------------------
+
 exports.createMessageSaveMessage = function(req, res){
     const arrAccess = [3,4,5];
-    AuthController.getUsersaccountId(req.query.login, arrAccess)
-        .then(id_user => EmailModule.createEditMessage(req, id_user))
-        .then(data => {console.log('createEditMessage: ', data); console.log('All done!'); return res.send(data)})
+    AuthController.getUsersaccountId(req.query.login, arrAccess) //перевіряємо права доступу
+        .then(data => { //перевіряємо чи відбулися зміни та створюємо/редагуємо лист або передаємо далі messageID
+            let message = {};
+            idUser = data;
+            if(req.body.changed) {
+                return EmailModule.createEditMessage(req, idUser)
+            }
+            else { //передаємо далі messageID у вигляді властивості обєкту message, щоб повязати з наступним методом
+                message.id = req.body.messageID;
+                return message
+            }
+        }) 
+        //.then(messageID => {console.log('messageID returned from createEditMessage: ', messageID.id); return EmailModule.saveDataSendMail(req, messageID.id, idUser)}) //зберігаємо інформацію про розсилку
+        .then(messageID => {
+            //emitter.emit('createEditMessage', messageID.id);
+            console.log('data saveDataSendMail: ', messageID.id); 
+            console.log('All done!'); 
+            return res.send({'messageID': messageID.id})
+        })
         .catch(err => {
             console.log(err);
             return res.send(err);
         });
 }
 
+//-------------------------------------------------------------------------------------------------------------------------------------
 //отримання масиву всіх розсилок
 exports.getMailingList = function(req, res) {
     SQLEmail.getMailingList(function(err, doc) {
@@ -116,7 +138,6 @@ exports.getMailingList = function(req, res) {
             console.log(err);
             return res.send(err);
         }
-        //console.log('ArrDataForMailing: ', doc);
         return res.send(doc);
     });
 }
@@ -128,13 +149,34 @@ exports.getDataMailing = function(req, res) {
             console.log(err);
             return res.send(err);
         }
-        // console.log('req.query.id for getDataMailing: ', req.query.id);
-        // console.log('getDataMailing: ', doc);
         return res.send(doc);
     });
 }
 
-//отримання обраного листа з messages
+//-------------------------------------------------------------------------------------------------------------------------------------
+//отримати всі записи з messages
+exports.getAllMessages = function(req, res) {
+    SQLEmail.getAllMessages(function(err, doc) {
+        if (err) {
+            console.log(err);
+            return res.send(err);
+        }
+        return res.send(doc);
+    });
+}
+
+//отримати запис по id з messages
+exports.getMessage = function(req, res) {
+    SQLEmail.getMessage(req.query.id, function(err, doc) {
+        if (err) {
+            console.log(err);
+            return res.send(err);
+        }
+        return res.send(doc);
+    });
+}
+
+//отримання всього листа по id з messages
 exports.getFullMessage = function(req, res) {
     SQLEmail.getFullMessage(req.query.id, function(err, doc) {
         if (err) {
@@ -143,6 +185,18 @@ exports.getFullMessage = function(req, res) {
         }
         // console.log('req.query.id for getAllMessage: ', req.query.id);
         // console.log('getAllMessage: ', doc);
+        return res.send(doc);
+    });
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------
+//отримання даних зі списку розсилкок по mail_list_id
+exports.getVisitorsMailingList = function(req, res) {
+    SQLEmail.getVisitorsMailingList(req.query.id, function(err, doc) {
+        if (err) {
+            console.log(err);
+            return res.send(err);
+        }
         return res.send(doc);
     });
 }

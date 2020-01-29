@@ -2,7 +2,11 @@ const fs = require('fs');
 const SQLEmail = require('../models/sql-email');
 const AuthController = require('../controllers/auth');
 const Shared = require('../models/shared');
-const Update = require('../modules/updateHtmlLinks')
+const Update = require('../modules/updateHtmlLinks');
+const EventEmitter = require('events');
+
+const emitter = new EventEmitter();
+exports.emitter = emitter;
 
 // створюємо необхідну директорію
 function createDir(firstName, secondName) {
@@ -131,6 +135,7 @@ function saveMailingList(params, message_id, id_user) {
                 console.log(err);
                 reject(err);
             }
+            emitter.emit('mailingSaved', doc.insertId);
             resolve(doc);
         });
     })
@@ -238,6 +243,7 @@ function sendEmail(params, transporter) {
         }
     }
     let attachArr;
+    let message;
     return new Promise((resolve, reject) => {
         if (params.is_send != 'pending'){
             return resolve('NO_SEND')
@@ -248,14 +254,14 @@ function sendEmail(params, transporter) {
         else{
             attachArr = params.path.split('; ').map(item => new Attach(item));
         }
-        
+        message = params.message.replace(new RegExp("<baza-name>", 'g'), params.namepovne);
         //console.log('attachArr: ', attachArr);
         const emailOptions = {
             from: params.from, // sender address
             to: params.to, // list of receivers
             subject: params.subject, // Subject line
             attachments: attachArr,
-            html: params.message // plain text body
+            html: message // plain text body
         };
         transporter.sendMail(emailOptions, function (err, info) {
             if(err){
@@ -659,10 +665,10 @@ exports.sendDataSendMailAll = function(idMailinngList, transporter){
     let is_send;
     return editMailingList('date_start', Shared.curentDate(Date.now()), idMailinngList) // робимо запис про початок розсилки
         .then(() => getArrDataForMailing(idMailinngList))  //отримуємо всі id по яким має бути розсилка
-        .then(arr =>  awaitEx(arrToSubarr(arr, 5), 2000, transporter)) //послідовно виконуємо групи промісів з заданим інтервалом
+        .then(arr =>  awaitEx(arrToSubarr(arr, 1), 5000, transporter)) //послідовно виконуємо групи промісів з заданим інтервалом
         .then(data => is_send = data)
         .then(() => editMailingList('date_end', Shared.curentDate(Date.now()), idMailinngList)) // робимо запис про закінчення розсилки
-        .then(() => is_send)
+        .then(() => {emitter.emit('mailingSaved', idMailinngList); return is_send})
         .catch(err => {
             console.log(err);
             reject(err);

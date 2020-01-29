@@ -1,8 +1,18 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { MailService } from '../../shared/mail.service';
 import { ServerService } from '../../shared/server.service';
-import {IUser, IMailig, IMessage, Ifiles} from '../mail/mailInterface';
+import {IUser, IMessage, Ifiles} from '../mail/mailInterface';
+
+class Data {
+  subject: string; 
+  visible: boolean;
+  constructor(subject: string, sendList: IUser[]) {
+    this.subject = subject;
+    this.visible = sendList.length>0?true:false
+  }
+}
 
 @Component({
   selector: 'app-mail',
@@ -11,15 +21,11 @@ import {IUser, IMailig, IMessage, Ifiles} from '../mail/mailInterface';
 })
 export class MailComponent implements OnInit, OnDestroy {
 
-  subStatus: Subscription;
   subMessage: Subscription;
 
-  isAddingItemSendEmail: boolean = true;
+  //isAddingItemSendEmail: boolean = true;
   nameMailing: string = 'Новий лист';
-
-
-  // connection = new WebSocket(this.server.wssUrl);
-  // connection2 = this.server.wss;
+  visible: boolean;
 
   constructor(
     private mail: MailService,
@@ -27,70 +33,29 @@ export class MailComponent implements OnInit, OnDestroy {
   ) { }
  
   ngOnInit() {
-    this.subStatus = this.mail.isAddingItemSendEmail.subscribe(data => this.isAddingItemSendEmail = data);
-    this.subMessage = this.mail.getMessage.subscribe((data: IMessage)  => {
+     //підписуємося на getMessage, щоб отримати назву листа
+    this.subMessage = this.mail.getMessage.pipe(
+      map((vl:IMessage):Data => new Data(vl.subject, vl.sendList))
+    ).subscribe((data)  => {
       this.nameMailing = data.subject;
+      this.visible = data.visible;
+      console.log('this.visible: ',this.visible)
     });
 
     if(!this.mail.subSockets){
       this.mail.getSubSockets(); //запускаємо на сервісі підписку на сокети
       console.log('Sockets subscribed!!!');
     }
-    // this.server.wss.onopen = function(e) {
-    //   console.log("[open] Connection established");
-    //   console.log("Отправляем данные на сервер");
-    // }
-
-    // console.log(this.connection);
-    // console.log(this.connection2);
-
-    // this.connection.onopen = function(e) {
-    //   console.log("[open] Connection");
-    //   console.log("Отправляем данные на сервер");
-    // }
-    //this.server.openSocket();
-
-    // this.connection.onmessage = function(event) {
-    //   console.log('[message] Данные получены с сервера:', event);
-    //   if(event.data != `socket connect` && event.data != `test message`){
-    //     let message = event.data;
-    //     console.log(JSON.parse(message));
-    //   }
-    // };
-
-    // this.server.wss.onmessage = function(event) {
-    //   console.log('[message] Данные получены с сервера:', event);
-    //   if(event.data != `socket connect` && event.data != `test message`){
-    //     let message = event.data;
-    //     console.log(JSON.parse(message));
-    //   }
-    // };
-
-    //this.server.onSocket().subscribe(data => console.log('Socket data: ',data));
-    //this.server.socketMessage
-    //console.log('Socket data: ',this.server.onSocket());
-
-  }
-
-  // sendSocket(message){
-  //   this.connection.send(message)
-  // }
-
-  newElement(element: string){
-    console.log('element: ',element);
-    this[element] = !this[element];
+   
   }
 
   newMailing(){
-    this.mail.setIsAddingItemSendEmail(false);
-    setTimeout(() => {
-      this.mail.setIsAddingItemSendEmail(true);
-      this.nameMailing = 'Новий лист';
-    }); 
+    this.mail.setNewMessage();
+    this.nameMailing = 'Новий лист';
   }
 
   ngOnDestroy(){
-    this.subStatus.unsubscribe();
+    this.subMessage.unsubscribe();
   }
 
 } 

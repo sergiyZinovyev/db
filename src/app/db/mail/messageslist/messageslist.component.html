@@ -1,0 +1,30 @@
+<div class="header sticky">
+    <div class="d-flex justify-content-between px-2">
+        <div>Назва</div>
+        <div>Дата створення</div>
+    </div>
+    <mat-divider class="mat-divider-header"></mat-divider>
+</div>
+
+<ng-container *ngFor='let message of messageList; let i = index'>
+    <div class="d-flex list align-items-center" [ngClass]="{'activated-list': message.id==messageId?true:false}" >
+        <div class="name" (click)='getMessage(message.id)' [matTooltip]="message.subject">
+            <div class="mailing-name text-truncate">{{message.subject}}</div>
+            <div class="sender-name">{{message.realname}}</div>
+        </div>
+        
+        <div 
+            class="date text-truncate" 
+            [ngClass]="{'no-send': !message.date?true:false}" 
+            [matTooltip]="dateFormat(message.date)">
+            <ng-container *ngIf='message.date'>{{message.date | date: "dd.MM.yyyy"}}</ng-container>
+            <ng-container *ngIf='!message.date'>не надіслано</ng-container>
+        </div>
+        <div
+            class="del" 
+            (click)='delMessage()'
+            matTooltip="Видалити розсилку"> 
+            <mat-icon>clear</mat-icon>
+        </div>
+    </div>
+</ng-container> 

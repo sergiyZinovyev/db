@@ -1,13 +1,19 @@
 <div class="header sticky">
     <div class="d-flex justify-content-between px-2">
         <div>Назва</div>
-        <div>Дата</div>
+        <div>Дата відправлення</div>
     </div>
     <mat-divider class="mat-divider-header"></mat-divider>
 </div>
 
+<!-- spinner -->
+<div class="example-loading-shade" *ngIf="isLoadingResults"> 
+    <mat-spinner></mat-spinner>
+</div>
+
 <ng-container *ngFor='let mailing of mailingList; let i = index'>
-    <div class="d-flex list align-items-center" >
+    <div class="d-flex list align-items-center" 
+        [ngClass]="{'activated-list': mailing.id==mailingId?true:false}"> 
         <div class="name" (click)='getMessage(mailing.id)' [matTooltip]="mailing.name">
             <div class="mailing-name text-truncate">{{mailing.name}}</div>
             <div class="sender-name">{{mailing.realname}}</div>
@@ -18,12 +24,17 @@
             [ngClass]="{'no-send': !mailing.date_end?true:false}" 
             [matTooltip]="dateFormat(mailing.date_end)">
             <ng-container *ngIf='mailing.date_end'>{{mailing.date_end | date: "dd.MM.yyyy"}}</ng-container>
-            <ng-container *ngIf='!mailing.date_end'>не надіслано</ng-container>
+            <ng-container *ngIf='!mailing.date_end'>
+                <!-- не надіслано -->
+                <div class="spinner-border spinner-border-sm text-secondary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </ng-container>
         </div>
         <div
             class="del" 
             (click)='delMessage()'
-            matTooltip="Видалити розсилку">
+            matTooltip="Видалити розсилку"> 
             <mat-icon>clear</mat-icon>
         </div>
     </div>

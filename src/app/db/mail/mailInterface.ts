@@ -8,16 +8,29 @@ export interface IUser {
     namepovne: string;
 }
 
-export interface IMailig {}
+//export interface IMailig {}   
 
 export interface IMessage {
-    id?: number;
-    subject?: string;
-    message?: string;
-    attachments?: string;
-    body_files?: string;
-    id_user?: number;
-    date?: string
+    id: number | string;
+    subject: string;
+    message: string;
+    attachments: string;
+    body_files: string;
+    id_user: number;
+    date: string;
+    changed?: boolean;
+    to: string;
+    sendList: IUser[];
+    from: string;
+    mailingStatus?: 'sent'|'no_sent'|'sending'
+}
+
+export interface IMessageInfo {
+    id: number;
+    subject: string;
+    id_user: number;
+    realename: string;
+    date: string
 }
 
 export interface Ifiles {
@@ -31,6 +44,9 @@ export interface IMailingLists {
     id: number;
     name: string; 
     user_id: number;
-    realname: string;
+    realname?: string;
+    message_id?: number;
+    sender?: string;
+    date_start?: string;
     date_end: string
 }

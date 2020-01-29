@@ -3,10 +3,12 @@ import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms'
 import { ServerService } from '../../../shared/server.service';
 import { ModulesService } from '../../../shared/modules.service';
 import { MailService } from '../../../shared/mail.service';
+import { DbService } from '../../../shared/db.service';
 import { map } from 'rxjs/operators';
 import { Observable, Subscription } from 'rxjs';
 import { DomSanitizer, SafeResourceUrl, SafeUrl, SafeHtml} from '@angular/platform-browser';
-import {IUser, IMailig, IMessage, Ifiles} from '../mailInterface';
+import {IUser, IMessage, Ifiles} from '../mailInterface';
+import { element } from 'protractor';
 
 @Component({
   selector: 'app-email',
@@ -18,6 +20,7 @@ export class EmailComponent implements OnInit, OnDestroy{
 
   constructor(
     private fb: FormBuilder,
+    private db: DbService,
     private server: ServerService,
     private module: ModulesService,
     private mail: MailService,
@@ -25,66 +28,83 @@ export class EmailComponent implements OnInit, OnDestroy{
   ) { }
 
   subMessage: Subscription;
-  subSendList: Subscription;
+  //subSendList: Subscription; 
   htmlTextData: SafeHtml;
+  
   attachmentsArray: Ifiles[] = [];
   bodyFilesArray: Ifiles[] = [];
 
   emailForm = this.fb.group({
-    to: ['', [Validators.required]],
-    sendList: ['', [Validators.required]],
+    to: ['', [Validators.required]], //лише відображується в браузері
+    sendList: ['', [Validators.required]], //те що реально використовується для розсилки
     from: ['send@galexpo.lviv.ua', [Validators.required]],
     subject: ['', [Validators.required]],
     attach: ['', []],
     body_files: ['', []],
     message: ['', []],
-    messageID: [this.mail.messageID, []],
-    changed: [false, [Validators.required]]
+    messageID: ['', []],
+    changed: [false, [Validators.required]] // визначає чи був змінений лист
   })
 
+
   ngOnInit() {
-    console.log('new message is open')
-    this.subSendList = this.mail.getCurrentSendList.pipe(
-      map((vl: any, i) => {
-        //console.log('Index', i);
-        return Array.from(vl)
-      })
-    ).subscribe((data: IUser[]) =>{
-      //console.log('data from getCurrentSendList', data);
-      this.emailForm.patchValue({to: data.map(el => el.email).join('; ')}); 
-      this.emailForm.patchValue({sendList: data});
-    })
+    console.log('new message is open');
+    // підписуємось на розсилку
+    // this.subSendList = this.mail.getCurrentSendList.pipe(
+    //   map((vl: any, i) => {
+    //     //console.log('Index', i);
+    //     return Array.from(vl)
+    //   })
+    // ).subscribe((data: IUser[]) =>{
+    //   //console.log('data from getCurrentSendList', data);
+    //   this.emailForm.patchValue({to: data.map(el => el.email).join('; ')});  
+    //   this.emailForm.patchValue({sendList: data});
+    // })
 
     this.subMessage = this.mail.getMessage.subscribe((data: IMessage)  => {
-      //console.log('data from getMessage: ', data);
+      console.log('data from getMessage: ', data);
       this.emailForm.patchValue({subject: data.subject});
       this.emailForm.patchValue({attach: data.attachments});
       this.emailForm.patchValue({body_files: data.body_files});
       this.emailForm.patchValue({message: data.message});
       this.emailForm.patchValue({messageID: data.id});
-      this.emailForm.patchValue({changed: false}); //позначаємо лист як не змінений
-
+      this.emailForm.patchValue({changed: data.changed});
+      this.emailForm.patchValue({to: data.to});
+      this.emailForm.patchValue({from: data.from});
+      if(data.sendList){
+        this.emailForm.patchValue({sendList: data.sendList.map(element => {
+          return {regnum: element.regnum, email: element.email, namepovne: element.namepovne}
+        })})
+      }
+      console.log('sendList: ',this.emailForm.get('sendList').value); 
       this.bodyFilesArray = this.getFileArrFromServer(data.body_files);
       this.attachmentsArray = this.getFileArrFromServer(data.attachments);
+
+      if(data.message) this.htmlTextData = this.sanitizer.bypassSecurityTrustHtml(data.message);
+      
     })
 
     this.emailForm.get('message').valueChanges.subscribe((v: string) => {
       this.htmlTextData = this.sanitizer.bypassSecurityTrustHtml(v);
-     });
+      this.emailForm.patchValue({changed: true}); //позначаємо лист як змінений
+    });
+    this.emailForm.get('subject').valueChanges.subscribe((v: string) => {
+      this.emailForm.patchValue({changed: true}); //позначаємо лист як змінений
+    });
   }
 
   send(){
     if(this.emailForm.valid){
-      if(this.emailForm.get('message').dirty || this.emailForm.get('subject').dirty) this.emailForm.patchValue({changed: true}); //позначаємо лист як змінений
-      //return console.log('emailForm: ',this.emailForm.value);
       let isEmail = confirm('Ви впевнені, що хочете розпочати масову розсилку?');
       if(isEmail){
         console.log('emailForm: ',this.emailForm.value);
-        // надсилаємо лист
-        let get=this.server.post(this.emailForm.value, "massMaling").subscribe(data =>{
+        // надсилаємо лист;
+        //this.mail.setMessage([{key: 'mailingStatus', val: 'sending'}]); //встановлюємо статус, відправка
+        let get=this.server.post(this.emailForm.value, "massMaling").subscribe((data: any) =>{
           console.log("sending data: ", data);
           // перевіряємо права користувача, видаємо повідомлення, якщо немає прав 
           if(data[0] && this.server.accessIsDenied(data[0].rights)) return get.unsubscribe();
+          //if(data.mailingId) this.mail.setCurrentMailing(data.mailingId);
           if(data){
             console.log("unsubscribe")
             return get.unsubscribe();
@@ -124,16 +144,21 @@ export class EmailComponent implements OnInit, OnDestroy{
           // перевіряємо права користувача, видаємо повідомлення, якщо немає прав 
           if(data[0] && this.server.accessIsDenied(data[0].rights)) return get.unsubscribe();
           let newLink = `${this.server.apiUrl}/img/${file.name}?path=email_files/${data.id}/${folder}`;
-          this.mail.setMessageID(data.id);
+          //this.mail.setMessageID(data.id);
           this.emailForm.patchValue({messageID: data.id});
           let newMessage = this.replaceSrc(this.emailForm.get('message').value, file.name, newLink);
           this.emailForm.patchValue({message: newMessage});
+          if (data.attachments) this.emailForm.patchValue({attach: data.attachments});
+          if (data.body_files) this.emailForm.patchValue({body_files: data.body_files});
           this[fileArr].push({
             filename: file.name, 
             path: data, 
             size: file.size,
             href: newLink
-          }); 
+          });
+          // if(data.id){
+          //   this.mail.setCurrentMessage(data.id);
+          // }
           if(data){
             console.log("unsubscribe")
             return get.unsubscribe();
@@ -154,7 +179,7 @@ export class EmailComponent implements OnInit, OnDestroy{
     let file = this.module.getFile(id);
     this.module.getDataFile(file, 'readAsText').then(
       data => {
-        this.emailForm.patchValue({changed: true}); //позначаємо лист як змінений
+        //this.emailForm.patchValue({changed: true}); //позначаємо лист як змінений
         let newMessage = data;
         if(this.bodyFilesArray.length > 0){
           this.bodyFilesArray.forEach(element => {
@@ -181,23 +206,27 @@ export class EmailComponent implements OnInit, OnDestroy{
   }
 
   saveMessage(){
+    //if(this.emailForm.get('message').dirty || this.emailForm.get('subject').dirty) this.emailForm.patchValue({changed: true}); //позначаємо лист як змінений
     let sendingData = this.emailForm.value;
     console.log("sendingData: ", sendingData);
-    let get=this.server.post(sendingData, 'saveMessage').subscribe((data:{id}) =>{
+    let get=this.server.post(sendingData, 'saveMessage').subscribe((data:any) =>{
       console.log("res data: ", data);
       // перевіряємо права користувача, видаємо повідомлення, якщо немає прав 
       if(data[0] && this.server.accessIsDenied(data[0].rights)) return get.unsubscribe();
-      if(data){
-        this.mail.setMessageID(data.id);
-        this.emailForm.patchValue({messageID: data.id});
-        
-        console.log("unsubscribe")
-        return get.unsubscribe();
+      if(data.id){
+        //this.mail.setMessageID(data.id);
+        //this.emailForm.patchValue({messageID: data.id});
       }
+      if(data.messageID){
+        this.mail.setCurrentMessage(data.messageID);
+      }
+      console.log("unsubscribe")
+      return get.unsubscribe();
     });
   }
 
   replaceSrc(str: string, fileName: string, newSrc: string):string{
+    if (!str) return;
     const pattern = `["'][^"']*${fileName}[^"']*["']`;
     let VRegExp = new RegExp(pattern, 'g');
     return str.replace(VRegExp, `"${newSrc}"`);
@@ -223,12 +252,30 @@ export class EmailComponent implements OnInit, OnDestroy{
     return newFile
   }
 
+  addEmail(){
+    console.log('addEmail work!');
+    this.db.setNavDB('visitors');
+  }
+
+  clearEmailList(){
+    this.mail.clearCurrentSendList();
+  }
 
 
   ngOnDestroy(){
     console.log('new message will be closed');
-    this.subSendList.unsubscribe();
     this.subMessage.unsubscribe();
+
+    //зберігаємо зміни в обєкт Message
+    let arr = [
+      {key: 'subject', val: this.emailForm.get('subject').value},
+      {key: 'message', val: this.emailForm.get('message').value},
+      {key: 'attachments', val: this.emailForm.get('attach').value},
+      {key: 'body_files', val: this.emailForm.get('body_files').value},
+      {key: 'id', val: this.emailForm.get('messageID').value},
+      {key: 'changed', val: this.emailForm.get('changed').value}
+    ]
+    this.mail.setMessage(arr);
   }
 
 }

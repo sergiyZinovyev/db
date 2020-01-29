@@ -18,6 +18,9 @@ const sharedController = require('./server/controllers/shared');
 const Secure = require('./server/config');
 //підключаємо внутрішні модулі
 const eventsHandler = require('./server/modules/eventshandler');
+//підключаємо моделі
+const emailMod = require('./server/models/email-mod');
+const sqlEmail = require('./server/models/sql-email');
 
 
 const urlencodedParser = bodyParser.urlencoded({extended: false});
@@ -76,8 +79,10 @@ function sendEventAllClients(message){
 }
 
 //прослуховуємо події та робимо розсилки
-emailController.emitter.on('mailingStarted', message => eventsHandler.getMailing(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
-emailController.emitter.on('mailingSended', message => eventsHandler.getMailing(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
+emailMod.emitter.on('mailingSaved', message => eventsHandler.getMailing(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
+emailMod.emitter.on('mailingSended', message => eventsHandler.getMailing(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
+sqlEmail.emitter.on('createEditMessage', message => eventsHandler.getMessage(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
+sqlEmail.emitter.on('editVisitorsMailingLists', message => eventsHandler.getEmail(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
 
 wss.on('connection', (ws) => {
   ws.on('message', function incoming(message) {
@@ -156,8 +161,17 @@ app.get("/getMailingList", authController.checkAuth, emailController.getMailingL
 //отримання вказаної розсилки
 app.get("/getDataMailing", authController.checkAuth, emailController.getDataMailing);
 
-//отримання отримання обраного листа
+//отримання обраного листа (всього)
 app.get("/getCurrentMessage", authController.checkAuth, emailController.getFullMessage);
+
+//отримання масиву всіх листів
+app.get("/getAllMessages", authController.checkAuth, emailController.getAllMessages);
+
+//отримати запис по id з messages
+app.get("/getMessage", authController.checkAuth, emailController.getMessage);
+
+//отримання даних зі списку розсилкок по mail_list_id
+app.get("/getVisitorsMailingList", authController.checkAuth, emailController.getVisitorsMailingList);
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 

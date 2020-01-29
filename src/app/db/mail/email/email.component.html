@@ -11,12 +11,36 @@
             </div>
             <div class="col  ">
                 <div class="row no-gutter">
-                    <div class="col-auto   d-flex align-items-center">
+                    <div class="col-auto   d-flex align-items-center"> 
                         <div class="legend text-right  ">Кому:</div>
                     </div>
                     <div class="col example-input  ">
-                        <input class='send-form p-1' placeholder="" formControlName="to">
-                    </div> 
+                        <input 
+                            class='send-form p-1' 
+                            placeholder="" 
+                            formControlName="to"
+                            (click)='addEmail()'
+                            readonly='true'>
+                    </div>
+                    <div class="col-auto to-btn">
+                        
+                        <button 
+                            mat-icon-button 
+                            color="primary"
+                            matTooltip="Очистити список емейлів" 
+                            aria-label="Example icon-button with a heart icon" 
+                            (click)='clearEmailList()'>
+                            <mat-icon>remove_circle</mat-icon>
+                        </button>
+                        <button 
+                            mat-icon-button 
+                            color="primary"
+                            matTooltip="Додати ще емейлів" 
+                            aria-label="Example icon-button with a heart icon" 
+                            (click)='addEmail()'>
+                            <mat-icon>add_circle</mat-icon>
+                        </button>
+                    </div>
                 </div>
                 <div class="row no-gutter">
                     <div class="col-auto   d-flex align-items-center">

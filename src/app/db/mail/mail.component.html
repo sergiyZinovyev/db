@@ -1,92 +1,92 @@
-<!-- форма для створення листа -->
-<!-- <div class="add-item" *ngIf="isAddingItemSendEmail">
-    <div class="back-add-item-element overflow-auto w-75">
-        <div class="panel-add-item-element d-flex justify-content-between align-items-center sticky-top">
-            <div class="header-panel-add-item-element"><strong>Надіслати лист</strong></div>
-            <button 
-                mat-icon-button 
-                matTooltip="Закрити" 
-                aria-label="Example icon-button with a heart icon" 
-                (click)='newElement("isAddingItemSendEmail")'>
-                <mat-icon>close</mat-icon>
-            </button>
-        </div>
-        <div class="p-3 overflow-auto">
-            <app-email></app-email> 
-        </div> 
-    </div>  
-</div> -->
-
-<mat-sidenav-container class="example-container" hasBackdrop="false">
+<mat-sidenav-container class="example-container" hasBackdrop="false"> 
     <mat-sidenav 
         #drawer1
         opened
         class="example-sidenav" 
         mode="side">
         <div class="panel-add-item-element d-flex justify-content-between align-items-center sticky-top">
-            <div class="header-panel-add-item-element">Список розсилок</div>
+            <div class="header-panel-add-item-element">Розсилки</div>
         </div>
         <div class="mx-1 mailinglist">
             <app-mailinglist></app-mailinglist>
         </div>
-    </mat-sidenav
-    >
+    </mat-sidenav>
     <mat-sidenav-content>
-
         <mat-sidenav-container class="example-container" hasBackdrop="false">
             <mat-sidenav 
-                #drawer2
-                opened
+                #drawer3
+                closed
                 class="example-sidenav" 
                 mode="side">
                 <div class="panel-add-item-element d-flex justify-content-between align-items-center sticky-top">
-                    <div class="header-panel-add-item-element">Розсилка</div>
+                    <div class="header-panel-add-item-element">Список листів</div>
+                </div>
+                <div class="mx-1 mailinglist">
+                    <app-messageslist></app-messageslist>
                 </div>
             </mat-sidenav>
+ 
             <mat-sidenav-content>
                 <div class="panel-add-item-element d-flex justify-content-between align-items-center sticky-top">
                     <div class="example-button-group">
                         <button 
                             mat-icon-button 
-                            matTooltip="Список розсилок" 
+                            matTooltip="Розсилки" 
                             aria-label="Example icon-button with a heart icon" 
                             (click)='drawer1.toggle()'>
                             <mat-icon>list_alt</mat-icon>
                         </button>
                         <button 
                             mat-icon-button 
-                            matTooltip="Розсилка" 
+                            matTooltip="Список листів" 
+                            aria-label="Example icon-button with a heart icon" 
+                            (click)='drawer3.toggle()'>
+                            <mat-icon>mail</mat-icon>
+                        </button>
+                        <button 
+                            mat-icon-button 
+                            matTooltip="Деталі розсилки" 
                             aria-label="Example icon-button with a heart icon" 
                             (click)='drawer2.toggle()'>
-                            <mat-icon>view_list</mat-icon>
+                            <mat-icon>settings</mat-icon>
                         </button>
                         <button 
                             mat-icon-button 
                             matTooltip="Нова розсилка" 
                             aria-label="Example icon-button with a heart icon" 
                             (click)='newMailing()'>
-                            <mat-icon>mail</mat-icon>
+                            <mat-icon>fiber_new</mat-icon>
                         </button>
-                        <!-- <button 
-                            mat-icon-button 
-                            matTooltip="socket" 
-                            aria-label="Example icon-button with a heart icon" 
-                            (click)='sendSocket("test message")'>
-                            <mat-icon>mail</mat-icon>
-                        </button> -->
                     </div>
                     <div class="flex-grow-1">
                         <div class="message-name">{{nameMailing}}</div>
                     </div>
                 </div>
-                <div class="conteiner-email">
-                    <div class="email" *ngIf="isAddingItemSendEmail">
-                        <app-email></app-email>
-                    </div>
-                </div>
-            </mat-sidenav-content> 
-        </mat-sidenav-container>
 
+                <mat-sidenav-container class="example-container" hasBackdrop="false">
+                    
+                    <mat-sidenav 
+                        #drawer2
+                        [opened] = 'visible'
+                        class="example-sidenav-emaillist" 
+                        mode="side">
+                        <div class="header-email-list">
+                            <app-emaillist></app-emaillist>
+                        </div> 
+                    </mat-sidenav>
+                    <mat-sidenav-content>
+                        <div class="conteiner-email">
+                            <div class="email" >
+                                <!-- *ngIf="isAddingItemSendEmail" --> 
+                                <app-email></app-email>
+                            </div>
+                        </div> 
+                    </mat-sidenav-content> 
+                </mat-sidenav-container>
+
+            </mat-sidenav-content>
+
+        </mat-sidenav-container>
     </mat-sidenav-content> 
 </mat-sidenav-container>
   
