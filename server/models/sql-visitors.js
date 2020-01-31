@@ -1,4 +1,8 @@
 const db = require('../db');
+const EventEmitter = require('events');
+
+const emitter = new EventEmitter();
+exports.emitter = emitter;
 
 //визначення наступного унікального id(regnum) для нового запису
 exports.nextRegnum = function(result){
@@ -307,7 +311,8 @@ exports.getRowOnCondFromTable = function(dataVisitor, fild, table, cb){
 exports.delete = function(table, id, cb){
   let sql = `DELETE FROM ${table} WHERE regnum IN (${id})`;
   db.get().query(sql, function(err, data) {
-    cb(err, data)
+    emitter.emit('deleteVisitor', {'table': table, 'id': id});
+    cb(err, data) 
   })
 }
 

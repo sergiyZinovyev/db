@@ -21,6 +21,7 @@ const eventsHandler = require('./server/modules/eventshandler');
 //підключаємо моделі
 const emailMod = require('./server/models/email-mod');
 const sqlEmail = require('./server/models/sql-email');
+const sqlVisitors = require('./server/models/sql-visitors');
 
 
 const urlencodedParser = bodyParser.urlencoded({extended: false});
@@ -83,6 +84,8 @@ emailMod.emitter.on('mailingSaved', message => eventsHandler.getMailing(message)
 emailMod.emitter.on('mailingSended', message => eventsHandler.getMailing(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
 sqlEmail.emitter.on('createEditMessage', message => eventsHandler.getMessage(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
 sqlEmail.emitter.on('editVisitorsMailingLists', message => eventsHandler.getEmail(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
+sqlVisitors.emitter.on('deleteVisitor', message => eventsHandler.getDelData(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
+
 
 wss.on('connection', (ws) => {
   ws.on('message', function incoming(message) {

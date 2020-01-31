@@ -27,7 +27,7 @@ export class MailService {
     private server: ServerService
   ) { }
 
- //-------------------------------------------------------------------------------------------------
+ //------------------------------------------------------------------------------------------------- 
 
   addToCurrentSendList(arrOfObj: IUser[]): void{
     this.currentMessage.addToSendList(arrOfObj);
@@ -88,29 +88,32 @@ export class MailService {
     this.getMessage.next(this.currentMessage);
   }
 
-//-------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------- 
 // sockets
 
   subSockets: Subscription; //підписка на сокети
 
   //підписитися на сокети
   getSubSockets(){
-    this.subSockets = this.server.onSocket().subscribe((data_s: {event: string, data: any}) => {
-      console.log('Socket data: ',data_s);
+    this.subSockets = this.server.socketMessage.subscribe((data_s: {event: string, data: any}) => {
+      //console.log('Socket data: ',data_s);
       switch (data_s.event) {
 
         case 'getMailingPlus': 
           console.log('виконуємо handlerGetMailingPlus');
+          console.log('Socket data: ',data_s);
           this.handlerGetMailingPlus(data_s.data[0]);
           break;
 
         case 'createEditMessage': 
           console.log('виконуємо handlerCreateEditMessage');
+          console.log('Socket data: ',data_s);
           this.handlerCreateEditMessage(data_s.data[0]);
           break;
 
         case 'editVisitorsMailingLists': 
           console.log('виконуємо editVisitorsMailingLists');
+          console.log('Socket data: ',data_s);
           let newData: IUser = data_s.data[0];
           console.log('editVisitorsMailingLists: ',newData);
           //this.currentMessage.updateSendList(newData);

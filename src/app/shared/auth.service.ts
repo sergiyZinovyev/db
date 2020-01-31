@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { ServerService } from '../shared/server.service';
+import { VisitorsService } from '../shared/visitors.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,8 +11,10 @@ export class AuthService {
 
 
   constructor(
+    private visitorsService: VisitorsService,
     private router: Router,
     private server: ServerService
+
   ) { }
 
 
@@ -25,8 +28,10 @@ export class AuthService {
         localStorage.setItem('user', user.login);
         localStorage.setItem('password', user.password);
         localStorage.setItem('id', data[1].id);
-        localStorage.setItem('access rights', data[1].accessRights);
+        localStorage.setItem('access rights', data[1].accessRights); 
         localStorage.setItem('token', data[1].token);
+        this.visitorsService.getVisitors('visitors');
+        this.server.onSocket();
         this.router.navigate(['db']);
       }
       else if(data[0].login == 'true' && data[0].password == 'false'){

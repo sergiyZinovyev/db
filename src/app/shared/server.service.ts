@@ -126,14 +126,16 @@ export class ServerService {
     this.wss.onopen = () => console.log("[open] Connection established");
   }
 
-  onSocket():Subject<any>{
+  socketMessage: Subject<any> = new Subject();
+
+  onSocket(){
     let socketMessage: Subject<any> = new Subject();
     this.wss.onmessage = (event) => {
       if(event.data != `socket connect` && event.data != `test message`){
-        socketMessage.next(JSON.parse(event.data));
+        this.socketMessage.next(JSON.parse(event.data));
       }
     }
-    return socketMessage
+    //return socketMessage
   }
 
 }

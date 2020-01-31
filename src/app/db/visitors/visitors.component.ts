@@ -4,23 +4,27 @@ import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatSort} from '@angular/material/sort';
 import { Router } from '@angular/router';
-import { ServerService } from '../../shared/server.service';
-import { ModulesService } from '../../shared/modules.service';
-import { MailService } from '../../shared/mail.service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {FormControl} from '@angular/forms';
 import { Subscribable } from 'rxjs';
-import {IUser, IMessage, IMailingLists} from '../mail/mailInterface';
+
+import { ServerService } from '../../shared/server.service';
+import { ModulesService } from '../../shared/modules.service';
+import { MailService } from '../../shared/mail.service';
 import { DbService } from '../../shared/db.service';
+import { VisitorsService } from '../../shared/visitors.service';
 
-export interface BDVisitors {
-  cellphone: string;
-  city: string;
-  email: string;
-  prizv: string;
-  regnum: number;
-}
+import {IUser, IMessage, IMailingLists} from '../mail/mailInterface';
+import { IVisitor } from '../visitors/visitorsinterface';
 
+
+// export interface BDVisitors {
+//   cellphone: string;
+//   city: string;
+//   email: string;
+//   prizv: string;
+//   regnum: number;
+// }
 
 @Component({
   selector: 'app-visitors',
@@ -34,8 +38,8 @@ export interface BDVisitors {
     ]),
   ],
 })
-export class VisitorsComponent implements OnInit {
 
+export class VisitorsComponent implements OnInit {
   i = 20;
   name: string = "База відвідувачів";
   disabledColor = 'rgb(150, 150, 150)';
@@ -43,7 +47,7 @@ export class VisitorsComponent implements OnInit {
   headerTextColor = 'rgb(0, 255, 255)';
   nameBut: string = "Заявки на внесення";
 
-  myTable: string = 'visitors'; //назва таблиці в базі
+  myTable: 'visitors'|'visitors_create'|'visitors_edit' = 'visitors'; //назва таблиці в базі 
 
   disabled: boolean = false;
 
@@ -87,6 +91,7 @@ export class VisitorsComponent implements OnInit {
 
   constructor(
     private server: ServerService,
+    private visitorsService: VisitorsService,
     private module: ModulesService,
     private router: Router,
     private mail: MailService,
@@ -94,6 +99,16 @@ export class VisitorsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    // якщо на сервісі ще немає підписок на таблиці то запускаємо їх
+    if (!this.visitorsService.sub_visitors) this.visitorsService.getVisitors('visitors');
+    if (!this.visitorsService.sub_visitors_create) this.visitorsService.getVisitors('visitors_create');
+    if (!this.visitorsService.sub_visitors_edit) this.visitorsService.getVisitors('visitors_edit');
+
+    if(!this.visitorsService.subSockets){
+      this.visitorsService.getSubSockets(); //запускаємо на сервісі підписку на сокети
+      console.log('Sockets subscribed!!!');
+    }
+
     this.getDisabled();
     this.dataSource.paginator = this.paginator;
     this.getBd('visitors');
@@ -101,30 +116,28 @@ export class VisitorsComponent implements OnInit {
   }
 
   getArrOfFilter(){
-    setTimeout(() =>{
-        //console.log('filtr work: ', this.exhibs.value);
-        return this.exhibs.value
-      },
-      10
-    )
-    
+    setTimeout(() => this.exhibs.value, 10)
   }
                                                                                                                       
 
 
-  getBd(nameTable){
-    this.isLoadingResults = true;
+  getBd(nameTable: 'visitors'|'visitors_create'|'visitors_edit'){
+    if(this.myTable == 'visitors')this.isLoadingResults = true;
     this.keyData = []; 
-    this.server.getVisitors(nameTable).subscribe(data =>{
+    //this.server.getVisitors(nameTable).subscribe(data =>{
+    this.visitorsService[nameTable].subscribe(data =>{  
       console.log("data: ", data);
-      this.isLoadingResults = false;
+      //this.isLoadingResults = false;
+      if(data[0])this.isLoadingResults = false;
+      // if(!data[0]){
+      // //if(!data){
+      //   //this.dataSource.data = [];
+      //   //return;
+      // }
+      
 
-      if(!data[0]){
-        this.dataSource.data = [];
-        return;
-      }
+      //this.server.accessIsDenied(data[0].rights);
 
-      this.server.accessIsDenied(data[0].rights);
       for (var key in data[0]) {
         this.keyData.push(key)
       }
@@ -135,47 +148,52 @@ export class VisitorsComponent implements OnInit {
         //console.log("this.keyData2: ", this.keyData);
       }
 
-      //console.log("this.keyData2: ", this.keyData);
-      this.viewData = [];
-      for(let i=0; i>=0; i++){
-        if(!data[i]){break};
-        this.viewData.push({
-          cellphone: data[i].cellphone,
-          city: data[i].city, 
-          email: data[i].email, 
-          prizv: data[i].prizv, 
-          regnum: data[i].regnum,
-          potvid: data[i].potvid,
-          name: data[i].name,
-          namepovne: data[i].namepovne,
-          postaddreses: data[i].postaddreses,
-          pobatkovi: data[i].pobatkovi,
-          gender: data[i].gender,
-          m_robotu: data[i].m_robotu,
-          sferadij: data[i].sferadij,
-          posada: data[i].posada,
-          type: data[i].type,
-          kompeten: data[i].kompeten, 
-          datawnesenny: this.module.dateFormat(data[i].datawnesenny),
-          datelastcor: this.module.dateFormat(data[i].datelastcor),
-          ins_user: data[i].ins_user,
-          realname: data[i].realname,
-          countryid: data[i].countryid,
-          country: data[i].country,
-          postindeks: data[i].postindeks,
-          regionid: data[i].regionid,
-          region: data[i].region,
-          address: data[i].address,
-          telephon: data[i].telephon,
-          rating: data[i].rating,
-          visited_exhib: data[i].visited_exhib,
-        })
-        this.i = i+1;
-      }
-      this.dataSource.data = this.viewData.sort(this.compareNumeric);
+      //console.log("this.keyData2: ", this.keyData); 
+      this.viewData = data;
+      // this.viewData = [];
+      // for(let i=0; i>=0; i++){
+      //   if(!data[i]){break};
+      //   this.viewData.push({
+      //     cellphone: data[i].cellphone,
+      //     city: data[i].city, 
+      //     email: data[i].email, 
+      //     prizv: data[i].prizv, 
+      //     regnum: data[i].regnum,
+      //     potvid: data[i].potvid,
+      //     name: data[i].name,
+      //     namepovne: data[i].namepovne,
+      //     postaddreses: data[i].postaddreses,
+      //     pobatkovi: data[i].pobatkovi,
+      //     gender: data[i].gender,
+      //     m_robotu: data[i].m_robotu,
+      //     sferadij: data[i].sferadij,
+      //     posada: data[i].posada,
+      //     type: data[i].type,
+      //     kompeten: data[i].kompeten, 
+      //     datawnesenny: this.module.dateFormat(data[i].datawnesenny),
+      //     datelastcor: this.module.dateFormat(data[i].datelastcor),
+      //     ins_user: data[i].ins_user,
+      //     realname: data[i].realname,
+      //     countryid: data[i].countryid,
+      //     country: data[i].country,
+      //     postindeks: data[i].postindeks,
+      //     regionid: data[i].regionid,
+      //     region: data[i].region,
+      //     address: data[i].address,
+      //     telephon: data[i].telephon,
+      //     rating: data[i].rating,
+      //     visited_exhib: data[i].visited_exhib,
+      //   })
+      //   this.i = i+1;
+      // }
+      this.dataSource.data = this.viewData.sort(this.module.compareByField('regnum'));
       //this.dataSource.data = this.viewData;
       console.log("viewData: ", this.viewData);
     });
+  }
+
+  dateFormat(date){
+    return this.module.dateFormat(date)
   }
 
   editDataSource(action){
@@ -199,12 +217,6 @@ export class VisitorsComponent implements OnInit {
       default:
         break;
     }
-  }
-
-  compareNumeric(a, b) {
-    if (a.regnum < b.regnum) return 1;
-    if (a.regnum == b.regnum) return 0;
-    if (a.regnum > b.regnum) return -1;
   }
 
   deleteElementDataSource(dataSource, val){
@@ -381,7 +393,9 @@ export class VisitorsComponent implements OnInit {
     this.selection.clear();
     this.arrOfCheckId = [];
     this.clearFilter();
-    this.getBd(this.myTable);
+    this.visitorsService.getVisitors(this.myTable);
+    if(this.myTable == 'visitors')this.isLoadingResults = true;
+    //this.getBd(this.myTable);
 
   }
 

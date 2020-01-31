@@ -1423,7 +1423,7 @@ let deleteIn = function(req, tableName, cb) {
                         }
                         cb(err, doc);
                     });
-                }    
+                }     
             }
         }
     })   

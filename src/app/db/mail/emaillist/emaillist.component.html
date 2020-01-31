@@ -47,7 +47,8 @@
 <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport">
     <!-- <div *cdkVirtualFor='let email of emailList; let i = index'> -->
     <div *ngFor='let email of emailList; let i = index'>
-        <div class="d-flex list align-items-center"> 
+        <!-- <div class="d-flex list align-items-center" #element *ngIf = 'element.getBoundingClientRect().top == 600'> -->
+        <div class="d-flex list align-items-center">    
             <div class="name" (click)='getUserData(email.id)' [matTooltip]="email.namepovne+' ('+email.email+')'">
                 <div class="mailing-name text-truncate">{{email.email}}</div>
                 <div class="sender-name text-truncate">{{email.namepovne}}</div>
@@ -72,7 +73,7 @@
                 (click)='delEmail(email.regnum)'
                 matTooltip="Видалити адресу"> 
                 <mat-icon>clear</mat-icon>
-            </div>
+            </div> 
         </div>
     </div> 
 </cdk-virtual-scroll-viewport>

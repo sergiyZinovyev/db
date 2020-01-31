@@ -263,5 +263,20 @@ findOdjInArrObj(array: any[], keyVal: string, val: any) {
       };
     })
   }
+
+// ----------------------------------------------------------------------------------------------------------  
+
+  // used as an argument to the sort method 
+  compareByField(field?: string, sort: 'asc'|'desc' = 'desc'): Function {
+    if(field){
+      if(sort == 'desc'){return (a: any, b: any) => a[field] < b[field] ? 1 : -1}
+      else return (a: any, b: any) => a[field] > b[field] ? 1 : -1
+    }
+    else {
+      if(sort == 'desc'){return (a: any, b: any) => a < b ? 1 : -1}
+      else return (a: any, b: any) => a > b ? 1 : -1
+    }
+  }
+
   
 }

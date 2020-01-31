@@ -52,8 +52,20 @@ exports.getEmail = function(d){
                 event: 'editVisitorsMailingLists',
                 data: doc
             }
-            return resolve(JSON.stringify(data))
+            return resolve(JSON.stringify(data)) 
         }) 
+    })
+}
+
+// дані які були видалені
+exports.getDelData = function(d){
+    console.log('########################### Message from socket getDelData ##########################', d);
+    return new Promise((resolve, reject) => {
+        let data = {
+            event: 'getDelData',
+            data: d
+        }
+        return resolve(JSON.stringify(data)) 
     })
 }
 

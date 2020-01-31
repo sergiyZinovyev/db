@@ -186,7 +186,7 @@ exports.getDataMailing = function(id, cb){
   })
 }
 
-//отримання масиву всіх даних для розсилки (повертає масив id розсилок) 
+//отримання масиву всіх даних для розсилки (повертає масив id розсилок)  
 exports.getDataMailingAll = function(id, cb){
   let sql = `SELECT id FROM
   (SELECT id, is_send, mail_list_id as ml_id, email, namepovne FROM visitors_mailing_lists) AS list

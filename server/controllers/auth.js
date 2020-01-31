@@ -112,7 +112,7 @@ exports.users = function(req, res) {
         }
 	});
 };
-
+ 
 //-----------------------------------------------------------------------------------------------------------   
 // підтвердження пароля
 exports.checkAuth = function(req, res, next){
@@ -122,6 +122,7 @@ exports.checkAuth = function(req, res, next){
             return res.sendStatus(500);
         }
         else {
+            if(!doc) return res.sendStatus(500);
             console.log('rights cb: ', doc.insupdvisitors);
             if(![1,2,3,4,5].includes(doc.insupdvisitors)){  
                 console.log('у вас немає прав доступу: ', doc.insupdvisitors);
