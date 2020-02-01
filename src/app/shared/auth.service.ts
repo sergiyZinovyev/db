@@ -31,7 +31,7 @@ export class AuthService {
         localStorage.setItem('access rights', data[1].accessRights); 
         localStorage.setItem('token', data[1].token);
         this.visitorsService.getVisitors('visitors');
-        this.server.onSocket();
+        //this.server.onSocket();
         this.router.navigate(['db']);
       }
       else if(data[0].login == 'true' && data[0].password == 'false'){

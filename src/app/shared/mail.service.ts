@@ -95,6 +95,11 @@ export class MailService {
 
   //підписитися на сокети
   getSubSockets(){
+    if(!this.server.wss.onmessage){
+      console.log('~~~~~~~~~~~~~~~~ run socket listening ~~~~~~~~~~~~~~~~');
+      this.server.onSocket();
+    }
+    else console.log('~~~~~~~~~~~~~~~~ sockets are already listening ~~~~~~~~~~~~~~~~');
     this.subSockets = this.server.socketMessage.subscribe((data_s: {event: string, data: any}) => {
       //console.log('Socket data: ',data_s);
       switch (data_s.event) {

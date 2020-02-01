@@ -26,7 +26,6 @@ export class VisitorsService {
   ) { }
 
   getVisitors(nameTable: 'visitors'|'visitors_create'|'visitors_edit'): void{
-    //if(!this['sub_'+nameTable] || !this[nameTable]) return;
     this[nameTable].next(new Array());
     this['sub_'+nameTable] = this.server.getVisitors(nameTable).pipe(
       map((vl:any): IVisitor[] => Array.from(vl))
@@ -42,11 +41,23 @@ export class VisitorsService {
 
   subSockets: Subscription; //підписка на сокети
 
-  //підписитися на сокети
+  //підписатися на сокети
   getSubSockets(){
+    if(!this.server.wss.onmessage){
+      console.log('~~~~~~~~~~~~~~~~ run socket listening ~~~~~~~~~~~~~~~~');
+      this.server.onSocket();
+    }
+    else console.log('~~~~~~~~~~~~~~~~ sockets are already listening ~~~~~~~~~~~~~~~~');
     this.subSockets = this.server.socketMessage.subscribe((data_s: {event: string, data: any}) => {
       //console.log('Socket data: ',data_s);
       switch (data_s.event) {
+
+        case 'break connection':
+          console.log('падіння сервера, потрібно перезавантажити дані');
+          console.log('Socket data: ',data_s);
+          this.getVisitors('visitors');
+          // функція обробник сокета
+          break;
 
         case 'getDelData': 
           console.log('виконуємо getDelData');

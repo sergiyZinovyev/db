@@ -129,13 +129,26 @@ export class ServerService {
   socketMessage: Subject<any> = new Subject();
 
   onSocket(){
-    let socketMessage: Subject<any> = new Subject();
+
+    setInterval(()=>{
+      console.log('~~~~~~~~~~~~~~~~ socket.readyState: ' + this.wss.readyState + ' ~~~~~~~~~~~~~~~~');
+      if (this.wss.readyState != 1) {
+        this.socketMessage.next({event: 'break connection', data: this.wss.readyState});
+        this.wss = new WebSocket(this.wssUrl);
+        this.wss.onmessage = (event) => {
+          if(event.data != `socket connect` && event.data != `test message`){
+            this.socketMessage.next(JSON.parse(event.data));
+          }
+        }
+      }
+    }, 5000);
+
     this.wss.onmessage = (event) => {
       if(event.data != `socket connect` && event.data != `test message`){
         this.socketMessage.next(JSON.parse(event.data));
       }
     }
-    //return socketMessage
+
   }
 
 }
