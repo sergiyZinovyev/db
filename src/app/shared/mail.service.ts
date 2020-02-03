@@ -4,6 +4,7 @@ import { map } from 'rxjs/operators';
 import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms';
 import { ServerService } from '../shared/server.service';
 import {IUser, IMessage, IMailingLists, IMessageInfo} from '../db/mail/mailInterface';
+import { ISocketEvent } from '../shared/common_interfaces/interfaces';
 import { ModulesService } from '../shared/modules.service'; 
 import { Message } from '../db/mail/message';
 
@@ -100,7 +101,7 @@ export class MailService {
       this.server.onSocket();
     }
     else console.log('~~~~~~~~~~~~~~~~ sockets are already listening ~~~~~~~~~~~~~~~~');
-    this.subSockets = this.server.socketMessage.subscribe((data_s: {event: string, data: any}) => {
+    this.subSockets = this.server.socketMessage.subscribe((data_s: ISocketEvent) => {
       //console.log('Socket data: ',data_s);
       switch (data_s.event) {
 

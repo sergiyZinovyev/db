@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild, OnDestroy} from '@angular/core';
 import {SelectionModel} from '@angular/cdk/collections';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
@@ -6,7 +6,7 @@ import {MatSort} from '@angular/material/sort';
 import { Router } from '@angular/router';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {FormControl} from '@angular/forms';
-import { Subscribable } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 import { ServerService } from '../../shared/server.service';
 import { ModulesService } from '../../shared/modules.service';
@@ -39,7 +39,7 @@ import { IVisitor } from '../visitors/visitorsinterface';
   ],
 })
 
-export class VisitorsComponent implements OnInit {
+export class VisitorsComponent implements OnInit, OnDestroy {
   i = 20;
   name: string = "База відвідувачів";
   disabledColor = 'rgb(150, 150, 150)';
@@ -72,7 +72,7 @@ export class VisitorsComponent implements OnInit {
   
   expandedElement;
 
-  isLoadingResults = true;
+  isLoadingResults: boolean;
   isAddingItem = false;
   //isAddingItemSendEmail = false;
 
@@ -85,6 +85,8 @@ export class VisitorsComponent implements OnInit {
 
   selection = new SelectionModel(true, []); // данні для вибірки
   arrOfCheckId = [];
+
+  subDataTable: Subscription;
   
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
@@ -104,10 +106,13 @@ export class VisitorsComponent implements OnInit {
     if (!this.visitorsService.sub_visitors_create) this.visitorsService.getVisitors('visitors_create');
     if (!this.visitorsService.sub_visitors_edit) this.visitorsService.getVisitors('visitors_edit');
 
-    if(!this.visitorsService.subSockets){
-      this.visitorsService.getSubSockets(); //запускаємо на сервісі підписку на сокети
-      console.log('Sockets subscribed!!!');
-    }
+    // якщо на сервісі ще немає підписок на моделі таблиць то запускаємо їх
+    if (!this.visitorsService.sub_model_visitors)this.visitorsService.getModel('visitors');
+    if (!this.visitorsService.sub_model_visitors_create)this.visitorsService.getModel('visitors_create');
+    if (!this.visitorsService.sub_model_visitors_edit)this.visitorsService.getModel('visitors_edit');
+
+    // якщо на сервісі немає підписки на сокети то запускаємо її
+    if(!this.visitorsService.subSockets) this.visitorsService.getSubSockets();
 
     this.getDisabled();
     this.dataSource.paginator = this.paginator;
@@ -122,13 +127,15 @@ export class VisitorsComponent implements OnInit {
 
 
   getBd(nameTable: 'visitors'|'visitors_create'|'visitors_edit'){
-    if(this.myTable == 'visitors')this.isLoadingResults = true;
+    //if(this.myTable == 'visitors')this.isLoadingResults = true;
     this.keyData = []; 
     //this.server.getVisitors(nameTable).subscribe(data =>{
-    this.visitorsService[nameTable].subscribe(data =>{  
+    this.subDataTable = this.visitorsService[nameTable].subscribe(subData =>{
+      let data = subData.data;
+      subData.state ? this.isLoadingResults = false : this.isLoadingResults = true;
       console.log("data: ", data);
       //this.isLoadingResults = false;
-      if(data[0])this.isLoadingResults = false;
+      //if(data[0])this.isLoadingResults = false;
       // if(!data[0]){
       // //if(!data){
       //   //this.dataSource.data = [];
@@ -187,6 +194,7 @@ export class VisitorsComponent implements OnInit {
       //   this.i = i+1;
       // }
       this.dataSource.data = this.viewData.sort(this.module.compareByField('regnum'));
+      this.filter(this.filterData);
       //this.dataSource.data = this.viewData;
       console.log("viewData: ", this.viewData);
     });
@@ -200,7 +208,7 @@ export class VisitorsComponent implements OnInit {
     this.isLoadingResults = true;
     switch (action[0]) {
       case 'delete':{
-          this.deleteElementDataSource(this.viewData, action[1]);
+          //this.deleteElementDataSource(this.viewData, action[1]);
         }
         break;
 
@@ -219,31 +227,31 @@ export class VisitorsComponent implements OnInit {
     }
   }
 
-  deleteElementDataSource(dataSource, val){
-    console.log('dataSource: ', dataSource);
-    console.log('val: ', val);
-    if(!Array.isArray(val)){
-      //визначаємо номер елемента масива 
-      let id = this.module.checkArrOfObjIdValField(dataSource, 'regnum', val);
-      if(id >= 0){
-        dataSource.splice(id, 1);
-      }    
-    }
-    else{
-      for (let index = 0; index < val.length; index++) {
-        const element = val[index];
-        let id = this.module.checkArrOfObjIdValField(dataSource, 'regnum', element);
-        if(id >= 0){
-          dataSource.splice(id, 1);
-        }
-      }
-    }
-    console.log('dataSource2: ', dataSource);
-    this.dataSource.data = this.viewData;
-    //застосовуємо фільтр, якщо він є 
-    this.filter(this.filterData);
-    this.isLoadingResults = false;
-  }
+  // deleteElementDataSource(dataSource, val){
+  //   // console.log('dataSource: ', dataSource);
+  //   // console.log('val: ', val);
+  //   // if(!Array.isArray(val)){
+  //   //   //визначаємо номер елемента масива 
+  //   //   let id = this.module.checkArrOfObjIdValField(dataSource, 'regnum', val);
+  //   //   if(id >= 0){
+  //   //     dataSource.splice(id, 1);
+  //   //   }    
+  //   // }
+  //   // else{
+  //   //   for (let index = 0; index < val.length; index++) {
+  //   //     const element = val[index];
+  //   //     let id = this.module.checkArrOfObjIdValField(dataSource, 'regnum', element);
+  //   //     if(id >= 0){
+  //   //       dataSource.splice(id, 1);
+  //   //     }
+  //   //   }
+  //   // }
+  //   // console.log('dataSource2: ', dataSource);
+  //   // this.dataSource.data = this.viewData;
+  //   //застосовуємо фільтр, якщо він є 
+  //   // this.filter(this.filterData);
+  //   // this.isLoadingResults = false;
+  // }
 
   editElementDataSource(dataSource, val){
     //let saveFilterData = this.filterData; //зберігаємо дані фільтру перед видаленням
@@ -369,21 +377,27 @@ export class VisitorsComponent implements OnInit {
   }
 
   butGetEditTable(){
-    this.myTable = 'visitors_edit'
+    this.subDataTable.unsubscribe()
+    this.myTable = 'visitors_edit';
+    this.clearFilter();
     this.getBd(this.myTable);
     this.name = 'Заявки на зміну';
     this.getHeaderColor()
   }
 
   butGetCreateTable(){
-    this.myTable = 'visitors_create'
+    this.subDataTable.unsubscribe()
+    this.myTable = 'visitors_create';
+    this.clearFilter();
     this.getBd(this.myTable);
     this.name = 'Заявки на внесення';
     this.getHeaderColor()
   }
 
   butGetBd(){
-    this.myTable = 'visitors'
+    this.subDataTable.unsubscribe()
+    this.myTable = 'visitors';
+    this.clearFilter();
     this.getBd(this.myTable);
     this.name = 'База відвідувачів';
     this.getHeaderColor()
@@ -394,7 +408,7 @@ export class VisitorsComponent implements OnInit {
     this.arrOfCheckId = [];
     this.clearFilter();
     this.visitorsService.getVisitors(this.myTable);
-    if(this.myTable == 'visitors')this.isLoadingResults = true;
+    //if(this.myTable == 'visitors')this.isLoadingResults = true;
     //this.getBd(this.myTable);
 
   }
@@ -532,7 +546,7 @@ export class VisitorsComponent implements OnInit {
         if(data){
           console.log("unsubscribe");
           // тут треба видалити список локально
-          this.deleteElementDataSource(this.viewData, this.arrOfCheckId);
+          //this.deleteElementDataSource(this.viewData, this.arrOfCheckId);
           this.selection.clear();
           this.arrOfCheckId = [];
           return post.unsubscribe();
@@ -595,7 +609,7 @@ export class VisitorsComponent implements OnInit {
         if(data){
           console.log("unsubscribe");
           //тут треба видалити список локально 
-          this.deleteElementDataSource(this.viewData, this.arrOfCheckId);
+          //this.deleteElementDataSource(this.viewData, this.arrOfCheckId);
           this.selection.clear();
           this.arrOfCheckId = [];
           return post.unsubscribe();
@@ -714,6 +728,9 @@ export class VisitorsComponent implements OnInit {
   }
  
 
+  ngOnDestroy(){
+    this.subDataTable.unsubscribe();
+  }
 }
 
 
