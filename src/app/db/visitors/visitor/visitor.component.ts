@@ -224,6 +224,7 @@ export class VisitorComponent implements OnInit {
           }
         }
         console.log("unsubscribe");
+        this.isLoading.emit(false);
         return post.unsubscribe();
       }
     });

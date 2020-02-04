@@ -208,7 +208,7 @@ export class VisitorsComponent implements OnInit, OnDestroy {
     this.isLoadingResults = true;
     switch (action[0]) {
       case 'delete':{
-          //this.deleteElementDataSource(this.viewData, action[1]);
+          //this.deleteElementDataSource(this.viewData, action[1]); 
         }
         break;
 
@@ -286,26 +286,27 @@ export class VisitorsComponent implements OnInit, OnDestroy {
   }
 
   createElementDataSource(dataSource, dataObj){
-    // console.log('editElementDataSource is work!');
-    // console.log('dataSource: ', dataSource);
-    console.log('dataObj: ', dataObj);
-    let get2=this.server.post(dataObj, "get3").subscribe(dataGet3 =>{
-      console.log('data[0].regnum:', dataGet3[0].regnum);
-      let val = dataGet3[0].regnum;
-      //let id = this.module.checkArrOfObjIdValField(dataSource, 'regnum', val);
-      let get = this.server.getVisitors(this.myTable, val).subscribe(data =>{
-        if(data[0]){
-          console.log("checkIdVisitor: ", data[0]);
-          dataSource.splice(0, 0, data[0]);
-          this.dataSource.data = this.viewData;
-          //застосовуємо фільтр, якщо він є
-          this.filter(this.filterData);
-        } 
-        get.unsubscribe();  
-      })
-      get2.unsubscribe();
-      this.isLoadingResults = false;
-    })
+    // // console.log('editElementDataSource is work!');
+    // // console.log('dataSource: ', dataSource);
+    // console.log('dataObj: ', dataObj);
+    // let get2=this.server.post(dataObj, "get3").subscribe(dataGet3 =>{
+    //   console.log('data[0].regnum:', dataGet3[0].regnum);
+    //   let val = dataGet3[0].regnum;
+    //   //let id = this.module.checkArrOfObjIdValField(dataSource, 'regnum', val);
+    //   let get = this.server.getVisitors(this.myTable, val).subscribe(data =>{
+    //     if(data[0]){
+    //       console.log("checkIdVisitor: ", data[0]);
+    //       dataSource.splice(0, 0, data[0]);
+    //       this.dataSource.data = this.viewData;
+    //       //застосовуємо фільтр, якщо він є
+    //       this.filter(this.filterData);
+    //     } 
+    //     get.unsubscribe();  
+    //   })
+    //   get2.unsubscribe();
+    //   this.isLoadingResults = false;
+    // })
+    //this.isLoadingResults = false;
     this.newElement('isAddingItem') //закриваємо елемент
   }
 

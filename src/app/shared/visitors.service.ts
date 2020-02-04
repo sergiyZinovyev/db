@@ -86,7 +86,21 @@ export class VisitorsService {
           console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$ implement getDelData');
           console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$ Socket data: ',data_s);
           // функція обробник сокета
-          this.handlerGetDelData(data_s.data)
+          this.handlerGetDelData(data_s.data);
+          break;
+
+        case 'editVisitor': 
+          console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$ implement editVisitor');
+          console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$ Socket data: ',data_s);
+          // функція обробник сокета
+          this.handlerEditVisitor(data_s.data);
+          break;
+
+        case 'createVisitor': 
+          console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$ implement createVisitor');
+          console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$ Socket data: ',data_s);
+          // функція обробник сокета
+          this.handlerCreateVisitor(data_s.data);
           break;
       
         default: break;
@@ -106,17 +120,33 @@ export class VisitorsService {
 
   // remove selected entries
   handlerGetDelData(socketData: {table: string, id: any}): void{
+    //console.log('handlerGetDelData is work');
     let modelData: IVisitor[] = this['model_' + socketData.table].data;
     let stringId: string | number = socketData.id;
     if (typeof stringId == 'number') stringId = String(stringId);
     let socketDataId = stringId.split(', ');
+    let id: number;
     for (let index = 0; index < socketDataId.length; index++) {
       const element = socketDataId[index];
-      let id = this.module.checkArrOfObjIdValField(modelData, 'regnum', element);
+      id = this.module.checkArrOfObjIdValField(modelData, 'regnum', element);
       if(!id) continue;
       if(id >= 0){
         modelData.splice(id, 1);
       }
+    }
+    this[socketData.table].next(new SubData(modelData, true));
+  }
+
+  handlerEditVisitor(socketData){}
+
+  // add new entries
+  handlerCreateVisitor(socketData: {table: string, data: IVisitor[]}): void{
+    let modelData: IVisitor[] = this['model_' + socketData.table].data;
+    //let id: number;
+    for (let index = 0; index < socketData.data.length; index++) {
+      const element = socketData.data[index];
+      //id = this.module.checkArrOfObjIdValField(modelData, 'regnum', element.regnum);
+      modelData.push(element);
     }
     this[socketData.table].next(new SubData(modelData, true));
   }

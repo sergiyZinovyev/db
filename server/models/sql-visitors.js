@@ -178,6 +178,8 @@ exports.create = function(dataVisitor, table, cb){
     ) 
     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
   db.get().query(sql, dataVisitor, function(err, data) {
+    console.log('################################################# create data: ',data);
+    emitter.emit('createVisitor', {'table': table, 'id': dataVisitor[0]});
     cb(err, data)
   })
 }
@@ -214,6 +216,7 @@ exports.createGroup = function(dataVisitors, cb){
     ) 
     VALUES ${dataVisitors}`;
   db.get().query(sql, function(err, data) {
+    console.log('################################################# createGroup data: ',data);
     cb(err, data)
   })
 }
@@ -287,6 +290,8 @@ exports.editPro = function(dataVisitor, table, cb){
   rating=? 
     WHERE regnum=?`;
   db.get().query(sql, dataVisitor, function(err, data) {
+    console.log('################################################# editPro data: ',data);
+    emitter.emit('editVisitor', {'table': table, 'id': dataVisitor[24]});
     cb(err, data)
   })
 }
