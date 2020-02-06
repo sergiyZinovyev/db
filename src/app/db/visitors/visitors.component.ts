@@ -256,33 +256,33 @@ export class VisitorsComponent implements OnInit, OnDestroy {
   editElementDataSource(dataSource, val){
     //let saveFilterData = this.filterData; //зберігаємо дані фільтру перед видаленням
     //this.clearFilter(); //очищуємо фітьтр
-    console.log('editElementDataSource is work!');
-    console.log('dataSource: ', dataSource);
-    console.log('val: ', val);
-    let id: Number;
-    let get = this.server.getVisitors(this.myTable, val).subscribe(data =>{
-      console.log("checkIdVisitor: ", data);
-      if (!Array.isArray(val)){
-        id = this.module.checkArrOfObjIdValField(dataSource, 'regnum', data[0].regnum);
-        if(id >= 0){
-          dataSource.splice(id, 1, data[0]);
-        } 
-      }
-      //якщо обробляється масив...
-      else{
-        for(let key in data){
-          id = this.module.checkArrOfObjIdValField(dataSource, 'regnum', data[key].regnum);
-          if(id >= 0){
-            dataSource.splice(id, 1, data[key]);
-          } 
-        }
-      }
-      this.dataSource.data = this.viewData;
-      //застосовуємо фільтр, якщо він є
-      this.filter(this.filterData);
-      get.unsubscribe();
-      this.isLoadingResults = false;  
-    })
+    // console.log('editElementDataSource is work!');
+    // console.log('dataSource: ', dataSource);
+    // console.log('val: ', val);
+    // let id: Number;
+    // let get = this.server.getVisitors(this.myTable, val).subscribe(data =>{
+    //   console.log("checkIdVisitor: ", data);
+    //   if (!Array.isArray(val)){
+    //     id = this.module.checkArrOfObjIdValField(dataSource, 'regnum', data[0].regnum);
+    //     if(id >= 0){
+    //       dataSource.splice(id, 1, data[0]);
+    //     } 
+    //   }
+    //   //якщо обробляється масив...
+    //   else{
+    //     for(let key in data){
+    //       id = this.module.checkArrOfObjIdValField(dataSource, 'regnum', data[key].regnum);
+    //       if(id >= 0){
+    //         dataSource.splice(id, 1, data[key]);
+    //       } 
+    //     }
+    //   }
+    //   this.dataSource.data = this.viewData;
+    //   //застосовуємо фільтр, якщо він є
+    //   this.filter(this.filterData);
+    //   get.unsubscribe();
+    //   this.isLoadingResults = false;  
+    //})
   }
 
   createElementDataSource(dataSource, dataObj){

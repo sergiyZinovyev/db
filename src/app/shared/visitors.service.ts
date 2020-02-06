@@ -53,8 +53,8 @@ export class VisitorsService {
       console.log('data from getVisitors: ', data);
       this['sub_'+nameTable].unsubscribe();
       this[nameTable].next(new SubData(data, true));
+      this.eventController();
     })
-    //this[nameTable].subscribe(data => this['model_'+nameTable] = data);
   }
 
   getModel(nameTable: 'visitors'|'visitors_create'|'visitors_edit'): void{
@@ -65,6 +65,8 @@ export class VisitorsService {
 
   subSockets: Subscription; //підписка на сокети
 
+  eventsBuffer = []; // буфер даних сокета
+
   //підписатися на сокети
   getSubSockets(){
     if(!this.server.wss.onmessage){
@@ -73,41 +75,54 @@ export class VisitorsService {
     }
     else console.log('~~~~~~~~~~~~~~~~ sockets are already listening ~~~~~~~~~~~~~~~~');
     this.subSockets = this.server.socketMessage.subscribe((data_s: ISocketEvent) => {
-      //console.log('Socket data: ',data_s);
-      switch (data_s.event) {
-
-        case 'break connection':
-          console.log('server crash, you need to restart the data');
-          console.log('Socket data: ',data_s);
-          this.handlerBreakConnection();
-          break;
-
-        case 'getDelData': 
-          console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$ implement getDelData');
-          console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$ Socket data: ',data_s);
-          // функція обробник сокета
-          this.handlerGetDelData(data_s.data);
-          break;
-
-        case 'editVisitor': 
-          console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$ implement editVisitor');
-          console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$ Socket data: ',data_s);
-          // функція обробник сокета
-          this.handlerEditVisitor(data_s.data);
-          break;
-
-        case 'createVisitor': 
-          console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$ implement createVisitor');
-          console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$ Socket data: ',data_s);
-          // функція обробник сокета
-          this.handlerCreateVisitor(data_s.data);
-          break;
-      
-        default: break;
-      }
+      this.eventsBuffer.push(data_s);
+      this.eventController();
     });
   }
 
+  // event socket controller
+  eventController(){
+    console.log('************************* this.eventsBuffer 2: ', this.eventsBuffer);
+    const arr = this.eventsBuffer.slice();
+    for (let index = 0; index < arr.length; index++) {
+      console.log(`!!!!!!!!!!!!!!!!!!!!!! start 'for' for index ${index} !!!!!!!!!!!!!!!!!!!!!!`);
+      console.log('--------------------- arr.length: ', arr.length);
+      const eventBuffer = arr[index];
+      switch (eventBuffer.event) {
+
+        case 'break connection':
+          console.log('server crash, you need to restart the data');
+          console.log('Socket data: ',eventBuffer);
+          this.handlerBreakConnection();
+          this.eventsBuffer.splice(index, 1); 
+          break;
+
+        case 'getDelData':
+          if(!this['model_' + eventBuffer.data.table].state) break; 
+          console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$ implement getDelData');
+          console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$ Socket data: ',eventBuffer);
+          
+          // функція обробник сокета
+          this.handlerGetDelData(eventBuffer.data);
+          this.eventsBuffer.splice(index, 1);
+          break;
+
+        case 'getNewDataVisitors':
+          if(!this['model_' + eventBuffer.data.table].state) break; 
+          console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$ implement getNewDataVisitors');
+          console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$ Socket data: ',eventBuffer);
+          
+          // функція обробник сокета
+          this.handlerEditVisitor(eventBuffer.data);
+          this.eventsBuffer.splice(index, 1);
+          break;
+
+        default: break;
+      }
+      console.log(`!!!!!!!!!!!!!!!!!!!!!! end 'for' for index ${index} !!!!!!!!!!!!!!!!!!!!!!`);
+      console.log('--------------------- arr.length: ', arr.length);
+    }
+  }
 //---------------------------------------------------------------------------------------------------------------------------
 //event socket handlers
 
@@ -120,7 +135,6 @@ export class VisitorsService {
 
   // remove selected entries
   handlerGetDelData(socketData: {table: string, id: any}): void{
-    //console.log('handlerGetDelData is work');
     let modelData: IVisitor[] = this['model_' + socketData.table].data;
     let stringId: string | number = socketData.id;
     if (typeof stringId == 'number') stringId = String(stringId);
@@ -129,26 +143,25 @@ export class VisitorsService {
     for (let index = 0; index < socketDataId.length; index++) {
       const element = socketDataId[index];
       id = this.module.checkArrOfObjIdValField(modelData, 'regnum', element);
-      if(!id) continue;
-      if(id >= 0){
+      if(id == undefined) continue;
+      else{
         modelData.splice(id, 1);
       }
     }
     this[socketData.table].next(new SubData(modelData, true));
   }
 
-  handlerEditVisitor(socketData){}
-
-  // add new entries
-  handlerCreateVisitor(socketData: {table: string, data: IVisitor[]}): void{
+  // edit/add entries
+  handlerEditVisitor(socketData: {table: string, data: IVisitor[]}): void{
     let modelData: IVisitor[] = this['model_' + socketData.table].data;
-    //let id: number;
     for (let index = 0; index < socketData.data.length; index++) {
       const element = socketData.data[index];
-      //id = this.module.checkArrOfObjIdValField(modelData, 'regnum', element.regnum);
-      modelData.push(element);
+      const id = this.module.checkArrOfObjIdValField(modelData, 'regnum', element.regnum);
+      if(id == undefined) modelData.push(element);
+      else{
+        modelData.splice(id, 1, element);
+      }
     }
     this[socketData.table].next(new SubData(modelData, true));
   }
-
 } 

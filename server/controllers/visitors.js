@@ -814,7 +814,7 @@ exports.createGroup = function(req, res) {
             console.log('dataVisitors: ', dataVisitors);
             console.log('req.body.regnum: ', req.body.regnum);
             
-            Visitors.createGroup(dataVisitors, function(err, doc){
+            Visitors.createGroup(dataVisitors, req.body.regnum, function(err, doc){
                 if (err) {
                     console.log(err);
                     return res.sendStatus(500);
@@ -889,7 +889,7 @@ exports.updateGroup = function(req, res) {
                 console.log('dataVisitors: ', dataVisitors);
                 console.log('req.body.regnum: ', req.body.regnum);
                 
-                Visitors.createGroup(dataVisitors, function(err, doc){
+                Visitors.createGroup(dataVisitors, req.body.regnum, function(err, doc){
                     if (err) {
                         console.log(err);
                         return res.sendStatus(500);

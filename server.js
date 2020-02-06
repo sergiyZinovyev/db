@@ -86,7 +86,7 @@ sqlEmail.emitter.on('createEditMessage', message => eventsHandler.getMessage(mes
 sqlEmail.emitter.on('editVisitorsMailingLists', message => eventsHandler.getEmail(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
 sqlVisitors.emitter.on('deleteVisitor', message => eventsHandler.getDelData(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
 sqlVisitors.emitter.on('editVisitor', message => eventsHandler.getEditData(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
-sqlVisitors.emitter.on('createVisitor', message => eventsHandler.getCreateData(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
+sqlVisitors.emitter.on('createVisitor', message => eventsHandler.getEditData(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
 
 
 wss.on('connection', (ws) => {

@@ -178,7 +178,7 @@ exports.create = function(dataVisitor, table, cb){
     ) 
     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
   db.get().query(sql, dataVisitor, function(err, data) {
-    console.log('################################################# create data: ',data);
+    //console.log('################################################# create data: ',data);
     emitter.emit('createVisitor', {'table': table, 'id': dataVisitor[0]});
     cb(err, data)
   })
@@ -186,7 +186,7 @@ exports.create = function(dataVisitor, table, cb){
 
 //створення n-записів у таблиці visitors
 // dataVisitors - запис у форматі: '(data1, data2, ...), (data1, data2, ...), (data1, data2, ...), ...'
-exports.createGroup = function(dataVisitors, cb){
+exports.createGroup = function(dataVisitors, regnum, cb){
   let sql = `INSERT INTO visitors (
       regnum, 
       email, 
@@ -216,7 +216,8 @@ exports.createGroup = function(dataVisitors, cb){
     ) 
     VALUES ${dataVisitors}`;
   db.get().query(sql, function(err, data) {
-    console.log('################################################# createGroup data: ',data);
+    //console.log('################################################# createGroup data: ',regnum);
+    emitter.emit('createVisitor', {'table': 'visitors', 'id': regnum});
     cb(err, data)
   })
 }
@@ -290,7 +291,7 @@ exports.editPro = function(dataVisitor, table, cb){
   rating=? 
     WHERE regnum=?`;
   db.get().query(sql, dataVisitor, function(err, data) {
-    console.log('################################################# editPro data: ',data);
+    //console.log('################################################# editPro data: ',data);
     emitter.emit('editVisitor', {'table': table, 'id': dataVisitor[24]});
     cb(err, data)
   })

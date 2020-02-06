@@ -67,6 +67,10 @@ findOdjInArrObj(array: any[], keyVal: string, val: any) {
       console.log('array is undefined');
       return;
     }
+    if(array.length == 0){
+      console.log('array is empty');
+      return;
+    }
     if(!array[0][field]){
       console.log(`field - ${field} in array is undefined`);
       return;
@@ -76,7 +80,7 @@ findOdjInArrObj(array: any[], keyVal: string, val: any) {
         // console.log('field: ', field);
         // console.log('val: ', val);
         // console.log('array[i]: ', array[i]);
-        // console.log('id of array: ', i);
+        console.log('id of array: ', i);
         return i;
       }
     }

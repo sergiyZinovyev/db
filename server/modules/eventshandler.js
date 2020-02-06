@@ -70,21 +70,9 @@ exports.getDelData = function(d){
     })
 }
 
-// дані які були змінені
+// дані які були змінені (обєднати цей і наступний метод)
 exports.getEditData = function(d){
     console.log('########################### Message from socket editVisitor ##########################', d);
-    return new Promise((resolve, reject) => {
-        let data = {
-            event: 'editVisitor',
-            data: d
-        }
-        return resolve(JSON.stringify(data)) 
-    })
-}
-
-// дані які були внесені
-exports.getCreateData = function(d){
-    console.log('########################### Message from socket createVisitor ##########################', d);
     return new Promise((resolve, reject) => {
         SQLVisitors.getVisitors(d.table, `WHERE regnum IN (${d.id})`, function(err, doc) {
             if (err) {
@@ -92,13 +80,31 @@ exports.getCreateData = function(d){
                 return reject(err);
             }
             let data = {
-                event: 'createVisitor',
+                event: 'getNewDataVisitors',
                 data: {table: d.table, data: doc}
             }
             return resolve(JSON.stringify(data)) 
         })
     })
 }
+
+// // дані які були внесені
+// exports.getCreateData = function(d){
+//     console.log('########################### Message from socket createVisitor ##########################', d);
+//     return new Promise((resolve, reject) => {
+//         SQLVisitors.getVisitors(d.table, `WHERE regnum IN (${d.id})`, function(err, doc) {
+//             if (err) {
+//                 console.log(err);
+//                 return reject(err);
+//             }
+//             let data = {
+//                 event: 'createVisitor',
+//                 data: {table: d.table, data: doc}
+//             }
+//             return resolve(JSON.stringify(data)) 
+//         })
+//     })
+// }
 
                       
             
