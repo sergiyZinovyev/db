@@ -69,14 +69,17 @@ export class VisitorsService {
 
   //підписатися на сокети
   getSubSockets(){
+    let eventNames = ['break connection', 'getDelData', 'getNewDataVisitors'];
     if(!this.server.wss.onmessage){
       console.log('~~~~~~~~~~~~~~~~ run socket listening ~~~~~~~~~~~~~~~~');
       this.server.onSocket();
     }
     else console.log('~~~~~~~~~~~~~~~~ sockets are already listening ~~~~~~~~~~~~~~~~');
     this.subSockets = this.server.socketMessage.subscribe((data_s: ISocketEvent) => {
-      this.eventsBuffer.push(data_s);
-      this.eventController();
+      if(eventNames.includes(data_s.event)){
+        this.eventsBuffer.push(data_s);
+        this.eventController();
+      }
     });
   }
 

@@ -90,7 +90,7 @@ exports.getEditData = function(d){
 
 // // дані які були внесені
 // exports.getCreateData = function(d){
-//     console.log('########################### Message from socket createVisitor ##########################', d);
+//     console.log('########################### Message from socket createVisitor ##########################', d); 
 //     return new Promise((resolve, reject) => {
 //         SQLVisitors.getVisitors(d.table, `WHERE regnum IN (${d.id})`, function(err, doc) {
 //             if (err) {
