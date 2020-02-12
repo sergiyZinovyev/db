@@ -154,10 +154,14 @@ export class VisexhibService {
 
   closedAllSub(){
     this.sub_visex.unsubscribe();
+    this.sub_visex = undefined;
     this.visex.next(new SubData(new Array(), 'off'));
     this.sub_model_visex.unsubscribe();
+    this.sub_model_visex = undefined;
     this.sub_getType.unsubscribe();
+    this.sub_getType = undefined;
     this.subSockets.unsubscribe();
+    this.subSockets = undefined;
     this.eventsBuffer = [];
   }
 
