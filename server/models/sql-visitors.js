@@ -4,7 +4,7 @@ const EventEmitter = require('events');
 const emitter = new EventEmitter();
 exports.emitter = emitter;
 
-//визначення наступного унікального id(regnum) для нового запису
+//визначення наступного унікального id(regnum) для нового запису 
 exports.nextRegnum = function(result){
   for(let i=0; i < result.length; i++){
     if(result[0].regnum < result[i].regnum){
@@ -69,7 +69,7 @@ exports.getVisitors = function(id, condition, cb){
   })
 }
 
-//отримання відвідувачів виставки
+//отримання відвідувачів виставки 
 // exports.visexhib = function(data, cb){
 //   let sql = `SELECT *
 //     FROM (

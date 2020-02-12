@@ -28,5 +28,5 @@ export interface IVisitor {
     telephon: string; 
     rating: string; 
     visited_exhib: string; 
-} 
+}  
  

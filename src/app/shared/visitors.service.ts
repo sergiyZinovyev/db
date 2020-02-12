@@ -58,7 +58,7 @@ export class VisitorsService {
   }
 
   getModel(nameTable: 'visitors'|'visitors_create'|'visitors_edit'): void{
-    this[nameTable].subscribe(data => this['model_'+nameTable] = data);
+    this['sub_model_'+nameTable] = this[nameTable].subscribe(data => this['model_'+nameTable] = data);
   }
 
 //---------------------------------------------------------------------------------------------------------------------------

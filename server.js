@@ -22,6 +22,7 @@ const eventsHandler = require('./server/modules/eventshandler');
 const emailMod = require('./server/models/email-mod');
 const sqlEmail = require('./server/models/sql-email');
 const sqlVisitors = require('./server/models/sql-visitors');
+const sqlVisexhib = require('./server/models/sql-exhib');
 
 
 const urlencodedParser = bodyParser.urlencoded({extended: false});
@@ -87,6 +88,10 @@ sqlEmail.emitter.on('editVisitorsMailingLists', message => eventsHandler.getEmai
 sqlVisitors.emitter.on('deleteVisitor', message => eventsHandler.getDelData(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
 sqlVisitors.emitter.on('editVisitor', message => eventsHandler.getEditData(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
 sqlVisitors.emitter.on('createVisitor', message => eventsHandler.getEditData(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
+sqlVisexhib.emitter.on('changeVisexData', message => eventsHandler.getEditDataVis(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
+sqlVisexhib.emitter.on('changeVisexData2', message => eventsHandler.getEditDataVis2(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
+//sqlVisexhib.emitter.on('changeVisexData3', message => eventsHandler.getEditDataVis3(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
+sqlVisexhib.emitter.on('changeTypeOfReg', message => eventsHandler.getTypeOfReg(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
 
 
 wss.on('connection', (ws) => {

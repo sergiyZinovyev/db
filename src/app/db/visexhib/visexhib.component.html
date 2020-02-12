@@ -9,7 +9,7 @@
             <ng-container *ngIf='name == "Відвідали"')>
                 <form [formGroup]="visitorsIds" (ngSubmit)="addId()" class="d-flex align-items-center mx-1">
                     <input type="text" class="my-form" formControlName="id_visitor" autofocus>
-                    <button mat-icon-button matTooltip="Додати відвідувача" aria-label="Example icon-button with a heart icon" class="but-color">
+                    <button mat-icon-button matTooltip="Додати відвідувача" aria-label="Example icon-button with a heart icon" class="but-color"> 
                         <mat-icon>add_circle_outline</mat-icon>
                     </button>
                 </form>
@@ -19,7 +19,7 @@
                     matTooltip="Оновити дані" 
                     aria-label="Example icon-button with a heart icon" 
                     [style.color]="headerColor" 
-                    (click)='butGetVis()'>
+                    (click)='refreshDataSourse()'>
                     <mat-icon>refresh</mat-icon>
                 </button>
                 <mat-divider [vertical]="true"></mat-divider>
@@ -111,7 +111,7 @@
                     </div>
                 </ng-container>
 
-                <!-- filter select ...тут не працює...!!! -->
+                <!-- filter select ...тут не працює...!!! --> 
                 <ng-container *ngIf='column == "f_potvid"'>
                     <mat-select 
                         #exhib
@@ -145,8 +145,13 @@
                     <th mat-header-cell *matHeaderCellDef mat-sort-header [style.background-color]="headerColor"> {{column | translate: 'ukr'}} </th>
                     <td 
                         mat-cell 
-                        *matCellDef="let element"> 
-                        {{element[column]}} 
+                        *matCellDef="let element">
+                        <ng-container *ngIf='column == "date_vis" || column == "date_reg"'>
+                            {{dateFormat(element[column])}} 
+                        </ng-container>
+                        <ng-container *ngIf='column != "date_vis" && column != "date_reg"'>
+                            {{element[column]}} 
+                        </ng-container>
                     </td>
                 </ng-container>   
             </ng-container>

@@ -146,13 +146,14 @@ export class VisitorsComponent implements OnInit, OnDestroy {
       //this.server.accessIsDenied(data[0].rights);
 
       for (var key in data[0]) {
+        // перебираємо всі назви ключів першого обєкта, та записуємо в масив, щоб визначити назви колонок 
         this.keyData.push(key)
       }
       //console.log("this.keyData1: ", this.keyData); 
 
       for (let i=0; i<this.displayedColumns.length; i++){
+        //видаляємо з назв колонок ті які мають бути виведені на екрані
         this.keyData.splice(this.module.checkArrIdVal(this.keyData, this.displayedColumns[i]), 1)
-        //console.log("this.keyData2: ", this.keyData);
       }
 
       //console.log("this.keyData2: ", this.keyData); 
