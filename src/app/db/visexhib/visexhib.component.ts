@@ -185,7 +185,6 @@ export class VisexhibComponent implements OnInit, OnDestroy {
     this.selection.clear();
     this.arrOfCheckId = [];
     this.visexserv.getVisex(this.server.exhib.id)
-
   }
 
   viewTable(data: any[], tableName: string){

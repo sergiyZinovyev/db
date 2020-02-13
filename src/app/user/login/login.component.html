@@ -1,96 +1,69 @@
 
-<div class="d-flex align-items-center justify-content-center mt-4">
-    <div class="max-width">
-        <form class="example-form back2" [formGroup]="loginForm">
-            <div class="discr" >Введіть електронну пошту та/або мобільний телефон</div>
-            <mat-form-field class="form-group example-full-width">
-                <input type="email" matInput placeholder="{{'Електронна пошта'}}" formControlName="email">
-                <mat-icon matSuffix color="accent">alternate_email</mat-icon>
-                <mat-hint>
-                    {{'Введіть електронну адресу (якщо ви реєструвалися раніше - введіть електронну адресу яку ви вказували при реєстрації)'}}
-                </mat-hint>
-                <mat-error *ngIf="!loginForm.get('email').valid">
-                    {{'Будь ласка введіть Вашу дійсну електроннну адресу'}}
-                </mat-error>
-            </mat-form-field>
-<br><br>
-            <mat-form-field class="form-group example-full-width">
-                <input type="tel" matInput placeholder="{{'380ххххххххх'}}" formControlName="cellphone" [errorStateMatcher]="matcher">
-                <mat-icon matSuffix color="accent">phone</mat-icon>
-                <mat-hint>
-                    {{'Введіть свій номер мобільного телефона (якщо ви реєструвалися раніше - введіть номер який ви вказували при реєстрації)'}}
-                </mat-hint>
-                <mat-error *ngIf="!loginForm.get('cellphone').valid">
-                    {{'Будь ласка введіть мобільний телефон у вказаному форматі'}}
-                </mat-error>
-            </mat-form-field>
- 
-            <!-- <ng-container *ngIf = 'visibleCaptcha'> 
-                <re-captcha 
-                    #captchaRef="reCaptcha"
-                    size="invisible" 
-                    (resolved)="$event && login($event)" 
-                    siteKey="6Lcp7r0UAAAAAPd5sDUsXBnLWdXvHiLLXavjJINt">
-                </re-captcha> 
-                <button 
-                    mat-stroked-button 
-                    (click)="captchaRef.execute()"
-                    (mouseleave)="captchaRef.reset()"
-                    color="accent" 
-                    class="btn-lg btn-block py-2 mt-5">
-                    <strong class="pr-2">{{'Отримати запрошення'}}</strong> 
-                    <mat-icon>local_activity</mat-icon>
-                </button>
-            </ng-container> -->
-
-            <ng-container *ngIf = 'visibleCaptcha'> 
-                <div  
-                    class="d-flex justify-content-center align-items-center my-3">
-                    
-                    <re-captcha
-                        formControlName="captcha"
-                        siteKey="6Lcp7r0UAAAAAPd5sDUsXBnLWdXvHiLLXavjJINt">
-                    </re-captcha>
+<div class="d-flex align-items-center justify-content-center">
+    <div class="max-width container-fluid">
+        <div class="reg-form d-flex justify-content-between pb-2">
+            <img 
+                src="https://visitors.galexpo.com.ua:7002/static/registration/shared/name.png" 
+                alt="https://visitors.galexpo.com.ua:7002/static/registration/shared/name.png"
+                width="40%" 
+                class="header-img">
+            <img 
+                src="https://visitors.galexpo.com.ua:7002/static/registration/shared/logo.png" 
+                alt="https://visitors.galexpo.com.ua:7002/static/registration/shared/logo.png"
+                width="10%" 
+                class="header-img">    
+        </div>
+        <div class="reg-form">
+            <form class="example-form back2" [formGroup]="loginForm">
+                <div class="discr" >Введіть електронну пошту та/або мобільний телефон</div>
+                <mat-form-field class="form-group example-full-width">
+                    <input type="email" matInput placeholder="{{'Електронна пошта'}}" formControlName="email"> 
+                    <mat-icon matSuffix color="accent" class="main-color">alternate_email</mat-icon>
+                    <mat-hint>
+                        {{'Введіть електронну адресу (якщо ви реєструвалися раніше - введіть електронну адресу яку ви вказували при реєстрації)'}}
+                    </mat-hint>
+                    <mat-error *ngIf="!loginForm.get('email').valid">
+                        {{'Будь ласка введіть Вашу дійсну електроннну адресу'}}
+                    </mat-error>
+                </mat-form-field>
+                <br><br>
+                <mat-form-field class="form-group example-full-width">
+                    <input type="tel" matInput placeholder="{{'380ххххххххх'}}" formControlName="cellphone" [errorStateMatcher]="matcher">
+                    <mat-icon matSuffix color="accent" class="main-color">phone</mat-icon>
+                    <mat-hint>
+                        {{'Введіть свій номер мобільного телефона (якщо ви реєструвалися раніше - введіть номер який ви вказували при реєстрації)'}}
+                    </mat-hint>
+                    <mat-error *ngIf="!loginForm.get('cellphone').valid">
+                        {{'Будь ласка введіть мобільний телефон у вказаному форматі'}}
+                    </mat-error>
+                </mat-form-field>
+    
+                <ng-container *ngIf = 'visibleCaptcha'> 
+                    <div  
+                        class="d-flex justify-content-center align-items-center mt-3">
+                        
+                        <re-captcha
+                            style="transform:scale(1)"
+                            formControlName="captcha"
+                            siteKey="6Lcp7r0UAAAAAPd5sDUsXBnLWdXvHiLLXavjJINt">
+                        </re-captcha>
+                    </div>
+                </ng-container>  
+                
+                <div *ngIf="warning" class="warning">
+                    {{warning}}
                 </div>
-            </ng-container>  
-
-            <button 
-                mat-stroked-button 
-                (click)="login()"
-                color="accent" 
-                class="btn-lg btn-block py-2 mt-2">
-                <strong class="pr-2">{{'Отримати запрошення'}}</strong>
-                <mat-icon>local_activity</mat-icon>
-            </button>
+            </form>
+            <br>
             
-
-            <!-- <ng-container *ngIf = '!visibleCaptcha'>
-                <button 
-                    mat-stroked-button 
-                    (click)="login()"
-                    color="accent" 
-                    class="btn-lg btn-block py-2 mt-5">
-                    <strong class="pr-2">{{'Продовжити'}}</strong>
-                </button>
-            </ng-container> -->
-
-            <!-- <button 
-                mat-stroked-button 
-                (click)="captchaRef.reset()" 
-                color="primary" 
-                class="btn-lg btn-block py-2 mt-5">
-                <strong class="pr-2">{{'Отримати запрошення'}}</strong>
-                <mat-icon>reset</mat-icon>
-            </button> -->
-            
-            <div *ngIf="warning" class="warning">
-                {{warning}}
-            </div>
-        </form>
-        <br>
-        
-    </div>  
+        </div>
+        <button 
+            mat-raised-button 
+            (click)="login()"
+            color="accent" 
+            class="btn-lg btn-block py-2 my-btn reg-form btn-color">
+            <strong class="pr-2">{{'Отримати запрошення'}}</strong>
+            <mat-icon>local_activity</mat-icon>
+        </button> 
+    </div> 
 </div>
-
-
-<!-- <button mat-stroked-button (click)='getCurrURL()' class="btn-lg btn-block py-2">test</button> -->   

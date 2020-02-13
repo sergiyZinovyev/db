@@ -27,7 +27,7 @@
 
 .discr{
   font-family: sans-serif;
-  color: #ff4081;
+  color: #0064af;
   font-weight: bold;
   /* padding-top: 10px; */
   padding-bottom: 10px;
@@ -35,8 +35,16 @@
 
 .discr2{
   font-family: sans-serif;
-  color: #ff4081;
+  color: #0064af;
   font-weight: bold;
+}
+
+.main-color{
+  color: #0064af;
+}
+
+.btn-color{
+  background-color: #0064af;
 }
 
 .my-btn{
@@ -44,7 +52,7 @@
   font-weight: bold;
   margin-bottom: 20px;
   border-radius: 10px;
-  box-shadow: 0 7px 28px rgba(0,0,0,0.25), 0 5px 10px rgba(0,0,0,0.22);
+  box-shadow: 0 7px 28px rgba(0,0,0,0.25), 0 5px 10px rgba(0,0,0,0.22); 
 }
 
 .example-loading-shade {

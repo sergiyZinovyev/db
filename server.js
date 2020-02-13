@@ -59,11 +59,12 @@ ang.use("/", function(request, response){
 });
 
 
-
 app.use(cors());
 app.use(bodyParser.json({limit: "50mb"}));
 app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
 app.use(compression());
+
+app.use('/static', express.static(__dirname + "/server/users_data"));
 
 
 //------------------------------------------------------------------------------------------------------ 
