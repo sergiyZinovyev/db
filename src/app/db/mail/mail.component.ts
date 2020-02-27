@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { MailService } from '../../shared/mail.service';
+import { MailService } from './mail.service';
 import { ServerService } from '../../shared/server.service';
 import {IUser, IMessage, Ifiles} from '../mail/mailInterface';
 

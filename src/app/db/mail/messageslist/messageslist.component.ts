@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ServerService } from '../../../shared/server.service';
 import { ModulesService } from '../../../shared/modules.service';
-import { MailService } from '../../../shared/mail.service';
+import { MailService } from '../mail.service';
 import { element } from 'protractor';
 import { map } from 'rxjs/operators';
 import {IUser, IMessage, IMailingLists, IMessageInfo} from '../mailInterface';

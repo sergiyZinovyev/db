@@ -6,13 +6,14 @@ import {MatSort} from '@angular/material/sort';
 import { Router } from '@angular/router';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {FormControl} from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Subscription} from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { ServerService } from '../../shared/server.service';
 import { ModulesService } from '../../shared/modules.service';
-import { MailService } from '../../shared/mail.service';
+import { MailService } from '../mail/mail.service';
 import { DbService } from '../../shared/db.service';
-import { VisitorsService } from '../../shared/visitors.service';
+import { VisitorsService } from './visitors.service';
 
 import {IUser, IMessage, IMailingLists} from '../mail/mailInterface';
 import { IVisitor } from '../visitors/visitorsinterface';
@@ -47,7 +48,7 @@ export class VisitorsComponent implements OnInit, OnDestroy {
   headerTextColor = 'rgb(0, 255, 255)';
   nameBut: string = "Заявки на внесення";
 
-  myTable: 'visitors'|'visitors_create'|'visitors_edit' = 'visitors'; //назва таблиці в базі 
+  myTable: 'visitors'|'visitors_create'|'visitors_edit' = 'visitors'; //назва таблиці в базі  
 
   disabled: boolean = false;
 
@@ -62,7 +63,44 @@ export class VisitorsComponent implements OnInit, OnDestroy {
     'select',
   ];
   displayedColumns2 = this.module.addText(this.displayedColumns, 'f_'); //рядок таблиці з фільтрами
-  keyData = [];
+  keyData = [
+    //'regnum',
+    'name',
+    'prizv',
+    //'namepovne',
+    'countryid',
+    'postindeks',
+    'regionid',
+    'city',
+    'address',
+    'postaddreses',
+    'telephon',
+    'pobatkovi',
+    'gender',
+    'm_robotu',
+    //'sferadij',
+    'posada',
+    'type',
+    'kompeten',
+    //'potvid',
+    //'email',
+    'datawnesenny ',
+    'datelastcor',
+    'rating',
+    'ins_user',
+    //'cellphone',
+    'userid',
+    'realname',
+    'reg_countryid',
+    'reg_regionid',
+    'country',
+    //'reg2_countryid',
+    //'reg2_regionid',
+    //'region',
+    'cityid',
+    'id_visitor',
+    'visited_exhib'
+  ];
   dataSource = new MatTableDataSource();
   viewData; //дані для таблиць отримані з БД 
   
@@ -95,12 +133,13 @@ export class VisitorsComponent implements OnInit, OnDestroy {
     private server: ServerService,
     private visitorsService: VisitorsService,
     private module: ModulesService,
-    private router: Router,
+    //private router: Router,
     private mail: MailService,
     private db: DbService,
   ) { }
 
   ngOnInit() {
+    this.visitorsService.setDisplayedColumns(this.displayedColumns);
     // якщо на сервісі ще немає підписок на таблиці то запускаємо їх
     if (!this.visitorsService.sub_visitors) this.visitorsService.getVisitors('visitors');
     if (!this.visitorsService.sub_visitors_create) this.visitorsService.getVisitors('visitors_create');
@@ -127,33 +166,26 @@ export class VisitorsComponent implements OnInit, OnDestroy {
 
 
   getBd(nameTable: 'visitors'|'visitors_create'|'visitors_edit'){
-    //if(this.myTable == 'visitors')this.isLoadingResults = true;
-    this.keyData = []; 
-    //this.server.getVisitors(nameTable).subscribe(data =>{
+    
     this.subDataTable = this.visitorsService[nameTable].subscribe(subData =>{
       let data = subData.data;
       subData.state ? this.isLoadingResults = false : this.isLoadingResults = true;
       console.log("data: ", data);
-      //this.isLoadingResults = false;
-      //if(data[0])this.isLoadingResults = false;
-      // if(!data[0]){
-      // //if(!data){
-      //   //this.dataSource.data = [];
-      //   //return;
+      // for (var key in data[0]) {
+      //   // перебираємо всі назви ключів першого обєкта, та записуємо в масив, щоб визначити назви колонок  
+      //   this.keyData.push(key)
       // }
-      
-
-      //this.server.accessIsDenied(data[0].rights);
-
-      for (var key in data[0]) {
-        // перебираємо всі назви ключів першого обєкта, та записуємо в масив, щоб визначити назви колонок 
-        this.keyData.push(key)
-      }
-      //console.log("this.keyData1: ", this.keyData); 
+      //this.keyData = this.visitorsService.getAllColumns();
+      console.log("this.keyData1: ", this.keyData); 
 
       for (let i=0; i<this.displayedColumns.length; i++){
         //видаляємо з назв колонок ті які мають бути виведені на екрані
-        this.keyData.splice(this.module.checkArrIdVal(this.keyData, this.displayedColumns[i]), 1)
+        console.log('this.keyData: ', this.keyData);
+        console.log('this.displayedColumns[i]: ', this.displayedColumns[i]);
+        let checkId = this.module.checkArrIdVal(this.keyData, this.displayedColumns[i])
+        console.log('checkId: ', checkId);
+        if(!checkId) continue;
+        this.keyData.splice(checkId, 1);
       }
 
       //console.log("this.keyData2: ", this.keyData); 
@@ -170,7 +202,7 @@ export class VisitorsComponent implements OnInit, OnDestroy {
       //     potvid: data[i].potvid,
       //     name: data[i].name,
       //     namepovne: data[i].namepovne,
-      //     postaddreses: data[i].postaddreses,
+      //     postaddreses: data[i].postaddreses, 
       //     pobatkovi: data[i].pobatkovi,
       //     gender: data[i].gender,
       //     m_robotu: data[i].m_robotu,
@@ -365,17 +397,17 @@ export class VisitorsComponent implements OnInit, OnDestroy {
   }
 
   addColumn(item: string) {
+    this.visitorsService.addColToModel([item], this.myTable);
     this.displayedColumns.push(item);
     this.displayedColumns2 = this.module.addText(this.displayedColumns, 'f_');
     this.keyData.splice(this.module.checkArrIdVal(this.keyData, item), 1)
   }
 
   removeColumn(item: string) {
-    console.log(this.displayedColumns);
+    this.visitorsService.delDisplayedColumns(item); 
     this.displayedColumns.splice(this.module.checkArrIdVal(this.displayedColumns, item), 1);
     this.displayedColumns2 = this.module.addText(this.displayedColumns, 'f_');
     this.keyData.push(item);
-    console.log(this.displayedColumns);
   }
 
   butGetEditTable(){
@@ -566,57 +598,65 @@ export class VisitorsComponent implements OnInit, OnDestroy {
     let isConfirm = confirm("Ви намагаєтеся зберегти в базі обрані заявки.\nУВАГА! Повернутися назад буде неможливо!\nБажаєте продовжити?");
     if(isConfirm){
       // формуємо дані для відправки
-      let newObjData = {
-        regnum: [], 
-        email: [], 
-        prizv: [], 
-        city: [], 
-        cellphone: [], 
-        potvid: [], 
-        name: [], 
-        countryid: [], 
-        regionid: [], 
-        m_robotu: [], 
-        pobatkovi: [], 
-        posada: [], 
-        sferadij: [], 
-        datawnesenny: [], 
-        ins_user: [], 
-        namepovne: [],
-        postindeks: [],
-        address: [],
-        postaddreses: [],
-        telephon: [],
-        gender: [],
-        type: [],
-        kompeten: [],
-        datelastcor: [],
-        rating: []
-      };
-      for (let index = 0; index < arrOfId.length; index++) {
-        const element = this.module.findOdjInArrObj(dataSource, 'regnum', arrOfId[index]);
-        for (let key in newObjData){
-          newObjData[key].push(element[key]);
-        }
+      let reqBody = {
+        table: this.myTable,
+        regnum: arrOfId
       }
-      
-      let dataAccept = newObjData;
-      console.log('dataAccept: ', dataAccept);
-      let post = this.server.post(dataAccept, severMethod).subscribe(data =>{
-        console.log("data: ", data);
-        if(data[0]){
-          // перевіряємо права користувача, видаємо повідомлення, якщо немає прав 
-          if(this.server.accessIsDenied(data[0].rights)) return post.unsubscribe();
+      this.server.post(reqBody, 'visitors').pipe(
+        map((vl:any): IVisitor[] => Array.from(vl))
+      ).subscribe(data=>{
+        let newObjData = {
+          regnum: [], 
+          email: [], 
+          prizv: [], 
+          city: [], 
+          cellphone: [], 
+          potvid: [], 
+          name: [], 
+          countryid: [], 
+          regionid: [], 
+          m_robotu: [], 
+          pobatkovi: [], 
+          posada: [], 
+          sferadij: [], 
+          datawnesenny: [], 
+          ins_user: [], 
+          namepovne: [],
+          postindeks: [],
+          address: [],
+          postaddreses: [],
+          telephon: [],
+          gender: [],
+          type: [],
+          kompeten: [],
+          datelastcor: [],
+          rating: []
+        };
+        for (let index = 0; index < arrOfId.length; index++) {
+          const element = this.module.findOdjInArrObj(data, 'regnum', arrOfId[index]);
+          for (let key in newObjData){
+            newObjData[key].push(element[key]);
+          }
         }
-        if(data){
-          console.log("unsubscribe");
-          //тут треба видалити список локально 
-          //this.deleteElementDataSource(this.viewData, this.arrOfCheckId);
-          this.selection.clear();
-          this.arrOfCheckId = [];
-          return post.unsubscribe();
-        }
-      });
+        
+        let dataAccept = newObjData;
+        console.log('dataAccept: ', dataAccept);
+        let post = this.server.post(dataAccept, severMethod).subscribe(data =>{
+          console.log("data: ", data);
+          if(data[0]){
+            // перевіряємо права користувача, видаємо повідомлення, якщо немає прав 
+            if(this.server.accessIsDenied(data[0].rights)) return post.unsubscribe();
+          }
+          if(data){
+            console.log("unsubscribe");
+            //тут треба видалити список локально 
+            //this.deleteElementDataSource(this.viewData, this.arrOfCheckId);
+            this.selection.clear();
+            this.arrOfCheckId = [];
+            return post.unsubscribe();
+          }
+        });
+      })
     }
   }
 

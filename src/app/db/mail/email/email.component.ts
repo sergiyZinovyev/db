@@ -2,13 +2,14 @@ import { Component, OnInit, OnDestroy} from '@angular/core';
 import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms';
 import { ServerService } from '../../../shared/server.service';
 import { ModulesService } from '../../../shared/modules.service';
-import { MailService } from '../../../shared/mail.service';
+import { MailService } from '../mail.service';
 import { DbService } from '../../../shared/db.service';
 import { map } from 'rxjs/operators';
 import { Observable, Subscription } from 'rxjs';
 import { DomSanitizer, SafeResourceUrl, SafeUrl, SafeHtml} from '@angular/platform-browser';
-import {IUser, IMessage, Ifiles} from '../mailInterface';
+import {IUser, IMessage, Ifiles, IEvent} from '../mailInterface';
 import { element } from 'protractor';
+import {HttpClient, HttpParams, HttpEvent} from '@angular/common/http';
 
 @Component({
   selector: 'app-email',
@@ -62,7 +63,7 @@ export class EmailComponent implements OnInit, OnDestroy{
     // })
 
     this.subMessage = this.mail.getMessage.subscribe((data: IMessage)  => {
-      console.log('data from getMessage: ', data);
+      //console.log('data from getMessage: ', data);
       this.emailForm.patchValue({subject: data.subject});
       this.emailForm.patchValue({attach: data.attachments});
       this.emailForm.patchValue({body_files: data.body_files});
@@ -97,19 +98,25 @@ export class EmailComponent implements OnInit, OnDestroy{
     if(this.emailForm.valid){
       let isEmail = confirm('Ви впевнені, що хочете розпочати масову розсилку?');
       if(isEmail){
+        this.emailForm.value.token = new Date().getTime();
         console.log('emailForm: ',this.emailForm.value);
         // надсилаємо лист;
-        //this.mail.setMessage([{key: 'mailingStatus', val: 'sending'}]); //встановлюємо статус, відправка
-        let get=this.server.post(this.emailForm.value, "massMaling").subscribe((data: any) =>{
-          console.log("sending data: ", data);
+        //this.mail.setMessage([{key: 'mailingStatus', val: 'sending'}]); //встановлюємо статус, відправка 
+        let get=this.server.post2(this.emailForm.value, "massMaling").subscribe(
+          //(data: any) =>{
+          (event: IEvent) => {
+          let data = event;
+          console.log(`%csending data: `, "color: white; font-weight: bold; background-color: orange; padding: 2px;", data);
           // перевіряємо права користувача, видаємо повідомлення, якщо немає прав 
+          if(event.body){console.log('res: ', event.body)}
           if(data[0] && this.server.accessIsDenied(data[0].rights)) return get.unsubscribe();
           //if(data.mailingId) this.mail.setCurrentMailing(data.mailingId);
-          if(data){
-            console.log("unsubscribe")
-            return get.unsubscribe();
-          }
-        });
+          // if(data){
+          //   console.log("unsubscribe")
+          //   return get.unsubscribe();
+          // }
+        }, err =>{console.log(`%cerror sending: `, "color: white; font-weight: bold; background-color: red; padding: 2px;", err)}
+        );
       }
     }
     else{

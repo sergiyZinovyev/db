@@ -2,16 +2,18 @@ import { Injectable } from '@angular/core';
 import {Observable, from, Subject, BehaviorSubject, Subscription} from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms';
-import { ServerService } from '../shared/server.service';
-import {IUser, IMessage, IMailingLists, IMessageInfo} from '../db/mail/mailInterface';
-import { ISocketEvent } from '../shared/common_interfaces/interfaces';
-import { ModulesService } from '../shared/modules.service'; 
-import { Message } from '../db/mail/message';
+import { ServerService } from '../../shared/server.service';
+import {IUser, IMessage, IMailingLists, IMessageInfo} from './mailInterface';
+import { ISocketEvent } from '../../shared/common_interfaces/interfaces';
+import { ModulesService } from '../../shared/modules.service'; 
+import { Message } from './message';
 
 @Injectable({
   providedIn: 'root'  
 })
 export class MailService {
+
+  currentMessageId: number
 
   currentMessage: Message = new Message();
 
@@ -28,7 +30,7 @@ export class MailService {
     private server: ServerService
   ) { }
 
- //------------------------------------------------------------------------------------------------- 
+ //-------------------------------------------------------------------------------------------------  
 
   addToCurrentSendList(arrOfObj: IUser[]): void{
     this.currentMessage.addToSendList(arrOfObj);
@@ -41,7 +43,6 @@ export class MailService {
   }
 
   removeFromCurrentSendList(id: number){
-    console.log('removeFromCurrentSendList work');
     this.currentMessage.removeFromSendList(id);
     this.getMessage.next(this.currentMessage);
     return this.currentMessage.sendList
@@ -50,6 +51,7 @@ export class MailService {
 //-------------------------------------------------------------------------------------------------
 
   setCurrentMailing(id: number): void{
+    this.currentMessageId = id;
     let get = this.server.getAll('getDataMailing', id).subscribe(data=>{
       console.log('data from getDataMailing: ', data[0]);
       let get2 = this.server.getAll('getVisitorsMailingList', data[0].id).pipe(
@@ -105,21 +107,26 @@ export class MailService {
       //console.log('Socket data: ',data_s);
       switch (data_s.event) {
 
+        case 'break connection':
+          console.log('%cserver crash, you need to restart the data', "color: white; font-weight: bold; background-color: red; padding: 2px;");
+          this.handlerServerCrash();
+          break;
+
         case 'getMailingPlus': 
           console.log('виконуємо handlerGetMailingPlus');
-          console.log('Socket data: ',data_s);
+          console.log('%cSocket data: ', "color: white; font-weight: bold; background-color: green; padding: 2px;", data_s);
           this.handlerGetMailingPlus(data_s.data[0]);
           break;
 
         case 'createEditMessage': 
           console.log('виконуємо handlerCreateEditMessage');
-          console.log('Socket data: ',data_s);
+          console.log('%cSocket data: ', "color: white; font-weight: bold; background-color: green; padding: 2px;", data_s);
           this.handlerCreateEditMessage(data_s.data[0]);
           break;
 
         case 'editVisitorsMailingLists': 
           console.log('виконуємо editVisitorsMailingLists');
-          console.log('Socket data: ',data_s);
+          console.log('%cSocket data: ', "color: white; font-weight: bold; background-color: green; padding: 2px;", data_s);
           let newData: IUser = data_s.data[0];
           console.log('editVisitorsMailingLists: ',newData);
           //this.currentMessage.updateSendList(newData);
@@ -135,11 +142,23 @@ export class MailService {
   }
 
 //-------------------------------------------------------------------------------------------------
+// server crash
+
+  handlerServerCrash(){
+    this.server.getAll('allMailingPaused/0').subscribe(()=>{
+      this.server.getAll('mailingListsPaused/0').subscribe(()=>{
+        this.getSubMailingList();
+        if(this.currentMessageId) this.setCurrentMailing(this.currentMessageId);
+      })
+    })
+  }
+
+//-------------------------------------------------------------------------------------------------  
 // списки розсилок
   
   subMailingList: Subscription; //підписка на початковий список розсилки
   mailingList: BehaviorSubject<IMailingLists[]> = new BehaviorSubject([]); // Observable для списку розсилки
-  dataMailingList: IMailingLists[] = []; //останні данні по mailingList
+  dataMailingList: IMailingLists[] = []; //останні данні по mailingList 
 
   //підписка на початковий список розсилки
   getSubMailingList(){

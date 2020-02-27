@@ -35,7 +35,7 @@
                 <mat-icon>close</mat-icon>
             </button>
         </div>
-        <div class="p-3 overflow-auto">
+        <div class="p-3 overflow-auto"> 
             <app-email></app-email> 
         </div> 
     </div> 
@@ -370,9 +370,10 @@
                     <ng-container *ngIf='element == expandedElement'>
                     <app-visitor 
                         [element]='element' 
-                        [tableName]='name' 
+                        [tableName]='name'
+                        [table]='myTable' 
                         (getData)="editDataSource($event)"
-                        (isLoading)="setIsLoadingResults($event)">
+                        (isLoading)="setIsLoadingResults($event)"> 
                     </app-visitor>
                     </ng-container>
                 </div>

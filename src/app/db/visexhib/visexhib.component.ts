@@ -160,11 +160,11 @@ export class VisexhibComponent implements OnInit, OnDestroy {
       let data = subData.data;
       subData.state == 'pending' ? this.isLoadingResults = true : this.isLoadingResults = false;
       console.log("data: ", data);
-
-      for (var key in data[0]) {
-        // перебираємо всі назви ключів першого обєкта, та записуємо в масив, щоб визначити назви колонок 
-        this.keyData.push(key);
-      }
+      if (data[0])this.keyData = Object.keys(data[0]);
+      // for (var key in data[0]) {
+      //   // перебираємо всі назви ключів першого обєкта, та записуємо в масив, щоб визначити назви колонок 
+      //   this.keyData.push(key);
+      // }
 
       for (let i=0; i<this.displayedColumns.length; i++){
         //видаляємо з назв колонок ті які мають бути виведені на екрані
@@ -172,7 +172,7 @@ export class VisexhibComponent implements OnInit, OnDestroy {
       }
 
       this.viewData = data; 
-      //this.viewData = this.viewData.sort(this.module.compareByField('date_vis'));
+      //this.viewData = this.viewData.sort(this.module.compareByField('date_vis')); 
       //this.dataSource.data = this.viewData
 
       this.dataSource.data = this.viewTable(this.viewData, this.name);

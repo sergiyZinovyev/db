@@ -9,7 +9,7 @@ export class Message {
   body_files: string; // files that are used only in the body of the email
   id_user: number; // id of the person who created the email
   date: string; // email creation date
-  changed: boolean; // indicates whether the email has been modified in the process
+  changed: boolean; // indicates whether the email has been modified in the process 
 
   mailingId: number; // mailing id
   sendList: IUser[]; //mailing list
@@ -41,10 +41,12 @@ export class Message {
       this.from = mailingData.sender;
       this.date_start = mailingData.date_start;
       this.date_end = mailingData.date_end;
-      if(mailingData.date_end){
-        this.mailingStatus = 'sent'
+      switch (mailingData.is_sent) {
+        case 'pending': this.mailingStatus = 'sending'; break;
+        case 'paused': this.mailingStatus = 'no_sent'; break; 
+        case 'sent': this.mailingStatus = 'sent'; break;
+        default: break;
       }
-      else this.mailingStatus = 'no_sent'
     }
     else this.from = 'send@galexpo.lviv.ua';
 

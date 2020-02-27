@@ -30,26 +30,27 @@ exports.all = function(req, res) {
 };
 
 
-//-------------------------------------------------------------------------------------------------------------  
+//-------------------------------------------------------------------------------------------------------------   
 // отримати візіторів
 exports.getVisitors = function(req, res) {
     let table;
     let condition;
-    table = req.params.id;
-    console.log('req.query.id: ',req.query.id);
-    if(!req.query.id){
-        console.log('req.query.id = undefined');
+    let selectedFields;
+    let limit;
+    table = req.body.table;
+    selectedFields = req.body.fields;
+    limit = req.body.limit;
+    if(!req.body.regnum){
         condition = '';
     }
-    else{condition = `WHERE regnum IN (${req.query.id})`}
-    console.log('condition: ',condition);
+    else{condition = `WHERE regnum IN (${req.body.regnum})`}
     Visitors.getVisitors(table, condition, function(err, doc) {
         if (err) {
             console.log(err);
             return res.sendStatus(500);
         }
         res.send(doc);
-    });    
+    }, selectedFields, limit);    
 };
 
 //------------------------------------------------------------------------------------------------------------- 

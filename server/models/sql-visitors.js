@@ -40,8 +40,10 @@ exports.all = function(id, cb){
 }
 
 //отримання всіх записів з visitors
-exports.getVisitors = function(id, condition, cb){
-  let sql = `SELECT * 
+exports.getVisitors = function(id, condition, cb, selectedFields, limit){
+  if(!selectedFields) selectedFields = '*';
+  if(!limit) limit = '';
+  let sql = `SELECT ${selectedFields}
   FROM
   (SELECT * FROM ${id}) AS vis 
   LEFT OUTER JOIN 
@@ -63,7 +65,7 @@ exports.getVisitors = function(id, condition, cb){
           (SELECT numexhib, nameexhibkor FROM exhibitions) AS exhib 
               ON vis_exhib.id_exhibition = exhib.numexhib) AS exhib_2) AS exhib_3
       GROUP BY id_visitor) AS exhib_vis 
-    ON vis.regnum = exhib_vis.id_visitor ${condition}`;
+    ON vis.regnum = exhib_vis.id_visitor ${condition} ${limit}`;
   db.get().query(sql, function(err, data) {
     cb(err, data)
   })

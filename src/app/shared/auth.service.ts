@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { ServerService } from '../shared/server.service';
-import { VisitorsService } from '../shared/visitors.service';
+import { VisitorsService } from '../db/visitors/visitors.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +20,7 @@ export class AuthService {
 
   loginUser(user, cb) {
     localStorage.clear();
-    //this.errorMessage = ''; 
+    //this.errorMessage = '';  
     let get=this.server.post(user, "users").subscribe(data =>{
       console.log("data login_user: ", data);
       if(data[0].login == 'true' && data[0].password == 'true'){
@@ -28,8 +28,19 @@ export class AuthService {
         localStorage.setItem('user', user.login);
         localStorage.setItem('password', user.password);
         localStorage.setItem('id', data[1].id);
-        localStorage.setItem('access rights', data[1].accessRights); 
+        localStorage.setItem('access rights', data[1].accessRights);  
         localStorage.setItem('token', data[1].token);
+
+        this.visitorsService.setDisplayedColumns([
+          'regnum', 
+          'namepovne', 
+          'email', 
+          'cellphone', 
+          'sferadij',
+          'region',
+          'potvid',
+          'select',
+        ]);
         this.visitorsService.getVisitors('visitors');
         //this.server.onSocket();
         this.router.navigate(['db']);

@@ -81,9 +81,10 @@ function sendEventAllClients(message){
   });
 }
 
-//прослуховуємо події та робимо розсилки
+//прослуховуємо події та робимо розсилки  
 emailMod.emitter.on('mailingSaved', message => eventsHandler.getMailing(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
 emailMod.emitter.on('mailingSended', message => eventsHandler.getMailing(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
+sqlEmail.emitter.on('editMailingList', message => eventsHandler.getMailing(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
 sqlEmail.emitter.on('createEditMessage', message => eventsHandler.getMessage(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
 sqlEmail.emitter.on('editVisitorsMailingLists', message => eventsHandler.getEmail(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
 sqlVisitors.emitter.on('deleteVisitor', message => eventsHandler.getDelData(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
@@ -115,7 +116,7 @@ app.post("/users", authController.users);
 // *** захищені роути *** 
 
 //отримати всі записи  про візіторсів з вказаної таблиці    
-app.get("/visitors/:id", authController.checkAuth, visitorsController.getVisitors);
+app.post("/visitors", authController.checkAuth, visitorsController.getVisitors);
 
 // //додавання запису в основну базу
 // app.post("/createVis", authController.checkAuth, urlencodedParser, visitorsController.createNewVis);
@@ -160,6 +161,9 @@ app.post("/editExhibition_typeOfReg", authController.checkAuth, urlencodedParser
 //розсилка
 app.post("/massMaling", cors(), urlencodedParser, authController.checkAuth, emailController.massMaling);
 
+//розсилка вказаної розсилки
+app.get("/continueMailing/:id", urlencodedParser, authController.checkAuth, emailController.continueMailing);
+
 //збереження файлів для розсилки/створення нового листа
 app.post("/saveMailFile", urlencodedParser, authController.checkAuth, emailController.createMessageSaveFiles);
 
@@ -183,6 +187,12 @@ app.get("/getMessage", authController.checkAuth, emailController.getMessage);
 
 //отримання даних зі списку розсилкок по mail_list_id
 app.get("/getVisitorsMailingList", authController.checkAuth, emailController.getVisitorsMailingList);
+
+//редагування запису у visitors_mailing_lists (поставити всі листи на паузу)
+app.get("/allMailingPaused/:id", authController.checkAuth, emailController.editVisitorsMailingListsPaused);
+
+//редагування запису у mailing_lists (поставити всі розсилки на паузу)
+app.get("/mailingListsPaused/:id", authController.checkAuth, emailController.editMailingListsPaused);
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 

@@ -23,13 +23,18 @@
             class="date text-truncate" 
             [ngClass]="{'no-send': !mailing.date_end?true:false}" 
             [matTooltip]="dateFormat(mailing.date_end)">
-            <ng-container *ngIf='mailing.date_end'>{{mailing.date_end | date: "dd.MM.yyyy"}}</ng-container>
-            <ng-container *ngIf='!mailing.date_end'>
-                <!-- не надіслано -->
-                <div class="spinner-border spinner-border-sm text-secondary" role="status">
-                    <span class="sr-only">Loading...</span>
-                </div>
-            </ng-container>
+            <div [ngSwitch]="mailing.is_sent">
+                <!-- <ng-template ngSwitchCase="pending" class="spinner-border spinner-border-sm text-secondary" role="status"><span class="sr-only">Loading...</span></ng-template> -->
+                <ng-template ngSwitchCase="paused"><span class="red">не надіслано</span></ng-template>
+                <ng-template ngSwitchCase="sent">{{mailing.date_end | date: "dd.MM.yyyy"}}</ng-template>
+                <ng-template ngSwitchDefault></ng-template>
+            </div>
+            <!-- спінер винесено окремо там де треба чомусь не працює -->
+            <div *ngIf='mailing.is_sent == "pending"' 
+                class="spinner-border spinner-border-sm text-secondary" 
+                role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
         </div>
         <div
             class="del" 

@@ -1,7 +1,7 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { ServerService } from '../../../shared/server.service';
 import { ModulesService } from '../../../shared/modules.service';
-import { MailService } from '../../../shared/mail.service';
+import { MailService } from '../mail.service';
 import { element } from 'protractor';
 import { map } from 'rxjs/operators';
 import {IUser, IMessage, Ifiles} from '../mailInterface';
@@ -33,10 +33,11 @@ export class MailinglistComponent implements OnInit {
     // підписуємось на mailingList
     this.mail.mailingList.subscribe(data => {
       this.mailingList = data;
+      this.mailingList = this.mailingList.sort(this.module.compareByField('id'));
       this.isLoadingResults = false;
     });
 
-    // підписуємося на визначення активної розсилки
+    // підписуємося на визначення активної розсилки 
     this.mail.getMessage.pipe(map((vl:Message):number => vl.mailingId)).subscribe(data => this.mailingId = data); 
   }
 

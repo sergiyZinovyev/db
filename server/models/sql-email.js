@@ -91,7 +91,7 @@ exports.isMailing = function(id, cb){
 
 //створення нового запису в mailing_list
 exports.createMailingList = function(dataMailingList, cb){
-  let sql = `INSERT INTO mailing_list (name, user_id, message_id, sender) VALUES (?,?,?,?)`;
+  let sql = `INSERT INTO mailing_list (token, name, user_id, message_id, sender, is_sent) VALUES (?,?,?,?,?,?)`;
   db.get().query(sql, dataMailingList, function(err, data) {
     cb(err, data)
   })
@@ -101,14 +101,15 @@ exports.createMailingList = function(dataMailingList, cb){
 exports.editMailingList = function(dataMailingList, fieldName, cb){
   let sql = `UPDATE mailing_list SET ${fieldName}=? WHERE id=?`;
   db.get().query(sql, dataMailingList, function(err, data) {
+    emitter.emit('editMailingList', dataMailingList[1]);
     cb(err, data)
   })
 }
 
 //отримати всі записи з mailing_list
 exports.getMailingList = function(cb){
-  let sql = `SELECT Mailing.id AS id, name, user_id, Users.realname AS realname, date_end FROM 
-      (SELECT id, name, user_id, date_end FROM mailing_list) AS Mailing
+  let sql = `SELECT Mailing.id AS id, name, user_id, Users.realname AS realname, date_end, date_start, is_sent FROM 
+      (SELECT id, name, user_id, date_end, date_start, is_sent FROM mailing_list) AS Mailing
     LEFT OUTER JOIN
       (SELECT id, realname FROM usersaccount) AS Users
     ON Mailing.user_id = Users.id
@@ -120,8 +121,8 @@ exports.getMailingList = function(cb){
 
 //отримати запис по id з mailing_list
 exports.getMailingPlus = function(id, cb){
-  let sql = `SELECT Mailing.id AS id, name, user_id, Users.realname AS realname, date_end FROM 
-      (SELECT id, name, user_id, date_end FROM mailing_list) AS Mailing
+  let sql = `SELECT Mailing.id AS id, name, user_id, Users.realname AS realname, date_end, date_start, is_sent FROM 
+      (SELECT id, name, user_id, date_end, date_start, is_sent FROM mailing_list) AS Mailing
     LEFT OUTER JOIN
       (SELECT id, realname FROM usersaccount) AS Users
     ON Mailing.user_id = Users.id
@@ -139,6 +140,25 @@ exports.getMailing = function(id, cb){
   })
 }
 
+// перевіряємо наявність токена в розсилці з mailing_list
+exports.checkToken = function(id, cb){
+  let sql = `SELECT * FROM mailing_list WHERE token = ${id}`;
+  db.get().query(sql, function(err, data) {
+    cb(err, data)
+  })
+}
+
+//редагування запису у mailing_list (поставити всі розсилки на паузу)
+exports.editMailingListsPaused = function(id, cb){
+  let condition = '';
+  if(id != 0) condition = `AND id=${id}`;
+  let sql = `UPDATE mailing_list SET 
+  is_sent="paused" 
+    WHERE is_sent="pending" ${condition}`;
+  db.get().query(sql, function(err, data) {
+    cb(err, data)
+  })
+}
 //--------------------------------------------------------------------------------------------------------
 
 //створення n-записів у таблиці visitors_mailing_lists
@@ -168,6 +188,18 @@ exports.editVisitorsMailingLists = function(dataUpdate, cb){
   })
 }
 
+//редагування запису у visitors_mailing_lists (поставити всі листи на паузу)
+exports.editVisitorsMailingListsPaused = function(options, id, cb){
+  let condition = '';
+  if(id != 0) condition = `AND mail_list_id=${id}`;
+  let sql = `UPDATE visitors_mailing_lists SET 
+  is_send=? 
+    WHERE is_send=? ${condition}`;
+  db.get().query(sql, options, function(err, data) {
+    //console.log('%csql', "color: white; font-weight: bold; background-color: orange; padding: 2px;", sql);
+    cb(err, data)
+  })
+}
 
 //отримання даних для розсилки по вказаному id розсилки
 exports.getDataMailing = function(id, cb){
@@ -214,6 +246,14 @@ exports.getVisitorsMailingList = function(id, cb){
 //отримання даних зі списку розсилкок по id
 exports.getEmailData = function(id, cb){
   let sql = `SELECT * FROM visitors_mailing_lists WHERE id = ${id}`;
+  db.get().query(sql, function(err, data) {
+    cb(err, data)
+  })
+}
+
+// перевірка чи є в розсилці невідправлені листи
+exports.getIsSent = function(id, cb){
+  let sql = `SELECT * FROM visitors_mailing_lists WHERE mail_list_id = ${id} AND is_send <> 'sent'`;
   db.get().query(sql, function(err, data) {
     cb(err, data)
   })

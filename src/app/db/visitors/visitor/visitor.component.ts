@@ -16,6 +16,7 @@ export class VisitorComponent implements OnInit {
 
   @Input() element: any;
   @Input() tableName: string;
+  @Input() table: string;
   @Output() getData = new EventEmitter<any>();
   @Output() isLoading = new EventEmitter<any>();
 
@@ -72,46 +73,54 @@ export class VisitorComponent implements OnInit {
   ngOnInit() {
     this.getRegion('region');
     if(this.element){
-      this.loginForm = this.fb.group({
-        table: ['visitors', []],
-        checkEmail: [false, []],
-        checkPhone: [false, []],
+      let reqBody = {
+        table: this.table,
+        regnum: this.element.regnum
+      }
+      this.server.post(reqBody, 'visitors').subscribe(data=>{
+        console.log('visitor data', data);
+        this.loginForm = this.fb.group({
+          table: ['visitors', []],
+          checkEmail: [false, []],
+          checkPhone: [false, []],
 
-        email: [this.element.email, [Validators.email, Validators.required]],
-        prizv: [this.element.prizv, [Validators.required]],
-        city: [this.element.city, [Validators.required]],
-        cellphone: [this.element.cellphone, [Validators.pattern('380[0-9]{9}'), Validators.required]],
-        regnum: [this.element.regnum, []],
-        potvid: [this.element.potvid, []],
-        name: [this.element.name, [Validators.required]],
-        postaddreses: [this.element.postaddreses, []],
-        pobatkovi: [this.element.pobatkovi, []],
-        gender: [this.element.gender, []],
-        m_robotu: [this.element.m_robotu, []],
-        sferadij: [this.element.sferadij, []],
-        posada: [this.element.posada, []],
-        type: [this.element.type, []],
-        kompeten: [this.element.kompeten, []],
-        datawnesenny: [this.element.datawnesenny, []],
-        datelastcor: [this.element.datelastcor, []],
-        ins_user: [this.element.ins_user, []],
-        countryid: [String(this.element.countryid), [Validators.required]],
-        regionid: [String(this.element.regionid), [Validators.required]],
-        namepovne: [this.element.namepovne, []],
-        postindeks: [this.element.postindeks, []],
-        address: [this.element.address, []],
-        telephon: [this.element.telephon, []],
-        rating: [this.element.rating, []],
-      }) 
-    
-    
+          email: [data[0].email, [Validators.email, Validators.required]],
+          prizv: [data[0].prizv, [Validators.required]],
+          city: [data[0].city, [Validators.required]],
+          cellphone: [data[0].cellphone, [Validators.pattern('380[0-9]{9}'), Validators.required]],
+          regnum: [data[0].regnum, []],
+          potvid: [data[0].potvid, []],
+          name: [data[0].name, [Validators.required]],
+          postaddreses: [data[0].postaddreses, []],
+          pobatkovi: [data[0].pobatkovi, []],
+          gender: [data[0].gender, []],
+          m_robotu: [data[0].m_robotu, []],
+          sferadij: [data[0].sferadij, []],
+          posada: [data[0].posada, []],
+          type: [data[0].type, []],
+          kompeten: [data[0].kompeten, []],
+          datawnesenny: [data[0].datawnesenny, []],
+          datelastcor: [data[0].datelastcor, []],
+          ins_user: [data[0].ins_user, []],
+          countryid: [String(data[0].countryid), [Validators.required]],
+          regionid: [String(data[0].regionid), [Validators.required]],
+          namepovne: [data[0].namepovne, []],
+          postindeks: [data[0].postindeks, []],
+          address: [data[0].address, []],
+          telephon: [data[0].telephon, []],
+          rating: [data[0].rating, []],
+        }) 
+      
+      
 
-      this.startLoginForm = this.element;
+        this.startLoginForm = data[0];
 
-      this.myEmail = this.element.email;
-      this.myCellphone = this.element.cellphone;
+        this.myEmail = data[0].email;
+        this.myCellphone = data[0].cellphone;
 
+      })
     }
+
     //збираємо форму з виставками 
     this.getExhib('exhibitions_dict');
   }

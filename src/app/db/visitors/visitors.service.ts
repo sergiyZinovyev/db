@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import {Observable, from, Subject, BehaviorSubject, Subscription} from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { ServerService } from '../shared/server.service';
-import { ModulesService } from '../shared/modules.service';
+import { ServerService } from '../../shared/server.service';
+import { ModulesService } from '../../shared/modules.service';
 
-import { ISocketEvent } from '../shared/common_interfaces/interfaces';
-import { IVisitor } from '../db/visitors/visitorsinterface';
+import { ISocketEvent } from '../../shared/common_interfaces/interfaces';
+import { IVisitor } from './visitorsinterface';
+import {Fields} from './fields';
 
 class SubData {
   data: IVisitor[];
@@ -38,19 +39,64 @@ export class VisitorsService {
   visitors_edit: BehaviorSubject<SubData> = new BehaviorSubject(new SubData(new Array(), false));
 
   sub_model_visitors_edit: Subscription;
-  model_visitors_edit: SubData;
+  model_visitors_edit: SubData;  
 
   constructor(
     private module: ModulesService,
-    private server: ServerService
-  ) { }
+    private server: ServerService,
+    private fields: Fields
+  ){}
+
+  setDisplayedColumns(columns: string[]){
+    this.fields.setFields(columns);
+  }
+
+  addColToModel(columns: string[], nameTable){
+    this.fields.setFields(columns);
+    this.getVisitors(nameTable);
+    // columns.push('regnum');
+    // let reqBody = {
+    //   table: nameTable,
+    //   fields: columns
+    // }
+    // console.log('reqBody: ', reqBody);
+    // this.server.post(reqBody, 'visitors').pipe(
+    //   map((vl:any): IVisitor[] => Array.from(vl))
+    // ).subscribe(data=>{
+    //   console.log('data from visitors: ', data);
+    //   let model = this['model_'+nameTable].data;
+    //   console.log('model: ', model);
+    //   data.forEach(element => {
+    //     let id = this.module.checkArrOfObjIdValField(model, 'regnum', element.regnum);
+    //     let key = columns[0];
+    //     console.log('key: ', key);
+    //     if(id && !model[id][key]){
+    //       model[id][key] = element[key]
+    //     }
+    //   });
+    //   this[nameTable].next(new SubData(data, true));
+    //   this.eventController();
+    // })
+  }
+
+  delDisplayedColumns(column: string){
+    this.fields.delField(column)
+  }
+
+  getAllColumns(){
+    return this.fields.allColumns()
+  }
 
   getVisitors(nameTable: 'visitors'|'visitors_create'|'visitors_edit'): void{
+    let reqBody = {
+      table: nameTable,
+      fields: this.fields.selected()
+    }
     this[nameTable].next(new SubData(new Array(), false));
-    this['sub_'+nameTable] = this.server.getVisitors(nameTable).pipe(
+    this['sub_'+nameTable] = this.server.post(reqBody, 'visitors').pipe(
       map((vl:any): IVisitor[] => Array.from(vl))
     ).subscribe(data=>{
-      console.log('data from getVisitors: ', data);
+      //console.log('data from getVisitors: ', data);
       this['sub_'+nameTable].unsubscribe();
       this[nameTable].next(new SubData(data, true));
       this.eventController();
@@ -83,7 +129,7 @@ export class VisitorsService {
     });
   }
 
-  // event socket controller
+  // event socket controller 
   eventController(){
     console.log('************************* this.eventsBuffer 2: ', this.eventsBuffer);
     const arr = this.eventsBuffer.slice();

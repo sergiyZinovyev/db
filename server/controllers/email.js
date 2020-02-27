@@ -52,16 +52,20 @@ exports.sendEmail = function(req, res){
     });
 }
 
-//-------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------- 
 exports.massMaling = function(req, res){
     //emitter.on('mailingSended', message => console.log('Message from email: ', message));
     const arrAccess = [3,4,5];
     let idUser;
     let mailingId;
+    let data;
     AuthController.getUsersaccountId(req.query.login, arrAccess) //перевіряємо права доступу
-        .then(data => { //перевіряємо чи відбулися зміни та створюємо/редагуємо лист або передаємо далі messageID
-            let message = {};
+        .then(data => {
             idUser = data;
+            return EmailModule.checkToken(req.body.token)
+        })
+        .then(() => { //перевіряємо чи відбулися зміни та створюємо/редагуємо лист або передаємо далі messageID
+            let message = {};
             if(req.body.changed) {
                 return EmailModule.createEditMessage(req, idUser)
             }
@@ -81,6 +85,34 @@ exports.massMaling = function(req, res){
             //emitter.emit('mailingSended', mailingId);
             // тут потрібно отримати id розсилки          
             return res.send({'mailingId': mailingId})
+        })
+        .catch(err => {
+            console.log(err);
+            return res.send(err);
+        });
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------
+exports.continueMailing = function(req, res){
+    const arrAccess = [3,4,5];
+    AuthController.getUsersaccountId(req.query.login, arrAccess)
+        .then(() => { // переводимо невідправлені листи в статус очікування
+            let options = [
+                'pending',
+                'paused', 
+            ]
+            return SQLEmail.editVisitorsMailingListsPaused(options, req.params.id, function(err, doc) {
+                if (err) {
+                    console.log(err);
+                    return res.send(err);
+                }
+            })
+        })
+        .then(() => {
+            return EmailModule.sendDataSendMailAll(req.params.id, transporter); //запускаємо розсилку
+        })
+        .then(data => {        
+            return res.send(data)
         })
         .catch(err => {
             console.log(err);
@@ -193,6 +225,34 @@ exports.getFullMessage = function(req, res) {
 //отримання даних зі списку розсилкок по mail_list_id
 exports.getVisitorsMailingList = function(req, res) {
     SQLEmail.getVisitorsMailingList(req.query.id, function(err, doc) {
+        if (err) {
+            console.log(err);
+            return res.send(err);
+        }
+        return res.send(doc);
+    });
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------
+//редагування запису у visitors_mailing_lists (поставити всі листи на паузу)
+exports.editVisitorsMailingListsPaused = function(req, res) {
+    let options = [
+        'paused',
+        'pending'
+    ]
+    SQLEmail.editVisitorsMailingListsPaused(options, req.params.id, function(err, doc) {
+        if (err) {
+            console.log(err);
+            return res.send(err);
+        }
+        return res.send(doc);
+    });
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------
+//редагування запису у mailing_lists (поставити всі розсилки на паузу)
+exports.editMailingListsPaused = function(req, res) {
+    SQLEmail.editMailingListsPaused(req.params.id, function(err, doc) {
         if (err) {
             console.log(err);
             return res.send(err);

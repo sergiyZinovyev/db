@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { ServerService } from '../../shared/server.service';
 import { ModulesService } from '../../shared/modules.service';
 
-import { ISocketEvent } from '../../shared/common_interfaces/interfaces';
+import { ISocketEvent } from '../../shared/common_interfaces/interfaces'; 
 import { IVisitorExhib } from '../visexhib/visexhibinterface';
 
 class SubData {

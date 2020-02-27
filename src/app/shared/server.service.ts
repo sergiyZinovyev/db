@@ -1,5 +1,5 @@
 import { Component, OnInit, Injectable} from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpRequest } from '@angular/common/http';
 import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms';
 import { catchError } from 'rxjs/operators';
 import { Observable, throwError, Subject } from 'rxjs';
@@ -11,8 +11,8 @@ import { Observable, throwError, Subject } from 'rxjs';
 
 export class ServerService {
 
-  //url = 'visitors.galexpo.com.ua:7002'; //dev host
-  url = 'visitors.galexpo.com.ua:7001'; //prod host  
+  url = 'visitors.galexpo.com.ua:7002'; //dev host
+  //url = 'visitors.galexpo.com.ua:7001'; //prod host   
 
   exhib = {
     id: 2,
@@ -63,6 +63,13 @@ export class ServerService {
   post(value, prop) {
     return this.http.post(`${this.apiUrl}/${prop}?${this.getAuth()}`, value)    
   }
+
+  post2(value, prop) {
+    const req = new HttpRequest('POST', `${this.apiUrl}/${prop}?${this.getAuth()}`, value, {
+      reportProgress: true
+    });
+    return this.http.request(req)   
+  }
   
   get(prop){
     return this.http.get(`${this.apiUrl}/db/${prop}?${this.getAuth()}`)
@@ -76,15 +83,17 @@ export class ServerService {
     return this.http.get(`${this.apiUrl}/visexhib/${prop}?${this.getAuth()}&cond=${cond}`)
   }
 
-  getVisitors(prop, id?){
-    if(!id){
-      return this.http.get(`${this.apiUrl}/visitors/${prop}?${this.getAuth()}`)
-    }
-    else{
-      return this.http.get(`${this.apiUrl}/visitors/${prop}?${this.getAuth()}&id=${id}`)
-    }
-    
-  }
+  // getVisitors(prop, id?){
+  //   if(!id){
+  //     return this.http.(`${this.apiUrl}/visitors/${prop}?${this.getAuth()}`)
+  //   }
+  //   else{
+  //     return this.http.get(`${this.apiUrl}/visitors/${prop}?${this.getAuth()}&id=${id}`) 
+  //   }  
+  // }
+
+
+
 
   //------------------------------------------------------------------------------------------------------------------------------
 
@@ -118,7 +127,7 @@ export class ServerService {
     return throwError(err);
   }
 
-  //------------------------------------------------------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------------------------------------------------------ 
   // методи wss
 
   openSocket(){
@@ -131,7 +140,7 @@ export class ServerService {
   onSocket(){
 
     setInterval(()=>{
-      console.log('~~~~~~~~~~~~~~~~ socket.readyState: ' + this.wss.readyState + ' ~~~~~~~~~~~~~~~~');
+      console.log('%csocket.readyState: ' + this.wss.readyState, "color: white; font-weight: bold; background-color: blue; padding: 2px;");
       if (this.wss.readyState != 1) {
         this.socketMessage.next({event: 'break connection', data: this.wss.readyState});
         this.wss = new WebSocket(this.wssUrl);

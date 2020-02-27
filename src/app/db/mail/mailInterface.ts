@@ -22,7 +22,8 @@ export interface IMessage {
     to: string;
     sendList: IUser[];
     from: string;
-    mailingStatus?: 'sent'|'no_sent'|'sending'
+    mailingStatus?: 'sent'|'no_sent'|'sending';
+    mailingId?: number
 }
 
 export interface IMessageInfo {
@@ -47,6 +48,17 @@ export interface IMailingLists {
     realname?: string;
     message_id?: number;
     sender?: string;
+    is_sent?: string;
     date_start?: string;
     date_end: string
+}
+
+export interface IEvent{
+    type;
+    statusText?;
+    body?;
+    headers?;
+    ok?;
+    status?;
+    url?;
 }

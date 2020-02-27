@@ -124,11 +124,13 @@ function saveMailingList(params, message_id, id_user) {
     return new Promise((resolve, reject) => {
         let data = [
             //дані для внесення 
-            //name, user_id, message_id, sender
+            //token, name, user_id, message_id, sender, is_sent
+            params.token,
             params.subject,
             id_user,
             message_id,
-            params.from
+            params.from,
+            'pending'
         ];
         SQLEmail.createMailingList(data, function(err, doc) {
             if (err) {
@@ -164,7 +166,7 @@ function editMailingList(fieldName, fieldValue, id) {
 // зберігаємо список розсилки в SQL
 function saveVisitorsMailingLists(params, mail_list_id) {
     return new Promise((resolve, reject) => {
-        // формуємо строку в потрібному форматі для внесення
+        // формуємо строку в потрібному форматі для внесення 
         let dataVisitors = '';
         let coma = ', ';
         let coma2 = ', ';
@@ -511,6 +513,21 @@ function isMailing(messageID) {
     
 }
 
+//// перевірка чи є в розсилці невідправлені листи
+function getIsSent(id) {
+    return new Promise((resolve, reject) => {
+        SQLEmail.getIsSent(id, function(err, doc) {
+            if (err) {
+                console.log(err);
+                return reject(err);
+            }
+            if (doc[0]) resolve('paused')
+            else resolve('sent')
+        });
+    })
+    
+}
+
 //-------------------------------------------------------------------------------------------------------------------------
 //розбити масив на підмасиви
 function arrToSubarr(arr, size) {
@@ -664,10 +681,13 @@ exports.createMessageSaveFiles = function(req, id_user){
 exports.sendDataSendMailAll = function(idMailinngList, transporter){
     let is_send;
     return editMailingList('date_start', Shared.curentDate(Date.now()), idMailinngList) // робимо запис про початок розсилки
+        .then(() => editMailingList('is_sent', 'pending', idMailinngList)) // робимо запис про статус розсилки
         .then(() => getArrDataForMailing(idMailinngList))  //отримуємо всі id по яким має бути розсилка
-        .then(arr =>  awaitEx(arrToSubarr(arr, 1), 5000, transporter)) //послідовно виконуємо групи промісів з заданим інтервалом
+        .then(arr =>  awaitEx(arrToSubarr(arr, 5), 3000, transporter)) //послідовно виконуємо групи промісів з заданим інтервалом
         .then(data => is_send = data)
         .then(() => editMailingList('date_end', Shared.curentDate(Date.now()), idMailinngList)) // робимо запис про закінчення розсилки
+        .then(() => getIsSent(idMailinngList)) //перевіряємо чи є невідіслані листи
+        .then((sentStatus) => editMailingList('is_sent', sentStatus, idMailinngList)) // робимо запис про статус розсилки
         .then(() => {emitter.emit('mailingSaved', idMailinngList); return is_send})
         .catch(err => {
             console.log(err);
@@ -716,6 +736,21 @@ exports.saveDataSendMail = function(req, messageID, idUser){
                 console.log(err);
                 reject(err);
             });
+    })
+}
+
+// перевіряємо наявність токена в розсилці
+exports.checkToken = function(token) {
+    return new Promise((resolve, reject) => {
+        SQLEmail.checkToken(token, function(err, doc) {
+            if (err) {
+                console.log(err);
+                reject(err);
+            }
+            console.log('checkToken: ', doc);
+            if(!doc[0]) resolve('ok');
+            else reject(new Error("ignored"));
+        });
     })
 }
 

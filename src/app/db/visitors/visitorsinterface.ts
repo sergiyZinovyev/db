@@ -27,6 +27,6 @@ export interface IVisitor {
     address: string; 
     telephon: string; 
     rating: string; 
-    visited_exhib: string; 
+    visited_exhib: string;  
 }  
  
