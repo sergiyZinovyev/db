@@ -3,6 +3,7 @@ const fs = require('fs');
 const Secure = require("../config");
 const ControllersShared = require('../controllers/shared');
 const SQLEmail = require('../models/sql-email');
+const SQLCommon = require('../models/sql-common');
 const EmailModule = require('../models/email-mod');
 const AuthController = require('../controllers/auth');
 //const EventEmitter = require('events');
@@ -259,6 +260,18 @@ exports.editMailingListsPaused = function(req, res) {
         }
         return res.send(doc);
     });
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------
+//відписка
+exports.unsubscribe = function(req, res) {
+    EmailModule.checkEmail(req.params.id, req.params.regnum, req.params.mail_list_id)
+        .then(()=> SQLCommon.edit('visitors', 'sending', 0, 'regnum', req.params.regnum))
+        .then(()=>res.send('Ви успішно відписалися від розсилок'))
+        .catch(err => {
+            console.log(err);
+            return res.send(err);
+        });
 }
 
 

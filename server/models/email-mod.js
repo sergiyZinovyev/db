@@ -747,9 +747,23 @@ exports.checkToken = function(token) {
                 console.log(err);
                 reject(err);
             }
-            console.log('checkToken: ', doc);
             if(!doc[0]) resolve('ok');
             else reject(new Error("ignored"));
+        });
+    })
+}
+
+// перевіряємо наявність емейла в розсилці
+exports.checkEmail = function(id, regnum, mail_list_id) {
+    return new Promise((resolve, reject) => {
+        SQLEmail.getEmailData(id, function(err, doc) {
+            if (err) {
+                console.log(err);
+                return reject(err);
+            }
+            if(!doc[0]) return reject('Такої пошти немає в даній розсилці');
+            if(doc[0].regnum == regnum && doc[0].mail_list_id == mail_list_id) return resolve(doc[0])
+            else return reject('Такої пошти немає в даній розсилці')
         });
     })
 }

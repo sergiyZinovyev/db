@@ -162,7 +162,7 @@ export class VisexhibComponent implements OnInit, OnDestroy {
       console.log("data: ", data);
       if (data[0])this.keyData = Object.keys(data[0]);
       // for (var key in data[0]) {
-      //   // перебираємо всі назви ключів першого обєкта, та записуємо в масив, щоб визначити назви колонок 
+      //   // перебираємо всі назви ключів першого обєкта, та записуємо в масив, щоб визначити назви колонок  
       //   this.keyData.push(key);
       // }
 

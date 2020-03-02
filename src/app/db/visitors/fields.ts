@@ -41,14 +41,15 @@ export class Fields {
     'region',
     'cityid',
     'id_visitor',
-    'visited_exhib'
+    'visited_exhib',
+    'sending'
   ];
   private visFields: string[] = [];
 
   constructor(private module: ModulesService,) {}
   
   selected() : string {
-    //console.log('this.allFields from Fields selected()', this.allFields);
+    //console.log('this.allFields from Fields selected()', this.allFields); 
     return this.visFields.join(', ')
   }
 

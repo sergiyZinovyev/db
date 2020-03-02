@@ -23,6 +23,7 @@ const emailMod = require('./server/models/email-mod');
 const sqlEmail = require('./server/models/sql-email');
 const sqlVisitors = require('./server/models/sql-visitors');
 const sqlVisexhib = require('./server/models/sql-exhib');
+const sqlCommon = require('./server/models/sql-common');
 
 
 const urlencodedParser = bodyParser.urlencoded({extended: false});
@@ -81,7 +82,7 @@ function sendEventAllClients(message){
   });
 }
 
-//прослуховуємо події та робимо розсилки  
+//прослуховуємо події та робимо розсилки   
 emailMod.emitter.on('mailingSaved', message => eventsHandler.getMailing(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
 emailMod.emitter.on('mailingSended', message => eventsHandler.getMailing(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
 sqlEmail.emitter.on('editMailingList', message => eventsHandler.getMailing(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
@@ -94,6 +95,7 @@ sqlVisexhib.emitter.on('changeVisexData', message => eventsHandler.getEditDataVi
 sqlVisexhib.emitter.on('changeVisexData2', message => eventsHandler.getEditDataVis2(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
 //sqlVisexhib.emitter.on('changeVisexData3', message => eventsHandler.getEditDataVis3(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
 sqlVisexhib.emitter.on('changeTypeOfReg', message => eventsHandler.getTypeOfReg(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
+sqlCommon.emitter.on('edit', message => eventsHandler.getEditData(message).then(e=>wss.sendEventAll(e)).catch(err=>console.log(err)));
 
 
 wss.on('connection', (ws) => {
@@ -105,7 +107,7 @@ wss.on('connection', (ws) => {
 });
 
 
-//------------------------------------------------------------------------------------------------------ 
+//------------------------------------------------------------------------------------------------------   
 
 
 //отримати запис з таблиці usersaccount для авторизації
@@ -197,7 +199,10 @@ app.get("/mailingListsPaused/:id", authController.checkAuth, emailController.edi
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-// *** не захищені роути ***
+// *** не захищені роути *** 
+
+//відписка
+app.get("/unsubscribe/:id/:regnum/:mail_list_id", emailController.unsubscribe);
 
 //отримати всі записи з вказаної таблиці / !!! незахищений роут використовується в формах реєстрації юзерів, потрібно зробити нові роути для юзерів, а ці захистити !!!
 app.get("/db/:id", visitorsController.all);

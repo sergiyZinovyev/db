@@ -53,7 +53,7 @@ export class VisitorComponent implements OnInit {
     name: '',
     kod: ''
   }];
-  exhibForm = new FormGroup({});
+  exhibForm = new FormGroup({}); 
   
   region;
 
@@ -71,12 +71,14 @@ export class VisitorComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    console.log("this.element", this.element);
     this.getRegion('region');
     if(this.element){
       let reqBody = {
         table: this.table,
         regnum: this.element.regnum
       }
+      console.log("reqBody", reqBody);
       this.server.post(reqBody, 'visitors').subscribe(data=>{
         console.log('visitor data', data);
         this.loginForm = this.fb.group({
@@ -118,11 +120,13 @@ export class VisitorComponent implements OnInit {
         this.myEmail = data[0].email;
         this.myCellphone = data[0].cellphone;
 
+        //збираємо форму з виставками 
+        this.getExhib('exhibitions_dict');
       })
     }
 
     //збираємо форму з виставками 
-    this.getExhib('exhibitions_dict');
+    //this.getExhib('exhibitions_dict');
   }
   
   getRegion(nameTable){
@@ -306,7 +310,8 @@ export class VisitorComponent implements OnInit {
         if(this.getArrFromPotvid().find(currentValue => currentValue == data[i].name)){value = true}
         this.exhibForm.addControl(data[i].name, new FormControl(value, Validators.required))
       }
-      console.log(this.exhib); 
+      // console.log(this.exhib); 
+      // console.log(this.exhibForm.value); 
     })
   }
 

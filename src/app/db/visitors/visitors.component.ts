@@ -62,7 +62,7 @@ export class VisitorsComponent implements OnInit, OnDestroy {
     'potvid',
     'select',
   ];
-  displayedColumns2 = this.module.addText(this.displayedColumns, 'f_'); //рядок таблиці з фільтрами
+  displayedColumns2 = this.module.addText(this.displayedColumns, 'f_'); //рядок таблиці з фільтрами 
   keyData = [
     //'regnum',
     'name',
@@ -99,7 +99,8 @@ export class VisitorsComponent implements OnInit, OnDestroy {
     //'region',
     'cityid',
     'id_visitor',
-    'visited_exhib'
+    'visited_exhib',
+    'sending'
   ];
   dataSource = new MatTableDataSource();
   viewData; //дані для таблиць отримані з БД 
@@ -172,7 +173,7 @@ export class VisitorsComponent implements OnInit, OnDestroy {
       subData.state ? this.isLoadingResults = false : this.isLoadingResults = true;
       console.log("data: ", data);
       // for (var key in data[0]) {
-      //   // перебираємо всі назви ключів першого обєкта, та записуємо в масив, щоб визначити назви колонок  
+      //   // перебираємо всі назви ключів першого обєкта, та записуємо в масив, щоб визначити назви колонок   
       //   this.keyData.push(key)
       // }
       //this.keyData = this.visitorsService.getAllColumns();

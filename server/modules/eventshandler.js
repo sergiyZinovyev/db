@@ -76,6 +76,7 @@ exports.getEditData = function(d){
     console.log('########################### Message from socket editVisitor ##########################', d);
     return new Promise((resolve, reject) => {
         SQLVisitors.getVisitors(d.table, `WHERE regnum IN (${d.id})`, function(err, doc) {
+            console.log('data from sql getting');
             if (err) {
                 console.log(err);
                 return reject(err);
