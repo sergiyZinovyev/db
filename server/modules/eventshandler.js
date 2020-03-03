@@ -75,14 +75,20 @@ exports.getDelData = function(d){
 exports.getEditData = function(d){
     console.log('########################### Message from socket editVisitor ##########################', d);
     return new Promise((resolve, reject) => {
-        SQLVisitors.getVisitors(d.table, `WHERE regnum IN (${d.id})`, function(err, doc) {
+        let curEvent = 'newEvent';
+        let params = `WHERE id IN (${d.id})`
+        if(d.table == 'visitors' || d.table == 'visitors_edit' || d.table == 'visitors_create'){
+            curEvent = 'getNewDataVisitors';
+            params = `WHERE regnum IN (${d.id})`
+        }
+        SQLVisitors.getVisitors(d.table, params, function(err, doc) {
             console.log('data from sql getting');
             if (err) {
                 console.log(err);
                 return reject(err);
             }
             let data = {
-                event: 'getNewDataVisitors',
+                event: curEvent,
                 data: {table: d.table, data: doc}
             }
             return resolve(JSON.stringify(data)) 

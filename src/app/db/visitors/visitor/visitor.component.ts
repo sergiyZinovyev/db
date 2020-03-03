@@ -124,9 +124,8 @@ export class VisitorComponent implements OnInit {
         this.getExhib('exhibitions_dict');
       })
     }
-
     //збираємо форму з виставками 
-    //this.getExhib('exhibitions_dict');
+    else this.getExhib('exhibitions_dict');
   }
   
   getRegion(nameTable){

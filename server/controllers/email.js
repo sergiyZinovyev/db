@@ -267,6 +267,7 @@ exports.editMailingListsPaused = function(req, res) {
 exports.unsubscribe = function(req, res) {
     EmailModule.checkEmail(req.params.id, req.params.regnum, req.params.mail_list_id)
         .then(()=> SQLCommon.edit('visitors', 'sending', 0, 'regnum', req.params.regnum))
+        .then(()=> SQLCommon.edit('visitors_mailing_lists', 'unsubscribed', 1, 'id', req.params.id))
         .then(()=>res.send('Ви успішно відписалися від розсилок'))
         .catch(err => {
             console.log(err);

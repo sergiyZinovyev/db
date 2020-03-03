@@ -12,7 +12,7 @@ exports.editExhibition_del_rec = function(table, field, id, ids, cb){
   })
 }
 
-//редагування запису вказаного поля з вказаної таблиці 
+//редагування запису вказаного поля з вказаної таблиці  
 exports.edit = function(table, field, field_val, id, id_val){
   return new Promise((resolve, reject) => {
     let sql = `UPDATE ${table} SET ${field}=${field_val} WHERE ${id}=${id_val}`;
