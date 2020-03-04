@@ -203,8 +203,8 @@ exports.editVisitorsMailingListsPaused = function(options, id, cb){
 
 //отримання даних для розсилки по вказаному id розсилки
 exports.getDataMailing = function(id, cb){
-  let sql = `SELECT id, is_send, email AS 'to', namepovne, sender AS 'from', subject, attachments AS path, body_files, message FROM
-  (SELECT id, is_send, mail_list_id as ml_id, email, namepovne FROM visitors_mailing_lists) AS list
+  let sql = `SELECT id, is_send, email AS 'to', namepovne, sender AS 'from', subject, attachments AS path, body_files, message, ml_id, regnum FROM
+  (SELECT id, is_send, mail_list_id as ml_id, email, namepovne, regnum FROM visitors_mailing_lists) AS list
   LEFT OUTER JOIN
   (SELECT mail_list_id, sender, subject, attachments, body_files, message FROM
   ((SELECT id as mail_list_id, message_id as m_id, sender FROM mailing_list) AS mailing_list

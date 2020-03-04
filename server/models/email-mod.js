@@ -4,6 +4,7 @@ const AuthController = require('../controllers/auth');
 const Shared = require('../models/shared');
 const Update = require('../modules/updateHtmlLinks');
 const EventEmitter = require('events');
+const Secure = require('../config');
 
 const emitter = new EventEmitter();
 exports.emitter = emitter;
@@ -239,11 +240,25 @@ function getDataForMailing(id) {
 // відправка листа де params - параметри листа, transporter - обєкт nodemailer
 function sendEmail(params, transporter) {
     console.log(`sendEmail is work whith argument: params.path = ${params.path}`);
+    const protocol = Secure.Config.serverConfig.protocol;
+    const host = Secure.Config.serverConfig.host;
+    const port = Secure.Config.serverConfig.backendPort;
     class Attach {
         constructor(params) {
             this.path = params;
         }
     }
+    let link = `${protocol}://${host}:${port}/unsubscribe/${params.id}/${params.regnum}/${params.ml_id}`;
+    let unsubscribe =   `<a href="${link}" 
+                            style="display: inline-block; 
+                                    background: #8C959D; 
+                                    color: #fff; 
+                                    padding: 5px 10px 5px 10px; 
+                                    text-decoration: none; 
+                                    border-radius: 5px; 
+                                    font-weight: bold"> 
+                            відписатися 
+                        </a>`;
     let attachArr;
     let message;
     return new Promise((resolve, reject) => {
@@ -257,6 +272,7 @@ function sendEmail(params, transporter) {
             attachArr = params.path.split('; ').map(item => new Attach(item));
         }
         message = params.message.replace(new RegExp("<baza-name>", 'g'), params.namepovne);
+        message = message.replace(new RegExp("<baza-unsubscribe>", 'g'), unsubscribe);
         //console.log('attachArr: ', attachArr);
         const emailOptions = {
             from: params.from, // sender address

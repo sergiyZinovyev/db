@@ -74,25 +74,49 @@ exports.getDelData = function(d){
 // дані які були змінені
 exports.getEditData = function(d){
     console.log('########################### Message from socket editVisitor ##########################', d);
+    let valEvent = 'newSocketEvent';
+    let params = `WHERE id IN (${d.id})`;
+    let data = {};
     return new Promise((resolve, reject) => {
-        let curEvent = 'newEvent';
-        let params = `WHERE id IN (${d.id})`
         if(d.table == 'visitors' || d.table == 'visitors_edit' || d.table == 'visitors_create'){
-            curEvent = 'getNewDataVisitors';
+            valEvent = 'getNewDataVisitors';
             params = `WHERE regnum IN (${d.id})`
+            SQLVisitors.getVisitors(d.table, params, function(err, doc) {
+                if (err) {
+                    console.log(err);
+                    return reject(err);
+                }
+                data = {
+                    event: valEvent,
+                    data: {table: d.table, data: doc}
+                }
+                console.log('visitors:', JSON.stringify(data));
+                return resolve(JSON.stringify(data)) 
+            })
         }
-        SQLVisitors.getVisitors(d.table, params, function(err, doc) {
-            console.log('data from sql getting');
-            if (err) {
-                console.log(err);
-                return reject(err);
-            }
-            let data = {
-                event: curEvent,
-                data: {table: d.table, data: doc}
-            }
-            return resolve(JSON.stringify(data)) 
-        })
+        if(d.table == 'visitors_mailing_lists'){
+            SQLEmail.getEmailData(d.id, function(err, doc) {
+                if (err) {
+                    console.log(err);
+                    return reject(err);
+                }
+                data = {
+                    event: 'editVisitorsMailingLists',
+                    data: doc
+                }
+                console.log('visitors_mailing_lists:', JSON.stringify(data));
+                return resolve(JSON.stringify(data)) 
+            })
+        }
+        // else {
+        //     data = {
+        //         event: valEvent,
+        //         data: d
+        //     }
+        //     console.log('else:', JSON.stringify(data));
+        //     return resolve(JSON.stringify(data)) 
+        // }
+        
     })
 }
 

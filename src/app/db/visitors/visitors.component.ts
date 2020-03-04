@@ -540,6 +540,8 @@ export class VisitorsComponent implements OnInit, OnDestroy {
     //this.isLoadingResults = true;
     if(!data){
       this.isLoadingResults = false;
+      this.selection.clear();
+      this.arrOfCheckId = [];
       return alert('Ви не обрали жодного запису для збереження');
     }
     var file = new Blob([data], {type: type});
@@ -557,6 +559,8 @@ export class VisitorsComponent implements OnInit, OnDestroy {
         window.URL.revokeObjectURL(url);  
       }, 0); 
     }
+    this.selection.clear();
+    this.arrOfCheckId = [];
     //this.isLoadingResults = false;
   }
 
@@ -681,7 +685,7 @@ export class VisitorsComponent implements OnInit, OnDestroy {
     return files[0];
   }
 
-  //отримати дані з файлу та повернути у вигляді масива  
+  //отримати дані з файлу та повернути у вигляді масива   
   getDataFile(file){
     return new Promise((resolve, reject) => {
       let reader = new FileReader();
@@ -693,7 +697,7 @@ export class VisitorsComponent implements OnInit, OnDestroy {
       reader.onload = () => {
           var contents = reader.result;
           console.log("Вміст файла: \n" + contents);
-          resolve(this.getArrFromString(contents)) ;
+          resolve(this.getArrFromString(contents));
       };
       reader.onerror = () => {
           console.error("File could not be read!");

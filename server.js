@@ -30,7 +30,7 @@ const urlencodedParser = bodyParser.urlencoded({extended: false});
 
 //back-end server
 const app = express();
-const host = 'visitors.galexpo.com.ua'; //prod host 
+const host = Secure.Config.serverConfig.host;
 const port = Secure.Config.serverConfig.backendPort;
 const server = https.createServer({
   key: fs.readFileSync('./server/cert/key.pem'),
