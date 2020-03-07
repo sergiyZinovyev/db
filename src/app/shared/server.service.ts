@@ -12,7 +12,7 @@ import { Observable, throwError, Subject } from 'rxjs';
 export class ServerService {
 
   url = 'visitors.galexpo.com.ua:7002'; //dev host
-  //url = 'visitors.galexpo.com.ua:7001'; //prod host        
+  //url = 'visitors.galexpo.com.ua:7001'; //prod host         
 
   exhib = {
     id: 2,

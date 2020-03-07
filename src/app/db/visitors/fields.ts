@@ -44,13 +44,13 @@ export class Fields {
     'visited_exhib',
     'sending'
   ];
-  private visFields: string[] = [];
+  private visFields: string[] = ['sending'];
 
   constructor(private module: ModulesService,) {}
   
   selected() : string {
-    //console.log('this.allFields from Fields selected()', this.allFields); 
-    return this.visFields.join(', ')
+    //console.log('this.allFields from Fields selected()', this.allFields);  
+    return this.visFields.join(', ');
   }
 
   allColumns(): string[]{

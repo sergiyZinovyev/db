@@ -96,14 +96,14 @@
 }
 
 .example-viewport {
-    height: 800px;
+    height: 640px;
     width: 340px;
 }
 
 .btn-1{
     color: deepskyblue;  
 }
-
+ 
 .circle{
     margin-left: -15px;
     width: 10px;

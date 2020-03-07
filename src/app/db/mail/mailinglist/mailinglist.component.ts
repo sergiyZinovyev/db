@@ -26,13 +26,13 @@ export class MailinglistComponent implements OnInit {
 
   ngOnInit() {
     if(!this.mail.subMailingList){
-      this.mail.getSubMailingList(); //запускаємо на сервісі підписку на MailingList    
+      this.mail.getSubMailingList(); //запускаємо на сервісі підписку на MailingList      
       console.log('MailingList subscribed!!!');
     }
     
     // підписуємось на mailingList
     this.mail.mailingList.subscribe(data => {
-      this.mailingList = data;
+      this.mailingList = [...data];
       this.mailingList = this.mailingList.sort(this.module.compareByField('id'));
       this.isLoadingResults = false;
     });

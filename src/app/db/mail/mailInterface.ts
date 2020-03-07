@@ -6,6 +6,7 @@ export interface IUser {
     date?: string;
     email: string;
     namepovne: string;
+    sending?: number
 }
 
 //export interface IMailig {}   

@@ -11,7 +11,9 @@
     <mat-spinner></mat-spinner>
 </div>
 
-<ng-container *ngFor='let mailing of mailingList; let i = index'>
+<cdk-virtual-scroll-viewport itemSize="50" class="example-viewport">
+<div *cdkVirtualFor='let mailing of mailingList; let i = index'>    
+<!-- <div *ngFor='let mailing of mailingList; let i = index'> -->
     <div class="d-flex list align-items-center" 
         [ngClass]="{'activated-list': mailing.id==mailingId?true:false}"> 
         <div class="name" (click)='getMessage(mailing.id)' [matTooltip]="mailing.name">
@@ -29,7 +31,7 @@
                 <ng-template ngSwitchCase="sent">{{mailing.date_end | date: "dd.MM.yyyy"}}</ng-template>
                 <ng-template ngSwitchDefault></ng-template>
             </div>
-            <!-- спінер винесено окремо там де треба чомусь не працює -->
+            <!-- спінер винесено окремо там де треба чомусь не працює --> 
             <div *ngIf='mailing.is_sent == "pending"' 
                 class="spinner-border spinner-border-sm text-secondary" 
                 role="status">
@@ -43,4 +45,5 @@
             <mat-icon>clear</mat-icon>
         </div>
     </div>
-</ng-container> 
+</div> 
+</cdk-virtual-scroll-viewport>

@@ -175,7 +175,7 @@ export class VisitorsService {
 //---------------------------------------------------------------------------------------------------------------------------
 //event socket handlers
 
-  // refresh all data table
+  // refresh all data table 
   handlerBreakConnection(): void{
     this.getVisitors('visitors');
     this.getVisitors('visitors_create');

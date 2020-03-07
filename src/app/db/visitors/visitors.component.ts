@@ -61,6 +61,7 @@ export class VisitorsComponent implements OnInit, OnDestroy {
     'region',
     'potvid',
     'select',
+    'sending'
   ];
   displayedColumns2 = this.module.addText(this.displayedColumns, 'f_'); //рядок таблиці з фільтрами 
   keyData = [
@@ -100,7 +101,7 @@ export class VisitorsComponent implements OnInit, OnDestroy {
     'cityid',
     'id_visitor',
     'visited_exhib',
-    'sending'
+    //'sending'
   ];
   dataSource = new MatTableDataSource();
   viewData; //дані для таблиць отримані з БД 
@@ -140,7 +141,7 @@ export class VisitorsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.visitorsService.setDisplayedColumns(this.displayedColumns);
+    this.visitorsService.setDisplayedColumns(this.displayedColumns); 
     // якщо на сервісі ще немає підписок на таблиці то запускаємо їх
     if (!this.visitorsService.sub_visitors) this.visitorsService.getVisitors('visitors');
     if (!this.visitorsService.sub_visitors_create) this.visitorsService.getVisitors('visitors_create');
@@ -529,8 +530,10 @@ export class VisitorsComponent implements OnInit, OnDestroy {
     let myString = '';
     for (let index = 0; index < array.length; index++) {
       const element = array[index];
-      let f = this.module.findPropValInArrObj(dataSource, regnum, element, field);
-      if(f){myString = myString+f+'\n'} 
+      if(this.module.findOdjInArrObj(dataSource, 'regnum', element).sending == 1){
+        let f = this.module.findPropValInArrObj(dataSource, regnum, element, field);
+        if(f){myString = myString+f+'\n'} 
+      }
     }
     return myString;
   }
@@ -765,10 +768,12 @@ export class VisitorsComponent implements OnInit, OnDestroy {
       return alert('Ви не обрали жодного запису для розсилки');
     }
     this.db.setNavDB('mail');
+    //if(this.module.findOdjInArrObj(dataSource, 'regnum', element).sending == 1){} 
     //this.newElement("isAddingItemSendEmail");
-    let newList = this.module.filter(this.dataSource.data, this.arrOfCheckId, 'regnum'); 
+    let newList = this.module.filter(this.dataSource.data, this.arrOfCheckId, 'regnum');
+    newList =  this.module.filter(newList, 1, 'sending');
     let SendList:IUser[] = newList.map(function(obj:IUser) {
-      return {regnum: obj.regnum, email: obj.email, namepovne: obj.namepovne};
+      return {regnum: obj.regnum, email: obj.email, namepovne: obj.namepovne, sending: obj.sending};
     });
     //console.log('newList: ',newList);
     this.mail.addToCurrentSendList(SendList);   

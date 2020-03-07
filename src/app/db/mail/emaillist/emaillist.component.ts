@@ -38,7 +38,7 @@ export class EmaillistComponent implements OnInit, OnDestroy {
     //   console.log('MailingList subscribed!!!');
     // }
     
-    // підписуємось на mailingList щоб отримати статус листа і списк емейлів
+    // підписуємось на mailingList щоб отримати статус листа і списк емейлів 
     this.subMessage = this.mail.getMessage.subscribe((data: IMessage)  => {
       //console.log('data: ', data);
       // this.emailList = [];
@@ -51,18 +51,18 @@ export class EmaillistComponent implements OnInit, OnDestroy {
         console.log('this.mailingStatus: ',this.mailingStatus)
       };
       this.mailingId = data.mailingId;
-      this.emailList = data.sendList;
+      this.emailList = [...data.sendList];
       this.isLoadingResults = false;
-      this.progressValue = this.countSent(this.emailList)/this.emailList.length*100;
+      this.progressValue = this.countEmail(this.emailList, 'is_send', 'sent')/this.emailList.length*100;
     });
 
     // підписуємося на визначення активної розсилки
     //this.mail.getMessage.subscribe(data => this.mailingId = data.mailingId); 
   }
 
-  countSent(arr: IUser[]){
+  countEmail(arr: IUser[], key: string, value: any){
     return arr.reduce((total, amount) => {
-      if(amount.is_send == 'sent'){
+      if(amount[key] == value){
         total++;
       }
       return total
@@ -117,6 +117,8 @@ export class EmaillistComponent implements OnInit, OnDestroy {
   stop(){
     console.log('stop works!')
   }
+
+  editMailing(){}
 
   ngOnDestroy(){
     this.subMessage.unsubscribe();

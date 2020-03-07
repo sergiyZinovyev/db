@@ -16,6 +16,7 @@
     padding-bottom: 6px;
     padding-top: 6px;
     cursor: default;
+    width: 320px;
 }
 
 .list:hover{
@@ -23,7 +24,7 @@
     border-left:rgb(95, 159, 255) 4px solid; 
     /* font-weight: bold; */
 }
-
+ 
 .list:hover .del{
     visibility: visible;
 } 
@@ -96,4 +97,8 @@
 .red{
     color: red;
     font-weight: bold;
+}
+ 
+.example-viewport {
+    height: 800px;
 }

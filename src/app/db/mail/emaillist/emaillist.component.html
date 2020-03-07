@@ -1,7 +1,12 @@
 <div class="sticky">
     <!-- Деталі розсилки -->
     <div class="d-flex align-items-center justify-content-between">
-        <div class="header">Емейлів всього/надіслано:<span style="color: #3f51b5; margin-left: 10px;">{{emailList.length}}/{{countSent(emailList)}}</span></div>
+        <div class="header">
+            Емейлів всього/надіслано:
+            <span style="color: #3f51b5; margin-left: 10px;">
+                {{emailList.length}}/{{countEmail(emailList, 'is_send', 'sent')}}
+            </span>
+        </div>
         <div 
             *ngIf = 'mailingStatus == "sending"'
             class="spinner-grow spinner-grow-sm" 
@@ -45,24 +50,42 @@
             <mat-icon>stop</mat-icon>
         </button>
     </div>
-    <div class="btn-1">
+    <div class="header">
+        Емейлів прочитано/відписалися:
+        <span style="color: #3f51b5; margin-left: 10px;">
+            {{countEmail(emailList, 'read', 1)}}/{{countEmail(emailList, 'unsubscribed', 1)}}
+        </span>
+    </div>
+
+    <div class="d-flex align-items-center justify-content-between">
+        <div class="btn-1">
+            <button 
+                mat-icon-button 
+                [disabled]='mailingStatus == "sending"'
+                color="primary"
+                matTooltip="Очистити список емейлів" 
+                aria-label="Example icon-button with a heart icon" 
+                (click)='clearEmailList()'>
+                <mat-icon>remove_circle</mat-icon>
+            </button>
+            <button 
+                mat-icon-button 
+                [disabled]='mailingStatus == "sending"'
+                color="primary"
+                matTooltip="Додати ще емейлів" 
+                aria-label="Example icon-button with a heart icon" 
+                (click)='addEmailList()'>
+                <mat-icon>add_circle</mat-icon>
+            </button>
+        </div>
         <button 
             mat-icon-button 
             [disabled]='mailingStatus == "sending"'
             color="primary"
-            matTooltip="Очистити список емейлів" 
+            matTooltip="налаштування розсилки" 
             aria-label="Example icon-button with a heart icon" 
-            (click)='clearEmailList()'>
-            <mat-icon>remove_circle</mat-icon>
-        </button>
-        <button 
-            mat-icon-button 
-            [disabled]='mailingStatus == "sending"'
-            color="primary"
-            matTooltip="Додати ще емейлів" 
-            aria-label="Example icon-button with a heart icon" 
-            (click)='addEmailList()'>
-            <mat-icon>add_circle</mat-icon>
+            (click)='editMailing()'>
+            <mat-icon>build</mat-icon>
         </button>
     </div>
     
@@ -80,12 +103,12 @@
 </div>
 
 <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport">
-    <!-- <div *cdkVirtualFor='let email of emailList; let i = index'> -->
-    <div *ngFor='let email of emailList; let i = index'>
-        <!-- <div class="d-flex list align-items-center" #element *ngIf = 'element.getBoundingClientRect().top == 600'> -->   
+    <div *cdkVirtualFor='let email of emailList; let i = index'>
+    <!-- <div *ngFor='let email of emailList; let i = index'> -->
+        <!-- <div class="d-flex list align-items-center" #element *ngIf = 'element.getBoundingClientRect().top == 600'> -->     
         <div class="d-flex list align-items-center">    
             <div class="name" (click)='getUserData(email.id)' [matTooltip]="email.namepovne+' ('+email.email+')'">
-                <div class="mailing-name text-truncate">{{email.email}}</div>
+                <div class="mailing-name text-truncate" [ngClass]="{'text-danger': email.unsubscribed==1?true:false}">{{email.email}}</div>
                 <div class="sender-name text-truncate">{{email.namepovne}}</div>
             </div>
             

@@ -15,7 +15,7 @@ import { Message } from '../message';
 export class MessageslistComponent implements OnInit {
 
   messageList: IMessageInfo[];
-  messageId: number | string; //визначає активну розсилку 
+  messageId: number | string; //визначає активну розсилку  
 
   constructor(
     private mail: MailService,
@@ -31,7 +31,7 @@ export class MessageslistComponent implements OnInit {
     }
     
     // підписуємось на messageList
-    this.mail.messageList.subscribe(data => this.messageList = data);
+    this.mail.messageList.subscribe(data => this.messageList = [...data]);
 
     // підписуємося на визначення активної розсилки
     this.mail.getMessage.pipe(map((vl:Message):number | string => vl.id)).subscribe(data => this.messageId = data);  
