@@ -189,3 +189,33 @@ exports.getUsersaccountId = function(login, arrAccess) {
     })
     
 };
+
+//----------------------------------------------------------------------------------------------------------- 
+// розширена версія !!!
+// перевіряє права доступу та повертає id користувача або помилу, якщо нема прав
+// login - логін користувача; arrAccess - масив з дозволеними правами ([1,2,3,4,5])
+// authorized_id - масив id авторизованих для виконання операцій
+exports.getUsersaccountId2 = function(login, arrAccess, authorized_id) {
+    return new Promise((resolve, reject) => {
+        Shared.getRights(login, function(err, doc){
+            if (err) {
+                console.log('err: ',err);
+                reject(err);
+            }
+            else {
+                console.log('rights cb: ', doc.insupdvisitors);
+                if(!arrAccess.includes(doc.insupdvisitors)){
+                    if(authorized_id.includes(doc.id)) resolve(doc.id); 
+                    console.log('у вас немає прав доступу: ', doc.insupdvisitors);
+                    reject([{
+                        "rights": "false",
+                    }]);
+                }
+                else{
+                    resolve(doc.id); 
+                }
+            }
+        })   
+    })
+    
+};

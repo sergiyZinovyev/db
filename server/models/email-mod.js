@@ -386,6 +386,38 @@ function addNewFilesSQL(messageID, newFilesArr){
     }) 
 }
 
+// видаляємо файли з БД
+exports.delFilesSQL = function (messageID, delFile){
+    return new Promise((resolve, reject) => {
+        let newFiles;
+        getAttachAndBodyFales(messageID)  //отримуємо записи з бази
+            .then(data => {
+                console.log('getAttachAndBodyFales data[0]: ', data[0]);
+
+                let files = {};
+                files.id = messageID;
+                for(let key in data[0]){
+                    if(key == 'body_files' || key == 'attachments'){
+                      let newArr = data[0][key].split('; ');
+                      let index = newArr.indexOf(delFile);
+                      if(index != -1){
+                        file[key] = newArr.splice(index, 1).join('; ')
+                      }
+                      else file[key] = data[0][key];  
+                    }
+                }
+                //console.log('files1: ',files);
+                return files;
+            })
+            .then(files => {newFiles = files; console.log('files: ',files); return editAttachAndBodyFales(files)})
+            .then(data => {console.log('returned from editAttachAndBodyFales: ',data); console.log('newFiles: ',newFiles); return resolve(newFiles)})
+            .catch(err => {
+                console.log(err);
+                reject(err);
+            });
+    }) 
+}
+
 //-------------------------------------------------------------------------------------------------------------------------
 //редагуємо існуючий лист додаємо нові файли
 function editMessageAddNewFiles(messageID, attach, body_files){
@@ -781,6 +813,42 @@ exports.checkEmail = function(id, regnum, mail_list_id) {
             if(doc[0].regnum == regnum && doc[0].mail_list_id == mail_list_id) return resolve(doc[0])
             else return reject('Такої пошти немає в даній розсилці')
         });
+    })
+}
+
+//перевірка прав на операції з листом
+exports.verificationAcssesMessage = function(req, arrAccess){
+    return new Promise((resolve, reject) => {
+        SQLEmail.getMessage(req.body.id_message, function(err, doc) {
+            if (err) {
+                console.log(err);
+                return reject(err);
+            }
+            if(!doc[0]) return reject(false);
+            let authorized_id = [doc[0].id_user];
+            AuthController.getUsersaccountId(req.query.login, arrAccess, authorized_id)
+                .then(data => resolve(data))
+                .catch(err => {
+                    console.log(err);
+                    return reject(err);
+                });
+        });
+    }) 
+}
+
+//видалення файла
+exports.delFile = function(filePath){
+    return new Promise((resolve, reject) => {
+        fs.unlink(filePath, (err) => {
+            if (err) {
+                console.log(err);
+                return reject(err)
+            }
+            else {
+                console.log(`file ${filePath} was deleted`);
+                return resolve(`file ${filePath} was deleted`)
+            }
+        })
     })
 }
 

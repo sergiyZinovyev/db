@@ -196,6 +196,9 @@ app.get("/allMailingPaused/:id", authController.checkAuth, emailController.editV
 //редагування запису у mailing_lists (поставити всі розсилки на паузу)
 app.get("/mailingListsPaused/:id", authController.checkAuth, emailController.editMailingListsPaused);
 
+//видалення файлів з листа
+app.post("/delFile", urlencodedParser, authController.checkAuth, emailController.delFile);
+
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 

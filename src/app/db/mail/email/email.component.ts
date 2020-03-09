@@ -177,8 +177,9 @@ export class EmailComponent implements OnInit, OnDestroy{
       }
     )
   }
-
+ 
   deleteFileFromMessage(index, fileArr: string){
+    console.log('delited file: ', this[fileArr][index]);
     this[fileArr].splice(index, 1);
   }
 
@@ -249,7 +250,7 @@ export class EmailComponent implements OnInit, OnDestroy{
       let file = linkArr.pop()
       newObj = {
         filename: file,
-        path: '',
+        path: element,
         size: '',
         href: `${this.server.apiUrl}/img/${file}?path=${linkArr.slice(-3).join('/')}`
       }

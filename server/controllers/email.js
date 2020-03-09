@@ -275,4 +275,17 @@ exports.unsubscribe = function(req, res) {
         });
 }
 
-
+//-------------------------------------------------------------------------------------------------------------------------------------
+//ввидалити файл з розсилки
+exports.delFile = function(req, res){
+    const arrAccess = [5];
+    EmailModule.verificationAcssesMessage(req, arrAccess)
+        .then(() => SQLEmail.isMailing2(req.body.id_message))
+        .then(() => EmailModule.delFile(req.body.path))
+        .then(() => EmailModule.delFilesSQL(req.body.id_message, req.body.path))
+        .then(() => res.send('the operation was successful'))
+        .catch(err => {
+            console.log(err);
+            return res.send(err);
+        });  
+}

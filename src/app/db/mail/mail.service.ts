@@ -48,7 +48,7 @@ export class MailService {
     return this.currentMessage.sendList
   }
 
-//-------------------------------------------------------------------------------------------------   
+//-------------------------------------------------------------------------------------------------    
 
   setCurrentMailing(id: number): void{
     this.currentMessageId = id;

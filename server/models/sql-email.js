@@ -79,6 +79,7 @@ exports.getMessage = function(id, cb){
     cb(err, data)
   })
 }
+
 //-------------------------------------------------------------------------------------------------------- 
 
 //перевірка чи була розсилка по заданому messagesID
@@ -87,6 +88,22 @@ exports.isMailing = function(id, cb){
   db.get().query(sql, function(err, data) {
     cb(err, data)
   })
+}
+
+//перевірка чи використовувався лист (messagesID) в розсилці 
+exports.isMailing2 = function(id){
+  return new Promise((resolve, reject) => {
+    let sql = `SELECT id FROM message_id WHERE message_id=${id}`;
+    db.get().query(sql, function(err, data) {
+      if (err) {
+        console.log(err);
+        return reject(err);
+      }
+      if(data[0]) return reject('this letter is used in mailing lists');
+      resolve (true);
+    })
+  })
+  
 }
 
 //створення нового запису в mailing_list
