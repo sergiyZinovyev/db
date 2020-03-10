@@ -47,6 +47,8 @@ export class EmailComponent implements OnInit, OnDestroy{
     changed: [false, [Validators.required]] // визначає чи був змінений лист
   })
 
+  messageID: number;
+
 
   ngOnInit() {
     console.log('new message is open');
@@ -82,7 +84,7 @@ export class EmailComponent implements OnInit, OnDestroy{
       this.attachmentsArray = this.getFileArrFromServer(data.attachments);
 
       if(data.message) this.htmlTextData = this.sanitizer.bypassSecurityTrustHtml(data.message);
-      
+      this.messageID = Number(data.id);
     })
 
     this.emailForm.get('message').valueChanges.subscribe((v: string) => {
@@ -157,15 +159,25 @@ export class EmailComponent implements OnInit, OnDestroy{
           this.emailForm.patchValue({message: newMessage});
           if (data.attachments) this.emailForm.patchValue({attach: data.attachments});
           if (data.body_files) this.emailForm.patchValue({body_files: data.body_files});
+          let myPath;
+          let newArrPath;
+          if (fileArr=='attachmentsArray'){
+            newArrPath=data.attachments.split('; ')
+          }
+          else newArrPath=data.body_files.split('; ');
+          newArrPath.forEach(item =>{
+            if(item.split('/').includes(file.name)) myPath = item
+          })
           this[fileArr].push({
             filename: file.name, 
-            path: data, 
+            path: myPath, 
             size: file.size,
             href: newLink
           });
           // if(data.id){
           //   this.mail.setCurrentMessage(data.id);
           // }
+          this.messageID = Number(data.id);
           if(data){
             console.log("unsubscribe")
             return get.unsubscribe();
@@ -180,7 +192,15 @@ export class EmailComponent implements OnInit, OnDestroy{
  
   deleteFileFromMessage(index, fileArr: string){
     console.log('delited file: ', this[fileArr][index]);
-    this[fileArr].splice(index, 1);
+    let req = {
+      id_message: this.messageID,
+      path: this[fileArr][index].path
+    }
+    this.server.post(req, 'delFile').subscribe(data => {
+      console.log('data from delet: ', data);
+      this[fileArr].splice(index, 1)
+    })
+    
   }
 
   addHtml(id){

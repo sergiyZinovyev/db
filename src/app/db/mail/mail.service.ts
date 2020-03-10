@@ -81,6 +81,26 @@ export class MailService {
 
   //створюємо новий лист
   setNewMessage(){
+    // let emailForm = this.fb.group({
+    //   to: ['', [Validators.required]], //лише відображується в браузері
+    //   sendList: ['', [Validators.required]], //те що реально використовується для розсилки
+    //   from: ['send@galexpo.lviv.ua', [Validators.required]],
+    //   subject: ['', [Validators.required]],
+    //   attach: ['', []],
+    //   body_files: ['', []],
+    //   message: ['', []],
+    //   messageID: ['', []],
+    //   changed: [true, [Validators.required]] // визначає чи був змінений лист
+    // })
+    // let get=this.server.post(emailForm.value, 'saveMessage').subscribe((data:any) =>{
+    //   console.log("res data: ", data);
+    //   // перевіряємо права користувача, видаємо повідомлення, якщо немає прав 
+    //   if(data[0] && this.server.accessIsDenied(data[0].rights)) return get.unsubscribe();
+    //   if(data.messageID){
+    //     this.setCurrentMessage(data.messageID);
+    //   }
+    //   return get.unsubscribe();
+    // });
     this.currentMessage = new Message();
     this.getMessage.next(this.currentMessage);
   }

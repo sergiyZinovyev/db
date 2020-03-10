@@ -401,9 +401,10 @@ exports.delFilesSQL = function (messageID, delFile){
                       let newArr = data[0][key].split('; ');
                       let index = newArr.indexOf(delFile);
                       if(index != -1){
-                        file[key] = newArr.splice(index, 1).join('; ')
+                        newArr.splice(index, 1);
+                        files[key] = newArr.join('; ')
                       }
-                      else file[key] = data[0][key];  
+                      else files[key] = data[0][key];  
                     }
                 }
                 //console.log('files1: ',files);

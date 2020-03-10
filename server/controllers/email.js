@@ -280,10 +280,10 @@ exports.unsubscribe = function(req, res) {
 exports.delFile = function(req, res){
     const arrAccess = [5];
     EmailModule.verificationAcssesMessage(req, arrAccess)
-        .then(() => SQLEmail.isMailing2(req.body.id_message))
-        .then(() => EmailModule.delFile(req.body.path))
-        .then(() => EmailModule.delFilesSQL(req.body.id_message, req.body.path))
-        .then(() => res.send('the operation was successful'))
+        .then((data) => {console.log("data from verificationAcssesMessage: ", data);return SQLEmail.isMailing2(req.body.id_message)})
+        .then((data) => {console.log("data from SQLEmail.isMailing2: ", data);return EmailModule.delFile(req.body.path)})
+        .then((data) => {console.log("data from EmailModule.delFile: ", data);return EmailModule.delFilesSQL(req.body.id_message, req.body.path)})
+        .then((data) => {console.log("data from EmailModule.delFilesSQL: ", data);return res.send({'the operation was successful': true})})
         .catch(err => {
             console.log(err);
             return res.send(err);
