@@ -43,7 +43,7 @@ export class MailComponent implements OnInit, OnDestroy {
     });
 
     if(!this.mail.subSockets){
-      this.mail.getSubSockets(); //запускаємо на сервісі підписку на сокети
+      this.mail.getSubSockets(); //запускаємо на сервісі підписку на сокети 
       console.log('Sockets subscribed!!!');
     }
    

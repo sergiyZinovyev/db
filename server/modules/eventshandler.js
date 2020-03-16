@@ -21,6 +21,30 @@ exports.getMailing = function(mailingId){
     })
 }
 
+// передати id видаленого листа
+exports.delMessage = function(messageId){
+    console.log('########################### Message from socket delMessage ##########################', messageId);
+    return new Promise((resolve, reject) => {
+        let data = {
+            event: 'delMessage',
+            data: messageId
+        }
+        return resolve(JSON.stringify(data))
+    })
+}
+
+// передати id видаленого листа
+exports.delMailing = function(messageId){
+    console.log('########################### Message from socket delMessage ##########################', messageId);
+    return new Promise((resolve, reject) => {
+        let data = {
+            event: 'delMailing',
+            data: messageId
+        }
+        return resolve(JSON.stringify(data))
+    })
+}
+
 // отримати дані по вказаному листу
 exports.getMessage = function(messageId){
     console.log('########################### Message from socket getMessage ##########################', messageId);

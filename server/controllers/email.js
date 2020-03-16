@@ -25,7 +25,7 @@ const transporter = nodemailer.createTransport({
 // const emitter = new EventEmitter();
 // exports.emitter = emitter;
 
-//-------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------- 
 exports.sendEmail = function(req, res){
     const mailOptions = {
         from: 'send@galexpo.lviv.ua', // sender address
@@ -276,14 +276,43 @@ exports.unsubscribe = function(req, res) {
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------
-//ввидалити файл з розсилки
+//видалити файл з розсилки
 exports.delFile = function(req, res){
     const arrAccess = [5];
     EmailModule.verificationAcssesMessage(req, arrAccess)
-        .then((data) => {console.log("data from verificationAcssesMessage: ", data);return SQLEmail.isMailing2(req.body.id_message)})
-        .then((data) => {console.log("data from SQLEmail.isMailing2: ", data);return EmailModule.delFile(req.body.path)})
-        .then((data) => {console.log("data from EmailModule.delFile: ", data);return EmailModule.delFilesSQL(req.body.id_message, req.body.path)})
-        .then((data) => {console.log("data from EmailModule.delFilesSQL: ", data);return res.send({'the operation was successful': true})})
+        .then((data) => SQLEmail.isMailing2(req.body.id_message))
+        .then((data) => EmailModule.delFile(req.body.path))
+        .then((data) => EmailModule.delFilesSQL(req.body.id_message, req.body.path))
+        .then((data) => res.send({'the operation was successful': true}))
+        .catch(err => {
+            console.log(err);
+            return res.send(err);
+        });  
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------
+//видалити лист
+exports.delMessage = function(req, res){
+    const arrAccess = [5];
+    EmailModule.verificationAcssesMessage(req, arrAccess)
+        .then((data) => SQLEmail.isMailing2(req.body.id_message))
+        .then((data) => EmailModule.delDir(`server/users_data/email_files/${req.body.id_message}`))
+        .then((data) => SQLEmail.delMessage(req.body.id_message))
+        .then((data) => res.send({'the operation was successful': true}))
+        .catch(err => {
+            console.log(err);
+            return res.send(err);
+        });  
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------
+//видалити розсилку
+exports.delMailing = function(req, res){
+    const arrAccess = [5];
+    EmailModule.verificationAcssesMailing(req, arrAccess)
+        .then((data) => SQLEmail.delVisitorsMailingList(req.body.id_mailing))
+        .then((data) => SQLEmail.delMailing(req.body.id_mailing))
+        .then((data) => res.send({'the operation was successful': true}))
         .catch(err => {
             console.log(err);
             return res.send(err);

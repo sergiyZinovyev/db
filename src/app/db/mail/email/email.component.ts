@@ -100,10 +100,12 @@ export class EmailComponent implements OnInit, OnDestroy{
     if(this.emailForm.valid){
       let isEmail = confirm('Ви впевнені, що хочете розпочати масову розсилку?');
       if(isEmail){
-        this.emailForm.value.token = new Date().getTime();
+        let token = new Date().getTime();
+        this.emailForm.value.token = token;
         console.log('emailForm: ',this.emailForm.value);
+        this.mail.setCurrentTokenMessage(token);
         // надсилаємо лист;
-        //this.mail.setMessage([{key: 'mailingStatus', val: 'sending'}]); //встановлюємо статус, відправка 
+        //this.mail.setMessage([{key: 'mailingStatus', val: 'sending'}]); //встановлюємо статус, відправка  
         let get=this.server.post2(this.emailForm.value, "massMaling").subscribe(
           //(data: any) =>{
           (event: IEvent) => {
@@ -112,7 +114,7 @@ export class EmailComponent implements OnInit, OnDestroy{
           // перевіряємо права користувача, видаємо повідомлення, якщо немає прав 
           if(event.body){console.log('res: ', event.body)}
           if(data[0] && this.server.accessIsDenied(data[0].rights)) return get.unsubscribe();
-          //if(data.mailingId) this.mail.setCurrentMailing(data.mailingId);
+          //this.mail.setCurrentMailing(data.mailingId);
           // if(data){
           //   console.log("unsubscribe")
           //   return get.unsubscribe();

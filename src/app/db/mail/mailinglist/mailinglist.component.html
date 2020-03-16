@@ -13,7 +13,7 @@
 
 <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport">
 <div *cdkVirtualFor='let mailing of mailingList; let i = index'>    
-<!-- <div *ngFor='let mailing of mailingList; let i = index'> -->
+<!-- <div *ngFor='let mailing of mailingList; let i = index'> --> 
     <div class="d-flex list align-items-center" 
         [ngClass]="{'activated-list': mailing.id==mailingId?true:false}"> 
         <div class="name" (click)='getMessage(mailing.id)' [matTooltip]="mailing.name">
@@ -40,7 +40,7 @@
         </div>
         <div
             class="del" 
-            (click)='delMessage()'
+            (click)='delMailing(mailing.id)'
             matTooltip="Видалити розсилку"> 
             <mat-icon>clear</mat-icon>
         </div>

@@ -7,13 +7,16 @@ import {IUser, IMessage, IMailingLists, IMessageInfo} from './mailInterface';
 import { ISocketEvent } from '../../shared/common_interfaces/interfaces';
 import { ModulesService } from '../../shared/modules.service'; 
 import { Message } from './message';
+import { resolve } from 'url';
 
 @Injectable({
   providedIn: 'root'  
 })
 export class MailService {
 
-  currentMessageId: number
+  currentMessageId: number;
+
+  currentTokenMessage: number;
 
   currentMessage: Message = new Message();
 
@@ -31,6 +34,10 @@ export class MailService {
   ) { }
 
  //-------------------------------------------------------------------------------------------------  
+
+  setCurrentTokenMessage(token: number): void{
+    this.currentTokenMessage = token;
+  }
 
   addToCurrentSendList(arrOfObj: IUser[]): void{
     this.currentMessage.addToSendList(arrOfObj);
@@ -50,20 +57,23 @@ export class MailService {
 
 //-------------------------------------------------------------------------------------------------    
 
-  setCurrentMailing(id: number): void{
-    this.currentMessageId = id;
-    let get = this.server.getAll('getDataMailing', id).subscribe(data=>{
-      console.log('data from getDataMailing: ', data[0]);
-      let get2 = this.server.getAll('getVisitorsMailingList', data[0].id).pipe(
-        map((vl:any): IUser[] => Array.from(vl))
-      ).subscribe(data2=>{
-        console.log('data2 from getVisitorsMailingList: ', data2);
-        this.setCurrentMessage(data[0].message_id, data[0], data2);
-        get2.unsubscribe()
+  setCurrentMailing(id: number): Promise<any>{
+    return new Promise((resolve, reject) => {
+      this.currentMessageId = id;
+      let get = this.server.getAll('getDataMailing', id).subscribe(data=>{
+        console.log('data from getDataMailing: ', data[0]);
+        let get2 = this.server.getAll('getVisitorsMailingList', data[0].id).pipe(
+          map((vl:any): IUser[] => Array.from(vl))
+        ).subscribe(data2=>{
+          console.log('data2 from getVisitorsMailingList: ', data2);
+          this.setCurrentMessage(data[0].message_id, data[0], data2);
+          get2.unsubscribe();
+          resolve(true);
+        })
+        
+        //this.setCurrentSendList([{regnum: 125, email: 'test@test', namepovne: 'Pupkin'}]);
+        get.unsubscribe()
       })
-      
-      //this.setCurrentSendList([{regnum: 125, email: 'test@test', namepovne: 'Pupkin'}]);
-      get.unsubscribe()
     })
   }
 
@@ -81,26 +91,6 @@ export class MailService {
 
   //створюємо новий лист
   setNewMessage(){
-    // let emailForm = this.fb.group({
-    //   to: ['', [Validators.required]], //лише відображується в браузері
-    //   sendList: ['', [Validators.required]], //те що реально використовується для розсилки
-    //   from: ['send@galexpo.lviv.ua', [Validators.required]],
-    //   subject: ['', [Validators.required]],
-    //   attach: ['', []],
-    //   body_files: ['', []],
-    //   message: ['', []],
-    //   messageID: ['', []],
-    //   changed: [true, [Validators.required]] // визначає чи був змінений лист
-    // })
-    // let get=this.server.post(emailForm.value, 'saveMessage').subscribe((data:any) =>{
-    //   console.log("res data: ", data);
-    //   // перевіряємо права користувача, видаємо повідомлення, якщо немає прав 
-    //   if(data[0] && this.server.accessIsDenied(data[0].rights)) return get.unsubscribe();
-    //   if(data.messageID){
-    //     this.setCurrentMessage(data.messageID);
-    //   }
-    //   return get.unsubscribe();
-    // });
     this.currentMessage = new Message();
     this.getMessage.next(this.currentMessage);
   }
@@ -143,6 +133,18 @@ export class MailService {
           console.log('%cSocket data: ', "color: white; font-weight: bold; background-color: green; padding: 2px;", data_s);
           this.handlerCreateEditMessage(data_s.data[0]);
           break;
+
+        case 'delMessage': 
+          console.log('виконуємо handlerDelMessage');
+          console.log('%cSocket data: ', "color: white; font-weight: bold; background-color: green; padding: 2px;", data_s);
+          this.handlerDelMessage(data_s.data);
+          break; 
+          
+        case 'delMailing': 
+          console.log('виконуємо handlerDelMessage');
+          console.log('%cSocket data: ', "color: white; font-weight: bold; background-color: green; padding: 2px;", data_s);
+          this.handlerDelMailing(data_s.data);
+          break;  
 
         case 'editVisitorsMailingLists': 
           console.log('виконуємо editVisitorsMailingLists');
@@ -197,8 +199,19 @@ export class MailService {
     if(this.currentMessage.mailingId == newData_s.id){this.setCurrentMailing(newData_s.id)}
     let numberOfArr = this.module.checkArrOfObjIdValField(this.dataMailingList, 'id', newData_s.id);
     if(numberOfArr>=0){
-      this.dataMailingList.splice(numberOfArr, 1, newData_s);
-      this.mailingList.next(this.dataMailingList);
+      if(newData_s.token == this.currentTokenMessage){
+        this.setCurrentMailing(newData_s.id)
+          .then(()=>{
+            this.dataMailingList.splice(numberOfArr, 1, newData_s);
+            this.mailingList.next(this.dataMailingList);
+          })
+      }
+      else{
+        this.dataMailingList.splice(numberOfArr, 1, newData_s);
+        this.mailingList.next(this.dataMailingList);
+      }
+      
+      
       return
     }
     else {
@@ -207,7 +220,24 @@ export class MailService {
     }
   }
 
-//-------------------------------------------------------------------------------------------------
+  //видаляємо лист 
+  handlerDelMailing(id){
+    console.log(`handlerDelMailing is working with argument - ${id}`);
+    // визначаємо індекс елемента в масиві
+    let numberOfArr = this.module.checkArrOfObjIdValField(this.dataMailingList, 'id', id);
+    if(numberOfArr>=0){
+      this.dataMailingList.splice(numberOfArr, 1);
+      this.setNewMessage();
+      this.mailingList.next(this.dataMailingList);
+      return
+    }
+    else {
+      console.log(`${id} is not exist`);
+      return
+    }
+  }
+
+//-------------------------------------------------------------------------------------------------  
 // списки листів
   
 subMessageList: Subscription; //підписка на початковий список розсилки
@@ -238,6 +268,23 @@ handlerCreateEditMessage(newData_s: IMessageInfo){
   else {
     this.dataMessageList.unshift(newData_s);
     this.messageList.next(this.dataMessageList);
+    return
+  }
+}
+
+//видаляємо лист
+handlerDelMessage(id){
+  console.log(`handlerDelMessage is working with argument - ${id}`);
+  // визначаємо індекс елемента в масиві
+  let numberOfArr = this.module.checkArrOfObjIdValField(this.dataMessageList, 'id', id);
+  if(numberOfArr>=0){
+    this.dataMessageList.splice(numberOfArr, 1);
+    this.setNewMessage();
+    this.messageList.next(this.dataMessageList);
+    return
+  }
+  else {
+    console.log(`${id} is not exist`);
     return
   }
 }

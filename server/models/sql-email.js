@@ -80,6 +80,22 @@ exports.getMessage = function(id, cb){
   })
 }
 
+//видалити message
+exports.delMessage = function(id){
+  return new Promise((resolve, reject) => {
+    let sql = `DELETE FROM messages WHERE id=${id}`;
+    db.get().query(sql, function(err, data) {
+      if (err) {
+        console.log(err);
+        return reject(err);
+      }
+      emitter.emit('delMessage', id);
+      resolve (data);
+    })
+  })  
+}
+
+
 //-------------------------------------------------------------------------------------------------------- 
 
 //перевірка чи була розсилка по заданому messagesID
@@ -100,7 +116,7 @@ exports.isMailing2 = function(id){
         return reject(err);
       }
       if(data[0]) return reject({'error':'this letter is used in mailing lists'});
-      resolve (true);
+      resolve (data);
     })
   })
   
@@ -138,8 +154,8 @@ exports.getMailingList = function(cb){
 
 //отримати запис по id з mailing_list
 exports.getMailingPlus = function(id, cb){
-  let sql = `SELECT Mailing.id AS id, name, user_id, Users.realname AS realname, date_end, date_start, is_sent FROM 
-      (SELECT id, name, user_id, date_end, date_start, is_sent FROM mailing_list) AS Mailing
+  let sql = `SELECT Mailing.id AS id, token, name, user_id, Users.realname AS realname, date_end, date_start, is_sent FROM 
+      (SELECT id, token, name, user_id, date_end, date_start, is_sent FROM mailing_list) AS Mailing
     LEFT OUTER JOIN
       (SELECT id, realname FROM usersaccount) AS Users
     ON Mailing.user_id = Users.id
@@ -162,6 +178,21 @@ exports.checkToken = function(id, cb){
   let sql = `SELECT * FROM mailing_list WHERE token = ${id}`;
   db.get().query(sql, function(err, data) {
     cb(err, data)
+  })
+}
+
+//видалення даних про розсилку
+exports.delMailing = function(id){
+  return new Promise((resolve, reject) => {
+    let sql = `DELETE FROM mailing_list WHERE id = ${id}`;
+    db.get().query(sql, function(err, data) {
+      if (err) {
+        console.log(err);
+        return reject(err);
+      }
+      emitter.emit('delMailing', id);
+      resolve (data);
+    })
   })
 }
 
@@ -257,6 +288,20 @@ exports.getVisitorsMailingList = function(id, cb){
   let sql = `SELECT * FROM visitors_mailing_lists WHERE mail_list_id = ${id}`;
   db.get().query(sql, function(err, data) {
     cb(err, data)
+  })
+}
+
+//видалення даних зі списку розсилкок по mail_list_id
+exports.delVisitorsMailingList = function(id){
+  return new Promise((resolve, reject) => {
+    let sql = `DELETE FROM visitors_mailing_lists WHERE mail_list_id = ${id}`;
+    db.get().query(sql, function(err, data) {
+      if (err) {
+        console.log(err);
+        return reject(err);
+      }
+      resolve (true);
+    })
   })
 }
 

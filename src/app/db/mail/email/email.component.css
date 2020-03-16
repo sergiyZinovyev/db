@@ -36,7 +36,7 @@
 }
 
 .card-file{
-    width: 250px;
+    width: 232px;
     background: #fff;
     border-radius: 4px;
     display: inline-block; 
@@ -73,7 +73,7 @@ a {
     padding: 3px;
     padding-left: 6px;
     margin: 0;
-    width: 210px;
+    width: 192px;
     background: rgb(255, 255, 255); 
 }
 
@@ -89,4 +89,16 @@ a {
   
 .example-margin {
     margin: 10px;
+}
+
+.attachment{
+    border: solid black;
+}
+
+.attachment2{
+    border: solid red;
+}
+
+.btn-del:hover{
+    color: red;
 }

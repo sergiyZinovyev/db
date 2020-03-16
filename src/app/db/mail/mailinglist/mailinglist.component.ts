@@ -16,7 +16,7 @@ export class MailinglistComponent implements OnInit {
 
   isLoadingResults = true;
   mailingList
-  mailingId: number; //визначає активну розсилку
+  mailingId: number; //визначає активну розсилку 
 
   constructor(
     private mail: MailService,
@@ -63,14 +63,21 @@ export class MailinglistComponent implements OnInit {
   }
 
   getMessage(id: number): void{
-    // this.mail.setIsAddingItemSendEmail(false);
+    // this.mail.setIsAddingItemSendEmail(false);  
     // setTimeout(() => {
       this.mail.setCurrentMailing(id);
     // });    
   }
 
-  delMessage(){
-    console.log('delMessage is work!')
+  delMailing(id){
+    console.log('delMailing is work!');
+    let req = {
+      id_mailing: id
+    }
+    console.log(req);
+    this.server.post(req, 'delMailing').subscribe(data => {
+      console.log('data from delMailing: ', data);
+    })
   }
 
   

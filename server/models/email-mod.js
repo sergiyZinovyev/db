@@ -1,4 +1,6 @@
 const fs = require('fs');
+const fse = require('fs-extra');
+const path = require('path');
 const SQLEmail = require('../models/sql-email');
 const AuthController = require('../controllers/auth');
 const Shared = require('../models/shared');
@@ -638,54 +640,6 @@ function awaitEx(tasks, interval, transporter){
     });
 }
 
-//--------------------------------------------------------------------------------------------------------------------------
-
-//створення/редагування листа (без збереження файлів)  //подумати про обєднання цього і наступного методів!!!
-// exports.createEditMessage = function(req, arrAccess){
-//     return new Promise((resolve, reject) => {
-//         let id_user;
-//         AuthController.getUsersaccountId(req.query.login, arrAccess)//перевіряємо права та id користувача
-//             .then(id => id_user = id) //зберігаємо id користувача
-//             .then(() => {
-//                 if(req.body.messageID == 'new'){return createNewMessage(req, id_user)} // створюємо новий лист 
-//                 else {
-//                     return isMailing(req.body.messageID).then(isMailingState => {
-//                         if(isMailingState){return createNewMessage(req, id_user)} // створюємо новий лист 
-//                         else return editMessage(req.body, id_user) // редагуємо лист
-//                     })
-//                 }
-//             })
-//             .then(data => {console.log('returned from .then: ', data); return resolve({'id': data})})
-//             .catch(err => {
-//                 console.log(err);
-//                 reject(err);
-//             });
-//     })
-// }
-
-//збереження файлів для розсилки/створення нового листа
-// exports.createMessageSaveFiles = function(req, arrAccess){
-//     return new Promise((resolve, reject) => {
-//         let id_user;
-//         AuthController.getUsersaccountId(req.query.login, arrAccess)//перевіряємо права та id користувача
-//             .then(id => id_user = id) //зберігаємо id користувача
-//             .then(() => {
-//                 if(req.body.messageID == 'new'){return createNewMessageForSaveFiles(req, id_user)} // створюємо новий лист та зберігаємо тільки файли
-//                 else {
-//                     return isMailing(req.body.messageID).then(isMailingState => {
-//                         if(isMailingState){return createNewMessageForSaveFiles(req, id_user)} // створюємо новий лист та зберігаємо тільки файли
-//                         else return editMessageAddNewFiles(req.body.messageID, req.body.attach, req.body.body_files) // редагуємо лист додаємо нові файли
-//                     })
-//                 }
-//             })
-//             .then(data => {console.log('returned from .then: ', data); return resolve(data)})
-//             .catch(err => {
-//                 console.log(err);
-//                 reject(err);
-//             });
-//     })
-// }
-
 //створення/редагування листа (без збереження файлів)  //подумати про обєднання цього і наступного методів!!!
 exports.createEditMessage = function(req, id_user){
     return new Promise((resolve, reject) => {
@@ -827,7 +781,27 @@ exports.verificationAcssesMessage = function(req, arrAccess){
             }
             if(!doc[0]) return reject(false);
             let authorized_id = [doc[0].id_user];
-            AuthController.getUsersaccountId(req.query.login, arrAccess, authorized_id)
+            AuthController.getUsersaccountId2(req.query.login, arrAccess, authorized_id)
+                .then(data => resolve(data))
+                .catch(err => {
+                    console.log(err);
+                    return reject(err);
+                });
+        });
+    }) 
+}
+
+//перевірка прав на операції з розсилкою
+exports.verificationAcssesMailing = function(req, arrAccess){
+    return new Promise((resolve, reject) => {
+        SQLEmail.getMailing(req.body.id_mailing, function(err, doc) {
+            if (err) {
+                console.log(err);
+                return reject(err);
+            }
+            if(!doc[0]) return reject(false);
+            let authorized_id = [doc[0].user_id];
+            AuthController.getUsersaccountId2(req.query.login, arrAccess, authorized_id)
                 .then(data => resolve(data))
                 .catch(err => {
                     console.log(err);
@@ -838,7 +812,7 @@ exports.verificationAcssesMessage = function(req, arrAccess){
 }
 
 //видалення файла
-exports.delFile = function(filePath){
+const delFile = function(filePath){
     return new Promise((resolve, reject) => {
         fs.unlink(filePath, (err) => {
             if (err) {
@@ -852,6 +826,32 @@ exports.delFile = function(filePath){
         })
     })
 }
+
+exports.delFile = delFile;
+
+//отримати масив з вмістом папки
+function readdir(dirPath){
+    return new Promise((resolve, reject) => {
+        fs.readdir(dirPath, (err, data) => {
+            if (err) {
+                console.log(err);
+                return reject(err)
+            }
+            else {
+                //console.log(data);
+                let arrPath = data.map(fileName => path.join(dirPath, fileName));
+                return resolve(arrPath)
+            }
+        })
+    })
+}
+
+//видалити папку
+const delDir = function(dirPath){
+    return fse.remove(dirPath)
+}
+
+exports.delDir = delDir;
 
 // повертає масив який містить задану строку //потрібно перенести в окремий модуль
 function getIndexValue(arr, pattern){

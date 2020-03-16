@@ -763,7 +763,7 @@ export class VisitorsComponent implements OnInit, OnDestroy {
     }
   }
  
-  addMailList(){
+  addMailList(prop?: 'new'){
     if(this.arrOfCheckId.length == 0){
       return alert('Ви не обрали жодного запису для розсилки');
     }
@@ -776,10 +776,11 @@ export class VisitorsComponent implements OnInit, OnDestroy {
       return {regnum: obj.regnum, email: obj.email, namepovne: obj.namepovne, sending: obj.sending};
     });
     //console.log('newList: ',newList);
+    if(prop == 'new') this.mail.setNewMessage();
     this.mail.addToCurrentSendList(SendList);   
   }
  
-
+ 
   ngOnDestroy(){
     this.subDataTable.unsubscribe();
   }

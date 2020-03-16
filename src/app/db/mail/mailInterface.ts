@@ -44,6 +44,7 @@ export interface Ifiles {
 
 export interface IMailingLists {
     id: number;
+    token: number;
     name: string; 
     user_id: number;
     realname?: string;

@@ -26,7 +26,7 @@ export class MessageslistComponent implements OnInit {
   ngOnInit() {
 
     if(!this.mail.subMessageList){
-      this.mail.getSubMessageList(); //запускаємо на сервісі підписку на MessageList 
+      this.mail.getSubMessageList(); //запускаємо на сервісі підписку на MessageList  
       console.log('MessageList subscribed!!!');
     }
     
@@ -60,8 +60,14 @@ export class MessageslistComponent implements OnInit {
     // });    
   }
 
-  delMessage(){
-    console.log('delMessage is work!')
+  delMessage(id){
+    console.log('delMessage is work!');
+    let req = {
+      id_message: id
+    }
+    this.server.post(req, 'delMessage').subscribe(data => {
+      console.log('data from delMessage: ', data);
+    })
   }
 
 }

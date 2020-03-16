@@ -135,9 +135,31 @@
                     matTooltip="Додати обраних відвідувачів до списку розсилки"  
                     aria-label="Example icon-button with a heart icon" 
                     [style.color]="headerColor" 
-                    (click)='addMailList()'>
+                    [matMenuTriggerFor]="menu7">
                     <mat-icon>email</mat-icon>
                 </button>
+                <mat-menu #menu7="matMenu" xPosition="after" yPosition="below">
+                    <ng-container>
+                        <button 
+                            mat-menu-item 
+                            matTooltip="Додати список до існуючої розсилки" 
+                            aria-label="Example icon-button with a heart icon" 
+                            [disabled]='disabled'
+                            (click)='addMailList()'>
+                            <mat-icon>drafts</mat-icon>
+                            Поточна розсилка
+                        </button>
+                        <button 
+                            mat-menu-item 
+                            matTooltip="Додати список до нової розсилки" 
+                            aria-label="Example icon-button with a heart icon" 
+                            [disabled]='disabled'
+                            (click)='addMailList("new")'>
+                            <mat-icon>mail_outline</mat-icon>
+                            Нова розсилка
+                        </button>
+                    </ng-container>
+                </mat-menu>
             </ng-container>    
 
             <mat-divider [vertical]="true"></mat-divider>

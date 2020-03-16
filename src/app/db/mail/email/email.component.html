@@ -12,7 +12,7 @@
             <div class="col  ">
                 <div class="row no-gutter">
                     <div class="col-auto   d-flex align-items-center"> 
-                        <div class="legend text-right  ">Кому:</div>
+                        <div class="legend text-right  ">Кому:</div> 
                     </div>
                     <div class="col example-input  ">
                         <input 
@@ -61,7 +61,7 @@
             </div>
         </div>
         <div class="row  no-gutter">
-            <div class="col-auto   d-flex align-items-center p-1">
+            <div class="col-auto d-flex align-items-start p-1">
                 <input
                     type="file" 
                     id="your-files" 
@@ -72,14 +72,14 @@
                     mat-raised-button
                     matTooltip="Додати файл"
                     (click)='fileInput.click()'>
-                    <mat-icon color="primary">attach_file</mat-icon>
+                    <mat-icon color="primary">attach_file</mat-icon> 
                 </button>
             </div>
-            <div class="col-auto d-flex align-items-center"><div class="text-right">Вкладення:</div></div>
-            <div class="col d-flex align-items-center">
+            <div class="col-auto d-flex align-items-start pt-2"><div class="text-right">Вкладення:</div></div>
+            <div class="col d-flex align-items-center flex-wrap">
                 <ng-container *ngFor='let attachment of attachmentsArray; let i = index'>
-                    <ng-container *ngIf='attachment.filename'>
-                        <div class="card-file card-file-1 d-flex justify-content-between">
+                    <ng-container class='col-3' *ngIf='attachment.filename'>
+                        <div class="card-file card-file-1 d-flex justify-content-between mb-2">
                             <a [href]="attachment.href">
                                 <div class="file-info">
                                     <div class="file-name text-truncate"><i>{{attachment.filename}}</i></div>
@@ -87,18 +87,19 @@
                                     <div *ngIf='attachment.size' class="file-size">{{(attachment.size/1024).toFixed(2)}} KB</div>
                                 </div>
                             </a>
-                            <button 
+                            <button
+                                class="btn-del"
                                 mat-icon-button 
                                 matTooltip="Видалити" 
                                 aria-label="Example icon-button with a heart icon"
                                 (click)='deleteFileFromMessage(i, "attachmentsArray")'>
-                                <mat-icon>close</mat-icon>
+                                <mat-icon >close</mat-icon>
                             </button>
                         </div>
                     </ng-container>
                 </ng-container>
             </div>
-        </div> 
+        </div>  
         <div class="row no-gutter">
             <div class="col-12  ">
                 <textarea 
