@@ -3,14 +3,14 @@ import {Observable, from, Subject, BehaviorSubject, Subscription} from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms';
 import { ServerService } from '../../shared/server.service';
-import {IUser, IMessage, IMailingLists, IMessageInfo} from './mailInterface';
+import {IUser, IMessage, IMailingLists, IMessageInfo, DialogData} from './mailInterface';
 import { ISocketEvent } from '../../shared/common_interfaces/interfaces';
 import { ModulesService } from '../../shared/modules.service'; 
 import { Message } from './message';
 import { resolve } from 'url';
 
 @Injectable({
-  providedIn: 'root'  
+  providedIn: 'root'   
 })
 export class MailService {
 
@@ -37,6 +37,11 @@ export class MailService {
 
   setCurrentTokenMessage(token: number): void{
     this.currentTokenMessage = token;
+  }
+
+  setMailingProperty(prop: DialogData){
+    this.currentMessage.setMailingProperty(prop);
+    this.getMessage.next(this.currentMessage);
   }
 
   addToCurrentSendList(arrOfObj: IUser[]): void{

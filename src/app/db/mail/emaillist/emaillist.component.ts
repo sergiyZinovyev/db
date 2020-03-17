@@ -1,12 +1,19 @@
-import { Component, ChangeDetectionStrategy, OnInit, OnDestroy} from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, Inject} from '@angular/core';
 import { ServerService } from '../../../shared/server.service';
 import { ModulesService } from '../../../shared/modules.service';
 import { MailService } from '../mail.service';
 import { DbService } from '../../../shared/db.service';
-import { IUser, IMessage, Ifiles} from '../mailInterface';
+import { IUser, IMessage, Ifiles, DialogData} from '../mailInterface';
 import { element } from 'protractor';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+
+// export interface DialogData {
+//   groupSize: string;
+//   interval: string;
+// }
+
 
 @Component({
   selector: 'app-emaillist',
@@ -24,11 +31,15 @@ export class EmaillistComponent implements OnInit, OnDestroy {
   mailingStatus: 'sent'|'no_sent'|'sending' = 'sent';
   mailingId: number | string;
 
+  mailingProperty: DialogData;
+  
+
   constructor(
     private mail: MailService,
     private db: DbService,
     private server: ServerService,
-    private module: ModulesService
+    private module: ModulesService,
+    public dialog: MatDialog
   ) { }
 
   ngOnInit() {
@@ -54,6 +65,7 @@ export class EmaillistComponent implements OnInit, OnDestroy {
       this.emailList = [...data.sendList];
       this.isLoadingResults = false;
       this.progressValue = this.countEmail(this.emailList, 'is_send', 'sent')/this.emailList.length*100;
+      this.mailingProperty = data.mailingProperty
     });
 
     // підписуємося на визначення активної розсилки
@@ -118,9 +130,41 @@ export class EmaillistComponent implements OnInit, OnDestroy {
     console.log('stop works!')
   }
 
-  editMailing(){}
+  //editMailing(){}
+
+  editMailing(): void {
+    const dialogRef = this.dialog.open(DialogMailingProperty, {
+      data: {groupSize: this.mailingProperty.groupSize, interval: this.mailingProperty.interval}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed with result: ', result);
+      if(result) {
+        this.mailingProperty = result;
+        this.mail.setMailingProperty(result);
+      }
+    });
+  }
 
   ngOnDestroy(){
     this.subMessage.unsubscribe();
   }
+}
+ 
+@Component({
+  selector: 'dialog-mailing-property',
+  templateUrl: 'dialog-mailing-property.html',
+  styleUrls: ['./dialog-mailing-property.css'],
+
+})
+export class DialogMailingProperty {
+
+  constructor(
+    public dialogRef: MatDialogRef<DialogMailingProperty>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
 }

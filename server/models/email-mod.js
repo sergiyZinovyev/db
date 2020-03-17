@@ -681,12 +681,14 @@ exports.createMessageSaveFiles = function(req, id_user){
 }
 
 //відправка всіх листів синхронно(з обмеженнями) отримує id розсилки та поштовий транспорт
-exports.sendDataSendMailAll = function(idMailinngList, transporter){
+exports.sendDataSendMailAll = function(idMailinngList, mailingProperty, transporter){
     let is_send;
+    let groupSize = Number(mailingProperty.groupSize);
+    let interval = Number(mailingProperty.interval);
     return editMailingList('date_start', Shared.curentDate(Date.now()), idMailinngList) // робимо запис про початок розсилки
         .then(() => editMailingList('is_sent', 'pending', idMailinngList)) // робимо запис про статус розсилки
         .then(() => getArrDataForMailing(idMailinngList))  //отримуємо всі id по яким має бути розсилка
-        .then(arr =>  awaitEx(arrToSubarr(arr, 5), 3000, transporter)) //послідовно виконуємо групи промісів з заданим інтервалом
+        .then(arr =>  awaitEx(arrToSubarr(arr, groupSize), interval, transporter)) //послідовно виконуємо групи промісів з заданим інтервалом
         .then(data => is_send = data)
         .then(() => editMailingList('date_end', Shared.curentDate(Date.now()), idMailinngList)) // робимо запис про закінчення розсилки
         .then(() => getIsSent(idMailinngList)) //перевіряємо чи є невідіслані листи

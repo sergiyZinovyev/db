@@ -78,11 +78,12 @@ import { EmailComponent } from './db/mail/email/email.component';
 import { MailComponent } from './db/mail/mail.component';
 import { MailinglistComponent } from './db/mail/mailinglist/mailinglist.component';
 import { MessageslistComponent } from './db/mail/messageslist/messageslist.component';
-import { EmaillistComponent } from './db/mail/emaillist/emaillist.component';
+import { EmaillistComponent, DialogMailingProperty} from './db/mail/emaillist/emaillist.component';
 
 
 
 @NgModule({
+  entryComponents: [EmaillistComponent, DialogMailingProperty],
   declarations: [
     AppComponent,
     LoginComponent,
@@ -103,7 +104,8 @@ import { EmaillistComponent } from './db/mail/emaillist/emaillist.component';
     MailComponent,
     MailinglistComponent,
     MessageslistComponent,
-    EmaillistComponent
+    EmaillistComponent,
+    DialogMailingProperty
   ],
   imports: [
     BrowserModule,
@@ -169,4 +171,4 @@ import { EmaillistComponent } from './db/mail/emaillist/emaillist.component';
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { } 
+export class AppModule { }  

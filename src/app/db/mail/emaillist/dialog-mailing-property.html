@@ -1,0 +1,15 @@
+<h2 mat-dialog-title>Налаштування розсилки</h2>
+<div mat-dialog-content>
+  <mat-form-field class="m-1">
+    <mat-label>Кількість в групі</mat-label>
+    <input matInput [(ngModel)]="data.groupSize">
+  </mat-form-field>
+  <mat-form-field class="m-1">
+    <mat-label>Інтервал між групами</mat-label>
+    <input matInput [(ngModel)]="data.interval">
+  </mat-form-field>
+</div>
+<mat-dialog-actions align="center">
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+</mat-dialog-actions>

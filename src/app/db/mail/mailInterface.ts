@@ -24,7 +24,8 @@ export interface IMessage {
     sendList: IUser[];
     from: string;
     mailingStatus?: 'sent'|'no_sent'|'sending';
-    mailingId?: number
+    mailingId?: number;
+    mailingProperty: DialogData
 }
 
 export interface IMessageInfo {
@@ -64,3 +65,8 @@ export interface IEvent{
     status?;
     url?;
 }
+
+export interface DialogData {
+    groupSize: string;
+    interval: string;
+  }

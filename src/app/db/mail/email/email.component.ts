@@ -7,7 +7,7 @@ import { DbService } from '../../../shared/db.service';
 import { map } from 'rxjs/operators';
 import { Observable, Subscription } from 'rxjs';
 import { DomSanitizer, SafeResourceUrl, SafeUrl, SafeHtml} from '@angular/platform-browser';
-import {IUser, IMessage, Ifiles, IEvent} from '../mailInterface';
+import {IUser, IMessage, Ifiles, IEvent, DialogData} from '../mailInterface';
 import { element } from 'protractor';
 import {HttpClient, HttpParams, HttpEvent} from '@angular/common/http';
 
@@ -49,6 +49,8 @@ export class EmailComponent implements OnInit, OnDestroy{
 
   messageID: number;
 
+  mailingProperty: DialogData;
+
 
   ngOnInit() {
     console.log('new message is open');
@@ -85,6 +87,7 @@ export class EmailComponent implements OnInit, OnDestroy{
 
       if(data.message) this.htmlTextData = this.sanitizer.bypassSecurityTrustHtml(data.message);
       this.messageID = Number(data.id);
+      this.mailingProperty = data.mailingProperty;
     })
 
     this.emailForm.get('message').valueChanges.subscribe((v: string) => {
@@ -102,10 +105,11 @@ export class EmailComponent implements OnInit, OnDestroy{
       if(isEmail){
         let token = new Date().getTime();
         this.emailForm.value.token = token;
+        this.emailForm.value.mailingProperty = this.mailingProperty;
         console.log('emailForm: ',this.emailForm.value);
         this.mail.setCurrentTokenMessage(token);
         // надсилаємо лист;
-        //this.mail.setMessage([{key: 'mailingStatus', val: 'sending'}]); //встановлюємо статус, відправка  
+        //this.mail.setMessage([{key: 'mailingStatus', val: 'sending'}]); //встановлюємо статус, відправка   
         let get=this.server.post2(this.emailForm.value, "massMaling").subscribe(
           //(data: any) =>{
           (event: IEvent) => {

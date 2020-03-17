@@ -80,7 +80,7 @@ exports.massMaling = function(req, res){
             mailingId = data;
             //emitter.emit('mailingStarted', mailingId);
             console.log('data saveDataSendMail: ', data);
-            return EmailModule.sendDataSendMailAll(data, transporter); //запускаємо розсилку
+            return EmailModule.sendDataSendMailAll(data, req.body.mailingProperty, transporter); //запускаємо розсилку
         })
         .then(data => {
             //emitter.emit('mailingSended', mailingId);

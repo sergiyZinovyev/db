@@ -1,4 +1,4 @@
-import {IUser, IMessage, IMailingLists, IMessageInfo} from '../../db/mail/mailInterface';
+import {IUser, IMessage, IMailingLists, IMessageInfo, DialogData} from '../../db/mail/mailInterface';
 
 
 export class Message {
@@ -18,6 +18,11 @@ export class Message {
   date_start: string; //mailing start date
   date_end: string; //mailing end date
   mailingStatus: 'sent'|'no_sent'|'sending';
+
+  mailingProperty: DialogData = {
+    groupSize: '3',
+    interval: '3000'
+  }
 
   constructor(
     messageData?: IMessage, 
@@ -110,6 +115,10 @@ export class Message {
 
   clearSendList(){
     this.sendList = [];
+  }
+
+  setMailingProperty(prop: DialogData){
+    this.mailingProperty = prop
   }
 
   setKey(...keys:{key: string, val: any}[]){
