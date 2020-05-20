@@ -9,7 +9,7 @@ import { VisitorsService } from '../db/visitors/visitors.service';
 
 export class AuthService {
 
-
+ 
   constructor(
     private visitorsService: VisitorsService,
     private router: Router,
@@ -17,7 +17,7 @@ export class AuthService {
 
   ) { }
 
-
+ 
   loginUser(user, cb) {
     localStorage.clear();
     //this.errorMessage = '';  
@@ -40,7 +40,7 @@ export class AuthService {
           'region',
           'potvid',
           'select',
-        ]);
+        ]); 
         this.visitorsService.getVisitors('visitors');
         //this.server.onSocket();
         this.router.navigate(['db']);

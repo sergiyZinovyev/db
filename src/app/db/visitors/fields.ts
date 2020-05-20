@@ -42,7 +42,8 @@ export class Fields {
     'cityid',
     'id_visitor',
     'visited_exhib',
-    'sending'
+    'sending',
+    'password'
   ];
   private visFields: string[] = ['sending'];
 

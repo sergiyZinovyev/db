@@ -39,6 +39,57 @@ exports.all = function(id, cb){
   })
 }
 
+//отримання видів діяльності
+exports.branch = function(cb){
+  let sql = `SELECT branch FROM branches`;
+  db.get().query(sql, function(err, data) {
+    cb(err, data)
+  })
+}
+
+//отримання групи виставок по id
+exports.groupexhib = function(id, cb){
+  let sql = `SELECT name FROM exhibitions_dict WHERE group_exhib=( SELECT group_exhib FROM exhibitions_dict WHERE id=(SELECT id_exhib_dict FROM exhibitions WHERE numexhib=${id}))`;
+  db.get().query(sql, function(err, data) {
+    cb(err, data)
+  })
+}
+
+//отримання групи виставок по даті
+exports.getexhibitions = function(date, cb){
+  let sql = `SELECT * FROM exhibitions WHERE dateend>='${date}'`;
+  db.get().query(sql, function(err, data) {
+    cb(err, data)
+  })
+}
+
+//отримання виставки по id
+exports.getexhibition = function(id, cb){
+  let sql = `SELECT * FROM exhibitions WHERE numexhib=${id}`;
+  db.get().query(sql, function(err, data) {
+    cb(err, data)
+  })
+}
+
+//отримати список регіонів
+exports.region = function(countryid, regionid, cb){
+  let sql;
+  if (countryid > 0 && regionid > 0) sql = `SELECT * FROM region WHERE countryid=${countryid} AND regionid=${regionid} AND cityid > 0`;
+  else if (countryid > 0) sql = `SELECT * FROM region WHERE countryid=${countryid} AND regionid>0 AND cityid=0 `;
+  else sql = `SELECT * FROM region WHERE regionid=0`;
+  db.get().query(sql, function(err, data) {
+    cb(err, data)
+  })
+}
+
+//перевірка валідності емейла та телефона
+exports.validcontact = function(fild, value, cb){
+  let sql = `(SELECT * FROM visitors WHERE ${fild}=?) UNION (SELECT * FROM visitors_create WHERE ${fild}=?) UNION (SELECT * FROM visitors_edit WHERE ${fild}=?)`;
+  db.get().query(sql, value, function(err, data) {
+    cb(err, data)
+  })
+}
+
 //отримання всіх записів з visitors
 exports.getVisitors = function(id, condition, cb, selectedFields, limit){
   if(!selectedFields) selectedFields = '*';
@@ -141,8 +192,16 @@ exports.users = function(data, cb){
 }
 
 //отримання всіх id(regnum) з таблиць visitors та visitors_create
+// exports.regnVisAndReq = function(cb){
+//   let sql = `(SELECT regnum FROM visitors) UNION (SELECT regnum FROM visitors_create)`;
+//   db.get().query(sql, function(err, data) {
+//     cb(err, data)
+//   })
+// }
+
+//отримання максимального id(regnum) з таблиць visitors та visitors_create
 exports.regnVisAndReq = function(cb){
-  let sql = `(SELECT regnum FROM visitors) UNION (SELECT regnum FROM visitors_create)`;
+  let sql = `SELECT MAX(regnums.max) AS max FROM ((SELECT MAX(regnum) AS max FROM visitors) UNION (SELECT MAX(regnum) AS max FROM visitors_create)) AS regnums`;
   db.get().query(sql, function(err, data) {
     cb(err, data)
   })
@@ -176,9 +235,11 @@ exports.create = function(dataVisitor, table, cb){
       type,
       kompeten,
       datelastcor,
-      rating
+      rating,
+      sending,
+      password
     ) 
-    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
   db.get().query(sql, dataVisitor, function(err, data) {
     //console.log('################################################# create data: ',data);
     emitter.emit('createVisitor', {'table': table, 'id': dataVisitor[0]});
@@ -214,7 +275,9 @@ exports.createGroup = function(dataVisitors, regnum, cb){
       type,
       kompeten,
       datelastcor,
-      rating
+      rating,
+      sending,
+      password
     ) 
     VALUES ${dataVisitors}`;
   db.get().query(sql, function(err, data) {
@@ -264,7 +327,7 @@ exports.createGroup = function(dataVisitors, regnum, cb){
 //   })
 // }
 
-//редагування запису у вказаній таблиці
+//редагування запису у вказаній таблиці 
 exports.editPro = function(dataVisitor, table, cb){
   let sql = `UPDATE ${table} SET 
   email=?, 
@@ -290,7 +353,8 @@ exports.editPro = function(dataVisitor, table, cb){
   type=?,
   kompeten=?,
   datelastcor=?,
-  rating=? 
+  rating=?,
+  sending=?
     WHERE regnum=?`;
   db.get().query(sql, dataVisitor, function(err, data) {
     //console.log('################################################# editPro data: ',data);
@@ -313,6 +377,100 @@ exports.getRowOnCondFromTable = function(dataVisitor, fild, table, cb){
   db.get().query(sql, dataVisitor, function(err, data) {
     cb(err, data)
   })
+}
+
+//отримання запису по вказаній умові з вказаної таблиці 
+exports.getRowOnCondFromTablePromise = function(values, field, table){
+  let sql = `(SELECT * FROM ${table} WHERE ${field}=?)`;
+  return new Promise((resolve, reject) => {
+    if (!values[0]) return resolve([]);
+    db.get().query(sql, values, function(err, data) {
+      if (err) {
+        console.log('getRowOnCondFromTablePromise error:', err);
+        return reject(err);
+      }
+      resolve (data);
+    })
+  })  
+}
+
+//отримання пароля по regnum з вказаної таблиці
+exports.getPassPromise = function(regnum, table){
+  let sql = `(SELECT password FROM ${table} WHERE regnum=${regnum})`;
+  return new Promise((resolve, reject) => {
+    db.get().query(sql, function(err, data) {
+      if (err) {
+        console.log('getPassPromise error:', err);
+        return reject(err);
+      }
+      resolve (data);
+    })
+  })  
+}
+
+//перевірити запис по вказаному regnum з таблиці passwords
+exports.checkRegnumInPasswords = function(regnum){
+  let sql = `(SELECT * FROM passwords WHERE regnum=${regnum})`;
+  return new Promise((resolve, reject) => {
+    db.get().query(sql, function(err, data) {
+      if (err) {
+        return reject(`sql checkRegnumInPasswords ${err}`);
+      }
+      resolve (data);
+    })
+  })  
+}
+ 
+//додати запис в таблицю passwords
+exports.createRowInPasswords = function(dataArr){
+  let sql = `INSERT passwords(regnum, password, firstpassword) VALUES (?,?,?)`;
+  return new Promise((resolve, reject) => {
+    db.get().query(sql, dataArr, function(err, data) {
+      if (err) {
+        return reject(`sql createRowInPasswords ${err}`);
+      }
+      resolve (data);
+    })
+  })  
+}
+
+//редагувати запис в таблиці passwords
+exports.editRowInPasswords = function(regnum){
+  let sql = `UPDATE passwords SET password=?, firstpassword=? WHERE regnum=?`;
+  return new Promise((resolve, reject) => {
+    db.get().query(sql, regnum, function(err, data) {
+      if (err) {
+        return reject(`sql editRowInPasswords ${err}`);
+      }
+      resolve (data);
+    })
+  })  
+}
+
+//редагувати password у обраній таблиці
+exports.editPasswordInTable = function(table, editData){
+  let sql = `UPDATE ${table} SET password=? WHERE regnum=?`;
+  return new Promise((resolve, reject) => {
+    db.get().query(sql, editData, function(err, data) {
+      if (err) {
+        return reject(`sql editPasswordInTable ${err}`);
+      }
+      resolve (data);
+    })
+  })  
+}
+
+//видалення запису у passwords
+exports.delRowInPasswords = function(regnum){
+  let sql = `DELETE FROM passwords WHERE regnum=?`;
+  return new Promise((resolve, reject) => {
+    db.get().query(sql, regnum, function(err, data) {
+      if (err) {
+        return reject(`sql delRowInPasswords ${err}`);
+      }
+      resolve ("DONE");
+    })
+  })  
 }
 
 //видалення запису

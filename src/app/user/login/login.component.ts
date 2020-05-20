@@ -24,7 +24,7 @@ export class LoginComponent implements OnInit {
 
   myCaptha;
 
-  visibleCaptcha: boolean = true; //визначає чи застосовувати рекапчу 
+  visibleCaptcha: boolean = true; //визначає чи застосовувати рекапчу  
 
   matcher = new MyErrorStateMatcher();
   warning = '';
@@ -98,7 +98,7 @@ export class LoginComponent implements OnInit {
             //this.router.navigate(['registration']);
           }  
           else{
-            //alert('setUserLogData');
+            //alert('setUserLogData'); 
             this.user.setUserRegData(this.loginForm.value);
             //this.router.navigate(['registration']);
           }

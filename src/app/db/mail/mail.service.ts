@@ -33,7 +33,7 @@ export class MailService {
     private server: ServerService
   ) { }
 
- //-------------------------------------------------------------------------------------------------  
+ //-------------------------------------------------------------------------------------------------   
 
   setCurrentTokenMessage(token: number): void{
     this.currentTokenMessage = token;

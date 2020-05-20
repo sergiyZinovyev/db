@@ -17,7 +17,7 @@ class SubData {
     this.state = state
   }
 }
- 
+  
 @Injectable({
   providedIn: 'root'
 })

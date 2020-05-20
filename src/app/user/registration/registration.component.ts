@@ -119,7 +119,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   })
 
   exhibForm = new FormGroup({});
-  //exhibForm = this.server.getExhib('exhibitions_dict', this.getArrFromPotvid(), [])[0];
+  //exhibForm = this.server.getExhib('exhibitions_dict', this.getArrFromPotvid(), [])[0]; 
  
 
   constructor(
@@ -221,7 +221,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         return this.subUserData.unsubscribe();
       }
     })
-    // this.exhibForm = this.server.getExhib('exhibitions_dict', this.getArrFromPotvid(), this.myExhib)[0]; 
+    // this.exhibForm = this.server.getExhib('exhibitions_dict', this.getArrFromPotvid(), this.myExhib)[0];  
     // this.exhib = this.server.getExhib('exhibitions_dict', this.getArrFromPotvid(), this.myExhib)[1];
     this.getMyExhib(data => {
       this.getExhib('exhibitions_dict', data);

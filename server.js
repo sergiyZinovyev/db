@@ -59,6 +59,21 @@ ang.use("/", function(request, response){
   response.sendFile(path.join(__dirname+'/dist/db/index.html')); 
 });
 
+//front-end server visitor
+const vis = express();
+const port3 = 443;
+https.createServer({
+  key: fs.readFileSync('./server/cert/key.pem'),
+  cert: fs.readFileSync('./server/cert/cert.pem')
+}, vis).listen(port3, host, function () {
+  console.log(`Server3 listens https://${host}:${port3}`);
+});
+
+vis.use(express.static(__dirname + "/dist/visitors"));
+vis.use("/", function(request, response){
+  response.sendFile(path.join(__dirname+'/dist/visitors/index.html')); 
+});
+
 
 app.use(cors());
 app.use(bodyParser.json({limit: "50mb"}));
@@ -109,11 +124,14 @@ wss.on('connection', (ws) => {
 });
 
 
-//------------------------------------------------------------------------------------------------------   
+//------------------------------------------------------------------------------------------------------    
 
 
 //отримати запис з таблиці usersaccount для авторизації
 app.post("/users", authController.users);
+
+//fake auth
+app.post("/fakeauth", authController.fakeauth)
 //------------------------------------------------------------------------------------------------------ 
 
 
@@ -207,7 +225,7 @@ app.post("/delMessage", urlencodedParser, authController.checkAuth, emailControl
 //видалення розсилки
 app.post("/delMailing", urlencodedParser, authController.checkAuth, emailController.delMailing);
 
-//-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
 
 
 // *** не захищені роути *** 
@@ -215,8 +233,32 @@ app.post("/delMailing", urlencodedParser, authController.checkAuth, emailControl
 //відписка
 app.get("/unsubscribe/:id/:regnum/:mail_list_id", emailController.unsubscribe);
 
+//встановити пароль*
+app.get("/setpassword", visitorsController.setpassword);
+
+//скинути пароль*
+app.post("/resetpassword", visitorsController.resetpassword);
+
 //отримати всі записи з вказаної таблиці / !!! незахищений роут використовується в формах реєстрації юзерів, потрібно зробити нові роути для юзерів, а ці захистити !!!
 app.get("/db/:id", visitorsController.all);
+
+//отримання групи виставок по id*
+app.get("/groupexhib", visitorsController.groupexhib); 
+
+//отримати регіони*
+app.get("/region", visitorsController.region); 
+
+//отримати види діяльності*
+app.get("/branch", visitorsController.branch); 
+
+//перевірка валідності емейла та телефона*
+app.get("/validcontact", visitorsController.validcontact); 
+
+//отримання групи виставок по даті*
+app.get("/getexhibitions", visitorsController.getexhibitions);
+
+//отримання виставки по id*
+app.get("/getexhibition", visitorsController.getexhibition);
 
 //отримати файли
 app.get("/img/:id", cors(), visitorsController.file);
@@ -245,6 +287,12 @@ app.post("/editPro2", urlencodedParser, visitorsController.editPro2)
 //отримання запису по електронній адресі або мобільному з 3 таблиць
 app.post("/get", cors(), urlencodedParser, visitorsController.getRowOnCond2);
 
+//отримання запису по електронній адресі або мобільному з 3 таблиць*
+app.post("/getVisitor", cors(), urlencodedParser, visitorsController.getRowOnCond3);
+
+//збереження нового пароля в таблицю passwords*
+app.post("/changePass", cors(), urlencodedParser, visitorsController.changePass);
+
 //отримання запису по електронній адресі або мобільному з 3 таблиць authController.reCaptcha2
 app.post("/get2", cors(), urlencodedParser, authController.reCaptcha2, visitorsController.getRowOnCond2);
 
@@ -252,7 +300,7 @@ app.post("/get2", cors(), urlencodedParser, authController.reCaptcha2, visitorsC
 app.post("/get_spec_cond", cors(), urlencodedParser, visitorsController.getSpecCond);
 
 //відправка файлу по вказаній адресі
-app.post("/email", cors(), urlencodedParser, emailController.sendEmail);
+app.post("/email", cors(), urlencodedParser, emailController.sendEmail); 
 
 
 //-----------exhibition_vis--------------- 

@@ -19,7 +19,7 @@ import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog
   selector: 'app-emaillist',
   templateUrl: './emaillist.component.html',
   styleUrls: ['./emaillist.component.css'],
-  //changeDetection: ChangeDetectionStrategy.OnPush,
+  //changeDetection: ChangeDetectionStrategy.OnPush, 
 })
 export class EmaillistComponent implements OnInit, OnDestroy { 
 
@@ -151,6 +151,7 @@ export class EmaillistComponent implements OnInit, OnDestroy {
   }
 }
  
+
 @Component({
   selector: 'dialog-mailing-property',
   templateUrl: 'dialog-mailing-property.html',

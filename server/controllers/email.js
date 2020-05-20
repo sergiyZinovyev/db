@@ -6,8 +6,11 @@ const SQLEmail = require('../models/sql-email');
 const SQLCommon = require('../models/sql-common');
 const EmailModule = require('../models/email-mod');
 const AuthController = require('../controllers/auth');
-//const EventEmitter = require('events');
 
+const Port = require('../config').Config.serverConfig.backendPort;
+const Host = 'visitors.galexpo.com.ua';
+//const EventEmitter = require('events');
+ 
 const transporter = nodemailer.createTransport({
     host: Secure.Config.emailConfig.host,
     port: 587,
@@ -24,6 +27,36 @@ const transporter = nodemailer.createTransport({
 
 // const emitter = new EventEmitter();
 // exports.emitter = emitter;
+
+//-------------------------------------------------------------------------------------------------------------------------------------  
+// відправка повідомлення на зміну пароля
+exports.sendPasswordToEmail = function(link, email){
+    const mailOptions = {
+        from: 'send@galexpo.lviv.ua', // sender address
+        to: email, // list of receivers
+        subject: 'Запит на зміну пароля', // Subject line
+        attachments: [],
+        html: `<p>Ви встановили (або скинули) пароль для отримання запрошень на виставки серії <strong> "Галицькі-Експозиції"</strong>.</p>
+                <p>Пароль стане активним тільки після підтвердження</p>
+                <p>Увага! обов'язково запам'ятайте свій пароль. Отримати запрошення без пароля буде неможливо.</p>
+                <br>
+                <p>Щоб підтвердити (або скинути) пароль натисніть на посилання нижче:</p>
+                <p><strong>https://${Host}:${Port}/${link}</strong></p>
+                <br>
+                <p>Якщо ви нічого не встановлювали тоді нічого не робіть і просто видаліть цей лист</p>
+                <br>
+                <div><strong>З повагою ПрАТ "Гал-Експо"</div></strong>
+                <div><strong>Організатор виставок серії "Галицькі-Експозиції"</div></strong>`// plain text body
+    };
+    return new Promise((resolve, reject) => {
+        transporter.sendMail(mailOptions, (err, info) => {
+            if (err) return reject(`sendPasswordToEmail ${err}`);
+            return resolve(info)
+        })
+    })    
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------- 
 
 //------------------------------------------------------------------------------------------------------------------------------------- 
 exports.sendEmail = function(req, res){
@@ -261,7 +294,7 @@ exports.editMailingListsPaused = function(req, res) {
         return res.send(doc);
     });
 }
-
+ 
 //-------------------------------------------------------------------------------------------------------------------------------------
 //відписка
 exports.unsubscribe = function(req, res) {

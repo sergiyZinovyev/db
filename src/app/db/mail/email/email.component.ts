@@ -17,7 +17,7 @@ import {HttpClient, HttpParams, HttpEvent} from '@angular/common/http';
   styleUrls: ['./email.component.css']
 })
 
-export class EmailComponent implements OnInit, OnDestroy{
+export class EmailComponent implements OnInit, OnDestroy{ 
 
   constructor(
     private fb: FormBuilder,

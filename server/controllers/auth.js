@@ -113,6 +113,19 @@ exports.users = function(req, res) {
 	});
 };
  
+//-------------------------------------------------------------------------------------------------------------
+//перевірка логіну/пароля (fake)
+exports.fakeauth = function(req, res) {
+    let login = {
+        login: 'admin',
+        password: 12345
+    }
+    if(req.body.login == login.login && req.body.password == login.password){
+        return res.send({"auth":true})
+    }
+    else return res.send({"auth":false})
+};
+
 //-----------------------------------------------------------------------------------------------------------   
 // підтвердження пароля
 exports.checkAuth = function(req, res, next){

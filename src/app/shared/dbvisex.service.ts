@@ -56,10 +56,10 @@ export class DbvisexService {
             console.log("checkVis: ", data2);
             //якщо зареєстрований то редагуємо
             if(data2[0]){
-              alert('ви вже реєструвалися')
+              alert('ви вже реєструвалися') 
               // data2[0].registered = data2[0].registered + 1;
               // data2[0].reg = 1;
-              // this.server.post(data2[0], 'editExhibition_vis').subscribe(data3 =>{
+              // this.server.post(data2[0], 'editExhibition_vis').subscribe(data3 =>{ 
               //   console.log("data: ", data3);
               //   //this.visitorsIds.id_visitor = '';
               //   //this.visitorsIds.visited = '1';

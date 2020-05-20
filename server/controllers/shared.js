@@ -24,7 +24,9 @@ exports.getAll = function(req, res) {
 //-------------------------------------------------------------------------------------------------------------
 // отримати запис з usersaccount по логіну
 exports.getRights = function(login, cb){
-    SQLvis.getRowOnCondFromTable(login, 'name', 'usersaccount', function(err, doc){
+	let data = login;
+	if(!login) data = [''];
+    SQLvis.getRowOnCondFromTable(data, 'name', 'usersaccount', function(err, doc){
         if (err) {
 			console.log(err);
 			return cb(err);

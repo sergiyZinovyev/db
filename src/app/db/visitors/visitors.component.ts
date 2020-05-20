@@ -638,7 +638,9 @@ export class VisitorsComponent implements OnInit, OnDestroy {
           type: [],
           kompeten: [],
           datelastcor: [],
-          rating: []
+          rating: [],
+          sending: [],
+          password: []
         };
         for (let index = 0; index < arrOfId.length; index++) {
           const element = this.module.findOdjInArrObj(data, 'regnum', arrOfId[index]);

@@ -2,6 +2,7 @@ var Visitors = require('../models/sql-visitors');
 var Shared = require('../models/shared');
 var SQLCommon = require('../models/sql-common');
 var ControllersShared = require('../controllers/shared');
+const Email = require('./email');
 
 
 exports.all = function(req, res) {
@@ -29,6 +30,97 @@ exports.all = function(req, res) {
     }     
 };
 
+//-------------------------------------------------------------------------------------------------------------   
+// регіони
+exports.region = function(req, res) {
+    let countryid = req.query.countryid;
+    let regionid = req.query.regionid;
+    Visitors.region(countryid, regionid, function(err, doc) {
+        if (err) {
+            console.log(err);
+            return res.sendStatus(500);
+        }
+        res.send(doc);
+    }); 
+};
+
+//-------------------------------------------------------------------------------------------------------------   
+// галузі
+exports.branch = function(req, res) {
+    Visitors.branch(function(err, doc) {
+        if (err) {
+            console.log(err);
+            return res.sendStatus(500);
+        }
+        res.send(doc);
+    }); 
+};
+
+//-------------------------------------------------------------------------------------------------------------   
+// отримання групи виставок по id
+exports.groupexhib = function(req, res) {
+    let id = req.query.id
+    Visitors.groupexhib(id, function(err, doc) {
+        if (err) {
+            console.log(err);
+            return res.sendStatus(500);
+        }
+        res.send(doc);
+    }); 
+};
+
+//-------------------------------------------------------------------------------------------------------------   
+// отримання групи виставок по даті
+exports.getexhibitions = function(req, res) {
+    let date = req.query.date;
+    //console.log('date: ',date);
+    Visitors.getexhibitions(date, function(err, doc) {
+        if (err) {
+            console.log(err);
+            return res.sendStatus(500);
+        }
+        res.send(doc);
+    }); 
+};
+
+//-------------------------------------------------------------------------------------------------------------   
+// отримання виставки по id
+exports.getexhibition = function(req, res) {
+    let id = req.query.id;
+    //console.log('date: ',date);
+    Visitors.getexhibition(id, function(err, doc) {
+        if (err) {
+            console.log(err);
+            return res.sendStatus(500);
+        }
+        res.send(doc);
+    }); 
+};
+
+//-------------------------------------------------------------------------------------------------------------   
+// перевірка валідності емейла та телефона
+exports.validcontact = function(req, res) {
+    if(!req.query.value) return res.sendStatus(204);
+    let field = req.query.field;
+    let value = [req.query.value, req.query.value, req.query.value];
+    let regnum = req.query.regnum;
+    let error = {};
+    Visitors.validcontact(field, value, function(err, doc) {
+        if (err) {
+            console.log(err);
+            return res.sendStatus(500);
+        }
+        if(!doc[0]) return res.sendStatus(204);
+        for (let element of doc){
+            if(!regnum || regnum == '' || element.regnum != regnum){
+                error[`${field}Valid`] = `такий ${field} вже використовується`;
+                return res.send(JSON.stringify(error));
+                //break
+            }
+        }
+        return res.sendStatus(204);
+    }); 
+};
 
 //-------------------------------------------------------------------------------------------------------------   
 // отримати візіторів
@@ -328,6 +420,7 @@ exports.file = function(req, res) {
 //метод едентичний до editPro, спробувати об'єднати
 let editRequestIn = function(req, table, cb) {
     let reg_user;
+    let sending;
     ControllersShared.getRights(req.query.login, function(err, doc){
         console.log('doc: ', doc);
         if (err) {
@@ -338,6 +431,9 @@ let editRequestIn = function(req, table, cb) {
             reg_user = 99;
         }
         else reg_user = doc.id;
+
+        if(req.body.sending) sending = 1
+        else sending = 0;
 
         var visitorData = [
             req.body.regnum,
@@ -364,7 +460,9 @@ let editRequestIn = function(req, table, cb) {
             req.body.type,
             req.body.kompeten,
             Visitors.curentDate(),
-            req.body.rating
+            req.body.rating,
+            sending,
+            req.body.password
         ];
 
         console.log('req.body.checkEmail: ',req.body.checkEmail);
@@ -605,6 +703,7 @@ exports.editRequest = function(req, res) {
 let createCpecTableIn = function(req, table, cb) {
     
     let reg_user;
+    let sending;
     ControllersShared.getRights(req.query.login, function(err, doc){
         console.log('doc: ', doc);
         if (err) {
@@ -616,14 +715,21 @@ let createCpecTableIn = function(req, table, cb) {
         }
         else reg_user = doc.id;
 
+        if(req.body.sending) sending = 1
+        else sending = 0;
+
         //отримуємо всі regnum  з таблиць visitors та visitors_create
         Visitors.regnVisAndReq(function(err, doc){
             if (err) {
                 console.log(err);
                 return res.sendStatus(500);
             }
+            
+            //let regnVisAndReq = doc
+            let newRegnum = doc[0].max + 1;
             var visitorData = [
-                Visitors.nextRegnum(doc), //визначаємо наступний після найбільшого regnum
+                //Visitors.nextRegnum(doc), //визначаємо наступний після найбільшого regnum
+                newRegnum,
                 req.body.email,
                 req.body.prizv,
                 req.body.city,
@@ -647,7 +753,9 @@ let createCpecTableIn = function(req, table, cb) {
                 req.body.type,
                 req.body.kompeten,
                 Visitors.curentDate(),
-                req.body.rating
+                req.body.rating,
+                sending,
+                req.body.password
             ];
 
             //перевірка на email
@@ -665,7 +773,7 @@ let createCpecTableIn = function(req, table, cb) {
                     console.log('err2: ',err2);
                     return cb(err2, doc2);
                 }
-                console.log('check result on email: ', doc2);
+                //console.log('check result on email: ', doc2);
                 if (doc2){
                     if (doc2[0] == undefined || doc2[0].email == ''){
                         //перевірка на cellphone
@@ -684,7 +792,9 @@ let createCpecTableIn = function(req, table, cb) {
                             if (doc4){
                                 if (doc4[0] == undefined || doc4[0].cellphone == ''){
                                     //створюємо новий запис в табл.
-                                    console.log('start creating'); 
+                                    console.log('start creating');
+                                    //console.log('regnVisAndReq: ', regnVisAndReq);
+                                    //console.log('newRegnum: ', newRegnum); 
                                     Visitors.create(visitorData, table, function(err3, doc3){
                                         if (err3) {
                                             console.log(err3);
@@ -1148,16 +1258,18 @@ exports.createNewVis = function(req, res) {
 //   !!! винести в окремий файл !!!
 let editProIn = function(req, table, cb) {
     let reg_user;
+    let sending;
     ControllersShared.getRights(req.query.login, function(err, doc){
         console.log('doc: ', doc);
         if (err) {
             console.log('err: ',err);
             return res.sendStatus(500);
         }
-        if(!doc){
-            reg_user = 99;
-        }
+        if(!doc) reg_user = 99
         else reg_user = doc.id;
+
+        if(req.body.sending) sending = 1
+        else sending = 0;
 
         var visitorData = [
             req.body.email,
@@ -1184,6 +1296,7 @@ let editProIn = function(req, table, cb) {
             req.body.kompeten,
             Visitors.curentDate(),
             req.body.rating,
+            sending,
             req.body.regnum
         ];
         if (req.body.checkEmail == false){//якщо поле не змінювалося то пропускаємо перевірку на співпадіння
@@ -1441,7 +1554,7 @@ exports.delete = function(req, res){
     });
 }
 
-//-------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------- 
 //робить все!
 exports.editPro2 = function(req, res){
     //визначаємо в яких таблицях є такий регнам
@@ -1450,6 +1563,7 @@ exports.editPro2 = function(req, res){
             console.log(err);
             return res.sendStatus(500);
         }
+        console.log('getTablesOnRegnum: ', tables);
         //визначаємо права доступу
         ControllersShared.getRights(req.query.login, function(err, rights){
             if (err) {
@@ -1457,12 +1571,6 @@ exports.editPro2 = function(req, res){
                 return res.sendStatus(500);
             }
             else {
-                // res.send([{
-                //     "tables": tables,
-                //     "rights": rights.insupdvisitors
-                // }]);
-                console.log(tables);
-                //console.log('rights cb: ', rights.insupdvisitors);
                 //якщо повний доступ
                 if(rights && [3,4,5].includes(rights.insupdvisitors)){
                     //якщо запис є в visitors_edit
@@ -1657,7 +1765,142 @@ exports.editPro2 = function(req, res){
         
 //     });   
 // };
+//-------------------------------------------------------------------------------------------------------------
+//скидання пароля*
+exports.resetpassword = function(req, res) {
+    let VisitorData;
+    getVisitor(req.body.email, req.body.cellphone)
+        .then(getVisitorData => {
+            VisitorData = getVisitorData[0];
+            if (!VisitorData || !VisitorData.email) throw {resetpassError: 'email not found'};
+            return addPassword(VisitorData.regnum, '', VisitorData.password)
+        })
+        .then(data => Email.sendPasswordToEmail(data, VisitorData.email))
+        .then(data => res.send(JSON.stringify(data)))
+        .catch(err => {
+            console.log(err);
+            res.status(400).send(JSON.stringify(err));
+        });
+}
 
+//-------------------------------------------------------------------------------------------------------------
+//збереження нового пароля в таблицю passwords*
+exports.changePass = function(req, res) {
+    addPassword(req.body.regnum, req.body.password, req.body.firstpassword)
+        .then(data => Email.sendPasswordToEmail(data, req.body.email))
+        .then(data => res.send(JSON.stringify(data)))
+        .catch(err => {
+            console.log(err);
+            res.status(400).send(JSON.stringify(err));
+        });
+}
+
+function addPassword(regnum, password, firstpassword) {
+    return new Promise((resolve, reject) => {
+        Visitors.checkRegnumInPasswords(regnum)
+            .then(data => {
+                if(data.length > 0) return Visitors.editRowInPasswords([password, firstpassword, regnum])
+                else return Visitors.createRowInPasswords([regnum, password, firstpassword])
+            })
+            .then(_ => resolve(`setpassword/?regnum=${regnum}&password=${password}&firstpassword=${firstpassword}`))
+            .catch(err => reject(err));
+    })
+}
+
+//-------------------------------------------------------------------------------------------------------------
+//встановлення пароля у всіх таблицях*
+exports.setpassword = function(req, res) {
+    Visitors.checkRegnumInPasswords(req.query.regnum)
+        .then(data => checkPasswordData(data, req.query.firstpassword))
+        .then(data => {
+            if(data === 'EDIT') return editPassword(req.query.regnum, req.query.password)
+            else return data
+        })
+        .then(data => {
+            if(data === 'DONE') return Visitors.delRowInPasswords([req.query.regnum])
+            else return data
+        })
+        .then(data => res.send(JSON.stringify(data)))
+        .catch(err => {
+            console.log(err);
+            res.status(400).send(JSON.stringify(err));
+        });
+}
+
+function checkPasswordData(data, firstpassword) {
+    if(data.length > 0){
+        if(!data[0].firstpassword) return 'EDIT'
+        else if(data[0].firstpassword === firstpassword) return 'EDIT'
+        else return 'ERROR'
+    }
+    else return 'All necessary changes have already been made'
+}
+
+function editPassword(regnum, password) {
+    const arr = ['visitors', 'visitors_create', 'visitors_edit'];
+    return Promise.all(arr.map(table => Visitors.editPasswordInTable(table, [password, regnum]))).then(_ => "DONE")
+}
+
+//-------------------------------------------------------------------------------------------------------------
+// пошук в трьох таблицях по емейлу або телефону *
+
+class ArgumentgetRowOnCondPromise {
+    constructor(value, field, table){
+        this.value = value;
+        this.field = field;
+        this.table = table
+    }
+}
+
+getVisitor = function(email, cellphone) {
+    const arguments = [
+        new ArgumentgetRowOnCondPromise(email, 'email', 'visitors_edit'),
+        new ArgumentgetRowOnCondPromise(cellphone, 'cellphone', 'visitors_edit'),
+        new ArgumentgetRowOnCondPromise(email, 'email', 'visitors_create'),
+        new ArgumentgetRowOnCondPromise(cellphone, 'cellphone', 'visitors_create'),
+        new ArgumentgetRowOnCondPromise(email, 'email', 'visitors'),
+        new ArgumentgetRowOnCondPromise(cellphone, 'cellphone', 'visitors')
+    ];
+    let promise = Promise.resolve([]);
+    arguments.forEach(argument => {
+        promise = promise
+            .then(res => {
+                //console.log('res: ', res);
+                if (!res || res.length == 0) return Visitors.getRowOnCondFromTablePromise([argument.value], argument.field, argument.table)
+                    .then(data => {
+                        //console.log(`data from ${argument.table} on ${argument.field}:`, data);
+                        if(data.length > 0) {
+                            data.push({
+                                "receivedTable": argument.table,
+                                "receivedParam": argument.field
+                            });
+                            return data
+                        }
+                    })
+                return res;    
+            })
+                
+    })
+    return promise
+}
+
+exports.getRowOnCond3 = function(req, res) {
+    let visitorData = [];
+    getVisitor(req.body.email, req.body.cellphone)
+        .then(getVisitorData => {
+            if(getVisitorData) {
+                visitorData = getVisitorData;
+                return Visitors.getPassPromise(getVisitorData[0].regnum, getVisitorData[1].receivedTable)
+            }
+            return []
+        })
+        .then(getPassPromiseData => {
+            if(getPassPromiseData[0] && getPassPromiseData[0].password){
+                if(getPassPromiseData[0].password != req.body.password) return res.send(['incorrect password'])
+            }
+            res.send(visitorData)
+        })
+}
 //-------------------------------------------------------------------------------------------------------------
 
 // пошук в трьох таблицях по емейлу або телефону 2***
